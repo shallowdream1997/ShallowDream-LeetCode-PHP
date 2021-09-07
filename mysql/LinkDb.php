@@ -10,6 +10,8 @@ class LinkDb
     private $hostport = '3306';
 
     protected $table;
+
+    protected string $sql;
     /**
      * @var $connect mysqli
      */
@@ -37,5 +39,14 @@ class LinkDb
         }
         $string = implode(",", $fields);
         return $string;
+    }
+
+    /**
+     * 执行语句
+     * @return mysqli_result|bool
+     */
+    protected function query(): mysqli_result|bool
+    {
+        return $this->connect->query($this->sql);
     }
 }

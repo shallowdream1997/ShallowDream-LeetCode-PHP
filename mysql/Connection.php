@@ -34,12 +34,12 @@ class Connection extends LinkDb
     /**
      * @var string $sql 最终执行语句
      */
-    protected $sql;
+    protected string $sql;
 
     /**
      * @var $result mysqli_result
      */
-    protected $result;
+    protected mysqli_result $result;
 
 
     public function __construct()
@@ -113,7 +113,7 @@ class Connection extends LinkDb
         }
         $this->sql = $sql;
 
-        $this->result = $this->connect->query($sql);
+        $this->result = $this->query();
 
         return $this;
     }
@@ -148,9 +148,10 @@ class Connection extends LinkDb
 }
 
 $result = (new Connection())->table('stories')
-    ->fields('id,name,labels,created_at')
+    ->fields('*')
     ->where('is_show', '=', 1)
-    ->order('created_at','DESC')
+    ->where('is_hot', '=', 12)
+    ->order('created_at', 'DESC')
     ->select();
 //echo $result->getLastSql();
 var_dump($result->toArray());
