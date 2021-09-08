@@ -18,6 +18,8 @@ class Solution
      */
     function lengthOfLongestSubstring($s)
     {
+        $len = strlen($s);
+        if ($len == 1 || $len == 0) return $len;
         $arr = str_split($s,1); //拆分字符串转成数组
         $max = [];//保存可能的最大值数组
         while (!empty($arr)){
@@ -28,10 +30,10 @@ class Solution
                     $temp[$item] = 1;
                 }else{
                     //当有字母存在temp中，已有重复，统计当前temp的大小即为字符串的长度
-                    $max[] = count($temp);
                     break;
                 }
             }
+            $max[] = count($temp);
             array_shift($arr);//删除数组的开头，并偏移量向右
         }
         return max($max);
@@ -40,6 +42,7 @@ class Solution
 }
 
 var_export((new Solution())->lengthOfLongestSubstring("abcabcbb"));
-var_export((new Solution())->lengthOfLongestSubstring("bbbb"));
-var_export((new Solution())->lengthOfLongestSubstring("pwwkew"));
-var_export((new Solution())->lengthOfLongestSubstring(" "));
+//var_export((new Solution())->lengthOfLongestSubstring("bbbb"));
+//var_export((new Solution())->lengthOfLongestSubstring("pwwkew"));
+//var_export((new Solution())->lengthOfLongestSubstring(" "));
+//var_export((new Solution())->lengthOfLongestSubstring("au"));
