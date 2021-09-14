@@ -33,8 +33,6 @@ echo "<pre>";
 //$a = array(1=>5,5=>8,22,2=>'8',81);
 //var_dump($a);
 
-
-$nums = [1,40,9,4,6,213,43,88346,852,31,8456,3237,88346,92,35,2342,537];
 //$heap = new SplMinHeap();
 //foreach ($nums as $item){
 //    $heap->insert($item);
@@ -43,16 +41,5 @@ $nums = [1,40,9,4,6,213,43,88346,852,31,8456,3237,88346,92,35,2342,537];
 //foreach ($heap as $value){
 //    $temp[] = $value;
 //}
-$len = count($nums);
-for ($i=0;$i<$len;$i++){
-    for ($j=0;$j<$len-1-$i;$j++){
-        if ($nums[$j] > $nums[$j+1]){
-            $temp = $nums[$j];
-            $nums[$j]=$nums[$j+1];
-            $nums[$j+1]=$temp;
-        }
-    }
-}
-var_export($nums);
 //echo "ALTER TABLE `thj_order_record`
 //ADD COLUMN `is_delete` tinyint(2) NOT NULL DEFAULT 0 COMMENT '0-未删除 10-已删除' AFTER `update_time`;";
