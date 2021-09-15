@@ -16,23 +16,29 @@ class QuickSort
         if (count($arr) <= 1) {
             return $arr;
         }
-
-        $middle = $arr[0];
-        $leftArray = array();
-        $rightArray = array();
-
-        for ($i = 1; $i < count($arr); $i++) {
-            if ($arr[$i] > $middle) {
-                $rightArray[] = $arr[$i];
+        //选择一个基数
+        $main = $arr[0];
+        //统计长度，要和基数做比较
+        $len = count($arr);
+        $left = $right = [];
+        //对除了基数之外的数做比较
+        for ($i = 1; $i < $len; $i++) {
+            if ($arr[$i] > $main) {
+                //如果大于基数，置右边，做新分区
+                $right[] = $arr[$i];
             } else {
-                $leftArray[] = $arr[$i];
+                //如果小于基数，置左边，做新分区
+                $left[] = $arr[$i];
             }
         }
-        $leftArray = $this->quick($leftArray);
-        $leftArray[] = $middle;
+        //对左边新区按quicksort一样递归排序,直到排序结束,左边的数一定比基数小，且有顺序
+        $left = $this->quick($left);
+        //基数放左边的最后下标，表示中间数
+        $left[] = $main;
+        //对右边新区按quicksort递归排序，结束后右边的数一定比基数大，且有顺序
+        $right = $this->quick($right);
 
-        $rightArray = $this->quick($rightArray);
-        return array_merge($leftArray, $rightArray);
+        return array_merge($left, $right);
     }
 }
 
