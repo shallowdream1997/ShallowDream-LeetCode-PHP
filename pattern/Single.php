@@ -17,25 +17,34 @@ class Single
 {
     private $name;
 
+    static private ?Single $instance = null;
+
+    //构造函数私有化，防止外部调用
     private function __construct(){}
 
-    static public $instance;
+    //克隆函数私有化，防止外部克隆对象
+    private function __clone(){}
 
     static public function getInstance(): Single
     {
-        if(!self::$instance){
+        if (!self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
     }
-
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
-
     public function getName()
     {
         return $this->name;
     }
 }
+
+
+$instance1 = Single::getInstance()->setName(1);
+$instance2 = Single::getInstance()->setName(32);
+var_dump($instance1->getName());
+var_dump($instance2->getName());

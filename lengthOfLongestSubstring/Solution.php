@@ -103,7 +103,7 @@ class Solution
 //var_export((new Solution())->opLengthOfLongestSubstring1("bbbb"));
 //var_export((new Solution())->opLengthOfLongestSubstring1(" "));
 //var_export((new Solution())->opLengthOfLongestSubstring1("au"));
-var_export((new Solution())->opLengthOfLongestSubstring1("dvdf"));
+var_export((new Solution())->opLengthOfLongestSubstring("dvdf"));
 //var_export((new Solution())->opLengthOfLongestSubstring1("tmmzuxt"));
 //var_export((new Solution())->opLengthOfLongestSubstring1("wobgrovw"));
 //var_export((new Solution())->opLengthOfLongestSubstring1("iqbtbscgdztpgfp"));
