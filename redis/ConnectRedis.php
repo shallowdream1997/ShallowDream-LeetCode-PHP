@@ -279,6 +279,18 @@ class ConnectRedis
     {
         return $this->redis->hGetAll($key);
     }
+
+    /**
+     * 修改列表中key值的第start下标的值为新的value
+     * @param $key
+     * @param $start
+     * @param $value
+     * @return bool
+     */
+    public function lSet($key,$start,$value)
+    {
+        return $this->redis->lSet($key,$start,$value);
+    }
 }
 
 $conn = new ConnectRedis();
@@ -322,5 +334,12 @@ $json = json_encode([1,345,6,6,2,62,6,7,3,12,4],JSON_UNESCAPED_UNICODE);
 //];
 //$da = $conn->hMSet('user:'.$u2['id'], $u2);
 
-$da = $conn->hGetAll('user:1');
+//$da = $conn->setAddKey(['saddkey','1','2','3','4','5','6','7']);
+//$da = $conn->zAddKey('gea',31,4362);
+//$da = $conn->zAddKey('gea',12,164778);
+//$da = $conn->zAddKey('gea',3,4321);
+//$da = $conn->zAddKey('gea',6,446);
+$da = $conn->sMembersKey('saddkey');
+$da1 = $conn->lRangeKey('pushkey',2,4);
 var_dump($da);
+var_dump($da1);
