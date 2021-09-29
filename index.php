@@ -43,3 +43,6 @@ echo "<pre>";
 //}
 //echo "ALTER TABLE `thj_order_record`
 //ADD COLUMN `is_delete` tinyint(2) NOT NULL DEFAULT 0 COMMENT '0-未删除 10-已删除' AFTER `update_time`;";
+$array = [];
+array_unshift($array,[1,66,4,5,21,321,41,34,8,34,243]);
+var_dump($array);
