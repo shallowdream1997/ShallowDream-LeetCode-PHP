@@ -57,5 +57,29 @@ class Solution
         return true;
     }
 
+    /**
+     * @param $x
+     * @return bool
+     * 双指针
+     */
+    function isPalindrome3($x)
+    {
+        if ($x < 0){
+            return false;
+        }
+        $x = (string)$x;
+        $len = strlen($x);
+        for ($i=0,$j= $len - 1;$i <= $j;){
+            if ($x[$i] == $x[$j]){
+                ++$i;
+                --$j;
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
 
+var_export((new Solution())->isPalindrome3(121));
