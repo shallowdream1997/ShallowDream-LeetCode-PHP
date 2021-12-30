@@ -54,4 +54,10 @@ function twoPrev($string)
     }
 }
 
-twoPrev('abcrabc');
+function calc($string)
+{
+    $s = 103.5 + 51.5;
+    echo $s;
+}
+//twoPrev('abcrabc');
+calc(12);
