@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <title>{{moduleTitle}}</title>
+  <style>
+
+  </style>
+</head>
+<body>
+<!--标题-->
+<div class='p-fluid grid'>
+  <div class='ui-g-12'>
+    <h4>{{moduleTitle}}</h4>
+    <hr>
+  </div>
+</div>
+
+<!--查询条件-->
+<div class='p-fluid grid'>
+  <div class="ui-g-1 text-right">
+    <b>更新日期:</b>
+  </div>
+  <div class="ui-g-2">
+    <p-dropdown [options]="search.total_date" [(ngModel)]="confirm.total_date" optionLabel="name" optionValue="value"></p-dropdown>
+  </div>
+
+  <div class="ui-g-1 text-right">
+    <b>销售:</b>
+  </div>
+  <div class="ui-g-2">
+    <p-multiSelect [options]="search.salesList" [(ngModel)]="confirm.salesList" defaultLabel="全部" optionLabel="name" optionValue="value"></p-multiSelect>
+  </div>
+
+  <div class="ui-g-1 text-right">
+    <b>开发:</b>
+  </div>
+  <div class="ui-g-2">
+    <p-multiSelect [options]="search.developerList" [(ngModel)]="confirm.developerList" defaultLabel="全部" optionLabel="name" optionValue="value"></p-multiSelect>
+  </div>
+
+  <div class="ui-g-1" style='align-items:center;text-align: right'>
+    <b>仓库:</b>
+  </div>
+  <div class="ui-g-2">
+    <p-multiSelect [options]="search.stockList" [(ngModel)]="confirm.stockList" defaultLabel="全部" optionLabel="name" optionValue="value"></p-multiSelect>
+  </div>
+
+  <div class='ui-g-1 text-right'>
+    <b>OOS天数:</b>
+  </div>
+  <div class='ui-g-2'>
+    <div class='p-inputgroup'>
+      <p-dropdown [options]="search.oosOpt" [(ngModel)]="confirm.oosOpt" optionLabel="name" optionValue="value"></p-dropdown>
+      <b class='text-right'>-</b>
+      <input type='number' step='1' min='0' pInputText placeholder=''[(ngModel)]="confirm.oosInput">
+    </div>
+  </div>
+</div>
+
+<!-- 按钮 -->
+<div class='p-fluid grid text-right'>
+  <div class='ui-g-1'>
+    <p-button label="查询" icon="pi pi-search" [loading]="" (onClick)="getSearch()"></p-button>
+  </div>
+  <div class='ui-g-1'>
+    <p-button label="导出" icon="pi pi-file-excel" [loading]="" (onClick)="exportData()"></p-button>
+  </div>
+</div>
+
+
+<!-- 表格内容 -->
+<div class="p-fluid grid pa-ip-patent">
+  <div class='ui-g-12'>
+    <p-table [value]="dataList"
+             [lazy]="true"
+             (onLazyLoad)="queryPage($event)"
+             [paginator]="true"
+             [rows]="paginator.rows"
+             [scrollable]="true"
+             [first]="paginator.first"
+             [rowsPerPageOptions]="[5,10,20,50,100]"
+             [showCurrentPageReport]="true"
+             [totalRecords]="paginator.totalRecords"
+             [style] = "{'white-space':'normal','word-break':'break-all'}"
+             styleClass='p-datatable-gridlines p-datatable-striped'
+             scrollHeight="400px"
+             currentPageReportTemplate="Page: {currentPage} of {totalPages}, {rows} per Page, Total Items: {totalRecords}">
+      <ng-template pTemplate='header'>
+        <tr>
+          <th [style]="{'width':'10rem','height':'53px'}"><div style="text-align: center"><b>更新日期</b></div></th>
+          <th [style]="{'width':'10rem','height':'53px'}"><div style="text-align: center"><b>skuId</b></div></th>
+          <th [style]="{'width':'5rem','height':'53px'}"><div style="text-align: center"><b>开发</b></div></th>
+          <th [style]="{'width':'5rem','height':'53px'}"><div style="text-align: center"><b>销售</b></div></th>
+          <th [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center"><b>销售类型</b></div></th>
+          <th [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center"><b>仓库</b></div></th>
+          <th [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center"><b>CETS库存</b></div></th>
+          <th [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center"><b>OOS天数</b></div></th>
+          <th [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center"><b>Amazon<br/>库存</b></div></th>
+          <th [style]="{'width':'7rem','height':'53px'}"><div style="text-align: center"><b>Amazon<br/>不可售数量</b></div></th>
+          <th [style]="{'width':'7rem','height':'53px'}"><div style="text-align: center"><b>Amazon<br/>预留数量</b></div></th>
+          <th [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center"><b>Amazon<br/>入库处理数量</b></div></th>
+          <th [style]="{'width':'7rem','height':'53px'}"><div style="text-align: center"><b>Amazon<br/>入库接收数量</b></div></th>
+          <th [style]="{'width':'17rem','height':'53px'}"><div style="text-align: center"><b>断货原因</b></div></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate='body' let-info>
+        <tr>
+          <td [style]="{'width':'10rem','height':'53px'}"><div style="text-align: center">{{info.total_date|date:'yyyy-MM-dd'}}</div></td>
+          <td [style]="{'width':'10rem','height':'53px'}"><div style="text-align: center">{{info.sku_id}}</div></td>
+          <td [style]="{'width':'5rem','height':'53px'}"><div style="text-align: center">{{this.cNameArray[info.developerusername] || info.developerusername}}</div></td>
+          <td [style]="{'width':'5rem','height':'53px'}"><div style="text-align: center">{{info.salesusername}}</div></td>
+          <td [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center">{{supplierStatusMap[info.last_supplier_status] || info.last_supplier_status}}</div></td>
+          <td [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center">{{info.stock_group}}</div></td>
+          <td [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center">{{info.cets_over_sea_stock_qty}}</div></td>
+          <td [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center">{{info.oos_days}}</div></td>
+          <td [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center">{{info.afn_warehouse_quantity}}</div></td>
+          <td [style]="{'width':'7rem','height':'53px'}"><div style="text-align: center">{{info.afn_unsellable_quantity}}</div></td>
+          <td [style]="{'width':'7rem','height':'53px'}"><div style="text-align: center">{{info.afn_reserved_quantity}}</div></td>
+          <td [style]="{'width':'6rem','height':'53px'}"><div style="text-align: center">{{info.afn_inbound_working_quantity}}</div></td>
+          <td [style]="{'width':'7rem','height':'53px'}"><div style="text-align: center">{{info.afn_inbound_receiving_quantity}}</div></td>
+          <td [style]="{'width':'17rem','height':'53px'}"><div style="text-align: center">{{info.result_tag}}</div></td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <div style="background-color: aliceblue;border-color: black">
+      <b>月/周: W01(01/03-01/09)</b>
+      <b>年份: 2022</b>
+      <b>环比: 28.99%</b>
+      <b>同比: -16.33%</b>
+      <b>上月(周) Value: 39217</b>
+      <b>去年同月(周) Value: 60458</b>
+      <b>Value: 50587</b>
+    </div>
+  </div>
+</div>
+
+<p-dialog header="" [(visible)]="showWait" modal="modal" showEffect="fade" [style]="{width:'200px'}">
+  <div style="text-align: center">
+    <b>数据加载中</b><br />
+    <img src="../../../resources/layout/images/loading.gif" />
+  </div>
+</p-dialog>
+
+<p-toast></p-toast>
+</body>
+</html>
