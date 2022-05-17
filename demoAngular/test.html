@@ -3,14 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .border{
+            border-width: 0.5px;
+            border-style:solid;
+            border-color: #0aa5cd;
+            opacity: 0.5;
+            height: 1rem;
+            width: 100%;
+        }
+        .real{
+            border-width: 0.5px;
+            background: #01847F;
+            width: 45%;
+            height: 1rem;
+        }
+        .target{
+            left: 5%;
+            height: 1rem;
+            position: fixed;
+            border: 1px red solid;
+        }
+    </style>
 </head>
 <body>
-<div style="background: #F6F6F7;border-color: black;padding:5px">
-    <div><b>月/周: W17(04/25-05/01)</b></div>
-    <div><b>年份: 2022</b></div>
-    <div><b>环比: 4.29%</b></div>
-    <div><b>同比: 8.81%</b></div>
-    <div><b>Value: 61306</b></div>
+<div class="border">
+    <div class="real">
+        <div class="target">
+        </div>
+    </div>
 </div>
 </body>
 </html>
