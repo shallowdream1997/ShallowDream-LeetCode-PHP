@@ -1,0 +1,15 @@
+{
+  "type": "7d",
+  "sellerid": "amazon_us",
+  "adgroupid": "207603269357897",
+  "campaignid": "228158040179035",
+  "targetid": "114740727409607",
+  "targetingtype": "queryHighRelMatches",
+  "targetingtext": "CLOSE_MATCH",
+  "spend": 10,
+  "seventotalorders": 7,
+  "impressions": 23,
+  "clicks": 15,
+  "sevendaytotalsales": 250.36,
+  "modifiedon": ISODate("2022-09-12T23:02:09.038+0000")
+}
