@@ -1,0 +1,64 @@
+@startuml
+title Amazon SP多种账号广告自动化
+autonumber
+
+box "product_operation_js_angular5"
+participant "SKU上架或下架" as sku_upload_or_download
+end box
+
+box "product_operation_php_restful" #lightBlue
+participant "UploadProcessAliyunController.php" as upload_process_aliyun_controller
+participant "saveActionResult()" as saveActionResult
+participant "_analyzeAmazonApiResult()" as _analyzeAmazonApiResult
+end box
+
+box "nsq_worker_nodejs_app" #lightYellow
+participant "HK_Poms_Send_Amazon_Create_Sp" as HK_Poms_Send_Amazon_Create_Sp
+end box
+
+box "mongoDB" #orange
+participant "product_operation_listing" as db
+end box
+
+sku_upload_or_download -> upload_process_aliyun_controller : sku上架或下架统一控制器调用
+upload_process_aliyun_controller -> saveActionResult : sku上下架Aliyun平台接口调用
+saveActionResult -> _analyzeAmazonApiResult : Amazon API调用
+
+alt amazon_active_listing回写后调用AmazonSP NSQ
+_analyzeAmazonApiResult -> _analyzeAmazonApiResult : 根据skuId的channel+sellerId是否符合已分配渠道账号条件决定创建广告
+_analyzeAmazonApiResult -> HK_Poms_Send_Amazon_Create_Sp : Amazon auto广告
+_analyzeAmazonApiResult -> HK_Poms_Send_Amazon_Create_Sp : Amazon manual asin广告
+_analyzeAmazonApiResult -> HK_Poms_Send_Amazon_Create_Sp : Amazon manual category广告
+end
+
+== 数据查询 ==
+sku_upload_or_download -> controller: 请求批量制作接口
+controller -> controller: 解析excel
+controller -> db : 根据sguId、skuId查询sgu_sku_scu_map表
+db -> controller: 返回sgu_sku_scu_map数据
+
+== 业务处理 ==
+
+
+alt sguId、skuId存在绑定关系
+controller -> db: 根据skuId（imageType=03）查询sku_images表
+db -> controller: 返回imageUrl
+controller -> db: 更新sku_images表（sguId、imageUrl）
+controller --> db: 根据sguId、skuId查询auto_drawing_bind表数据
+db-->controller:返回数据
+alt 数据已存在
+controller -> db:更新auto_drawing_bind表数据
+else 数据不存在
+controller -> db:新增auto_drawing_bind表数据
+end
+else 数据不存在
+controller -> controller: 不做处理
+end
+
+== 数据返回 ==
+controller -> html: 返回执行结果
+html -> html: 提醒导入结果
+
+
+
+@enduml

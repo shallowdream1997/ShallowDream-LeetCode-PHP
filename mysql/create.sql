@@ -835,3 +835,206 @@ CREATE TABLE pa_refer_sku
     createdOn        DATETIME NULL COMMENT '创建日期',
     createdBy        VARCHAR(255) NULL COMMENT '创建人'
 )ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE pa_ebay_fcu_apply
+(
+    applyBatch    VARCHAR(255) NULL COMMENT '申请批次,QS+YYYYMMDD+五位',
+    applyStatus   VARCHAR(255) NULL COMMENT '审核状态.新建-0:导入后默认状态;待审核-1:提交审核后,尚有sku未审核;已审核-2:所有sku状态均不为待审核',
+    projectRemark VARCHAR(255) NULL COMMENT '项目备注.用户导入（小于20字符）',
+    applyPurpose  VARCHAR(255) NULL COMMENT '创建目的',
+    totalNum      INT NULL COMMENT '总数量(成功导入的总条数)',
+    fcuNum        INT NULL COMMENT 'FCU数量(成功生成的fcu数量)',
+    modifiedBy    VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn    DATETIME NULL COMMENT '修改日期',
+    createdOn     DATETIME NULL COMMENT '用户导入时间',
+    createdBy     VARCHAR(255) NULL COMMENT '导入的用户'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE pa_ebay_fcu_apply_detail
+(
+    applyBatch    VARCHAR(255) NULL COMMENT '申请批次,QS+YYYYMMDD+五位',
+    skuList       VARCHAR(255) NULL COMMENT 'sku相关信息',
+    projectRemark VARCHAR(255) NULL COMMENT '项目备注.用户导入（小于20字符）',
+    applyPurpose  VARCHAR(255) NULL COMMENT '创建目的',
+    stockGroup    VARCHAR(255) NULL COMMENT '目的仓库:US_04,US_4PX_06,SZ,UK_06,AU_06,DE_EF01,FR_06,ES_06',
+    fcuType       VARCHAR(255) NULL COMMENT 'FCU类型[综合,高档,中档,低档]',
+    fitType       VARCHAR(255) NULL COMMENT '适配类型[专用,通用]',
+    make          VARCHAR(255) NULL COMMENT 'Make',
+    model         VARCHAR(255) NULL COMMENT 'Model',
+    year          VARCHAR(255) NULL COMMENT 'Year',
+    moveQty       INT NULL COMMENT '移库数量,整数,stockGroup = SZ时,值为0,为其他仓库时,值大于等于0',
+    sellerId      VARCHAR(255) NULL COMMENT '上架账号,stockGroup+sellerId+Channel在seller_config',
+    channel       VARCHAR(255) NULL COMMENT '可售渠道',
+    isAssemble    VARCHAR(255) NULL COMMENT '是否fcu组合(sku为单个&fcu数量为1是=是，其他为否)',
+    status        VARCHAR(255) NULL COMMENT '审核结果',
+    applyRemark   VARCHAR(255) NULL COMMENT '审核备注(不通过时，用户填写)',
+    fcuId         VARCHAR(255) NULL COMMENT 'fcuId(调生成fcu的接口生成后回写)',
+    modifiedBy    VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn    DATETIME NULL COMMENT '修改日期',
+    createdOn     DATETIME NULL COMMENT '用户导入时间',
+    createdBy     VARCHAR(255) NULL COMMENT '导入的用户'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE pa_ebay_fcu_processing_monitor
+(
+    applyBatch    VARCHAR(255) NULL COMMENT '申请批次,QS+YYYYMMDD+五位',
+    stockGroup    VARCHAR(255) NULL COMMENT '目的仓库:US_04,US_4PX_06,SZ,UK_06,AU_06,DE_EF01,FR_06,ES_06',
+    moveQty       INT NULL COMMENT '移库数量,整数',
+    sellerId      VARCHAR(255) NULL COMMENT '上架账号',
+    channel       VARCHAR(255) NULL COMMENT '可售渠道',
+    fcuId         VARCHAR(255) NULL COMMENT 'fcuId(调生成fcu的接口生成后回写)',
+    applyBy       VARCHAR(255) NULL COMMENT '申请人',
+    applyDate     DATETIME NULL COMMENT '申请时间',
+    onWayQty      INT NULL COMMENT '目的仓在途库存',
+    inStockQty    INT NULL COMMENT '目的仓在库库存',
+    moveStatus    VARCHAR(255) NULL COMMENT '移库状态',
+    materialBy    VARCHAR(255) NULL COMMENT '资料负责人',
+    photoBy       VARCHAR(255) NULL COMMENT '图片负责人',
+    publishStatus VARCHAR(255) NULL COMMENT '资料状态',
+    publishTime   DATETIME NULL COMMENT '发布日期',
+    uploadTime    DATETIME NULL COMMENT '上架日期',
+    modifiedBy    VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn    DATETIME NULL COMMENT '修改日期',
+    createdOn     DATETIME NULL COMMENT '用户导入时间',
+    createdBy     VARCHAR(255) NULL COMMENT '导入的用户'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE pa_ebay_fcu_processing_collect
+(
+    applyDate       DATETIME NULL COMMENT '申请时间',
+    applyBy         VARCHAR(255) NULL COMMENT '申请人',
+    applyBatch      VARCHAR(255) NULL COMMENT '申请批次,QS+YYYYMMDD+五位',
+    stockGroup      VARCHAR(255) NULL COMMENT '目的仓库:US_04,US_4PX_06,SZ,UK_06,AU_06,DE_EF01,FR_06,ES_06',
+    sellerId        VARCHAR(255) NULL COMMENT '上架账号',
+    fcuTotal        INT NULL COMMENT '审核通过',
+    cancel          INT NULL COMMENT '作废sku',
+    inStockSku      INT NULL COMMENT '已入库',
+    onWaySku        INT NULL COMMENT '移库中',
+    waitOnway       INT NULL COMMENT '待移库',
+    msProgress      INT NULL COMMENT '移库分项进度',
+    infoDrafting    INT NULL COMMENT '资料制作中',
+    picDrafting     INT NULL COMMENT '图片制作中',
+    completed       INT NULL COMMENT '资料检查完成',
+    publishProgress INT NULL COMMENT '出版分项进度',
+    upload          INT NULL COMMENT '已上架',
+    offline         INT NULL COMMENT '未上架',
+    uploadProgress  INT NULL COMMENT '上架分项进度',
+    modifiedBy      VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn      DATETIME NULL COMMENT '修改日期',
+    createdOn       DATETIME NULL COMMENT '用户导入时间',
+    createdBy       VARCHAR(255) NULL COMMENT '导入的用户'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE pa_high_efficiency_sku_management
+(
+    businessType         VARCHAR(255) NULL COMMENT '业务类型',
+    topCategory          VARCHAR(255) NULL COMMENT '一级分类',
+    date                 DATETIME NULL COMMENT '统计周',
+    reviewCount          INT NULL COMMENT '前端市场复核',
+    waitIpCount          INT NULL COMMENT 'IP待检查',
+    waitLeaderCheckCount INT NULL COMMENT '组长待审核',
+    waitInfoCountBefore  INT NULL COMMENT '来货中',
+    waitInfoCountAfter   INT NULL COMMENT '待资料制作中',
+    waitPicCount         INT NULL COMMENT '待图片制作中',
+    waitManageCount      INT NULL COMMENT '待产品经理审核',
+    waitFirstCount       INT NULL COMMENT '待首次侵权检查',
+    waitSecondCount      INT NULL COMMENT '待二次侵权检查',
+    completedCount       INT NULL COMMENT '历史资料检查完成',
+    retiredCount         INT NULL COMMENT '历史资料作废',
+    modifiedBy           VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn           DATETIME NULL COMMENT '修改日期',
+    createdOn            DATETIME NULL COMMENT '创建人',
+    createdBy            VARCHAR(255) NULL COMMENT '创建日期'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE pa_high_efficiency_sku_management_detail
+(
+    skuid        VARCHAR(255) NULL COMMENT 'skuid',
+    businessType VARCHAR(255) NULL COMMENT '业务类型',
+    topCategory  VARCHAR(255) NULL COMMENT '一级分类',
+    date         DATETIME NULL COMMENT '日期（周日）',
+    developer    VARCHAR(255) NULL COMMENT '开发人员',
+    status       VARCHAR(255) NULL COMMENT '状态',
+    brand        VARCHAR(255) NULL COMMENT '亚马逊上架账号',
+    modifiedBy   VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn   DATETIME NULL COMMENT '修改日期',
+    createdOn    DATETIME NULL COMMENT '创建人',
+    createdBy    VARCHAR(255) NULL COMMENT '创建日期'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE pa_high_efficiency_sales_detail
+(
+    skuid VARCHAR(255) NULL COMMENT 'skuid',
+    year VARCHAR(255) NULL COMMENT '统计年',
+    date DATETIME NULL COMMENT '统计周',
+    topCategory VARCHAR(255) NULL COMMENT '一级分类',
+    businessType VARCHAR(255) NULL COMMENT '业务类型',
+    developer VARCHAR(255) NULL COMMENT '开发人员',
+    salesman VARCHAR(255) NULL COMMENT '销售人员',
+    cnCategory VARCHAR(255) NULL COMMENT '中文全分类',
+    warehouse VARCHAR(255) NULL COMMENT '仓库',
+    inventoryStatus VARCHAR(255) NULL COMMENT 'inventory状态',
+    publishStatus VARCHAR(255) NULL COMMENT '发布状态',
+    publishTime DATETIME NULL COMMENT '发布时间',
+    cost INT NULL COMMENT 'sku单价',
+    inventory INT NULL COMMENT '总库存件数（含在途）',
+    inventoryOnway INT NULL COMMENT '补货在途库存',
+    soldHis INT NULL COMMENT '历史sold',
+    salesHis INT NULL COMMENT '历史sales',
+    plHis INT NULL COMMENT '历史pl',
+    sold180 INT NULL COMMENT '近180天sold',
+    complaintNum180 INT NULL COMMENT '近180天质量投诉件数',
+    complaintRatio180 INT NULL COMMENT '近180天质量投诉率',
+    sold7 INT NULL COMMENT '近1周sold',
+    sold14 INT NULL COMMENT '近2周sold',
+    sold21 INT NULL COMMENT '近3周sold',
+    sold28 INT NULL COMMENT '近4周sold',
+    modifiedBy   VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn   DATETIME NULL COMMENT '修改日期',
+    createdOn    DATETIME NULL COMMENT '创建人',
+    createdBy    VARCHAR(255) NULL COMMENT '创建日期'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE pa_high_efficiency_sales
+(
+    activeSku            INT NULL COMMENT '在售skuid数',
+    Year                 VARCHAR(255) NULL COMMENT '统计年',
+    date                 DATETIME NULL COMMENT '统计周',
+    topCategory          VARCHAR(255) NULL COMMENT '一级分类',
+    businessType         VARCHAR(255) NULL COMMENT '业务类型',
+    developer            VARCHAR(255) NULL COMMENT '开发人员',
+    salesman             VARCHAR(255) NULL COMMENT '销售人员',
+    warehouse            VARCHAR(255) NULL COMMENT '仓库',
+    inStockTime          INT NULL COMMENT '入库时长',
+    publishDays          INT NULL COMMENT '发布时长',
+    sold                 INT NULL COMMENT '销量',
+    sold30               INT NULL COMMENT '销量（近30天）',
+    sold180              INT NULL COMMENT '销量（近180天）',
+    sales                INT NULL COMMENT '销售额',
+    pl                   INT NULL COMMENT '毛利',
+    margin               INT NULL COMMENT '利润率',
+    eff                  INT NULL COMMENT 'eff',
+    ads                  INT NULL COMMENT 'ads',
+    adsRatio             INT NULL COMMENT 'asd占比',
+    nSku                 INT NULL COMMENT '售动sku数',
+    nSkuRatio            INT NULL COMMENT '售动率',
+    nSkuHis              INT NULL COMMENT '历史售动sku数',
+    nSkuRatioHis         INT NULL COMMENT '历史售动率',
+    inventory            INT NULL COMMENT '总库存件数（含在途）',
+    inventoryAmount      INT NULL COMMENT '总库存金额（含在途）',
+    inventoryOnway       INT NULL COMMENT '补货在途库存（SZ）',
+    inventoryOnwayAmount INT NULL COMMENT '补货在途金额（SZ）',
+    inventoryRatio       INT NULL COMMENT '库存比',
+    complaintNum180      INT NULL COMMENT '近180天质量投诉件数（全渠道）',
+    complaintRatio180    INT NULL COMMENT '近180天质量投诉率（全渠道）',
+    modifiedBy           VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn           DATETIME NULL COMMENT '修改日期',
+    createdOn            DATETIME NULL COMMENT '创建人',
+    createdBy            VARCHAR(255) NULL COMMENT '创建日期'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
