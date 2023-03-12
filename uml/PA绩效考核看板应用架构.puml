@@ -1,0 +1,46 @@
+@startuml
+
+package "poms_js_web"{
+	[销售人员绩效考核看板]
+	[前端市场复核&资呈]
+	[前端市场复核&资呈-明细]
+	[销售额业绩达标看板]
+	[库存比&OOS指标看板]
+}
+package "poms_listing_nestjs"{
+	[pa_sale_forecast_v3]
+	[pa_goods_target]
+}
+package "poms_big_data_nestjs"{
+	[pa_monthly_sales_v2]
+	[pa_monthly_traceman_sales]
+	[pa_sku_life_cycle_sku_setting]
+	[pa_manager_kpi]
+	[pa_salesman_kpi]
+	[pa_monthly_stock_review]
+}
+
+
+'DataAccess - [First Component]
+'[First Component] ..> HTTP : use
+[销售人员绩效考核看板] --> [pa_sale_forecast_v3]
+[销售人员绩效考核看板] --> [pa_goods_target]
+[销售人员绩效考核看板] --> [pa_monthly_sales_v2]
+[销售人员绩效考核看板] --> [pa_monthly_traceman_sales]
+[销售人员绩效考核看板] --> [pa_sku_life_cycle_sku_setting]
+[销售人员绩效考核看板] --> [pa_salesman_kpi]
+
+[前端市场复核&资呈] --> [pa_sku_life_cycle_sku_setting]
+[前端市场复核&资呈] --> [pa_salesman_kpi]
+
+[前端市场复核&资呈-明细] --> [pa_sku_life_cycle_sku_setting]
+[前端市场复核&资呈-明细] --> [pa_salesman_kpi]
+
+[销售额业绩达标看板] --> [pa_manager_kpi]
+
+[库存比&OOS指标看板] --> [pa_monthly_stock_review]
+
+
+
+
+@enduml

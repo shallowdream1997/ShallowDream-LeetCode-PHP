@@ -1,0 +1,56 @@
+@startuml
+
+package "product_operation_php_restful"{
+	[上下架统一接口]
+	[PA自动化创建广告接口]
+	[PA自动化创建广告数据校验接口]
+	[PA自动化创建广告账号渠道配置方法]
+	[campaign]
+	[adGroup]
+	[product]
+	[keyword]
+	[negativeKeyword]
+	[target]
+	[negativeTarget]
+}
+package "product_operation_js_angular5"{
+	[SKU上架或下架]
+}
+package "nsq_worker_nodejs_app"{
+	[HK_Poms_Send_Amazon_Create_Sp]
+}
+package "Amazon后台"{
+	[Amazon]
+}
+package "mongo"{
+	[mongoDB]
+}
+
+
+'DataAccess - [First Component]
+'[First Component] ..> HTTP : use
+[SKU上架或下架] --> [上下架统一接口]
+[上下架统一接口] --> [HK_Poms_Send_Amazon_Create_Sp]
+[HK_Poms_Send_Amazon_Create_Sp] --> [PA自动化创建广告接口]
+[PA自动化创建广告接口] --> [PA自动化创建广告数据校验接口]
+[PA自动化创建广告数据校验接口] --> [PA自动化创建广告账号渠道配置方法]
+[PA自动化创建广告账号渠道配置方法] --> [campaign]
+[campaign] --> [adGroup]
+[adGroup] --> [product]
+[adGroup] --> [keyword]
+[adGroup] --> [negativeKeyword]
+[adGroup] --> [target]
+[adGroup] --> [negativeTarget]
+[campaign] --> [Amazon]
+[adGroup] --> [Amazon]
+[product] --> [Amazon]
+[keyword] --> [Amazon]
+[negativeKeyword] --> [Amazon]
+[target] --> [Amazon]
+[negativeTarget] --> [Amazon]
+[Amazon] --> [mongoDB]
+
+
+
+
+@enduml

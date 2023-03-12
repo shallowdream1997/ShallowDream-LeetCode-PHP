@@ -10,10 +10,17 @@ box "product_operation_php_restful" #lightBlue
 participant "UploadProcessAliyunController.php" as upload_process_aliyun_controller
 participant "saveActionResult()" as saveActionResult
 participant "_analyzeAmazonApiResult()" as _analyzeAmazonApiResult
+participant "PA自动化创建广告接口" as paAutoAmazonSP
+participant "PA自动化创建广告数据校验接口" as paAutoAmazonSPValidate
+participant "PA自动化创建广告账号渠道配置方法" as paAutoAmazonSPConfig
 end box
 
 box "nsq_worker_nodejs_app" #lightYellow
 participant "HK_Poms_Send_Amazon_Create_Sp" as HK_Poms_Send_Amazon_Create_Sp
+end box
+
+box "Amazon后台" #lightGreen
+participant "amazon_Admin" as Amazon后台
 end box
 
 box "mongoDB" #orange
@@ -31,34 +38,15 @@ _analyzeAmazonApiResult -> HK_Poms_Send_Amazon_Create_Sp : Amazon manual asin广
 _analyzeAmazonApiResult -> HK_Poms_Send_Amazon_Create_Sp : Amazon manual category广告
 end
 
-== 数据查询 ==
-sku_upload_or_download -> controller: 请求批量制作接口
-controller -> controller: 解析excel
-controller -> db : 根据sguId、skuId查询sgu_sku_scu_map表
-db -> controller: 返回sgu_sku_scu_map数据
-
-== 业务处理 ==
-
-
-alt sguId、skuId存在绑定关系
-controller -> db: 根据skuId（imageType=03）查询sku_images表
-db -> controller: 返回imageUrl
-controller -> db: 更新sku_images表（sguId、imageUrl）
-controller --> db: 根据sguId、skuId查询auto_drawing_bind表数据
-db-->controller:返回数据
-alt 数据已存在
-controller -> db:更新auto_drawing_bind表数据
-else 数据不存在
-controller -> db:新增auto_drawing_bind表数据
+alt NSQ调用PA_AmazonSP接口
+HK_Poms_Send_Amazon_Create_Sp -> paAutoAmazonSP : PA多种账号创建广告
+paAutoAmazonSP -> paAutoAmazonSPValidate : 创建广告数据校验
+paAutoAmazonSPValidate -> paAutoAmazonSPConfig : 广告渠道账号配置
+paAutoAmazonSPConfig -> paAutoAmazonSP : 开始进行campaign、adGroup、product、target、negativeTarget创建或更新
+paAutoAmazonSP -> Amazon后台 : 创建或更新广告到Amazon后台
+Amazon后台 -> paAutoAmazonSP : Amazon后台返回广告数据
+paAutoAmazonSP -> db : 保存或更新广告到mongodb
 end
-else 数据不存在
-controller -> controller: 不做处理
-end
-
-== 数据返回 ==
-controller -> html: 返回执行结果
-html -> html: 提醒导入结果
-
 
 
 @enduml

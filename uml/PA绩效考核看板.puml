@@ -1,0 +1,69 @@
+@startuml
+title PA绩效考核看板
+autonumber
+
+box "poms_js_web"
+participant "销售人员绩效考核看板" as t1
+participant "前端市场复核&资呈" as t2
+participant "前端市场复核&资呈-明细" as t3
+participant "销售额业绩达标看板" as t4
+participant "库存比&OOS指标看板" as t5
+end box
+
+box "poms_listing_nestjs" #lightYellow
+participant "pa_sale_forecast_v3" as l1
+participant "pa_goods_target" as l2
+end box
+
+box "poms_big_data_nestjs" #lightBlue
+participant "pa_monthly_sales_v2" as b1
+participant "pa_monthly_traceman_sales" as b2
+participant "pa_sku_life_cycle_sku_setting" as b3
+participant "pa_manager_kpi" as b4
+participant "pa_salesman_kpi" as b5
+participant "pa_monthly_stock_review" as b6
+end box
+
+alt 销售人员绩效考核看板
+t1 -> l1 : 部门GMV目标达成率
+l1 --> t1 : 数据返回
+t1 -> l2 : 个人GMV目标达成率
+l2 --> t1 : 数据返回
+t1 -> b1 : 部门GMV目标达成率
+b1 --> t1 : 数据返回
+t1 -> b2 : 个人GMV目标达成率
+b2 --> t1 : 数据返回
+t1 -> b3 : 产品目录孵化期sku综合得分率
+b3 --> t1 : 数据返回
+t1 -> b5 : 前端市场复核时效达成率
+b5 --> t1 : 数据返回
+t1 -> b5 : 资料呈现及时达成率
+b5 --> t1 : 数据返回
+end
+alt 前端市场复核&资呈
+t2 -> b3 : 产品目录孵化期sku综合得分率
+b3 ---> t2 : 数据返回
+t2 -> b5 : 前端市场复核时效达成率
+b5 ---> t2 : 数据返回
+t2 -> b5 : 资料呈现及时完成率
+b5 ---> t2 : 数据返回
+end
+
+alt 前端市场复核&资呈-明细
+t3 -> b5 : 资呈明细表
+b5 ---> t3 : 数据返回
+end
+
+alt 销售额业绩达标看板
+t4 -> b4 : 销售额业绩达标看板
+b4 ---> t4 : 数据返回
+end
+
+alt 库存比&OOS指标看板
+t5 -> b6 : 库存比&OOS指标看板
+b6 --> t5 : 数据返回
+end
+
+
+
+@enduml

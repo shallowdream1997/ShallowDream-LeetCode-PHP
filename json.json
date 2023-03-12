@@ -1,0 +1,33 @@
+{
+  "status": "success",
+  "data": {
+    "data": [
+      {
+        "date": "2023/02/26",
+        "activeSku": 23232,
+        "sold": 25609,
+        "sales": 253625,
+        "pl": 21312,
+        "margin": 0.36324,
+        "eff": 0.10536,
+        "ads": 33362,
+        "adsRatio": 0.3632,
+        "nSku": 8650,
+        "nSkuRatio": 0.2369,
+        "nSkuHis": 32541,
+        "nSkuRatioHis": 0.5832,
+        "inventory": 12360,
+        "inventoryAmount": 3516125,
+        "inventoryOnway": 2103,
+        "inventoryOnwayAmount": 1354321,
+        "inventoryRatio": 0.1256,
+        "complaintNum180": 35,
+        "complaintRatio180": 0.005
+      }
+    ],
+    "total": 1,
+    "limit": 10,
+    "page": 1,
+    "pages": 1
+  }
+}
