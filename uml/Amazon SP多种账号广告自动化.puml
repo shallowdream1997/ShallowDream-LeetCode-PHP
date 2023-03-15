@@ -1,51 +1,46 @@
 @startuml
-title Amazon SP多种账号广告自动化
+title Amazon SP多种账号广告自动化 - 下架SKU
 autonumber
 
-box "product_operation_js_angular5"
-participant "SKU上架或下架" as sku_upload_or_download
-end box
-
 box "product_operation_php_restful" #lightBlue
-participant "UploadProcessAliyunController.php" as upload_process_aliyun_controller
-participant "saveActionResult()" as saveActionResult
-participant "_analyzeAmazonApiResult()" as _analyzeAmazonApiResult
-participant "PA自动化创建广告接口" as paAutoAmazonSP
-participant "PA自动化创建广告数据校验接口" as paAutoAmazonSPValidate
-participant "PA自动化创建广告账号渠道配置方法" as paAutoAmazonSPConfig
+
+participant "UploadProcessAliyunController" as uploadPrecess
+participant "PA自动化下架广告接口" as paAutoAmazonSP
 end box
 
 box "nsq_worker_nodejs_app" #lightYellow
 participant "HK_Poms_Send_Amazon_Create_Sp" as HK_Poms_Send_Amazon_Create_Sp
 end box
 
-box "Amazon后台" #lightGreen
-participant "amazon_Admin" as Amazon后台
+box "poms_selling_partner_php_restful" #lightGreen
+participant "Amazon广告服务" as amazon
 end box
 
-box "mongoDB" #orange
-participant "product_operation_listing" as db
+box "database" #lightYellow
+participant "mongoDB" as db
 end box
-
-sku_upload_or_download -> upload_process_aliyun_controller : sku上架或下架统一控制器调用
-upload_process_aliyun_controller -> saveActionResult : sku上下架Aliyun平台接口调用
-saveActionResult -> _analyzeAmazonApiResult : Amazon API调用
-
-alt amazon_active_listing回写后调用AmazonSP NSQ
-_analyzeAmazonApiResult -> _analyzeAmazonApiResult : 根据skuId的channel+sellerId是否符合已分配渠道账号条件决定创建广告
-_analyzeAmazonApiResult -> HK_Poms_Send_Amazon_Create_Sp : Amazon auto广告
-_analyzeAmazonApiResult -> HK_Poms_Send_Amazon_Create_Sp : Amazon manual asin广告
-_analyzeAmazonApiResult -> HK_Poms_Send_Amazon_Create_Sp : Amazon manual category广告
+group 发起关闭product广告
+uploadPrecess -> uploadPrecess : 下架SKU成功\n判断当前sku是否需要关闭prodcut广告\n<color #red>(增加需要关闭广告的账号:amazon_jp账号)
+alt 当前sku需要关闭prodcut广告
+uploadPrecess -> HK_Poms_Send_Amazon_Create_Sp : 发起队列,关闭prodcut广告
+end
 end
 
-alt NSQ调用PA_AmazonSP接口
-HK_Poms_Send_Amazon_Create_Sp -> paAutoAmazonSP : PA多种账号创建广告
-paAutoAmazonSP -> paAutoAmazonSPValidate : 创建广告数据校验
-paAutoAmazonSPValidate -> paAutoAmazonSPConfig : 广告渠道账号配置
-paAutoAmazonSPConfig -> paAutoAmazonSP : 开始进行campaign、adGroup、product、target、negativeTarget创建或更新
-paAutoAmazonSP -> Amazon后台 : 创建或更新广告到Amazon后台
-Amazon后台 -> paAutoAmazonSP : Amazon后台返回广告数据
-paAutoAmazonSP -> db : 保存或更新广告到mongodb
+group 关闭product广告
+HK_Poms_Send_Amazon_Create_Sp --> paAutoAmazonSP : 分发处理
+
+paAutoAmazonSP -> db : 获取是否已存在product广告
+db --> paAutoAmazonSP : 返回是否存在product广告结果
+
+alt 存在product广告
+paAutoAmazonSP -> amazon : 关闭product广告
+amazon --> paAutoAmazonSP : 返回关闭广告的结果
+
+alt 关闭广告成功
+paAutoAmazonSP -> db : 更新广告信息
+db --> paAutoAmazonSP : 返回处理结果
+end
+end
 end
 
 

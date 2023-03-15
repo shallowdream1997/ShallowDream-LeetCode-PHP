@@ -1,0 +1,57 @@
+@startuml
+title Amazon SP多种账号广告自动化 - 上架SKU
+autonumber
+
+box "product_operation_php_restful" #lightBlue
+
+participant "UploadProcessAliyunController" as uploadPrecess
+participant "PA自动化创建广告接口" as paAutoAmazonSP
+participant "PA自动化创建广告数据校验接口" as paAutoAmazonSPValidate
+end box
+
+box "nsq_worker_nodejs_app" #lightYellow
+participant "HK_Poms_Send_Amazon_Create_Sp" as HK_Poms_Send_Amazon_Create_Sp
+end box
+
+box "poms_selling_partner_php_restful" #lightGreen
+participant "Amazon广告服务" as amazon
+end box
+
+box "database" #lightYellow
+participant "mongoDB" as db
+end box
+
+group 发起创建广告
+uploadPrecess -> uploadPrecess : 上架SKU成功\n判断当前sku是否需要创建广告\n<color #red>(增加需要创建广告的账号:amazon_jp账号)
+alt 当前sku需要创建广告
+uploadPrecess -> HK_Poms_Send_Amazon_Create_Sp : 发起队列,创建auto类型广告
+uploadPrecess -> HK_Poms_Send_Amazon_Create_Sp : 发起队列,创建manual asin类型广告
+uploadPrecess -> HK_Poms_Send_Amazon_Create_Sp : 发起队列,创建manual category类型广告
+end
+end
+
+group 创建广告
+HK_Poms_Send_Amazon_Create_Sp o-> paAutoAmazonSP : 分发处理
+paAutoAmazonSP -> paAutoAmazonSPValidate : 获取是否可以创建广告的校验结果<color #blue>(只能创建一种类型的广告)
+
+alt 校验通过，创建广告
+paAutoAmazonSPValidate -> paAutoAmazonSPValidate : 校验通过\n整理渠道和账号的广告配置信息\n<color:#red>(添加amazon_jp账号)</color>
+
+paAutoAmazonSPValidate --> paAutoAmazonSP : 返回渠道和账号的广告配置信息
+
+paAutoAmazonSP -> db : 获取是否已存在广告
+db --> paAutoAmazonSP : 返回是否存在广告结果
+
+
+paAutoAmazonSP -> amazon : 创建/更新广告
+amazon --> paAutoAmazonSP : 返回创建结果
+
+alt 创建/更新广告成功
+paAutoAmazonSP -> db : 创建/更新广告信息
+db --> paAutoAmazonSP : 返回处理结果
+end
+end
+end
+
+
+@enduml
