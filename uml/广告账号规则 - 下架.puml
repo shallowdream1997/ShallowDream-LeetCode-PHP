@@ -1,0 +1,55 @@
+@startuml
+title Amazon SP多种账号广告自动化 - 下架SKU
+autonumber
+
+actor "customer" as customer
+
+box "product_operation_php_restful" #lightBlue
+
+participant "UploadProcessAliyunController" as uploadPrecess
+participant "PA自动化下架广告接口" as paAutoAmazonSP
+end box
+
+box "nsq_worker_nodejs_app" #lightYellow
+participant "HK_Poms_Send_Amazon_Create_Sp" as HK_Poms_Send_Amazon_Create_Sp
+end box
+
+box "poms_selling_partner_php_restful" #lightGreen
+participant "Amazon广告服务" as amazon
+end box
+
+box "database" #lightYellow
+participant "mongoDB" as db
+end box
+
+customer -> uploadPrecess : 用户下架sku，触发下架接口
+uploadPrecess -> db : 删除amazon_active_listing表中sku的数据(表示sku下架)
+db --> uploadPrecess : 返回结果
+
+alt 删除成功，发起关闭product广告
+uploadPrecess -> db : <color #red>读取广告账号表，查看是否存在要关闭广告的渠道账号
+db --> uploadPrecess : 返回结果
+alt 存在渠道账号
+uploadPrecess -> HK_Poms_Send_Amazon_Create_Sp : 发起队列,关闭prodcut广告
+end
+end
+
+group 关闭product广告
+HK_Poms_Send_Amazon_Create_Sp --> paAutoAmazonSP : 分发处理
+
+paAutoAmazonSP -> db : 获取是否已存在product广告
+db --> paAutoAmazonSP : 返回是否存在product广告结果
+
+alt 存在product广告
+paAutoAmazonSP -> amazon : 关闭product广告
+amazon --> paAutoAmazonSP : 返回关闭广告的结果
+
+alt 关闭广告成功
+paAutoAmazonSP -> db : 更新广告信息
+db --> paAutoAmazonSP : 返回处理结果
+end
+end
+end
+
+
+@enduml

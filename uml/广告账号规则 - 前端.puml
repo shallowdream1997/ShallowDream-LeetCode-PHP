@@ -1,0 +1,38 @@
+@startuml
+title Amazon SP - 人工创建广告
+autonumber
+
+actor "customer" as customer
+
+
+box "Angular5" #lightGreen
+participant "angular5" as a1
+
+box "product_operation_php_restful" #lightBlue
+participant "创建广告接口" as api
+
+box "database" #lightYellow
+participant "mongoDB" as db
+
+
+customer -> a1 : 进入页面
+a1 -> db : 页面初始化：<color #red>读取广告账号表
+db --> a1 : 返回广告渠道和账号
+
+a1 -> a1 : ①将渠道和账号作为下拉列表展示\n②选择渠道、账号、商家，显示广告列表
+
+a1 -> a1 : 添加campaign规则
+a1 -> db : <color #red>根据渠道和账号读取广告规则表
+db --> a1 : 返回结果
+
+a1 -> api : 创建广告，调用创建广告接口
+api -> api : 逻辑处理创建广告的数据
+
+api --> a1 : 返回结果
+a1 --> customer : 结束页面
+
+end box
+
+
+
+@enduml

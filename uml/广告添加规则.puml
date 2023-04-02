@@ -1,0 +1,39 @@
+@startuml
+title 添加广告规则和账号绑定规则流程图
+autonumber
+actor "customer" as customer
+
+box "poms_js_web" #lightBlue
+
+participant "广告规则页面" as t1
+participant "广告账号页面" as t2
+end box
+
+
+
+box "database" #lightYellow
+participant "广告规则表" as db1
+participant "广告账号表" as db2
+end box
+
+customer -> t1 : 进入页面
+group 添加广告规则
+activate t1
+t1 -> t1 : ①选择广告规则类型\n②设置广告规则的各种参数值\n③模拟生成广告规则名称，设为字符串表达式
+t1 -> db1 : 确认广告规则无误后，将广告规则保存到数据库表
+db1 --> t1 : 返回结果
+end
+
+group 添加广告账号
+t1 -> t2 : 跳转到"广告账号"页面，开始新增账号
+activate t2
+deactivate t1
+t2 -> t2 : ①选择账号和广告类型\n②选择广告规则类型绑定到账号
+
+t2 -> db2 : 保存广告账号到数据库
+db2 --> t2 : 返回结果
+deactivate t2
+end
+
+t2 --> customer : 返回结果
+@enduml
