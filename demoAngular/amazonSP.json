@@ -1,279 +1,46 @@
 {
-  "version": 6,
-  "entities": [
+  "ruleId": "ID1", //广告规则ID
+  "ruleType": [
+    "campaignRuleBySystem"
+  ], //数组形式，一个规则可能属于多种规则类型
+  "ruleName": "xxx campaign规则", //广告规则名称
+  "ruleRegex": "PA_{GROUPNAME}-{INDEX}_{SALESMAN}",//广告规则表达式 - PA_{分组名称}-{序列号}_{销售名称}
+  //数组形式，广告规则字段对应名称，主要用来在规则详情页面打开的时候定位字段
+  "ruleFieldName": [
     {
-      "entity": {
-        "type": "Project",
-        "id": "8c9a2e68-4eb4-4d69-a4a9-960ad85157d9",
-        "name": "amazon广告SP"
-      },
-      "children": [
-        {
-          "entity": {
-            "type": "Service",
-            "id": "d1ea49a9-25af-47b5-8082-a5d0b9c0ce45",
-            "name": "bidRecommendations"
-          },
-          "children": [
-            {
-              "entity": {
-                "type": "Request",
-                "method": {
-                  "requestBody": true,
-                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
-                  "name": "POST"
-                },
-                "body": {
-                  "formBody": {
-                    "overrideContentType": true,
-                    "encoding": "application/x-www-form-urlencoded",
-                    "items": []
-                  },
-                  "bodyType": "Text",
-                  "textBodyEditorHeight": 218,
-                  "textBody": "{\n  \"adGroupId\": 26089491920124,\n  \"expressions\": [\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"queryHighRelMatches\"\n      }\n    ],\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"asinSubstituteRelated\"\n      }\n    ],\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"queryBroadRelMatches\"\n      }\n    ]\n  ]\n}"
-                },
-                "uri": {
-                  "query": {
-                    "delimiter": "&",
-                    "items": []
-                  },
-                  "scheme": {
-                    "name": "http",
-                    "version": "V11"
-                  },
-                  "host": "hk.alivpc.slim.poms.ext-sellingpartner.ux168.cn:8010",
-                  "path": "/api/amazon/ad/sp/bidRecommendations/postTargetsBidRecommendations/amazon_us/amazon"
-                },
-                "id": "419001b2-8839-42fb-a667-afbaf3074f8c",
-                "name": "postTargetsBidRecommendations-获取推荐目标BID",
-                "headers": [
-                  {
-                    "enabled": true,
-                    "name": "Content-Type",
-                    "value": "application/json"
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "entity": {
-            "type": "Service",
-            "description": "",
-            "id": "ae66178d-3256-4b44-8790-61cb88127e6f",
-            "name": "productTargeting"
-          },
-          "children": [
-            {
-              "entity": {
-                "type": "Request",
-                "method": {
-                  "requestBody": true,
-                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
-                  "name": "POST"
-                },
-                "body": {
-                  "formBody": {
-                    "overrideContentType": true,
-                    "encoding": "application/x-www-form-urlencoded",
-                    "items": []
-                  },
-                  "bodyType": "Text",
-                  "textBodyEditorHeight": 218,
-                  "textBody": "{\n  \"adGroupId\": 26089491920124,\n  \"expressions\": [\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"queryHighRelMatches\"\n      }\n    ],\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"asinSubstituteRelated\"\n      }\n    ],\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"queryBroadRelMatches\"\n      }\n    ]\n  ]\n}"
-                },
-                "uri": {
-                  "query": {
-                    "delimiter": "&",
-                    "items": []
-                  },
-                  "scheme": {
-                    "name": "http",
-                    "version": "V11"
-                  },
-                  "host": "hk.alivpc.slim.poms.ext-sellingpartner.ux168.cn:8010",
-                  "path": "/api/amazon/ad/sp/getTargets/postProductRecommendations/amazon_us/amazon"
-                },
-                "id": "b620450f-7091-4af4-a6f6-b47f35defe13",
-                "name": "getTargets",
-                "headers": [
-                  {
-                    "enabled": true,
-                    "name": "Content-Type",
-                    "value": "application/json"
-                  }
-                ]
-              }
-            },
-            {
-              "entity": {
-                "type": "Request",
-                "method": {
-                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
-                  "name": "GET"
-                },
-                "body": {
-                  "formBody": {
-                    "overrideContentType": true,
-                    "encoding": "application/x-www-form-urlencoded",
-                    "items": []
-                  },
-                  "bodyType": "Text",
-                  "textBodyEditorHeight": 150,
-                  "textBody": "{\n  \"adGroupId\": 26089491920124,\n  \"expressions\": [\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"queryHighRelMatches\"\n      }\n    ],\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"asinSubstituteRelated\"\n      }\n    ],\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"queryBroadRelMatches\"\n      }\n    ]\n  ]\n}"
-                },
-                "uri": {
-                  "query": {
-                    "delimiter": "&",
-                    "items": [
-                      {
-                        "enabled": true,
-                        "name": "adGroupIdFilter",
-                        "value": "272198140738121"
-                      }
-                    ]
-                  },
-                  "scheme": {
-                    "name": "http",
-                    "version": "V11"
-                  },
-                  "host": "hk.alivpc.slim.poms.ext-sellingpartner.ux168.cn:8010",
-                  "path": "/api/amazon/ad/sp/productTargeting/getTargets/amazon_us/amazon"
-                },
-                "description": "",
-                "id": "57f41b91-cf72-474f-ba59-d1c6174a98fb",
-                "name": "getTargets-manual",
-                "headers": []
-              }
-            },
-            {
-              "entity": {
-                "type": "Request",
-                "method": {
-                  "requestBody": true,
-                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
-                  "name": "POST"
-                },
-                "body": {
-                  "formBody": {
-                    "overrideContentType": true,
-                    "encoding": "application/x-www-form-urlencoded",
-                    "items": []
-                  },
-                  "bodyType": "Text",
-                  "textBodyEditorHeight": 150,
-                  "textBody": "{\n  \"pageSize\": 50,\n  \"pageNumber\": 1,\n  \"asins\": [\"B071FBTK86\"]\n}"
-                },
-                "uri": {
-                  "query": {
-                    "delimiter": "&",
-                    "items": []
-                  },
-                  "scheme": {
-                    "name": "http",
-                    "version": "V11"
-                  },
-                  "host": "hk.alivpc.slim.poms.ext-sellingpartner.ux168.cn:8010",
-                  "path": "/api/amazon/ad/sp/productTargeting/postProductRecommendations/amazon_us/amazon"
-                },
-                "id": "fd4a1941-95d5-408a-8b6a-07ab5394feee",
-                "name": "postProductRecommendations-获取推荐ASIN",
-                "headers": [
-                  {
-                    "enabled": true,
-                    "name": "Content-Type",
-                    "value": "application/json"
-                  }
-                ]
-              }
-            },
-            {
-              "entity": {
-                "type": "Request",
-                "method": {
-                  "requestBody": true,
-                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
-                  "name": "POST"
-                },
-                "body": {
-                  "formBody": {
-                    "overrideContentType": true,
-                    "encoding": "application/x-www-form-urlencoded",
-                    "items": []
-                  },
-                  "bodyType": "Text",
-                  "textBodyEditorHeight": 150,
-                  "textBody": "{\n  \"adGroupId\": 26089491920124,\n  \"expressions\": [\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"queryHighRelMatches\"\n      }\n    ],\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"asinSubstituteRelated\"\n      }\n    ],\n    [\n      {\n        \"value\": \"string\",\n        \"type\": \"queryBroadRelMatches\"\n      }\n    ]\n  ]\n}"
-                },
-                "uri": {
-                  "query": {
-                    "delimiter": "&",
-                    "items": []
-                  },
-                  "scheme": {
-                    "name": "http",
-                    "version": "V11"
-                  },
-                  "host": "hk.alivpc.slim.poms.ext-sellingpartner.ux168.cn:8010",
-                  "path": "/api/amazon/ad/sp/bidRecommendations/postTargetsBidRecommendations/amazon_us/amazon"
-                },
-                "id": "251f50d2-2272-4104-a416-4228edd65f55",
-                "name": "postTargetsBidRecommendations-获取推荐目标BID",
-                "headers": [
-                  {
-                    "enabled": true,
-                    "name": "Content-Type",
-                    "value": "application/json"
-                  }
-                ]
-              }
-            },
-            {
-              "entity": {
-                "type": "Request",
-                "method": {
-                  "requestBody": true,
-                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
-                  "name": "POST"
-                },
-                "body": {
-                  "formBody": {
-                    "overrideContentType": true,
-                    "encoding": "application/x-www-form-urlencoded",
-                    "items": []
-                  },
-                  "bodyType": "Text",
-                  "textBodyEditorHeight": 150,
-                  "textBody": "{\n    \n        \"targetingExpressions\":[\n            {\"type\":\"CLOSE_MATCH\"}\n        ],\n        \"campaignId\":\"14608434862827\",\n       \"recommendationType\": \"BIDS_FOR_EXISTING_AD_GROUP\",\n        \"adgroupId\":\"26089491920124\"\n    \n}"
-                },
-                "uri": {
-                  "query": {
-                    "delimiter": "&",
-                    "items": []
-                  },
-                  "scheme": {
-                    "name": "http",
-                    "version": "V11"
-                  },
-                  "host": "172.16.4.87:8010",
-                  "path": "/api/amazon/ad/sp/bidRecommendations/postThemeBasedBidRecommendation/amazon_us/amazon"
-                },
-                "id": "957f1b5a-76ea-4569-b0f4-05af1b4fa818",
-                "name": "postThemeBasedBidRecommendation-获取推荐目标BID",
-                "headers": [
-                  {
-                    "enabled": true,
-                    "name": "Content-Type",
-                    "value": "application/json"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ]
+      "fieldType": "static", //static - 静态的，dynamic - 动态的, pipe - 拼接符号(这个类型加了好在详情页面展示)
+      "field": "PA", //字段值
+      "name": "账号简称"//字段名称
+    },
+    {
+      "fieldType": "dynamic",
+      "field": "GROUPNAME",
+      "name": "分组名称"
+    },
+    {
+      "fieldType": "dynamic",
+      "field": "INDEX",
+      "name": "分组序号"
+    },
+    {
+      "fieldType": "dynamic",
+      "field": "auto",
+      "name": "广告类型"
+    },
+    {
+      "fieldType": "dynamic",
+      "field": "INDEX",
+      "name": "销售名"
+    },
+    {
+      "fieldType": "pipe",
+      "field": "_",
+      "name": "连接符号"
     }
-  ]
-}
+  ],
+  "bidRuleId": "ruleID_1",//广告预算及bid规则ID
+  "modifiedBy": "zhouangang",
+  "createdBy": "zhouangang",
+  "modifiedOn": ISODate("2023-04-01T00:00:00.000+0000"),
+  "createdOn": ISODate("2023-04-01T00:00:00.000+0000")
+},

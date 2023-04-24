@@ -1,0 +1,57 @@
+@startuml
+title 添加广告规则配置表数据流程图
+autonumber
+actor "customer" as customer
+
+box "poms_js_web" #lightBlue
+
+participant "广告规则配置化页面" as t1
+end box
+
+
+box "product_operation_php_restful" #lightGreen
+
+participant "获取拼接广告规则的逻辑方法" as combineRule
+end box
+
+box "database" #lightYellow
+participant "amazon_sp_rule_config" as db1
+participant "amazon_sp_seller" as db2
+end box
+
+customer -> t1 : 进入页面
+group 添加广告规则配置表数据
+
+t1 -> t1 : ①设置广告预算、bid值的规则\n②设置campaign广告规则\n③设置adgroup广告规则\n④设置product广告规则
+activate t1
+t1 -> combineRule : 根据所设置好的规则表达式，调用拼接广告规则的逻辑方法
+activate t1
+combineRule --> t1 : 返回广告规则名称
+alt 成功获取广告规则名称
+t1 -> t1 : 显示生成的广告规则名称
+activate t1
+end
+
+t1 -> db1 : 创建规则配置数据到amazon_sp_rule_config表
+activate db1
+db1 --> t1 : 返回结果
+deactivate t1
+deactivate t1
+deactivate t1
+
+t1 -> t1 : 设置渠道账号
+activate t1
+t1 -> db2 : 保存渠道账号数据到amazon_sp_seller表
+activate db2
+db2 --> t1 : 返回结果
+activate t1
+t1 -> t1 : 用账号来绑定所需要的广告规则
+activate t1
+deactivate t1
+deactivate t1
+deactivate t1
+t1 --> customer : 结束
+end
+
+
+@enduml

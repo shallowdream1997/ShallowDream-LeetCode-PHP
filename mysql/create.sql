@@ -1038,3 +1038,132 @@ CREATE TABLE pa_high_efficiency_sales
     createdOn            DATETIME NULL COMMENT '创建人',
     createdBy            VARCHAR(255) NULL COMMENT '创建日期'
 )ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE pa_life_cycle_score_kpi
+(
+    theYear          VARCHAR(255) NULL COMMENT "年",
+    theMonth         VARCHAR(255) NULL COMMENT "月",
+    salesman         VARCHAR(255) NULL COMMENT "销售人员",
+    skuId            VARCHAR(255) NULL COMMENT "skuId",
+    uploadScore      INT NULL COMMENT "上架失败处理",
+    uploadSitting    INT NULL COMMENT "上架失败处理跟进分",
+    moveStockScore   INT NULL COMMENT "移库AM US FBA仓",
+    moveStockSitting INT NULL COMMENT "移库AM US FBA仓跟进分",
+    fitmentScore     INT NULL COMMENT "上传fitment",
+    fitmentSitting   INT NULL COMMENT "上传fitment跟进分",
+    autoSPScore      INT NULL COMMENT "自动SP投放",
+    autoSPSitting    INT NULL COMMENT "自动SP投放跟进分",
+    aPlusScore       INT NULL COMMENT "上传A+图",
+    aPlusSitting     INT NULL COMMENT "上传A+图跟进分",
+    modifiedBy       VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn       DATETIME NULL COMMENT '修改日期',
+    createdOn        DATETIME NULL COMMENT '创建人',
+    createdBy        VARCHAR(255) NULL COMMENT '创建日期'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+
+CREATE TABLE pa_salesman_kpi
+(
+    salesman              VARCHAR(255) NULL COMMENT "销售人员",
+    batchName             VARCHAR(255) NULL COMMENT "批次号",
+    categoryCheckOn       DATETIME NULL COMMENT "中文类目审核完成时间",
+    categoryCheckYear     VARCHAR(255) NULL COMMENT "中文类目审核完成年份",
+    categoryCheckMonth    VARCHAR(255) NULL COMMENT "中文类目审核完成月份",
+    reviewEndOn           DATETIME NULL COMMENT "前端市场复核完成时间",
+    reviewCompletedStatus VARCHAR(255) NULL COMMENT "前端市场复核完成状态",
+    ceBillno              VARCHAR(255) NULL COMMENT "CE单",
+    developerCompletedOn  DATETIME NULL COMMENT "开发资料完成时间",
+    salesCompletedOn      DATETIME NULL COMMENT "销售资料完成时间",
+    hzReciveOn            DATETIME NULL COMMENT "惠州到货时间",
+    hzReciveYear          VARCHAR(255) NULL COMMENT "惠州到货年份",
+    hzReciveMonth         VARCHAR(255) NULL COMMENT "惠州到货月份",
+    salesCompletedStatus  VARCHAR(255) NULL COMMENT "销售资料完成状态",
+    modifiedBy            VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn            DATETIME NULL COMMENT '修改日期',
+    createdOn             DATETIME NULL COMMENT '创建人',
+    createdBy             VARCHAR(255) NULL COMMENT '创建日期'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE pa_manager_kpi
+(
+    theMonth      VARCHAR(255) NULL COMMENT '年月',
+    businessGroup VARCHAR(255) NULL COMMENT '业务组别',
+    label         VARCHAR(255) NULL COMMENT '标签',
+    targetGr      INT NULL COMMENT '目标GR',
+    actualGr      INT NULL COMMENT '实际GR',
+    actualPL      INT NULL COMMENT '实际PL',
+    modifiedBy    VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn    DATETIME NULL COMMENT '修改日期',
+    createdOn     DATETIME NULL COMMENT '创建人',
+    createdBy     VARCHAR(255) NULL COMMENT '创建日期'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE amazon_sp_params_config
+(
+    company    VARCHAR(255) NULL COMMENT '垂直ID:CR201706060001-汽配,CR201706080001-MRO',
+    label      VARCHAR(255) NULL COMMENT '标签',
+    value      VARCHAR(255) NULL COMMENT '参数名称',
+    status     INT NULL COMMENT '状态:1-启用，2-禁用',
+    modifiedBy VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn DATETIME NULL COMMENT '修改日期',
+    createdOn  DATETIME NULL COMMENT '创建人',
+    createdBy  VARCHAR(255) NULL COMMENT '创建日期'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE amazon_sp_rule_config
+(
+    company        VARCHAR(255) NULL COMMENT '垂直ID',
+    channel        VARCHAR(255) NULL COMMENT '渠道：amazon_us',
+    sellerId       VARCHAR(255) NULL COMMENT '账号：amazon_us_ac1',
+    brand          VARCHAR(255) NULL COMMENT '品牌: Barrina',
+    skuType        VARCHAR(255) NULL COMMENT '允许创建创个的sku号类型，s号，a号',
+    bidRule        VARCHAR(255) NULL COMMENT 'bid规则',
+    egSku          VARCHAR(255) NULL COMMENT '示例sku',
+    restfulRule   VARCHAR(255) NULL COMMENT 'campaign的restful规则 - 这里是数组',
+    pomsRule     VARCHAR(255) NULL COMMENT 'campaign的poms规则 - 这里是数组',
+    pipe           VARCHAR(255) NULL COMMENT 'campaign命名拼接符号',
+    numSymbol      VARCHAR(255) NULL COMMENT 'campaign命名序号符号-如果没有默认和pipe一样',
+    adGroupRule    VARCHAR(255) NULL COMMENT 'adgroup规则 - ',--根据'优先级'设置参数值获取的顺序，用英文逗号隔开，
+    productRule    VARCHAR(255) NULL COMMENT 'product规则 - 根据sku获取',
+    status         INT NULL COMMENT '状态:1-启用，2-禁用，3-未设置',
+    modifiedBy     VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn     DATETIME NULL COMMENT '修改日期',
+    createdOn      DATETIME NULL COMMENT '创建人',
+    createdBy      VARCHAR(255) NULL COMMENT '创建日期'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE amazon_sp_rule_config.bidRule
+(
+    type        VARCHAR(255) NULL COMMENT '广告类型',
+    dailyBudget INT NULL COMMENT 'campaign广告预算',
+    defaultBid  INT NULL COMMENT '默认bid值',
+    minBid      INT NULL COMMENT 'bid最小值',
+    maxBid      INT NULL COMMENT 'bid最大值',
+    bidWarning  INT NULL COMMENT 'bid警告值',
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE amazon_sp_rule_config.restfulRule
+(
+    parameterArray  VARCHAR(255) NULL COMMENT '参数值组合', --这是个数组
+    targetParameter VARCHAR(255) NULL COMMENT '定义的参数值',
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+CREATE TABLE amazon_sp_rule_config.restfulRule.parameterArray
+(
+    value  VARCHAR(255) NULL COMMENT '参数值', --和pomsRule.targetParameter的参数值对应
+    label  VARCHAR(255) NULL COMMENT '标签',
+    sort INT NULL COMMENT '排序',
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE amazon_sp_rule_config.pomsRule
+(
+    parameterArray  VARCHAR(255) NULL COMMENT '参数值组合', --这是个数组
+    targetParameter VARCHAR(255) NULL COMMENT '定义的参数值',
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+CREATE TABLE amazon_sp_rule_config.pomsRule.parameterArray
+(
+    value  VARCHAR(255) NULL COMMENT '参数值', --和pomsRule.targetParameter的参数值对应
+    label  VARCHAR(255) NULL COMMENT '标签',
+    sort INT NULL COMMENT '排序',
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;

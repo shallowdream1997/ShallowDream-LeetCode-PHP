@@ -1,0 +1,36 @@
+@startuml
+
+package "poms_js_web"{
+	[创建广告规则配置]
+  [广告账号绑定广告规则]
+}
+package "product_operation_sold_nodejs_app"{
+	[amazon_sp_rule_config]
+  [amazon_sp_seller]
+  [amazon_sp_budget_and_bid_rule_config]
+}
+
+package "product_operation_angular5"{
+[根据渠道账号对接广告-angular5端]
+}
+
+package "product_operation_php_restful"{
+	[根据渠道账号对接广告-restful端]
+}
+
+package "product_operation_client"{
+	[根据渠道账号对接广告-脚本端]
+}
+
+
+'DataAccess - [First Component]
+'[First Component] ..> HTTP : use
+[创建广告规则配置] -> [amazon_sp_rule_config]
+[创建广告规则配置] -> [amazon_sp_budget_and_bid_rule_config]
+[amazon_sp_seller] -> [amazon_sp_rule_config]
+[amazon_sp_rule_config] -> [amazon_sp_budget_and_bid_rule_config]
+[amazon_sp_seller] -> [根据渠道账号对接广告-angular5端]
+[amazon_sp_seller] -> [根据渠道账号对接广告-restful端]
+[amazon_sp_seller] -> [根据渠道账号对接广告-脚本端]
+
+@enduml

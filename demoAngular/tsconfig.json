@@ -1,15 +1,98 @@
+//广告账号表数据示例
+,{
+  "company": "CR201706060001",
+  "channel": "amazon_uk",
+  "sellerId": "amazon_uk2",
+  "brand": "uxcell",
+  "bindRule": [
+    {
+      //这里
+      "spType": "auto",
+      "ruleTypeAndId": [
+        {"ruleType":"campaignRuleBySystem","ruleId":"ID1"},//系统创建campaign广告
+        {"ruleType":"campaignRuleByManual","ruleId":"ID2"},//人工创建campaign广告
+        {"ruleType":"adGroupRule","ruleId":"ID3"},//adgroup广告规则
+        {"ruleType":"bidRule","ruleId":"ID4"},//bid规则
+      ],
+    },
+    {
+      "spType": "manual asin",
+      "ruleTypeAndId": [
+        {"ruleType":"campaignRuleBySystem","ruleId":"ID1"},//系统创建campaign广告
+        {"ruleType":"campaignRuleByManual","ruleId":"ID2"},//人工创建campaign广告
+        {"ruleType":"adGroupRule","ruleId":"ID3"},//adgroup广告规则
+        {"ruleType":"bidRule","ruleId":"ID4"},//bid规则
+      ]
+    },
+    {
+      "spType": "manual category",
+        "ruleTypeAndId": [
+        {"ruleType":"campaignRuleBySystem","ruleId":"ID4"},//系统创建campaign广告
+        {"ruleType":"campaignRuleByManual","ruleId":"ID5"},//人工创建campaign广告
+        {"ruleType":"adGroupRule","ruleId":"ID3"},//adgroup广告规则
+        {"ruleType":"bidRule","ruleId":"ID4"},//bid规则
+      ]
+    }
+  ],
+  "modifiedBy": "zhouangang",
+  "createdBy": "zhouangang",
+  "modifiedOn": ISODate("2023-04-01T00:00:00.000+0000"),
+  "createdOn": ISODate("2023-04-01T00:00:00.000+0000")
+}
+
+//广告规则表数据示例
 {
-  "type": "7d",
-  "sellerid": "amazon_us",
-  "adgroupid": "207603269357897",
-  "campaignid": "228158040179035",
-  "targetid": "114740727409607",
-  "targetingtype": "queryHighRelMatches",
-  "targetingtext": "CLOSE_MATCH",
-  "spend": 10,
-  "seventotalorders": 7,
-  "impressions": 23,
-  "clicks": 15,
-  "sevendaytotalsales": 250.36,
-  "modifiedon": ISODate("2022-09-12T23:02:09.038+0000")
+  "ruleId": "ID1", //广告规则ID
+  "ruleType": ["campaignRuleBySystem"], //数组形式，一个规则可能属于多种规则类型
+  "ruleName": "xxx campaign规则", //广告规则名称
+  "ruleRegex": "PA_{GROUPNAME}-{INDEX}_{SALESMAN}", //广告规则表达式 - PA_{分组名称}-{序列号}_{销售名称}
+//数组形式，广告规则字段对应名称，主要用来在规则详情页面打开的时候定位字段
+"ruleFieldName": [
+    {
+    "fieldType":"static", //static - 静态的，dynamic - 动态的, pipe - 拼接符号(这个类型加了好在详情页面展示)
+      "field":"PA", //字段值
+      "name":"账号简称" //字段名称
+    },
+{
+"fieldType":"dynamic",
+"field":"GROUPNAME",
+"name":"分组名称"
+},
+{
+"fieldType":"dynamic",
+"field":"INDEX",
+"name":"分组序号"
+},
+{
+"fieldType":"dynamic",
+"field":"auto",
+"name":"广告类型"
+},
+{
+"fieldType":"dynamic",
+"field":"INDEX",
+"name":"销售名"
+},
+{
+"fieldType":"pipe",
+"field":"_",
+"name":"连接符号"
+}
+  ],
+  "bidRuleId": "ruleID_1", //广告预算及bid规则ID
+  "modifiedBy": "zhouangang",
+  "createdBy": "zhouangang",
+  "modifiedOn": ISODate("2023-04-01T00:00:00.000+0000"),
+  "createdOn": ISODate("2023-04-01T00:00:00.000+0000")
+}
+
+
+{
+  "bidRuleId": "bidRuleId_1", //bid规则ID
+  "dailyBudget": 15, //campaign广告预算
+  "maxBudget": 300, //广告预算最大值
+  "defaultBid":0.2, //默认bid值
+  "minBid": 0.02, //bid最小值
+  "maxBid": 5, //bid最大值
+  "bidWarning": 2, //bid警告阀值
 }

@@ -1,0 +1,34 @@
+@startuml
+title 自动创建CFR单
+autonumber
+
+actor "azkaban" as azkaban
+
+
+box "cets_client" #lightYellow
+participant "自动创建CFR单" as t1
+end box
+
+box "ux168_app" #lightGreen
+participant "CMO单" as t2
+end box
+
+box "db" #lightBlue
+participant "ux168" as db
+end box
+
+azkaban -> t1 : 执行脚本
+t1 -> t2 : 查询状态为"生产中"的CMO单\n并查看CMO单的CE/CO单的结单状态
+t2 -> db : 调用cmo单主表和详情表,关联ce/co单
+db --> t2 : 返回数据
+t2 --> t1 : 返回数据
+t1 -> t1 : 筛选出cmo单预付款余额!=0的数据
+t1 -> t1 : 筛选出cmo单预付款余额==未结款项总额的数据
+t1 -> t1 : 符合所有条件的cmo单,整理cmo单中全部未结款的sku
+t1 -> t2 : 创建CFR单
+t2 -> db : 保存数据
+db --> t2 : 返回结果
+t2 --> t1 : 返回结果
+t1 --> azkaban : 结束脚本
+
+@enduml

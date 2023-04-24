@@ -1,0 +1,34 @@
+@startuml
+title CE/CO自动结单
+autonumber
+
+actor "azkaban" as azkaban
+
+
+box "cets_client" #lightYellow
+participant "CE/CO自动结单" as t1
+end box
+
+box "ux168_app" #lightGreen
+participant "CE/CO单主单信息和详情信息" as t2
+end box
+
+box "db" #lightBlue
+participant "ux168" as db
+end box
+
+azkaban -> t1 : 执行脚本
+t1 -> t2 : 查询CE/CO单主单信息和详情信息
+t2 -> db : 根据ID查询CE/CO单主表和详情表
+db --> t2 : 返回数据
+t2 --> t1 : 返回数据
+t1 -> t1 : 判断CE/CO单详情所有sku的出货数量和入库数量是否相等
+alt 出货数量 = 入库数量
+t1 -> t2 : 对CE/CO单主单的状态变更为已结单
+t2 -> db : 更新CE/CO单主表状态
+db --> t2 : 返回数据
+t2 --> t1 : 返回数据
+end
+
+t1 --> azkaban : 结束脚本
+@enduml

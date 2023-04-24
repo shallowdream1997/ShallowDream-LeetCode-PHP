@@ -1,0 +1,28 @@
+@startuml
+title 新品模式节点汇总
+autonumber
+
+actor "customer" as customer
+
+
+box "product_operation_js_angular5" #lightYellow
+participant "新品模式节点汇总" as t1
+end box
+
+box "poms_big_data" #lightGreen
+participant "pa_new_product_process_monitorings" as t2
+end box
+
+box "db" #lightBlue
+participant "pa_new_product_process_monitoring" as db
+end box
+
+customer -> t1 : 进入页面
+t1 -> t2 : 根据主页面的查询条件，再根据业务模式类型来分组
+t2 -> db : 读取数据库
+db --> t2 : 返回数据
+t2 --> t1 : 返回数据
+t1 -> t1 : 用封装好的节点时效计算公式\n计算每个节点的实际平均用时,已完成sku数量,未完成sku数量,超时sku数量\n超时的sku数量存储在对应节点的超时sku数组里，在点击导出超时sku链接时可不用再次查表直接导出\n导出汇总数据,也是直接导出已整理好的汇总数据格式,通过excelJs插件来导出
+t1 --> customer : 结束页面
+
+@enduml

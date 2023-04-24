@@ -1,0 +1,22 @@
+@startuml
+title 创建资料呈现后钉钉通知销售人员
+autonumber
+
+actor "Azkaban" as azkaban
+
+
+box "product_operation_client"
+participant "创建资料呈现" as t1
+end box
+
+box "product_operation_php_restful"
+participant "钉钉通知接口" as t2
+end box
+
+azkaban -> t1 : 执行脚本
+t1 -> t1 : 创建资料呈现
+t1 -> t2 : 调用钉钉通知接口，通知资料呈现销售人员
+t2 --> t1 : 返回结果
+t1 --> azkaban : 结束脚本
+
+@enduml

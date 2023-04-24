@@ -1,0 +1,22 @@
+@startuml
+title wish平台资料-优化 sgu添加属性时的字符上限为300
+autonumber
+
+actor "customer" as customer
+
+
+box "product_operation_js_angular5" #lightYellow
+participant "资料编辑-wish资料" as t1
+end box
+
+customer -> t1 : 进入页面
+t1 -> t1 : sgu属性添加，判断标题title字符长度，上限为300
+alt 标题超过300
+t1 -> t1 : 报错提醒用户
+else 标题不超过300
+t1 -> t1 : 保存wish资料
+end
+t1 --> customer : 结束页面
+
+
+@enduml

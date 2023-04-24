@@ -2,6 +2,8 @@
 title Amazon SP多种账号广告自动化 - 下架SKU
 autonumber
 
+actor "customer" as customer
+
 box "product_operation_php_restful" #lightBlue
 
 participant "UploadProcessAliyunController" as uploadPrecess
@@ -19,9 +21,15 @@ end box
 box "database" #lightYellow
 participant "mongoDB" as db
 end box
-group 发起关闭product广告
-uploadPrecess -> uploadPrecess : 下架SKU成功\n判断当前sku是否需要关闭prodcut广告\n<color #red>(增加需要关闭广告的账号:amazon_jp账号)
-alt 当前sku需要关闭prodcut广告
+
+customer -> uploadPrecess : 用户下架sku，触发下架接口
+uploadPrecess -> db : 删除上架表中sku的渠道数据
+db --> uploadPrecess : 返回结果
+
+alt 删除成功，发起关闭product广告
+uploadPrecess -> db : <color #red>读取规则配置表，查看下架的渠道账号
+db --> uploadPrecess : 返回结果
+alt 存在渠道账号和sku类型
 uploadPrecess -> HK_Poms_Send_Amazon_Create_Sp : 发起队列,关闭prodcut广告
 end
 end
