@@ -1,0 +1,63 @@
+@startuml
+title 自动分配sku货源负责人
+autonumber
+actor "azkaban" as azkaban
+
+box "product_operation_client"
+participant "自动分配sku货源负责人" as t1
+end box
+
+box "product_operation_listing_management_nodejs_app"
+participant "pa产品信息" as t2
+participant "货源信息" as t3
+end box
+
+box "db"
+participant "pa_sku_info" as db1
+participant "pa_goods_source_manage" as db2
+end box
+
+azkaban -> t1 : 执行脚本
+activate t1
+t1 -> t2 : 获取pa_sku_info里补货负责人replenishMan为空的sku
+activate t1
+activate t2
+t2 -> db1 : 获取数据
+activate db1
+db1 --> t2 : 返回数据
+deactivate db1
+t2 --> t1 : 返回数据
+deactivate t2
+deactivate t1
+
+alt 存在数据
+t1 -> t3 : 根据sku查询货源数据
+activate t1
+activate t3
+t3 -> db2 : 获取数据
+activate db2
+db2 --> t3 : 返回数据
+deactivate db2
+t3 --> t1 : 返回数据
+deactivate t3
+deactivate t1
+
+
+alt 存在数据
+
+t1 -> t1 : 按照有无分配货源负责人来分组，对sku分别获取补货负责人
+activate t1
+alt sku有分配补货负责人
+t1 -> t1 : 取同货源sku数量最多的补货负责人 - 作为sku补货负责人
+t1 -> t3 : 更新pa_sku_info和pa_goods_source_manage的补货负责人字段
+
+else sku无分配补货负责人
+t1 -> t1 : 取sku的销售 - 作为sku补货负责人
+t1 -> t3 : 更新pa_sku_info和pa_goods_source_manage的补货负责人字段
+
+end
+end
+deactivate t1
+t1 --> azkaban : 结束脚本
+deactivate t1
+@enduml

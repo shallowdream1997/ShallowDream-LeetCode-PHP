@@ -1,0 +1,30 @@
+{
+  "data": {
+    "companyId": "CR201706060001",
+    "campaignId": "250092389996117",
+    "adGroupId": "222101900760021",
+    "targetId": "",
+    "targetName": "svoco2304185326",
+    "channel": "amazon_us_voco",
+    "type": "asinSameAs",
+    "value": "svoco2304185326",
+    "expressionType": "manual",
+    "state": "enabled",
+    "status": 1,
+    "bid": null,
+    "createdBy": "liangpei",
+    "modifiedBy": "liangpei",
+    "autoOrManual": "manual",
+    "negativeTargetsArr": [
+      {
+        "targetName": "svoco2304185326",
+        "value": "svoco2304185326",
+        "type": "asinSameAs",
+        "bid": null
+      }
+    ],
+    "createdOn": 1686756947189,
+    "modifiedOn": 1686756947189
+  },
+  "type": "createTarget"
+}

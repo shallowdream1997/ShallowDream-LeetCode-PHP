@@ -1,0 +1,103 @@
+@startuml
+title ebay直发仓轮单
+autonumber
+
+actor "azkaban" as azkaban
+
+
+box "product_operation_client" #lightYellow
+participant "ebay直发仓轮单" as t1
+end box
+
+box "impala" #lightYellow
+participant "ebay直发仓" as t2
+participant "直发仓sku到货" as t3
+end box
+
+
+box "poms_listing_nest" #lightGreen
+participant "更新账号" as t4
+end box
+
+box "product_operation_listing_management_nodejs_app" #lightBlue
+participant "ebay_active_listings" as t5
+participant "sku_seller_configs" as t6
+end box
+
+box "mongo"
+participant "ebay_bilino_add_round" as db1
+participant "ebay_sellerId_add_count" as db2
+participant "ebay_active_listing" as db3
+participant "sku_seller_config" as db4
+end box
+
+
+azkaban -> t1 : 执行脚本
+activate t1
+t1 -> t2 : 获取ebay直发仓轮单sku和ce单
+activate t1
+activate t2
+t2 --> t1 : 返回数据
+deactivate t1
+deactivate t2
+alt 存在数据
+t1 -> t4 : 分配账号
+activate t1
+activate t4
+t4 -> db1 : 分配账号
+activate db1
+db1 --> t4 : 返回账号
+deactivate db1
+t4 -> db2 : 账号次数更新
+activate db2
+db2 --> t4 : 返回结果
+deactivate db2
+t4 --> t1 : 返回结果
+deactivate t1
+deactivate t4
+
+t1 -> t5 : 查看是否sku账号是否上架
+activate t1
+activate t5
+t5 -> db3 : 查询数据
+activate db3
+db3 --> t5 : 返回数据
+deactivate db3
+t5 --> t1 : 返回数据
+deactivate t5
+deactivate t1
+
+alt sku账号未上架
+t1 -> t6 : 更改账号
+activate t1
+activate t6
+t6 -> db4 : 更新数据
+activate db4
+db4 --> t6 : 返回数据
+deactivate db4
+
+t6 --> t1 : 返回数据
+deactivate t6
+deactivate t1
+
+t1 -> t4 : 更新轮单为账号初始化成功
+activate t1
+activate t4
+t4 -> db1 : 更新数据
+activate db1
+db1 --> t4 : 返回数据
+deactivate db1
+t4 --> t1 : 返回数据
+deactivate t4
+deactivate t1
+
+end
+
+end
+
+
+
+t1 --> azkaban : 结束脚本
+deactivate t1
+
+@enduml
