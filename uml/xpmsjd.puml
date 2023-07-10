@@ -1,39 +1,56 @@
 @startuml
-title ebay定价测试选择账号
+title 自动重新投放product广告
 autonumber
-actor "customer" as customer
 
-box "poms_js_web"
-participant "设置ebay定价测试账号" as t1
+actor "azkaban" as azkaban
+
+box "product_operation_client" #lightYellow
+participant "product失败广告回写" as t1
 end box
 
-box "product_operation_listing_management_nodejs_app" #lightYellow
-participant "ebay定价测试账号配置表" as t2
+box "product_operation_sold_nodejs_app" #lightGreen
+participant "product广告" as t2
+participant "notification广告事件" as t3
 end box
 
-box "poms_listing_nest" #lightYellow
-participant "ebay定价测试" as t3
+box "db" #lightBlue
+participant "amazon_sp_product" as db
+participant "amazon_sp_notification" as db1
 end box
 
-customer -> t1 : 设置ebay定价测试账号
+azkaban -> t1 : 执行脚本
 activate t1
 
-t1 -> t2 : 获取ebay定价测试账号配置
+t1 -> t2 : ...读取PA product广告中asin为空 或者 adId为空的广告
 activate t1
+note right
+<color #red>该接口已有，不过新增一个adId为空的条件
+end note
 activate t2
-t2 --> t1 : 返回数据
-
-deactivate t1
+t2 -> db : 获取数据
+activate db
+db --> t2 : 返回数据
+deactivate db
+t2 --> t1 :  返回数据
 deactivate t2
-alt 有账号数据
-t1 -> t1 : 列表展示账号
-activate t1
-t1 -> t3 : 选择账号，保存账号到定价设置表
-activate t3
-t3 --> t1 : 返回结果
 deactivate t3
 deactivate t1
-t1 --> customer : 结束
+
+alt 存在数据
+
+t1 -> t3 : 用campaignId+adGroupId+sku构建notification数据\n写入到amazon_sp_notification
+activate t1
+activate t3
+t3 -> db1 : 写入数据
+activate db1
+db1 --> t3 : 返回结果
+deactivate db1
+t3--> t1 : 返回结果
+deactivate t3
+deactivate t1
+
 end
+
+t1 --> azkaban : 结束脚本
 deactivate t1
 @enduml
