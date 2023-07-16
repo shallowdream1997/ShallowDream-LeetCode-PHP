@@ -1167,3 +1167,18 @@ CREATE TABLE amazon_sp_rule_config.pomsRule.parameterArray
     label  VARCHAR(255) NULL COMMENT '标签',
     sort INT NULL COMMENT '排序',
 )ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE pa_pan_eu_apply_fba_schedule
+(
+    actionDate DATETIME NULL COMMENT '执行日期',
+    channel    VARCHAR(255) NULL COMMENT '渠道',
+    sellerId   VARCHAR(255) NULL COMMENT '账号',
+    skuId      VARCHAR(255) NULL COMMENT 'skuId',
+    judgement  INT NULL COMMENT '执行状态:待执行-0,执行成功-1,执行失败-2',
+    year       VARCHAR(255) NULL COMMENT '执行年份',
+    month      VARCHAR(255) NULL COMMENT '执行月份',
+    modifiedBy VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn DATETIME NULL COMMENT '修改日期',
+    createdOn  DATETIME NULL COMMENT '创建日期',
+    createdBy  VARCHAR(255) NULL COMMENT '创建人'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;

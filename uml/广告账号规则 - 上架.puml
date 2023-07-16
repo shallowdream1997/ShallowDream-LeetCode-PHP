@@ -17,6 +17,11 @@ box "poms_selling_partner_php_restful" #lightGreen
 participant "Amazon广告服务" as amazon
 end box
 
+box "DPAPI" #lightGreen
+participant "top前几名asin" as api
+end box
+
+
 box "database" #lightYellow
 participant "mongoDB" as db
 end box
@@ -24,7 +29,7 @@ customer -> uploadPrecess : 用户fba上架，触发上架接口
 uploadPrecess -> db : 将要上架的sku数据保存到amazon_active_listing表(表示sku上架)
 db --> uploadPrecess : 返回结果
 alt sku上架成功，发起创建广告
-uploadPrecess -> db : <color #red>读取广告账号表，查看需要创建广告的渠道账号
+uploadPrecess -> db : 读取广告账号表，查看需要创建广告的渠道账号
 db --> uploadPrecess : 返回结果
 alt 存在渠道账号
 uploadPrecess -> HK_Poms_Send_Amazon_Create_Sp : 发起队列,创建auto类型广告
@@ -38,12 +43,18 @@ HK_Poms_Send_Amazon_Create_Sp o-> paAutoAmazonSP : 分发处理
 paAutoAmazonSP -> paAutoAmazonSPValidate : 获取是否可以创建广告的校验结果<color #blue>(只能创建一种类型的广告)
 
 alt 校验通过，创建广告
+activate paAutoAmazonSPValidate
 paAutoAmazonSPValidate -> db : 校验通过\n<color #red>根据渠道账号读取广告规则配置表
 db --> paAutoAmazonSPValidate : 返回结果
+group 优化点
 paAutoAmazonSPValidate -> paAutoAmazonSPValidate : 整理和拼接广告配置信息
-
-paAutoAmazonSPValidate --> paAutoAmazonSP : 返回渠道和账号的广告配置信息
-
+paAutoAmazonSPValidate -> api : <color #red>这里调整一下获取asin的逻辑\n<color #red>改用按数量限制读取dbAPI获取asin调用top前几名的asin的dbAPI接口
+activate api
+api --> paAutoAmazonSPValidate : <color #red>返回需要创建的asin
+deactivate api
+paAutoAmazonSPValidate --> paAutoAmazonSP : <color #red>返回渠道和账号的广告配置信息
+deactivate paAutoAmazonSPValidate
+end
 paAutoAmazonSP -> db : 获取是否已存在广告
 db --> paAutoAmazonSP : 返回是否存在广告结果
 
