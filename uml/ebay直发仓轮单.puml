@@ -1,27 +1,37 @@
 @startuml
-title ebay直发仓轮单
+title ebay sku轮单
 autonumber
 
 actor "azkaban" as azkaban
+actor "customer" as customer
 
+box "product_operation_angular5_js" #lightYellow
+participant "海外仓移库申请" as t0
+end box
 
 box "product_operation_client" #lightYellow
-participant "ebay直发仓轮单" as t1
+participant "ebay sku轮单" as t1
+participant "ebay海外仓移库申请" as t8
 end box
 
 box "impala" #lightYellow
 participant "ebay直发仓" as t2
-participant "直发仓sku到货" as t3
 end box
 
 
 box "poms_listing_nest" #lightGreen
-participant "更新账号" as t4
+participant "ebay轮单系统" as t9
+participant "读取规则并更新账号分配次数" as t4
 end box
 
 box "product_operation_listing_management_nodejs_app" #lightBlue
 participant "ebay_active_listings" as t5
 participant "sku_seller_configs" as t6
+participant "option_val_list" as t10
+end box
+
+box "cets" #lightBlue
+participant "sku stock" as t7
 end box
 
 box "mongo"
@@ -31,8 +41,20 @@ participant "ebay_active_listing" as db3
 participant "sku_seller_config" as db4
 end box
 
+customer -> t0 : 添加ebay_us海外仓移库申请
+activate t0
+t0 -> t9 : 写入sku和批次到ebay轮单系统
+activate t9
+t9 -> db1 : 保存数据
+activate db1
+db1 --> t9 : 返回结果
+deactivate db1
+t9 --> t0 : 返回结果
+deactivate t9
+t0 --> customer : 结束
+deactivate t0
 
-azkaban -> t1 : 执行脚本
+azkaban -> t1 : 执行ebay轮单分配脚本
 activate t1
 t1 -> t2 : 获取ebay直发仓轮单sku和ce单
 activate t1
@@ -41,14 +63,23 @@ t2 --> t1 : 返回数据
 deactivate t1
 deactivate t2
 alt 存在数据
-t1 -> t4 : 分配账号
+t1 -> t4 : sku读取轮单规则表
 activate t1
 activate t4
-t4 -> db1 : 分配账号
+t4 -> t10 : <color #red>判断获取轮单规则
+t10 --> t4 : <color #red>返回规则
+alt <color #red>业务类型+中文分类全路径+销售在指定规则范围
+t4 -> db2 : <color #red>分配账号（指定范围账号）
+activate db2
+else
+t4 -> db2 : <color #red>分配账号（全账号）
+end
+
 activate db1
-db1 --> t4 : 返回账号
+db2 --> t4 : 返回账号
+deactivate db2
 deactivate db1
-t4 -> db2 : 账号次数更新
+t4 -> db2 : 账号分配次数更新
 activate db2
 db2 --> t4 : 返回结果
 deactivate db2
@@ -56,6 +87,11 @@ t4 --> t1 : 返回结果
 deactivate t1
 deactivate t4
 
+t1 -> t7 : <color #red>查看是否sku到仓
+activate t1
+activate t7
+t7 --> t1 : 返回数据
+alt sku到仓
 t1 -> t5 : 查看是否sku账号是否上架
 activate t1
 activate t5
@@ -94,8 +130,12 @@ deactivate t1
 end
 
 end
+deactivate t7
+deactivate t1
 
 
+
+end
 
 t1 --> azkaban : 结束脚本
 deactivate t1

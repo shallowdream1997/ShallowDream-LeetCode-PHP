@@ -1,1 +1,1004 @@
+<!doctype html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1'>
+    <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+    <title>Document</title>
+    <style>body {
+        font: 14px/1 Arial, Sans-Serif, Verdana;
+        color: #333
+    }
 
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box
+    }
+
+    ul {
+        margin: 0;
+        padding: 0
+    }
+
+    a:hover, a:link, a:visited {
+        text-decoration: none;
+        color: #333;
+        cursor: pointer
+    }
+
+    .container {
+        position: relative
+    }
+
+    .row {
+        width: 100%
+    }
+
+    .col5 {
+        width: 20%
+    }
+
+    .col5, .col6 {
+        float: left
+    }
+
+    .col6 {
+        width: 16.66666%
+    }
+
+    .row:after {
+        content: '';
+        display: table;
+        clear: both;
+        overflow: hidden
+    }
+
+    .wrapper {
+        min-width: 1175px;
+        max-width: 1200px;
+        margin: 0 auto
+    }
+
+    .card {
+        padding: 5px 8px;
+        transition: all .25s;
+        list-style: none;
+        border-radius: 3px
+    }
+
+    .card:hover {
+        box-shadow: 0 1px 5px rgba(0, 0, 0, .2), 0 2px 2px rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .12)
+    }
+
+    .card-media {
+        background-color: #fff;
+        height: 0;
+        padding-top: 100%;
+        position: relative
+    }
+
+    .card-media-inner {
+        text-align: center;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0
+    }
+
+    .card-media-inner img {
+        max-height: 100%;
+        max-width: 100%;
+        vertical-align: middle
+    }
+
+    .card-title {
+        font-size: 14px;
+        font-weight: 400;
+        height: 40px;
+        line-height: 20px;
+        margin: 5px 0 0 0;
+        color: #333;
+        overflow: hidden;
+        white-space: normal;
+        word-break: break-word;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto
+    }
+
+    .card-subtitle {
+        font-size: 17px;
+        font-weight: 500;
+        margin: 8px 0 0 0
+    }
+
+    .card-label {
+        font-size: 13px;
+        margin: 5px 0 0 0;
+        font-weight: 400;
+        color: #767676
+    }
+
+    .panel {
+        border: 1px solid #d9d9d9;
+        padding: 10px;
+        border-radius: 5px
+    }
+
+    .panel-header {
+        padding: 10px;
+        margin: 0
+    }
+
+    .panel-header-title {
+        margin: 0
+    }
+
+    .tabs {
+        position: relative
+    }
+
+    .tab-navs > span {
+        display: inline-block;
+        background: navy;
+        color: #fff;
+        padding: 6px 10px;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0
+    }
+
+    .tabs > input {
+        display: none
+    }
+
+    .tabs > section {
+        display: none
+    }
+
+    .tabs label {
+        color: #fff;
+        background: navy;
+        opacity: .7;
+        font-family: Times;
+        font-size: 16px;
+        padding: 7px 15px;
+        -moz-user-select: none;
+        user-select: none;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        display: inline-block;
+        text-align: center;
+        cursor: pointer
+    }
+
+    .tab-content {
+        padding: 10px;
+        line-height: 25px
+    }
+
+    #tab-nav1:checked ~ #tab-content1 {
+        display: block
+    }
+
+    #tab-nav2:checked ~ #tab-content2 {
+        display: block
+    }
+
+    #tab-nav3:checked ~ #tab-content3 {
+        display: block
+    }
+
+    #tab-nav4:checked ~ #tab-content4 {
+        display: block
+    }
+
+    #tab-nav5:checked ~ #tab-content5 {
+        display: block
+    }
+
+    .thumbnail {
+        position: relative;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 4px 4px 3px rgba(158, 158, 158, .5);
+        width: 100%;
+        background-color: #fff
+    }
+
+    .thumbnail-description ul {
+        padding-left: 30px
+    }
+
+    .thumbnail img {
+        max-width: 100%;
+        display: block;
+        margin: 0 auto
+    }
+
+    .thumbnail-header img {
+        width: 100%
+    }
+
+    .thumbnail-title {
+        position: absolute;
+        font-family: Impact !important;
+        font-size: 75px;
+        color: #bf6c1e;
+        top: 10px;
+        left: 25px
+    }
+
+    .thumbnail-subtitle {
+        position: absolute;
+        font-family: Times !important;
+        font-size: 26px;
+        color: #6b6b07;
+        top: 95px;
+        left: 25px
+    }
+
+    .thumbnail-menu ul {
+        margin: 0 auto;
+        text-align: center
+    }
+
+    .thumbnail-menu ul li {
+        display: inline-block
+    }
+
+    .thumbnail-menu li a {
+        padding: 10px 25px;
+        display: inline-block;
+        color: #fff
+    }
+
+    .thumbnail-asidenav {
+        float: left;
+        width: 230px
+    }
+
+    .thumbnail-content {
+        padding-left: 250px
+    }
+
+    .thumbnail-body {
+        padding: 15px
+    }
+
+    .thumbnail-description ul li {
+        line-height: 25px
+    }
+
+    .accordion {
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 15px
+    }
+
+    .accordion-header {
+        background: navy;
+        padding: 10px;
+        color: #fff;
+        font-weight: 700
+    }
+
+    .accordion-content {
+        overflow: hidden;
+        border-bottom-left-radius: 5px;
+        border-bottom--righttradius: 5px;
+        border: 1px solid #d9d9d9
+    }
+
+    .list-item1, .list-item2 {
+        list-style: none
+    }
+
+    li.list-item1 a, li.list-item2 a {
+        overflow: hidden;
+        padding: 10px;
+        display: block;
+        border-bottom: 1px solid #d9d9d9
+    }
+
+    li.list-item1 a:hover, li.list-item2 a:hover {
+        background: #eee
+    }
+
+    li.list-item1:last-child a, li.list-item2:last-child a {
+        border: none
+    }
+
+    li .list-item2-content {
+        padding-left: 70px
+    }
+
+    li .list-item2-content h4, li .list-item2-content p {
+        font-weight: 700;
+        width: 140px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-family: Arial !important;
+        margin: 0
+    }
+
+    li .list-item2-content p {
+        margin-top: 10px
+    }
+
+    li .list-item2-content em {
+        color: #ff5656
+    }
+
+    li.list-item2 a > img {
+        max-width: 60px;
+        float: left;
+        display: block
+    }
+
+    .thumbnail-banner, .thumbnail-content > h2 {
+        text-align: center
+    }
+
+    .ul-padding {
+        padding-left: 30px
+    }
+
+    table {
+        width: 100% !important;
+        max-width: 100% !important
+    }
+
+    table tr td {
+        padding: 5px 10px
+    }
+
+    table tr:nth-of-type(1n) {
+        padding: 5px !important;
+        background: #fff
+    }
+
+    table tr:nth-of-type(2n) {
+        padding: 5px !important;
+        background: #e1ebf4
+    }
+
+    .pc {
+        display: block
+    }
+
+    .mobile {
+        display: none !important
+    }
+
+    .tabs > section {
+        position: relative
+    }
+
+    .tabs > section div.tab-mobile {
+        position: absolute;
+        width: calc(100% + 2px);
+        top: -31px;
+        left: -1px;
+        background: navy;
+        color: #fff;
+        height: 30px;
+        display: block;
+        line-height: 30px
+    }
+
+    .tabs > section div.tab-mobile label {
+        padding: 0 10px;
+        display: block;
+        text-align: left;
+        color: #fff;
+        opacity: 1;
+        outline: 0
+    }
+
+    .tabs > section div.tab-mobile label:active {
+        outline: 0
+    }
+
+    .thumbnail {
+        border: 10px solid #999
+    }
+
+    .thumbnail-menu {
+        background: navy linear-gradient(0deg, navy, #3b9494)
+    }
+
+    .accordion-header {
+        background: navy;
+        color: #fff
+    }
+
+    .tabs label:hover, input:checked + label {
+        opacity: 1;
+        background: navy
+    }
+
+    .tab-navs + .tab-content, .tabs > section {
+        border: 2px solid #aad4ff
+    }
+
+    td {
+        word-break: break-all
+    }
+
+    input {
+        display: none
+    }
+
+    .tabs .tab-content > .tab-content-inner p {
+        margin: 4px 0
+    }
+
+    .blue .thumbnail {
+        border: 10px solid #000040
+    }
+
+    .block.accordion .accordion-header, .blue .thumbnail-menu {
+        background: #000040 linear-gradient(0deg, #000040, #000040) !important;
+        color: #fff
+    }
+
+    .blue .accordion-header {
+        background: #000040;
+        color: #e26328
+    }
+
+    .blue .tabs label {
+        background: #b2b2b2
+    }
+
+    .blue .tabs label:hover, .blue input:checked + label {
+        background: #000040
+    }
+
+    .blue .tab-navs + .tab-content, .blue .tabs > section {
+        border: 2px solid #7f7f7f
+    }
+
+    .blue .thumbnail-menu li a {
+        color: #fff
+    }
+
+    .blue .thumbnail-content .accordion .accordion-header {
+        color: #fff;
+        background: #000040 linear-gradient(0deg, #000040, #000040)
+    }
+
+    .blue table tr:nth-of-type(1n) {
+        padding: 5px !important;
+        background: #fff
+    }
+
+    .blue table tr:nth-of-type(2n) {
+        padding: 5px !important;
+        background: #e5e5e5
+    }
+
+    .blue .panel {
+        padding: 0;
+        border: none
+    }
+
+    .blue .panel-header {
+        background: #000040;
+        color: #fff;
+        margin-bottom: 10px
+    }
+
+    @media only screen and (max-width: 768px) {
+        body {
+            margin: 0
+        }
+
+        .thumbnail img {
+            height: auto !important
+        }
+
+        .mobile-page {
+            width: 100%
+        }
+
+        .mobile-page .thumbnail {
+            box-shadow: none
+        }
+
+        .mobile-tabs > section > .tab-content {
+            background: #fff;
+            padding: 50px 10px 10px 10px
+        }
+
+        .mobile-tabs > section {
+            display: none
+        }
+
+        .mobile-tab-navs label.tab-nav {
+            position: relative;
+            display: block;
+            float: left;
+            width: 50%;
+            text-align: center;
+            box-sizing: border-box;
+            line-height: 40px;
+            color: #333;
+            background: #eee;
+            font-size: 13px;
+            white-space: nowrap
+        }
+
+        .mobile-tab-navs label.tab-nav:before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 0);
+            border: 8px solid transparent
+        }
+
+        .clearfix {
+            clear: both
+        }
+
+        .mobile-tab-navs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            z-index: 10
+        }
+
+        #mobile-tab-nav1:checked ~ .mobile-tab-navs label[for=mobile-tab-nav1], #mobile-tab-nav2:checked ~ .mobile-tab-navs label[for=mobile-tab-nav2], #mobile-tab-nav3:checked ~ .mobile-tab-navs label[for=mobile-tab-nav3] {
+            background: #eee;
+            color: #000040
+        }
+
+        #mobile-tab-nav1:checked ~ .mobile-tab-navs label[for=mobile-tab-nav1]:before, #mobile-tab-nav2:checked ~ .mobile-tab-navs label[for=mobile-tab-nav2]:before, #mobile-tab-nav3:checked ~ .mobile-tab-navs label[for=mobile-tab-nav3]:before {
+            border-bottom: 8px solid #fff
+        }
+
+        #mobile-tab-nav1:checked ~ .mobile-tab-content1 {
+            display: block
+        }
+
+        #mobile-tab-nav2:checked ~ .mobile-tab-content2 {
+            display: block
+        }
+
+        #mobile-tab-nav3:checked ~ .mobile-tab-content3 {
+            display: block
+        }
+
+        .accordion-header {
+            padding: 5px 10px
+        }
+
+        .wrapper {
+            max-width: 100%;
+            min-width: 100%
+        }
+
+        .blue .tabs label {
+            background: #000040
+        }
+
+        .blue .thumbnail {
+            border: none
+        }
+
+        .col5, .col6 {
+            width: 33.33333%
+        }
+
+        .thumbnail {
+            margin: 0;
+            border: none
+        }
+
+        .thumbnail-menu li a {
+            padding: 5px
+        }
+
+        .thumbnail-title {
+            font-size: 18px
+        }
+
+        .thumbnail-subtitle {
+            top: 40px;
+            font-size: 13px
+        }
+
+        .thumbnail-asidenav {
+            display: none
+        }
+
+        .thumbnail-content {
+            padding-left: 0
+        }
+
+        .thumbnail-description ul {
+            padding-left: 20px
+        }
+
+        label:active, label:focus {
+            outline: 0;
+            background: 0 0
+        }
+
+        input[type=checkbox]:checked + label {
+            outline: 0;
+            background: 0 0
+        }
+
+        .thumbnail-body {
+            padding: 0
+        }
+
+        .pc {
+            display: none !important
+        }
+
+        .mobile {
+            display: block !important
+        }
+
+        .tab {
+            margin-bottom: 15px
+        }
+
+        .tabs > section {
+            display: block;
+            margin-top: 32px
+        }
+
+        #tab-content1 {
+            margin-top: 40px
+        }
+
+        .tabs .tab-content > .tab-content-inner {
+            border: 1px solid #d9d9d9;
+            padding: 10px
+        }
+
+        .tab-navs + .tab-content, .tabs > section {
+            border: none !important;
+            margin-bottom: 5px
+        }
+
+        #tab-mobile-nav1:checked ~ .tab-content {
+            height: auto
+        }
+
+        #tab-mobile-nav2:checked ~ .tab-content {
+            height: auto
+        }
+
+        #tab-mobile-nav3:checked ~ .tab-content {
+            height: auto
+        }
+
+        #tab-mobile-nav4:checked ~ .tab-content {
+            height: auto
+        }
+
+        #tab-mobile-nav5:checked ~ .tab-content {
+            height: auto
+        }
+
+        .card-title {
+            font-size: 13px;
+            height: 20px
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            margin-top: 3px
+        }
+    }</style>
+</head>
+<body>
+<div vocab='https://schema.org/' typeof='Product' class='helloKittyNewWorld' style='display:none'><span
+        property='description'>EBAY_APP_ITEM_DESCRIPTION</span></div>
+<div class='container pc blue'>
+    <div class='wrapper'>
+        <div class='panel'>
+            <div class='panel-header'><h3 class='panel-header-title'>Hot Item</h3></div>
+            <div class='panel-body'>
+                <ul class='row'>RIGHT_HOT_ITEM_LIST</ul>
+            </div>
+        </div>
+        <div class='thumbnail'>
+            <div class='thumbnail-header'>
+                <div class='thumbnail-title'></div>
+                <div class='thumbnail-subtitle'></div>
+                <img src='https://m2.uxcell.com/public/ebay-template/tasharinacorp.jpg' alt=''></div>
+            <div class='thumbnail-body row'>
+                <div class='thumbnail-asidenav'>
+                    <div class='accordion'>
+                        <div class='accordion-header'>Shop Category</div>
+                        <div class='accordion-content'>
+                            <ul>SHOP_LIST</ul>
+                        </div>
+                    </div>
+                    <div class='accordion'>
+                        <div class='accordion-header'>New Arrival</div>
+                        <div class='accordion-content'>
+                            <ul>NEW_ITEM_LIST</ul>
+                        </div>
+                    </div>
+                </div>
+                <div class='thumbnail-content'><h2>PRODUCT_TITLE</h2>
+                    <div class='thumbnail-banner'><img src='PRODUCT_IMG' alt='PRODUCT_IMG_ALT'
+                                                       style='width:500px;height:500px'></div>
+                    <div class='thumbnail-description'>PRODUCT_DESCRIPTION</div>
+                    <div class='accordion' style='margin-top:20px'>
+                        <div class='accordion-header'>Item Specifics</div>
+                        <div class='accordion-content'>
+                            <table>
+                                <tbody>PRODUCT_PROPERTY</tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class='accordion block'>
+                        <div class='accordion-header'>You Should Know</div>
+                        <div class='accordion-content'>
+                            <div class='tab-content'>
+                                <div class='tab-content-inner'>
+                                    <ul class='ul-padding'>
+                                        <li>If you have any questions, please feel free to contact our customer service.
+                                            Our response will be faster than eBay!
+                                        </li>
+                                        <li>Our Handling Time: within 24 hours on weekdays</li>
+                                        <li>eBay Handling Time: 72 hours</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='tabs row'><input type='radio' id='tab-nav1' checked name='tabs'><label
+                            class='tab-nav pc' for='tab-nav1'><span>About Us</span></label><input type='radio'
+                                                                                                  id='tab-nav2'
+                                                                                                  name='tabs'><label
+                            class='tab-nav pc' for='tab-nav2'><span>Shipping</span></label><input type='radio'
+                                                                                                  id='tab-nav3'
+                                                                                                  name='tabs'><label
+                            class='tab-nav pc' for='tab-nav3'><span>Feedback</span></label><input type='radio'
+                                                                                                  id='tab-nav4'
+                                                                                                  name='tabs'><label
+                            class='tab-nav pc' for='tab-nav4'><span>Contact Us</span></label>
+                        <section id='tab-content1'><span class='mobile'>About Us</span>
+                            <div class='tab-content'>
+                                <ul class='ul-padding'>
+                                    <li>Tasharinacorp is based in United States, selling aftermarket automotive parts
+                                        and accessories.
+                                    </li>
+                                    <li>We believe in FACTORY DIRECT purchases.</li>
+                                    <li>Our mission is to deliver Lower Prices and Better Quality to consumers and
+                                        distributors wherever, whenever.
+                                    </li>
+                                    <li>We strive to ensure that our products are reliable, updated and that our
+                                        transactions are smooth and speedy. We are positioned to bring you the latest
+                                        consumer automotive aftermarket parts and accessories globally and round the
+                                        clock.
+                                    </li>
+                                    <li>We are proud to have served over 500,000 eBay buyers worldwide.</li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section id='tab-content2'><span class='mobile'>Shipping</span>
+                            <div class='tab-content'>
+                                <ul class='ul-padding'>
+                                    <li>Taxes and charges are not included in the item price or shipping charges. Buyers
+                                        are responsible for these charges.
+                                    </li>
+                                    <li>Note that delivery times may vary, particularly during peak periods or in
+                                        climate weather conditions.
+                                    </li>
+                                    <li>All items will be dispatched from our warehouse in Kentucky directly.</li>
+                                    <li>We cannot ship on weekends and we do not offer Saturday, Sunday or holiday
+                                        delivery.
+                                    </li>
+                                    <li>All our items will be shipped to buyer's address, please confirm your address on
+                                        eBay before you bid.
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section id='tab-content3'><span class='mobile'>Feedback</span>
+                            <div class='tab-content'>
+                                <ul class='ul-padding'>
+                                    <li>We left positive feedback for you after receiving payment. Your feedback is very
+                                        important for us, positive feedback and 5 Score DSR is highly appreciated.
+                                    </li>
+                                    <li>Please let us know before leaving any negative feedback or 1 point, 2 point low
+                                        DSR or open any disputes on Paypal and Ebay, please give us the opportunity to
+                                        resolve any problems and we will try our best to satisfy your needs.
+                                    </li>
+                                    <li>If any question, please feel free to contact us via 'Ask seller a question' ,We
+                                        try our best to reply to your emails as soon as possible, due to high volume of
+                                        daily incoming emails and time zone difference, we may not be able to reply your
+                                        emails immediately.Please allow 1-2 business days for us to response.
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section id='tab-content4'><span class='mobile'>Contact Us</span>
+                            <div class='tab-content'>
+                                <ul class='ul-padding'>
+                                    <li>Please email us to resolve any problem before you leave any feedback to us. We
+                                        will reply you via email ASAP, if no response for you within 48 hours, please
+                                        check the spam / junk folder in your mail box.
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class='mobile-page mobile blue'>
+    <div class='mobile-tabs row'><input type='radio' id='mobile-tab-nav1' checked name='mobile-page-nav'><input
+            type='radio' id='mobile-tab-nav2' name='mobile-page-nav'>
+        <div class='mobile-tab-navs'><label class='tab-nav' for='mobile-tab-nav1'><span>description</span></label><label
+                class='tab-nav' for='mobile-tab-nav2'><span>Policy</span></label></div>
+        <div class='clearfix'></div>
+        <section class='mobile-tab-content1'>
+            <div class='tab-content'>
+                <div class='tab-content-inner'>
+                    <div class='thumbnail'>
+                        <div class='thumbnail-header'>
+                            <div class='thumbnail-title'></div>
+                            <div class='thumbnail-subtitle'></div>
+                            <img src='https://m2.uxcell.com/public/ebay-template/tasharinacorp.jpg' alt=''></div>
+                        <div class='thumbnail-body row'>
+                            <div class='thumbnail-content'><h2>PRODUCT_TITLE</h2>
+                                <div class='thumbnail-banner'><img src='PRODUCT_IMG' alt='PRODUCT_IMG_ALT'></div>
+                                <div class='thumbnail-description'>PRODUCT_DESCRIPTION</div>
+                                <div class='accordion' style='margin-top:20px'>
+                                    <div class='accordion-header'>Item Specifics</div>
+                                    <div class='accordion-content'>
+                                        <table>
+                                            <tbody>PRODUCT_PROPERTY</tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class='accordion block'>
+                                    <div class='accordion-header'>You Should Know</div>
+                                    <div class='accordion-content'>
+                                        <div class='tab-content'>
+                                            <div class='tab-content-inner'>
+                                                <ul class='ul-padding'>
+                                                    <li>If you have any questions, please feel free to contact our
+                                                        customer service.Our response will be faster than eBay!
+                                                    </li>
+                                                    <li>Our Handling Time: within 24 hours on weekdays</li>
+                                                    <li>eBay Handling Time: 72 hours</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='accordion block'>
+                                    <div class='accordion-header'>Hot Item</div>
+                                    <div class='accordion-content'>
+                                        <ul class='row'>RIGHT_HOT_ITEM_LIST</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class='mobile-tab-content2'>
+            <div class='tab-content'>
+                <div class='tab-content-inner'>
+                    <div class='tabs row'>
+                        <section>
+                            <div class='mobile tab-mobile'><label><span>About Us</span></label></div>
+                            <div class='tab-content'>
+                                <div class='tab-content-inner'>
+                                    <ul class='ul-padding'>
+                                        <li>Angstrom Autohaus is based in Hong Kong, our group comprises factories in
+                                            Asia that manufacture OEM and aftermarket automotive parts and accessories.
+                                        </li>
+                                        <li>We believe in FACTORY DIRECT purchases.</li>
+                                        <li>Our mission is to deliver Lower Prices and Better Quality to consumers and
+                                            distributors wherever, whenever.
+                                        </li>
+                                        <li>We operate from a distribution center in Hong Kong, where we perform
+                                            sourcing, quality control and fulfillment. We strive to ensure that our
+                                            products are reliable, updated and that our transactions are smooth and
+                                            speedy. We are positioned to bring you the latest consumer automotive
+                                            aftermarket parts and accessories globally and round the clock.
+                                        </li>
+                                        <li>We are proud to have served over 500,000 ebay buyers worldwide.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                        <section>
+                            <div class='mobile tab-mobile'><label><span>Shipping</span></label></div>
+                            <div class='tab-content'>
+                                <div class='tab-content-inner'>
+                                    <ul class='ul-padding'>
+                                        <li>Import duties, taxes and charges are not included in the item price or
+                                            shipping charges. Buyers are responsible for these charges.
+                                        </li>
+                                        <li>Please check with your country's customs office to determine what these
+                                            additional costs will be prior to bidding/buying.
+                                        </li>
+                                        <li>Note that delivery times may vary, particularly during peak periods or
+                                            inclimate weather conditions.
+                                        </li>
+                                        <li>All items will be dispatched from our warehouse in China or Hong Kong
+                                            directly.
+                                        </li>
+                                        <li>Due to Custom restrictions, we do not ship lighters to US</li>
+                                        <li>We cannot ship on weekends and we do not offer Saturday, Sunday or holiday
+                                            delivery.
+                                        </li>
+                                        <li>All our items will be shipped to buyer's PayPal address, please confirm your
+                                            address on PayPal before you bid.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                        <section>
+                            <div class='mobile tab-mobile'><label><span>Feedback</span></label></div>
+                            <div class='tab-content'>
+                                <div class='tab-content-inner'>
+                                    <ul class='ul-padding'>
+                                        <li>We left positive feedback for you after receiving payment. Your feedback is
+                                            very important for us, positive feedback and 5 Score DSR is highly
+                                            appreciated.
+                                        </li>
+                                        <li>Please let us know before leaving any negative feedback or 1 point, 2 point
+                                            low DSR or open any disputes on Paypal and Ebay, please give us the
+                                            opportunity to resolve any problems and we will try our best to satisfy your
+                                            needs.
+                                        </li>
+                                        <li>If any question, please feel free to contact us via 'Ask seller a question'
+                                            ,We try our best to reply to your emails as soon as possible, due to high
+                                            volume of daily incoming emails and time zone difference, we may not be able
+                                            to reply your emails immediately.Please allow 1-2 business days for us to
+                                            response.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                        <section>
+                            <div class='mobile tab-mobile'><label><span>Contact Us</span></label></div>
+                            <div class='tab-content'>
+                                <div class='tab-content-inner'>
+                                    <ul class='ul-padding'>
+                                        <li>Please email us to resolve any problem before you leave any feedback to us.
+                                            We will reply you via email ASAP, if no response for you within 48 hours,
+                                            please check the spam / junk folder in your mail box.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

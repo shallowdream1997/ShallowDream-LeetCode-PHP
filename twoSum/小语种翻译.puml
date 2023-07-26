@@ -1,0 +1,33 @@
+@startuml
+title 小语种翻译 - 翻译确认
+autonumber
+
+actor "customer" as customer
+
+box "product_operation_angular5_js" #lightYellow
+participant "翻译确认" as t0
+end box
+
+box "product_operation_listing_management_nodejs_app" #lightBlue
+participant "禁词检查" as n0
+end box
+
+customer -> t0 : 导入翻译结果
+activate t0
+t0 -> t0 : sku是否在要翻译的sku范围内
+alt 是
+t0 -> t0 : sku翻译内容必填项检查
+alt 都必填
+t0 -> n0 : sku禁词检查
+activate n0
+n0 --> t0 : 返回禁词检查结果
+deactivate n0
+alt 存在禁词
+t0 -> t0 : 提示禁词结果
+end
+end
+end
+
+t0 --> customer : 结束
+deactivate t0
+@enduml

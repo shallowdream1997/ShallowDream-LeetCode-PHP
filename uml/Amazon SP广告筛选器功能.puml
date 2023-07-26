@@ -1,0 +1,82 @@
+@startuml
+title 广告筛选器功能
+autonumber
+actor "customer" as customer
+
+box "product_operation_angular5_js"
+participant "campaign页面" as p1
+participant "adgroup页面" as p2
+participant "keyword页面" as p3
+end box
+
+box "product_operation_sold_nodejs_app"
+participant "campaign" as n1
+participant "adgroup" as n2
+participant "keyword" as n3
+end box
+
+box "DB"
+participant "campaign_sp_campaign" as db1
+participant "campaign_sp_adgroup" as db2
+participant "campaign_sp_keyword" as db3
+participant "campaign_sp_collect" as db4
+participant "campaign_sp_keyword_collect" as db5
+end box
+
+customer -> p1 : campaign页面
+activate p1
+p1 -> n1 : 筛选器查询campaign
+activate n1
+n1 -> db4 : 先根据sellerid+筛选器的字段 去查询campaignid
+activate db4
+db4 --> n1 : 返回campaignid
+deactivate db4
+alt campaignid存在
+n1 -> db1 : 用campaignid去查询campaign广告
+activate db1
+db1 --> n1 : 返回结果
+end
+deactivate db1
+n1 --> p1 : 返回结果
+deactivate n1
+deactivate p1
+p1 --> customer : 结束页面
+
+customer -> p2 : adgroup页面
+activate p2
+p2 -> n2 : 筛选器查询adgroup
+activate n2
+n2 -> db4 : 先根据sellerid+筛选器的字段 去查询campaignid+adgroupid
+activate db4
+db4 --> n2 : 返回campaignid+adgroupid
+deactivate db4
+alt campaignid+adgroupid存在
+n2 -> db2 : 用campaignid+adgroupid去查询adgroup广告
+activate db2
+db2 --> n2 : 返回结果
+end
+deactivate db2
+n2-> p2 : 返回结果
+deactivate n2
+deactivate p2
+p2 --> customer : 结束页面
+
+customer -> p3 : keyword页面
+activate p3
+p3 -> n3 : 筛选器查询keyword
+activate n3
+n3-> db5 : 先根据sellerid+筛选器的字段 去查询targeting
+activate db5
+db5 --> n3 : 返回targeting
+deactivate db5
+alt targeting存在
+n3 -> db3 : 用targeting去查询campaign广告
+activate db3
+db3 --> n3 : 返回结果
+end
+deactivate db3
+n3 --> p3 : 返回结果
+deactivate n3
+deactivate p3
+p3 --> customer : 结束页面
+@enduml
