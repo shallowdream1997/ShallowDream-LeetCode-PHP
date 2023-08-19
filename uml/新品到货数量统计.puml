@@ -1,0 +1,60 @@
+@startuml
+title 开发效率监控
+autonumber
+actor "customer" as customer
+
+box "product_operation_js_angular5"
+participant "到货数量目标" as p1
+participant "到货数量统计" as p2
+end box
+
+
+box "product_operation_listing_management"
+participant "处理到货数量目标" as n1
+end box
+
+box "poms_big_data_nestjs"
+participant "处理到货数量统计" as n2
+end box
+
+box "db"
+participant "pa_developerSku_number" as d1
+participant "pa_monthly_develop_list_qty" as d2
+end box
+
+
+customer -> p1 : 访问到货数量统计目标页面
+activate p1
+p1 -> n1 : 添加/修改/导入到货数量目标\n<color #red>新增二级业务类型businesstype2nd字段
+activate n1
+n1 -> d1 : 保存数据
+activate d1
+d1 --> n1 : 返回结果
+deactivate d1
+n1 --> p1 : 返回结果
+deactivate n1
+
+p1 -> n1 : 查询到货数量目标数据<color #red>（包括新增的二级业务类型字段）
+activate n1
+n1 -> d1 : 查询数据
+activate d1
+d1 --> n1 : 返回数据
+deactivate d1
+n1 --> p1 : 返回数据
+deactivate n1
+p1 --> customer : 结束
+deactivate p1
+
+customer -> p2 : 访问到货数量统计页面
+activate p2
+p2 -> n2 : 查询到货数量统计数据<color #red>（包括新增的二级业务类型字段）
+activate n2
+n2 -> d2 : 查询数据
+activate d2
+d2 --> n2 : 返回数据
+deactivate d2
+n2 --> p2 : 返回数据
+deactivate n2
+p2 --> customer : 结束
+
+@enduml

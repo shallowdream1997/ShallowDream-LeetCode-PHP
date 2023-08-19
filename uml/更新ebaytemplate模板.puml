@@ -1,0 +1,42 @@
+@startuml
+title ebay template 的模板更新
+autonumber
+
+actor "customer" as customer
+
+box "poms_js_web" #lightYellow
+participant "ebay template模板更新页面" as t0
+end box
+
+box "product_operation_sold_nodejs_app" #lightYellow
+participant "ebay-templates" as t1
+end box
+
+box "mongo"
+participant "ebay_template" as db1
+end box
+
+customer -> t0 : 更新ebay_template模板
+activate t0
+t0 -> t1 : 读取ebay_template模板
+activate t1
+t1 -> db1 : 读取数据
+activate db1
+db1 --> t1 : 返回结果
+deactivate db1
+t1 --> t0 : 返回结果
+deactivate t1
+
+t0 -> t1 : 编辑ebay_template模板内容
+activate t1
+t1 -> db1 : 更新数据
+activate db1
+db1 --> t1 : 返回结果
+deactivate db1
+t1 --> t0 : 返回结果
+
+deactivate t1
+t0 --> customer : 结束
+
+
+@enduml

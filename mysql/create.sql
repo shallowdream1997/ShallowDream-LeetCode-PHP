@@ -797,16 +797,19 @@ CREATE TABLE ebay_bilino_add_round
 
 CREATE TABLE ebay_sellerId_add_count
 (
-    sellerId   VARCHAR(255) NULL COMMENT 'ebay账号',
-    scoreNow   INT NULL COMMENT '当前得分',
-    addScore   INT NULL COMMENT '单次分配得分',
-    baseScore  INT NULL COMMENT '基础得分',
-    skuNum     INT NULL COMMENT '已分配sku数量',
-    LastAddOn  DATETIME NULL COMMENT '最后一次分配时间',
-    modifiedBy VARCHAR(255) NULL COMMENT '记录修改人',
-    modifiedOn DATETIME NULL COMMENT '记录修改时间',
-    createdOn  DATETIME NULL COMMENT '记录创建时间',
-    createdBy  VARCHAR(255) NULL COMMENT '记录创建时间'
+    sellerId              VARCHAR(255) NULL COMMENT 'ebay账号',
+    source                VARCHAR(255) NULL COMMENT '轮单类型',
+    skuFirstLevelCategory VARCHAR(255) NULL COMMENT '一级分类',
+    stock                 VARCHAR(255) NULL COMMENT '仓库',
+    scoreNow              INT NULL COMMENT '当前得分',
+    addScore              INT NULL COMMENT '单次分配得分',
+    baseScore             INT NULL COMMENT '基础得分',
+    skuNum                INT NULL COMMENT '已分配sku数量',
+    LastAddOn             DATETIME NULL COMMENT '最后一次分配时间',
+    modifiedBy            VARCHAR(255) NULL COMMENT '记录修改人',
+    modifiedOn            DATETIME NULL COMMENT '记录修改时间',
+    createdOn             DATETIME NULL COMMENT '记录创建时间',
+    createdBy             VARCHAR(255) NULL COMMENT '记录创建时间'
 )ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE TABLE pa_fitment_confirm
@@ -1182,3 +1185,90 @@ CREATE TABLE pa_pan_eu_apply_fba_schedule
     createdOn  DATETIME NULL COMMENT '创建日期',
     createdBy  VARCHAR(255) NULL COMMENT '创建人'
 )ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE pa_saleman_kpi_examiner_config
+(
+    businessGroup VARCHAR(255) NULL COMMENT '业务组',
+    label VARCHAR(255) NULL COMMENT '标签',
+    theMonth VARCHAR(255) NULL COMMENT '年月',
+    targetGr INT NULL COMMENT '目标GR',
+    leader VARCHAR(255) NULL COMMENT '考核人',
+    rowNum INT NULL COMMENT '行数',
+    modifiedBy VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn DATETIME NULL COMMENT '修改日期',
+    createdOn  DATETIME NULL COMMENT '创建日期',
+    createdBy  VARCHAR(255) NULL COMMENT '创建人'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE amazon_sp_collect
+(
+    type               VARCHAR(255) NULL COMMENT '时间类型',
+    sellerid           VARCHAR(255) NULL COMMENT '卖家账号',
+    campaignid         VARCHAR(255) NULL COMMENT 'campaignId',
+    adgroupid          VARCHAR(255) NULL COMMENT 'adGroupId',
+    advertisedsku      VARCHAR(255) NULL COMMENT '上架编号',
+    targetingtype      VARCHAR(255) NULL COMMENT '广告类型-auto/manual',
+    campaignname       VARCHAR(255) NULL COMMENT 'campaign名称',
+    startdate          VARCHAR(255) NULL COMMENT '开始时间',
+    state              VARCHAR(255) NULL COMMENT '投放状态',
+    dailybudget        INT NULL COMMENT 'campaign预算',
+    spend              INT NULL COMMENT '广告花费',
+    seventotalorders   INT NULL COMMENT '7天总订单数',
+    impressions        INT NULL COMMENT '曝光',
+    clicks             INT NULL COMMENT '点击',
+    sevendaytotalsales INT NULL COMMENT '7天总销售额',
+    modifiedOn         DATETIME NULL COMMENT '修改日期'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE amazon_sp_target_collect
+(
+    type               VARCHAR(255) NULL COMMENT '时间类型',
+    sellerid           VARCHAR(255) NULL COMMENT '卖家账号',
+    company            VARCHAR(255) NULL COMMENT '垂直ID',
+    campaignid         VARCHAR(255) NULL COMMENT 'campaignId',
+    campaignname       VARCHAR(255) NULL COMMENT 'campaign名称',
+    adgroupid          VARCHAR(255) NULL COMMENT 'adGroupId',
+    adgroupname        VARCHAR(255) NULL COMMENT 'adgroup名称',
+    targetid           VARCHAR(255) NULL COMMENT 'targetId',
+    targetingtype      VARCHAR(255) NULL COMMENT 'target类型',
+    targetingtext      VARCHAR(255) NULL COMMENT 'target名称',
+    startdate          VARCHAR(255) NULL COMMENT '开始时间',
+    state              VARCHAR(255) NULL COMMENT '投放状态',
+    dailybudget        INT NULL COMMENT 'campaign预算',
+    spend              INT NULL COMMENT '广告花费',
+    seventotalorders   INT NULL COMMENT '7天总订单数',
+    impressions        INT NULL COMMENT '曝光',
+    clicks             INT NULL COMMENT '点击',
+    sevendaytotalsales INT NULL COMMENT '7天总销售额',
+    modifiedOn         DATETIME NULL COMMENT '修改日期'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE auto_ce_co_finish_result
+(
+    CMO          VARCHAR(255) NULL COMMENT 'cmo单',
+    ceco         VARCHAR(255) NULL COMMENT 'ce/co单',
+    inQty        VARCHAR(255) NULL COMMENT '入库数',
+    realQty      INT NULL COMMENT '实际采购数',
+    cmoFollowMan INT NULL COMMENT '跟进人',
+    modifiedBy   VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn   DATETIME NULL COMMENT '修改日期',
+    createdOn    DATETIME NULL COMMENT '创建日期',
+    createdBy    VARCHAR(255) NULL COMMENT '创建人'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE ebay_template
+(
+    sellerId    VARCHAR(255) NULL COMMENT '账号',
+    template    VARCHAR(255) NULL COMMENT '模板',
+    category    VARCHAR(255) NULL COMMENT '分类',
+    label       VARCHAR(255) NULL COMMENT '标签',
+    description VARCHAR(255) NULL COMMENT '描述',
+    modifiedBy  VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn  DATETIME NULL COMMENT '修改日期',
+    createdOn   DATETIME NULL COMMENT '创建日期',
+    createdBy   VARCHAR(255) NULL COMMENT '创建人'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
