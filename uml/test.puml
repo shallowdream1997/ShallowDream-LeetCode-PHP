@@ -1,11 +1,14 @@
 @startuml
-'https://plantuml.com/sequence-diagram
 
-autonumber
+object product_sku {
+自动化配置表
+}
 
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
+object product_base_info {
+ce单主表
+}
 
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
+
+product_base_info -down-> product_sku : 1..1
+
 @enduml

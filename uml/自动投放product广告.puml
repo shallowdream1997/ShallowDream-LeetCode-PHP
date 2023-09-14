@@ -1,0 +1,74 @@
+@startuml
+title 自动重新投放product广告
+autonumber
+
+actor "azkaban" as azkaban
+
+box "product_operation_client" #lightYellow
+participant "product失败广告回写" as t1
+end box
+
+box "product_operation_sold_nodejs_app" #lightGreen
+participant "product广告" as t2
+participant "notification广告事件" as t3
+end box
+
+box "product_operation_php_restful" #lightYellow
+participant "获取product广告" as r1
+end box
+
+box "db" #lightBlue
+participant "amazon_sp_product" as db
+participant "amazon_sp_notification" as db1
+end box
+
+azkaban -> t1 : 执行脚本
+activate t1
+
+t1 -> t2 : ...读取PA product广告中asin为空 或者 adId为空且campaignId+adGroupId不为空的广告
+activate t1
+
+activate t2
+t2 -> db : 获取数据
+activate db
+db --> t2 : 返回数据
+deactivate db
+t2 --> t1 :  返回数据
+deactivate t2
+deactivate t3
+deactivate t1
+
+alt 存在数据
+t1 -> r1 : <color #red>根据campaignId+adGroupId+sku调用amazon product广告
+activate r1
+r1 --> t1 : <color #red>返回结果
+deactivate r1
+
+alt <color #red>存在product广告
+t1 -> t2 : <color #red>回写adId
+activate t2
+t2 -> db : <color #red>更新product
+activate db
+db --> t2 : 返回结果
+deactivate db
+t2 --> t1 : 返回结果
+deactivate t2
+
+else
+t1 -> t3 : 用campaignId+adGroupId+sku构建notification数据\n写入到amazon_sp_notification
+activate t1
+activate t3
+t3 -> db1 : 写入数据
+activate db1
+db1 --> t3 : 返回结果
+deactivate db1
+t3--> t1 : 返回结果
+deactivate t3
+deactivate t1
+
+end
+end
+
+t1 --> azkaban : 结束脚本
+deactivate t1
+@enduml

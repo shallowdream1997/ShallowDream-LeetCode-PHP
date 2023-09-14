@@ -24,7 +24,11 @@ participant "pa_salesman_kpi" as b5
 participant "pa_monthly_stock_review" as b6
 end box
 
-alt 销售人员绩效考核看板
+box "product_operation_listing_management_nestjs" #lightYellow
+participant "option-val-list" as m1
+end box
+
+=== 销售人员绩效考核看板 ==
 t1 -> l1 : 部门GMV目标达成率
 l1 --> t1 : 数据返回
 t1 -> l2 : 个人GMV目标达成率
@@ -39,30 +43,52 @@ t1 -> b5 : 前端市场复核时效达成率
 b5 --> t1 : 数据返回
 t1 -> b5 : 资料呈现及时达成率
 b5 --> t1 : 数据返回
-end
-alt 前端市场复核&资呈
+
+=== 前端市场复核&资呈 ==
 t2 -> b3 : 产品目录孵化期sku综合得分率
 b3 ---> t2 : 数据返回
 t2 -> b5 : 前端市场复核时效达成率
 b5 ---> t2 : 数据返回
 t2 -> b5 : 资料呈现及时完成率
 b5 ---> t2 : 数据返回
-end
 
-alt 前端市场复核&资呈-明细
+
+===  前端市场复核&资呈-明细 ==
 t3 -> b5 : 资呈明细表
 b5 ---> t3 : 数据返回
-end
 
-alt 销售额业绩达标看板
+
+=== 销售额业绩达标看板 ==
 t4 -> b4 : 销售额业绩达标看板
+activate t4
+group <color #red>优化点
+activate b4
 b4 ---> t4 : 数据返回
-end
+deactivate b4
 
-alt 库存比&OOS指标看板
-t5 -> b6 : 库存比&OOS指标看板
-b6 --> t5 : 数据返回
+t4 -> m1 : 读取option_val_list配置表获取组别+标签 对应的业绩考核人
+activate m1
+m1 --> t4 : 返回考核人数据
+deactivate m1
+alt 存在数据
+t4 -> t4 : 根据组别+标签匹配，讲考核人显示在页面
 end
+end
+deactivate t4
+
+=== 库存比&OOS指标看板 ==
+t5 -> b6 : 库存比&OOS指标看板
+activate t5
+group <color #red>优化点
+activate b6
+b6 -> m1 : <color #red>oos率读取option_val_list获取要汇总的仓库
+activate m1
+m1 --> b6 : <color #red>返回要汇总的仓库，用oos率的查询条件来汇总
+deactivate m1
+end
+b6 --> t5 : 数据返回
+deactivate b6
+deactivate t5
 
 
 

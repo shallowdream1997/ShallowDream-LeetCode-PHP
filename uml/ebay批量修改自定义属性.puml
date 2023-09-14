@@ -1,0 +1,72 @@
+@startuml
+title ebay批量修改自定义属性
+autonumber
+
+actor "customer" as customer
+
+
+box "product_operation_angular5_js" #lightYellow
+participant "批量修改ebay自定义属性" as p1
+end box
+
+box "product_operation_listing_management_nodejs_app" #lightGreen
+participant "sku资料" as n1
+participant "sku基础资料" as n2
+end box
+
+
+box "db" #lightBlue
+participant "product_sku" as db
+participant "product_base_info" as db1
+end box
+
+customer -> p1 : 访问页面
+activate p1
+p1 -> n1 : 输入skuId，获取skuId对应的自定义属性和值
+activate n1
+n1 -> db : 查询数据
+activate db
+db --> n1 : 返回数据
+deactivate db
+n1 --> p1 :  返回skuId对应渠道的自定义属性和值
+deactivate n1
+
+alt 存在sku数据
+p1 -> customer : 处理product_sku里attribute字段channel带有ebay渠道_diy的label和value\n通过模板来提供给用户自行修改diy属性和值
+end
+
+customer -> p1 : 导入批量修改ebay自定义属性的文件
+p1 -> n2 : 查询数据是否属于该用户垂直
+activate n2
+n2 -> db1 : 查询数据
+activate db1
+db1 --> n2 : 返回数据
+deactivate db1
+n2 --> p1 : 返回结果
+deactivate n2
+p1 -> n1 : 查询数据是否存在
+activate n1
+n1 -> db : 查询数据
+activate db
+db --> n1 : 返回数据
+deactivate db
+n1 --> p1 : 返回结果
+deactivate n1
+
+p1 -> p1 :
+note right
+<color #blue>将skuId在product_sku下attribut数组里channel带有ebay渠道_diy的所有label和value清空
+<color #blue>将skuId在导入文件里所有的属性名称和属性值重新组装为label和value
+<color #blue>组装成一个新的attribute
+end note
+p1 -> n1 : 保存product_sku
+activate n1
+n1 -> db : 更新数据
+activate db
+db --> n1 : 返回结果
+deactivate db
+n1 --> p1 : 返回结果
+deactivate n1
+p1 --> customer : 结束
+deactivate t1
+@enduml
