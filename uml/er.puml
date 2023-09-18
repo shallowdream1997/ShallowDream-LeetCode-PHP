@@ -1,0 +1,31 @@
+@startuml
+
+object pa_monthly_traceman_sales {
+个人营业额实际表
+}
+object pa_goods_target {
+个人营业额目标表
+}
+object pa_monthly_stock_review{
+库存比&oos指标表
+}
+object pa_sale_forecast_v3{
+PA目标营业额表
+}
+object pa_monthly_sales_v2{
+PA实际营业额表
+}
+object pa_sku_life_cycle_sku_setting{
+生命周期得分表
+}
+object pa_manager_kpi{
+平台管理达成率表
+}
+object pa_salesman_kpi{
+资呈表
+}
+object option_val_list{
+平台配置表
+}
+
+@enduml
