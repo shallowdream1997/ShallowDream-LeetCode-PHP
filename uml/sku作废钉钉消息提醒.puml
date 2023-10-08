@@ -1,0 +1,52 @@
+@startuml
+title PA产品开发处理sku作废后自动发送钉钉提醒到采购组群
+autonumber
+
+actor "customer" as customer
+
+
+box "product_operation_js_angular5" #lightYellow
+participant "sku资料作废" as p1
+end box
+
+box "product_operation_listing_management_nodejs_app" #lightGreen
+participant "sku基础资料" as n1
+end box
+
+box "pa-biz-application" #lightGreen
+participant "pa-scms-application-api" as app1
+end box
+
+box "platform-message-service" #lightGreen
+participant "message服务" as app2
+end box
+
+box "db" #lightBlue
+participant "product_base_info" as db
+end box
+
+customer -> p1 : 访问页面
+activate p1
+p1 -> n1 : sku是否属于PA
+activate n1
+n1 -> db : 查询数据
+activate db
+db --> n1 : 返回数据
+deactivate db
+n1 --> p1 :  返回skuId是否属于PA
+deactivate n1
+
+alt sku为PA商家+作废用户为PA产品开发
+p1 -> app1 : 调用发送钉钉提醒到采购组的接口
+activate app1
+app1 -> app2 : 调用平台message服务，发送钉钉到群组
+activate app2
+app2 --> app1 : 返回结果
+deactivate app2
+app1 --> p1 : 返回结果
+deactivate app1
+p1 --> customer : 结束
+end
+
+
+@enduml

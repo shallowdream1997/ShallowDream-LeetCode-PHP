@@ -1272,3 +1272,16 @@ CREATE TABLE ebay_template
     createdBy   VARCHAR(255) NULL COMMENT '创建人'
 )ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
+
+CREATE TABLE pa_pattern_building_scoring
+(
+    year       INT NULL COMMENT '年',
+    month      INT NULL COMMENT '月',
+    yearMonth VARCHAR(255) NULL COMMENT '年月',
+    user       VARCHAR(255) NULL COMMENT '人员',
+    score      INT NULL COMMENT '模式建设评分',
+    modifiedBy VARCHAR(255) NULL COMMENT '修改人',
+    modifiedOn DATETIME NULL COMMENT '修改日期',
+    createdOn  DATETIME NULL COMMENT '创建日期',
+    createdBy  VARCHAR(255) NULL COMMENT '创建人'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;

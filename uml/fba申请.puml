@@ -1,0 +1,67 @@
+@startuml
+title 品牌和仓库不匹配错误提示
+autonumber
+actor "customer" as customer
+
+box "product_operation_angular5_js"
+participant "上架前FBA申请" as p1
+end box
+
+box "product_operation_pl_nodejs_app"
+participant "获取账号渠道平台信息" as n1
+end box
+
+box "product_operation_listing_management_nodejs_app"
+participant "PA产品清单详情" as n2
+participant "PA产品清单" as n3
+end box
+
+box "mongoDB"
+participant "seller_channel_platform" as db1
+participant "pa_product" as db2
+participant "pa_product_detail" as db3
+end box
+
+customer -> p1 : 进入页面
+
+activate p1
+p1 -> n2 : sku查询其品牌
+activate n2
+n2 -> db3 : 获取sku产品清单详情的paProductId
+activate db3
+db3 --> n2 : 返回paProductId
+deactivate db3
+n2 -> n3 : paProductId查询产品清单的salesBrand
+activate n3
+n3 -> db2 : 获取数据
+activate db2
+db2 --> n3 : 返回数据
+deactivate db2
+n3 --> n2 : 返回salesBrand
+deactivate n3
+n2 --> p1 : 返回salesBrand品牌
+deactivate n2
+
+
+deactivate t1
+alt 存在sku及其品牌数据
+p1 -> n1 : 根据品牌+账号+渠道获取仓库
+activate n1
+n1 -> db1 : 渠道获取仓库
+activate db1
+db1 --> n1 : 返回仓库
+deactivate db1
+n1 --> p1 : 返回仓库
+deactivate n1
+p1 -> p1 : 判断仓库和页面所选仓库是否一直
+
+alt 品牌对应仓库不一致
+p1 -> customer : 提示“申请仓库与品牌不符”
+end
+else
+p1 --> customer : 结束
+deactivate p1
+end
+
+
+@enduml
