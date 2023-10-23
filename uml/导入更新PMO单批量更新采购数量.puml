@@ -1,0 +1,51 @@
+@startuml
+title 产品开发-补货计划确认-导入更新PMO单
+autonumber
+actor "customer" as customer
+
+box "product_operation_js_angular5"
+participant "导入更新PMO单" as p1
+end box
+
+box "product_operation_nodejs_app"
+participant "queryPageSkuIdInfoMainTable" as n1
+end box
+
+
+box "mongo"
+participant "skuId_info_main_table" as db1
+end box
+
+customer -> p1 : 导入pmo单
+activate p1
+p1 -> n1 : 判断用户是否为PA，且判断PMO单是否为UX168_汽配
+activate n1
+n1 -> db1 : pmoBillNo单查询
+activate db1
+db1 --> n1 : 返回数据
+deactivate db1
+n1 --> p1 : 返回数据
+deactivate n1
+alt 判断"departmentId = VT201706060001 && departmentCn = PA"
+
+alt 采购链接不为空
+p1 -> p1 : 采购链接可更新
+else
+p1 -> p1 : 采购链接不更新，保持原数据
+end
+note left
+采购链接和采购数量不必填
+end note
+alt 采购数量不为空
+p1 -> p1 : 采购数量可更新
+else
+p1 -> p1 : 采购数量不更新，保持原数据
+end
+
+else
+p1 -> p1 : 其他垂直的导入更新PMO单逻辑保持不变
+
+p1 --> customer : 导入成功,成功后自己保存
+end
+
+@enduml

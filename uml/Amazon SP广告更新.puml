@@ -1,0 +1,87 @@
+@startuml
+title AmazonSP自动调整广告规则
+autonumber
+
+actor "azkaban" as azkaban
+
+
+box "product_operation_client" #lightYellow
+participant "amazon_pa_sp_auto_create_update.php" as p
+participant "amazon_sp_create_update.php" as p1
+end box
+
+
+
+box "dbapi" #lightYellow
+participant "要调整的广告数据" as api1
+end box
+
+
+
+box "product_operation_sold_nodejs_app" #lightBlue
+participant "notification记录" as n2
+participant "更新campaign" as n3
+participant "更新adgroup" as n4
+end box
+
+box "product_operation_php_restful" #lightBlue
+participant "Amazon API" as php1
+end box
+
+box "mongo"
+participant "amazon_sp_notification" as db1
+participant "amazon_sp_campaign" as db2
+participant "amazon_sp_adgroup" as db3
+end box
+
+azkaban -> p : 执行sp_auto脚本新增一个新的规则的执行参数
+activate p
+p -> api1 : 对接dbapi，获取要调整的广告数据
+activate api1
+api1 --> p : 返回数据
+deactivate api1
+alt 有要调整的广告数据
+p -> n2 :处理好当前预算和当前bid以及状态值等，分别设置action写入到notification
+activate n2
+n2 -> db1 : 保存notification
+activate db1
+db1 --> n2 : 返回结果
+deactivate db1
+n2 --> p : 返回结果
+deactivate n2
+deactivate p
+
+
+azkaban -> p1 : 执行notification脚本，沿用updateCampaign和updateAdgroup的执行参数
+activate p1
+p1 -> n2 : 获取action= updateCampaign / action = updateAdgroup数据
+activate n2
+n2 --> p1 : 返回数据
+alt 有数据
+p1 -> php1 : 更新campaign/adgroup到 Amazon后台
+php1 --> p1 : 返回更新结果
+activate p1
+p1 -> n3 : 更新campaign,除了基本的state，和预算之外，lastUpdateDate必须要更新
+activate n3
+n3 -> db2 : 更新数据
+activate db2
+db2 --> n3 : 返回更新结果
+deactivate db2
+n3 --> p1 : 返回结果
+deactivate n3
+
+
+p1 -> n4 : 更新adgroup,除了基本的state，和bid之外，lastUpdateDate必须要更新
+activate n4
+
+n4 -> db3 : 更新数据
+activate db3
+db3 --> n4 : 返回更新结果
+deactivate db3
+n4 --> p1 : 返回结果
+deactivate n4
+deactivate p1
+end
+p1 --> azkaban : 结束
+
+@enduml

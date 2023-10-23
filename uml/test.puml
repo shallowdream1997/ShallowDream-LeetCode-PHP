@@ -1,142 +1,201 @@
 @startuml
-title PA绩效考核看板
+title ebay平台看板账号配置化
 autonumber
 
-box "poms_js_web"
-participant "销售人员绩效考核看板" as t1
-participant "前端市场复核&资呈" as t2
-participant "前端市场复核&资呈-明细" as t3
-participant "销售额业绩达标看板" as t4
-participant "库存比&OOS指标看板" as t5
+actor "azkaban" as azkaban
+actor "customer" as customer
+
+box "poms_js_web" #lightYellow
+participant "ebay平台看板账号配置化页面" as p
 end box
 
-box "poms_listing_nestjs" #lightYellow
-participant "pa_sale_forecast_v3" as l1
-participant "pa_goods_target" as l2
+box "product_operation_js_angular5" #lightYellow
+participant "服务指标看板" as p0
+participant "seller DashBoard看板" as p1
+participant "销售指标数据看板" as p2
+participant "账号级别品类分析" as p3
+participant "eBay listing生命周期" as p4
+participant "listing在线天数和销售归类" as p5
+participant "Traffic 看板" as p6
+participant "ebay 平台账号下拉框 组件" as special
 end box
 
-box "poms_big_data_nestjs" #lightBlue
-participant "pa_monthly_sales_v2" as b1
-participant "pa_monthly_traceman_sales" as b2
-participant "pa_sku_life_cycle_sku_setting" as b3
-participant "pa_manager_kpi" as b4
-participant "pa_salesman_kpi" as b5
-participant "pa_monthly_stock_review" as b6
-participant "pa_monthly_develop_list_qty" as b7
+box "product_operation_client" #lightYellow
+participant "PaEbayListingClassify.php" as c1
+participant "PaEbayRulePass.php" as c2
+participant "PaEbayInfoComplete.php" as c3
+participant "pa的ebay平台账号工具类\nPaEbaySellerTool.php" as tool
 end box
 
-box "data_service" #lightGreen
-participant "pa_commission_index_base" as dbapi
+box "poms_listing_nest" #lightGreen
+participant "ebay平台看板账号配置化接口" as n1
 end box
 
-box "product_operation_listing_management_nestjs" #lightYellow
-participant "option-val-list" as m1
+box "product_operation_listing_management_nodejs_app" #lightBlue
+participant "账号-渠道-平台接口" as n2
+participant "option_val_list配置" as n3
 end box
 
-=== <color #red>销售人员绩效考核看板 ==
-=== 产品开发&产品运营 ==
+box "mongo"
+participant "seller_channel_platform" as db1
+participant "pa_ebay_table_seller_config" as db2
+end box
 
-t1 -> b5 : 开发清单产品节点流转达成率
-activate t1
-activate b5
-b5 --> t1 : 数据返回
-deactivate b5
-deactivate t1
+customer -> p : 打开ebay平台看板账号配置化页面
+activate p
+p -> n2 : 获取可供用户选择的PA ebay账号集合，获取条件为：<color #blue>{company:"PA",platform:"ebay",status:1,channel:{$in:["ebay_us","ebay_uk","ebay_au"]}}
+activate n2
+n2 -> db1 : 查询数据
+activate db1
+db1 --> n2 : 返回数据
+deactivate db1
+n2 --> p : 返回账号列表
+deactivate n2
+alt 存在可供选择的PA ebay账号
 
-t1 -> b7 : 个人月度到货达成率
-activate t1
-activate b7
-b7 --> t1 : 数据返回
-deactivate b7
-deactivate t1
+p -> p : 用户在每个看板后面选择要添加保存的ebay账号(可以多选)
+activate p
+p -> n1 : 处理好"看板场景名称","账号","渠道","账号所在仓库类型(直发仓or海外仓)"等数据，保存到ebay平台看板账号配置化表
+activate n1
+n1 -> db2 : 保存数据
+activate db2
+db2 --> n1 : 返回结果
+deactivate db2
+n1 --> p : 返回结果
+deactivate n1
+deactivate p
+end
+deactivate p
 
-
-t1 -> dbapi : 个人90-180天SKU销售效率达成率\n个人90-180天SKU售动率达成率
-activate t1
-activate dbapi
-dbapi --> t1 : 数据返回
-deactivate dbapi
-deactivate t1
-
-t1 -> b5 : 前端市场复核及时达成率\n资料呈现及时达成率
-activate t1
-activate b5
-b5 --> t1 : 数据返回
-deactivate b5
-deactivate t1
-
-t1 -> b1 : 个人月度目标销售额达成率
-activate t1
-activate b1
-b1 --> t1 : 数据返回
-deactivate b1
-deactivate t1
-
-=== 平台运营 ==
-t1 -> dbapi : 个人90-180天SKU销售效率达成率\n个人90-180天SKU售动率达成率\n广告GR占比\n广告spend占比
-activate t1
-activate dbapi
-dbapi --> t1 : 数据返回
-deactivate dbapi
-deactivate t1
-
-t1 -> b1 : 账号GMV月度达成率(计算实际GMV)\nMargin月度达成率
-activate t1
-activate b1
-b1 -> l1 : 计算目标GMV
-activate l1
-l1 -> b1 : 数据返回
-deactivate l1
-b1 --> t1 : 数据返回
-deactivate b1
-deactivate t1
-
-=== 前端市场复核&资呈 ==
-t2 -> b3 : 产品目录孵化期sku综合得分率
-b3 ---> t2 : 数据返回
-t2 -> b5 : 前端市场复核时效达成率
-b5 ---> t2 : 数据返回
-t2 -> b5 : 资料呈现及时完成率
-b5 ---> t2 : 数据返回
-
-
-===  前端市场复核&资呈-明细 ==
-t3 -> b5 : 资呈明细表
-b5 ---> t3 : 数据返回
-
-
-=== 销售额业绩达标看板 ==
-t4 -> b4 : 销售额业绩达标看板
-activate t4
-
-activate b4
-b4 ---> t4 : 数据返回
-deactivate b4
-
-t4 -> m1 : 读取option_val_list配置表获取组别+标签 对应的业绩考核人
-activate m1
-m1 --> t4 : 返回考核人数据
-deactivate m1
-alt 存在数据
-t4 -> t4 : 根据组别+标签匹配，讲考核人显示在页面
+group <color #green>ebay平台看板账号下拉框组件的数据获取逻辑
+special -> n1 : 看板名称 scenario = 'xxxx' 查询所有对应账号以及渠道，仓库类型
+activate special
+activate n1
+n1 -> db2 : 获取数据
+activate db2
+db2 --> n1 : 返回数据
+deactivate db2
+n1 --> special : 返回数据
+deactivate n1
+note left
+<color #red>按照仓库类型，渠道分组账号，封装成ebay账号的下拉选项组件
+end note
+deactivate special
 end
 
-deactivate t4
 
-=== 库存比&OOS指标看板 ==
-t5 -> b6 : 库存比&OOS指标看板
-activate t5
+customer -> p0 : 打开服务指标看板
+activate p0
+p0 -> special : 看板名称 scenario = 'service_metrics_data_table'，调用组件
+activate special
+special --> p0 : 返回选项
+deactivate special
+p0 --> customer : 结束
+deactivate p0
 
-activate b6
-b6 -> m1 : <color #red>oos率读取option_val_list获取要汇总的仓库
-activate m1
-m1 --> b6 : <color #red>返回要汇总的仓库，用oos率的查询条件来汇总
-deactivate m1
+customer -> p1 : 打开Seller Dashboard看板
+activate p1
+p1 -> special : 看板名称 scenario = 'ebay_seller_dashboard_data_table'，调用组件
+activate special
+special --> p1 : 返回选项
+deactivate special
+p1 --> customer : 结束
+deactivate p1
 
-b6 --> t5 : 数据返回
-deactivate b6
-deactivate t5
 
+customer -> p2 : 打开销售指标数据看板看板
+activate p2
+p2 -> special : 看板名称 scenario = 'sales_index_data_table'，调用组件
+activate special
+special --> p2 : 返回选项
+deactivate special
+p2 --> customer : 结束
+deactivate p2
+
+customer -> p3 : 打开账号级别品类分析看板
+activate p3
+p3 -> special : 看板名称 scenario = 'ebay_seller_category_analyze_data_table'，调用组件
+activate special
+special --> p3 : 返回选项
+deactivate special
+p3 --> customer : 结束
+deactivate p3
+
+customer -> p4 : 打开eBay listing生命周期看板
+activate p4
+p4 -> special : 看板名称 scenario = 'ebay_listing_data_table'，调用组件
+activate special
+special --> p4 : 返回选项
+deactivate special
+p4 --> customer : 结束
+deactivate p4
+
+
+customer -> p5 : 打开listing在线天数和销售归类看板
+activate p5
+p5 -> special : 看板名称 scenario = 'ebay_listing_days_pl_data_table'，调用组件
+activate special
+special --> p5 : 返回选项
+deactivate special
+p5 --> customer : 结束
+deactivate p5
+
+customer -> p6 : 打开Traffic 看板
+activate p6
+p6 -> special : 看板名称 scenario = 'ebay_traffic_data_table'，调用组件
+activate special
+special --> p6 : 返回选项
+deactivate special
+p6 --> customer : 结束
+deactivate p6
+
+
+group <color #green>获取pa Ebay平台账号的工具类封装，这样就可以提供多个脚本文件使用
+tool -> n1 : 看板名称 scenario = 'xxxx' 查询生命周期看板的所有对应账号以及渠道，并关联负责人
+activate tool
+activate n1
+n1 -> db2 : 获取数据
+activate db2
+db2 --> n1 : 返回数据
+n1 -> n3 : 关联账号查询负责人，查询条件 optionName = 'pa_sellerId_username_rule'
+activate n3
+n3 --> n1 : 返回账号负责人
+deactivate n3
+deactivate db2
+n1 --> tool : 返回数据
+deactivate n1
+tool -> tool : 整理账号,以及所需要的账号的渠道，负责人，仓库类型等
+end
+deactivate tool
+
+
+azkaban -> c1 : 执行 - 统计生命周期归类脚本
+activate c1
+c1 -> tool : 看板名称 scenario = 'ebay_listing_data_table'，调用工具类
+activate tool
+tool --> c1 : 返回账号
+deactivate tool
+c1 --> azkaban : 结束
+deactivate c1
+
+
+azkaban -> c2 : 执行 - 生命周期数据创建规则脚本
+activate c2
+c2 -> tool : 看板名称 scenario = 'ebay_listing_data_table'，调用工具类
+activate tool
+tool --> c2 : 返回账号和账号负责人
+deactivate tool
+c2 --> azkaban : 结束
+deactivate c2
+
+azkaban -> c3 : 执行 - 生命周期补全信息脚本
+activate c3
+c3 -> tool : 看板名称 scenario = 'ebay_listing_data_table'，调用工具类
+activate tool
+tool --> c3 : 返回账号和渠道
+deactivate tool
+c3 --> azkaban : 结束
+deactivate c3
 
 
 @enduml
