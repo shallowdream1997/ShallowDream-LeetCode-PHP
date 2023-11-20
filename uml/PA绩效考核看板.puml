@@ -22,27 +22,74 @@ participant "pa_sku_life_cycle_sku_setting" as b3
 participant "pa_manager_kpi" as b4
 participant "pa_salesman_kpi" as b5
 participant "pa_monthly_stock_review" as b6
+participant "pa_monthly_develop_list_qty" as b7
+end box
+
+box "data_service" #lightGreen
+participant "pa_commission_index_base" as dbapi
 end box
 
 box "product_operation_listing_management_nestjs" #lightYellow
 participant "option-val-list" as m1
 end box
 
-=== 销售人员绩效考核看板 ==
-t1 -> l1 : 部门GMV目标达成率
-l1 --> t1 : 数据返回
-t1 -> l2 : 个人GMV目标达成率
-l2 --> t1 : 数据返回
-t1 -> b1 : 部门GMV目标达成率
+=== <color #red>销售人员绩效考核看板 ==
+=== 产品开发&产品运营 ==
+
+t1 -> b5 : 开发清单产品节点流转达成率
+activate t1
+activate b5
+b5 --> t1 : 数据返回
+deactivate b5
+deactivate t1
+
+t1 -> b7 : 个人月度到货达成率
+activate t1
+activate b7
+b7 --> t1 : 数据返回
+deactivate b7
+deactivate t1
+
+
+t1 -> dbapi : 个人90-180天SKU销售效率达成率\n个人90-180天SKU售动率达成率
+activate t1
+activate dbapi
+dbapi --> t1 : 数据返回
+deactivate dbapi
+deactivate t1
+
+t1 -> b5 : 前端市场复核及时达成率\n资料呈现及时达成率
+activate t1
+activate b5
+b5 --> t1 : 数据返回
+deactivate b5
+deactivate t1
+
+t1 -> b1 : 个人月度目标销售额达成率
+activate t1
+activate b1
 b1 --> t1 : 数据返回
-t1 -> b2 : 个人GMV目标达成率
-b2 --> t1 : 数据返回
-t1 -> b3 : 产品目录孵化期sku综合得分率
-b3 --> t1 : 数据返回
-t1 -> b5 : 前端市场复核时效达成率
-b5 --> t1 : 数据返回
-t1 -> b5 : 资料呈现及时达成率
-b5 --> t1 : 数据返回
+deactivate b1
+deactivate t1
+
+=== 平台运营 ==
+t1 -> dbapi : 个人90-180天SKU销售效率达成率\n个人90-180天SKU售动率达成率\n广告GR占比\n广告spend占比
+activate t1
+activate dbapi
+dbapi --> t1 : 数据返回
+deactivate dbapi
+deactivate t1
+
+t1 -> b1 : 账号GMV月度达成率(计算实际GMV)\nMargin月度达成率
+activate t1
+activate b1
+b1 -> l1 : 计算目标GMV
+activate l1
+l1 -> b1 : 数据返回
+deactivate l1
+b1 --> t1 : 数据返回
+deactivate b1
+deactivate t1
 
 === 前端市场复核&资呈 ==
 t2 -> b3 : 产品目录孵化期sku综合得分率
@@ -61,7 +108,7 @@ b5 ---> t3 : 数据返回
 === 销售额业绩达标看板 ==
 t4 -> b4 : 销售额业绩达标看板
 activate t4
-group <color #red>优化点
+
 activate b4
 b4 ---> t4 : 数据返回
 deactivate b4
@@ -73,19 +120,19 @@ deactivate m1
 alt 存在数据
 t4 -> t4 : 根据组别+标签匹配，讲考核人显示在页面
 end
-end
+
 deactivate t4
 
 === 库存比&OOS指标看板 ==
 t5 -> b6 : 库存比&OOS指标看板
 activate t5
-group <color #red>优化点
+
 activate b6
 b6 -> m1 : <color #red>oos率读取option_val_list获取要汇总的仓库
 activate m1
 m1 --> b6 : <color #red>返回要汇总的仓库，用oos率的查询条件来汇总
 deactivate m1
-end
+
 b6 --> t5 : 数据返回
 deactivate b6
 deactivate t5

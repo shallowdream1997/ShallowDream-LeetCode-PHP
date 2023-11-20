@@ -1285,3 +1285,36 @@ CREATE TABLE pa_pattern_building_scoring
     createdOn  DATETIME NULL COMMENT '创建日期',
     createdBy  VARCHAR(255) NULL COMMENT '创建人'
 )ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE pa_product_brand_bilino_rule
+(
+    salesBrand    VARCHAR(255) NULL COMMENT '品牌',
+    cnCategory    VARCHAR(255) NULL COMMENT '分类全路径',
+    productLineId VARCHAR(255) NULL COMMENT '末级分类产品线',
+    platformOwner VARCHAR(255) NULL COMMENT '平台负责人',
+    developer     VARCHAR(255) NULL COMMENT '开发',
+    salesMan      VARCHAR(255) NULL COMMENT '销售',
+    status        INT NULL COMMENT '是否有效10-有效,20-无效',
+    modifiedBy    VARCHAR(255) NULL COMMENT '记录修改人',
+    modifiedOn    DATETIME NULL COMMENT '记录修改时间',
+    createdOn     DATETIME NULL COMMENT '记录创建时间',
+    createdBy     VARCHAR(255) NULL COMMENT '记录创建时间'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+CREATE TABLE pa_product_brand_score_base
+(
+    salesBrand      VARCHAR(255) NULL COMMENT '品牌',
+    businessType    VARCHAR(255) NULL COMMENT '业务类型',
+    cnCategoryFirst VARCHAR(255) NULL COMMENT '一级分类',
+    scoreNow        INT NULL COMMENT '当前得分',
+    addScore        INT NULL COMMENT '单次分配得分',
+    baseScore       INT NULL COMMENT '基础得分',
+    skuNum          INT NULL COMMENT '已分配sku数量',
+    LastAddOn       DATETIME NULL COMMENT '最后一次分配时间',
+    status          INT NULL COMMENT '状态10-开启,20-关闭',
+    modifiedBy      VARCHAR(255) NULL COMMENT '记录修改人',
+    modifiedOn      DATETIME NULL COMMENT '记录修改时间',
+    createdOn       DATETIME NULL COMMENT '记录创建时间',
+    createdBy       VARCHAR(255) NULL COMMENT '记录创建时间'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+

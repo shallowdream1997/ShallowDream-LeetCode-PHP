@@ -1,0 +1,107 @@
+@startuml
+title 绩效指标看板-广告GR-spend占比指标接口
+autonumber
+
+actor "指标名" as kpiName
+
+box "pa-biz-application"
+participant "广告GR占比 & 广告Spend占比" as java1
+end box
+
+box "poms_big_data_nestjs"
+participant "广告GR占比的分母 - 负责账号Gr" as p1
+participant "广告GR占比 - 人工评分" as p2
+end box
+
+box "dds"
+participant "获取广告信息的dbapi" as dds1
+end box
+
+group #lightyellow <color #red>调用广告GR占比的公式流程
+kpiName -> java1 : 调用接口广告GR占比
+activate java1
+
+java1 -> p2 : 组别人员的多个指标计算\n用年月人+指标的字段kpiName="calcPatternBuildScore"\n调接口calcPaUserKpi
+
+activate p2
+p2 -> java1 : 返回广告GR占比的人工指标评分
+deactivate p2
+
+alt 没有广告GR占比的人工指标评分
+
+
+java1 -> dds1 : 调用dbapi，获取adsGr
+
+activate dds1
+dds1 --> java1 : 返回adsGr
+deactivate dds1
+
+note over java1 : 获取adsGr - <color #red>作为计算广告GR占比的分子
+
+java1 -> p1 : kpiName =“calcSellerGMVFinishRate”\n调用指标计算接口calcPaUserKpi
+
+activate p1
+p1 --> java1 : 获取指标得分
+deactivate p1
+
+note over java1 : sellerIdInfoList数组里面\n每个关于amazon_us渠道的账号\n所有Sum(实际广告Gr) \n<color #red> - 作为计算广告GR占比的分母
+
+java1 -> java1 : 整合公式 = adsGr/Sum(实际广告Gr)\n得出广告GR占比
+
+
+
+else 存在广告GR占比的指标评分
+
+java1 -> java1 : 采用广告GR占比的指标评分作为广告GR占比
+end
+
+java1 --> kpiName : 返回广告GR占比
+
+deactivate java1
+
+end
+
+
+group #lightGreen <color #red>调用广告Spend占比的公式流程
+kpiName -> java1 : 调用接口广告Spend占比
+activate java1
+
+java1 -> p2 : 组别人员的多个指标计算\n用年月人+指标的字段kpiName="calcPatternBuildScore"\n调接口calcPaUserKpi
+
+activate p2
+p2 -> java1 : 返回广告Spend占比的人工指标评分
+deactivate p2
+
+alt 没有广告Spend占比的人工指标评分
+
+
+java1 -> dds1 : 调用dbapi，获取adsSpend
+
+activate dds1
+dds1 --> java1 : 返回adsSpend
+deactivate dds1
+
+note over java1 : 获取adsSpend - <color #red>作为计算广告Spend占比的分子
+
+java1 -> p1 : kpiName =“calcSellerGMVFinishRate”\n调用指标计算接口calcPaUserKpi
+
+activate p1
+p1 --> java1 : 获取指标得分
+deactivate p1
+
+note over java1 : sellerIdInfoList数组里面\n每个关于amazon_us渠道的账号\n所有Sum(实际广告Gr) \n<color #red> - 作为计算广告Spend占比的分母
+
+java1 -> java1 : 整合公式 = adsSpend/Sum(实际广告Gr)\n得出广告Spend占比
+
+else 存在广告Spend占比的指标评分
+
+java1 -> java1 : 采用广告Spend占比的指标评分作为广告Spend占比
+end
+
+java1 --> kpiName : 返回广告Spend占比
+
+deactivate java1
+
+end
+
+@enduml

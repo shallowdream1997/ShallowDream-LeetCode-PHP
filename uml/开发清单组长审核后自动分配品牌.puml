@@ -1,0 +1,160 @@
+@startuml
+title 开发清单组长审核后自动分配品牌
+autonumber
+
+actor "customer" as customer
+
+
+box "product_operation_angular5_js"
+participant "开发前重复品审核(组长)" as p1
+participant "中文分类审核" as p2
+participant "后端目录开发清单-导入开发清单" as p3
+end box
+
+
+box "product_operation_listing_management_nodejs_app"
+participant "pa_product产品清单接口" as n2
+participant "pa_product_detail产品清单详情接口" as n3
+end box
+
+box "poms_listing_nest"
+participant "产品清单规则指定品牌接口" as n4
+participant "产品清单品牌得分基础接口" as n5
+end box
+
+box "mongo"
+participant "pa_product" as db1
+participant "pa_product_detail" as db2
+participant "pa_product_brand_bilino_rule" as db3
+participant "pa_product_brand_score_base" as db4
+end box
+
+customer -> p1 : 点击审核通过按钮
+activate p1
+p1 -> p1 : 判断在该批次下有没有选择产品
+alt 有选择产品
+
+p1 -> n3 : 更新批次下产品清单详情接口状态status = 'leaderActive'
+activate n3
+n3 -> db2 : 更新状态
+activate db2
+db2 --> n3 : 返回结果
+deactivate db2
+n3 --> p1 : 返回结果，看产品详情的品牌是否为空
+deactivate n3
+
+alt #lightBlue 产品的品牌为空(即没有分配品牌)
+
+p1 -> n2 : 用所选产品的paProductId字段查询产品清单主信息
+activate p1
+activate n2
+n2 -> db1 : 查询数据
+activate db1
+db1 --> n2 : 返回结果
+deactivate db1
+n2 --> p1 : 返回产品清单信息,判断salesBrand是否为空
+deactivate n2
+
+
+alt #Gold 产品清单的品牌为空(即整单没有分配品牌)
+p1 -> n4 : 用产品清单的【cnCategory分类全路径】查询规则指定品牌的接口
+activate p1
+activate n4
+n4 -> db3 : 查询数据
+activate db3
+db3 --> n4 : 返回指定规则结果
+deactivate db3
+n4 --> p1 : 返回指定规则结果
+deactivate n4
+deactivate p1
+
+alt #lightGreen 该规则没有指定品牌
+p1 -> n5 : 用产品清单的【cnCategoryFirst一级分类 + tag2/tag业务类型】查询品牌得分基础接口
+activate p1
+activate n5
+n5 -> db4 : 查询品牌以及品牌得分
+activate db4
+db4 --> n5 : 返回品牌和品牌得分，取品牌得分中最低分数的品牌\n品牌得分如果存在相同数据则随机取一个品牌
+deactivate db4
+n5 --> p1 : 返回品牌
+deactivate n5
+
+
+p1 -> n3 : 更新所选产品清单详情品牌为分配的品牌，保持一致
+activate n3
+n3 -> db2 : 更新品牌
+activate db2
+db2 --> n3 : 返回结果
+deactivate db2
+n3 --> p1 : 返回结果
+deactivate n3
+p1 -> n5 : 对分配的品牌加分
+activate n5
+n5 -> db4 : 更新品牌得分数据
+activate db4
+db4 --> n5 : 返回结果
+deactivate db4
+n5 --> p1 : 返回结果
+deactivate n5
+deactivate p1
+
+else #pink 该规则有指定品牌
+
+p1 -> n3 : 更新所选产品的品牌为指定品牌
+activate p1
+activate n3
+n3 -> db2 : 更新品牌
+activate db2
+db2 --> n3 : 返回结果
+deactivate db2
+n3 --> p1 : 返回结果
+deactivate n3
+p1 -> n5 : 对该品牌加分
+activate n5
+n5 -> db4 : 更新品牌得分数据
+activate db4
+db4 --> n5 : 返回结果
+deactivate db4
+n5 --> p1 : 返回结果
+deactivate n5
+deactivate p1
+
+
+end
+
+else #pink 产品清单的品牌不为空
+p1 -> n3 : 更新所选产品的品牌为产品清单的品牌，保持一致
+activate p1
+activate n3
+n3 -> db2 : 更新品牌
+activate db2
+db2 --> n3 : 返回结果
+deactivate db2
+n3 --> p1 : 返回结果
+deactivate n3
+p1 -> n5 : 对该品牌加分
+activate n5
+n5 -> db4 : 更新品牌得分数据
+activate db4
+db4 --> n5 : 返回结果
+deactivate db4
+n5 --> p1 : 返回结果
+deactivate n5
+deactivate p1
+
+end
+else #pink 产品的品牌不为空
+
+p1 --> customer : 结束，无需分配品牌，无需做品牌加分
+deactivate p1
+
+end
+
+else
+p1 -> customer : 提示报错：“没有选中任何记录！”
+deactivate p1
+end
+
+deactivate p1
+
+@enduml

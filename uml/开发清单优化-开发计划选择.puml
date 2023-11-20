@@ -1,0 +1,47 @@
+@startuml
+title 产品清单开发计划销售池优化
+autonumber
+
+actor "customer" as customer
+
+
+box "product_operation_js_angular5"
+participant "产品开发清单" as p1
+end box
+
+
+box "product_operation_listing_management_nodejs"
+participant "开发清单销售分配池" as n1
+end box
+
+
+box "mongo"
+participant "pa_sales_bid" as db1
+end box
+
+customer -> p1 : 新增开发计划
+activate p1
+p1 -> p1 : 选择开发计划为 <color #red>"平台专项开发"
+
+p1 -> n1 : 获取“产品目录”开发清单销售分配池
+activate n1
+n1 -> db1 : listType = <color #red>"产品目录"
+activate db1
+db1 --> n1 : 返回产品目录的销售池
+deactivate db1
+n1 --> p1 : 返回数据
+deactivate n1
+
+
+p1 -> p1 : 选择开发计划为 <color #red>"PC平台专项开发"
+
+p1 -> n1 : 获取“产品目录”开发清单销售分配池
+activate n1
+n1 -> db1 : listType = <color #red>"PC产品目录"
+activate db1
+db1 --> n1 : 返回产品目录的销售池
+deactivate db1
+n1 --> p1 : 返回数据
+deactivate n1
+
+@enduml

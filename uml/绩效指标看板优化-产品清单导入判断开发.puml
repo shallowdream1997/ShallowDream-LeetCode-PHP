@@ -1,0 +1,63 @@
+@startuml
+title 产品清单导入清单优化
+autonumber
+
+actor "customer" as customer
+
+
+box "product_operation_js_angular5"
+participant "产品开发清单" as p1
+end box
+
+
+box "poms_listing_nest"
+participant "指定规则" as n1
+end box
+
+box "product_operation_nodejs_app"
+participant "根据中文分类ID获取分类全路径" as n2
+end box
+
+box "mongo"
+participant "pa_product_brand_bilino_rule" as db1
+participant "development_direction" as db2
+end box
+
+customer -> p1 : 进入页面
+activate p1
+p1 -> n1 : 获取指定规则
+
+activate n1
+n1 -> db1 : 以产品线中文分类全路径为分组id，对销售，开发，品牌等分组
+activate db1
+db1 --> n1 : 返回分组数据
+deactivate db1
+n1 --> p1 : 返回数据
+deactivate n1
+p1 -> p1 : 导入开发清单
+
+alt 导入开发清单，判断文件内容，列名为"中文分类ID*"存在
+
+p1 -> n2 : 收集开发清单里面所有的中文分类ID\n获取中文分类全路径
+activate n2
+n2 -> db2 : 查询数据
+activate db2
+db2 --> n2 : 返回数据
+deactivate db2
+n2 --> p1 : 返回所有的中文分类全路径
+deactivate n2
+p1 -> p1 : 根据中文分类全路径匹配指定规则的销售，开发，品牌等
+
+alt 指定开发 != 当前登录用户名
+p1 --> customer : 提示：暂无此产品线的开发权限
+else
+p1 -> p1 : 导入开发清单，销售人员固定为指定销售
+p1 --> customer : 结束
+end
+
+
+end
+
+deactivate p1
+
+@enduml

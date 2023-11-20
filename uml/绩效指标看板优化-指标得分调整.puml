@@ -1,0 +1,66 @@
+@startuml
+title 绩效指标看板优化-指标得分调整
+autonumber
+
+actor "customer" as customer
+
+
+box "poms_js_web"
+participant "PA-绩效考核看板-运营人员" as p1
+end box
+
+
+box "poms_big_data_nestjs"
+participant "calcPaUserKpi\n指标计算接口" as n1
+
+participant "kpiName指标公式" as n2
+
+end box
+
+box "mongo"
+participant "pa_pattern_building_scoring" as db1
+participant "其他的需要计算指标的mongo表" as db2
+end box
+
+customer -> p1 : 页面加载-默认组别为"产品开发",\n年月为全年月,人员为产品开发组的人员
+activate p1
+p1 -> n1 : <color #red>组别人员的多个指标计算，用年月人+指标的字段kpiName\n<color #red>用Promise的方式的调接口calcPaUserKpi
+alt 有选择产品
+activate n1
+n1 -> db1 : <color #red>先查询指标得分优先级最高的人工考评得分表，找出对应的年月人的所有指标评分
+activate db1
+db1 --> n1 : <color #red>返回人工指标评分
+deactivate db1
+
+alt #lightgreen 如果某个年月人没有人工指标评分
+
+n1 -> n2 : 过滤掉没有人工指标评分的年月人，剩余的年月人继续调用原计算指标得分的公式
+activate n1
+note over n2 : calcPaProductItemRate\n开发清单节点流转达成率
+note over n2 : calcPaUserOrderFillRate\n个人月度到货达成率
+note over n2 : calcPaUserGMVFinishRate\n个人月度目标销售额达成率
+note over n2 : calcFrontMarketReviewMaterialCeRate\n资料呈现及时率-产品开发
+note over n2 : calcFrontMarketReviewMaterialCeRateSales\n资料呈现及时率-产品运营
+note over n2 : calcFrontMarketReviewMaterialBatchRate\n前端市场复核及时达成率
+note over n2 : calcSellerGMVFinishRate\n账号GMV月度达成率
+note over n2 : calcSellerMarginFinishRate\nMargin月度达成率
+note over n2 : calcProductCatalogIncubationPeriodSkuRate\n产品目录孵化期sku综合得分率
+activate n2
+n2 -> db2 : 查表
+activate db2
+db2 --> n2 : 返回参与公式计算的数据
+deactivate db2
+n2 --> n1 : 返回公式计算的年月人指标得分
+deactivate n2
+else #lightyellow 存在人工指标评分
+n1 --> n1 : 该年月人的指标得分采用人工指标评分
+end
+deactivate n1
+n1 -> n1 : 整理所传的年月人中的所有的指标得分
+n1 --> p1 : 返回得分
+
+deactivate n1
+p1 --> customer : 结束
+deactivate p1
+
+@enduml
