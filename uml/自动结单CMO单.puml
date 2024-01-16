@@ -1,0 +1,72 @@
+@startuml
+title 自动结单CMO单
+autonumber
+
+actor "xxl-job" as customer
+
+box "pa-biz-application" #lightBlue
+
+participant "自动CMO结单" as java1
+participant "cmo单详情Feign类" as java2
+end box
+
+box "ux168_app" #pink
+participant "cmoComponent\nsetCmoMasterBillStatusToFinish" as java4
+participant "cmoComponent\nsetCmoDetailStatusToFinish" as java7
+participant "cmoComponent\ngetCmoDetailByCmoBillNoList" as java5
+participant "cmoComponent\ngetCmoMasterByCmoBillNoList" as java6
+end box
+
+box "poms_big_data_nestjs" #orange
+participant "pa的cmo单详情" as node1
+end box
+
+box "database" #lightYellow
+participant "pa_cmo_statement_detail" as db
+end box
+
+customer -> java1 : 定时任务执行
+activate java1
+java1 -> java2 : 查询pa_cmo_statement_detail里面"cmoBillStatusNew" : "uncompleted"的数据
+activate java2
+java2 -> node1 : 查询pa_cmo_statement_detail
+activate node1
+node1 -> db : 查询数据
+activate db
+db --> node1 : 返回数据
+deactivate db
+node1 --> java2 : 返回结果
+deactivate node1
+java2 --> java1 : 返回结果
+deactivate java2
+
+alt 存在待结单的cmo单
+Loop CompletableFuture
+java1 -> java5 : 根据cmo单号来获取ux168的cmo单详情
+activate java5
+java5 --> java1 : 返回数据
+deactivate java5
+java1 -> java7 : cmo单详情结单，更新状态为finish
+activate java7
+java7 --> java1 : 返回结果
+deactivate java7
+
+
+java1 -> java6 : 根据cmo单号来获取ux168的cmo单主单
+activate java6
+java6 --> java1 : 返回数据
+deactivate java6
+java1 -> java4 : cmo单主单结单，更新状态为finish
+activate java4
+java4 --> java1 : 返回结果
+deactivate java4
+
+end
+
+
+end
+deactivate java1
+
+
+
+@enduml

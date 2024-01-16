@@ -1,0 +1,51 @@
+@startuml
+
+'actor A
+'actor B
+actor 系统 as sys
+actor 类目审核人 as c
+
+
+sys --> (接收商品服务MQ)
+(接收商品服务MQ) -->(解析API数据)
+(接收商品服务MQ) --> (解析PT站点)
+(解析API数据) --> (获取PT数据版本结果)
+(解析API数据) .down.>(存储api原数据表)
+(解析PT站点) --> (获取PT数据版本结果)
+(获取PT数据版本结果) .down.> (新增PT数据版本结果)
+(获取PT数据版本结果) --> (更新PT数据版本结果)
+(更新PT数据版本结果) .down.> (忽略原版本结果的PT单据)
+
+
+
+
+sys --> (xxl-job定时任务)
+(xxl-job定时任务) --> (PT结果表/PT原表/推荐PT表/单据表的判断)
+(PT结果表/PT原表/推荐PT表/单据表的判断) .down.> (钉钉告警)
+(PT结果表/PT原表/推荐PT表/单据表的判断) --> (PT单据新增/变更操作)
+
+(PT单据新增/变更操作) .down.> (新增PT单据)
+(PT单据新增/变更操作) .down.>(变更PT单据)
+
+
+c --> (单据忽略)
+c --> (单据更新)
+c --> (查询单据)
+c --> (重置单据)
+
+(单据更新) .down.>(钉钉告警)
+(单据更新) .down.>(新增推荐PT)
+(单据更新) .down.>(更新推荐PT)
+(单据更新) .down.>(更新PT单据)
+
+'A -up-> (up)
+'A -right-> (center)
+'A -down-> (down)
+'A -left-> (left)
+
+'B -up-> (up)
+'B -left-> (center)
+'B -right-> (right)
+'B -down-> (down)
+
+@enduml

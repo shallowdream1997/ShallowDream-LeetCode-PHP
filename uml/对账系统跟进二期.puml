@@ -1,0 +1,38 @@
+@startuml
+title 自动结单CMO单
+autonumber
+
+actor "customer" as customer
+
+box "poms_js_web" #lightBlue
+participant "cmo异常单管理看板" as html1
+end box
+
+box "pa-biz-application" #lightBlue
+participant "cmo异常单" as java1
+end box
+
+
+
+box "dss" #lightYellow
+
+participant "cmo异常单dbapi查询" as dss1
+
+end box
+
+customer -> html1 : 访问页面
+activate html1
+html1 -> java1 : 调用cmo异常单dbapi接口
+activate java1
+java1 -> dss1 : 调用dbapi
+activate dss1
+dss1 --> java1 : 返回数据
+deactivate dss1
+java1 --> html1 : 返回数据
+deactivate java1
+html1 --> customer : 结束
+deactivate java1
+
+
+
+@enduml

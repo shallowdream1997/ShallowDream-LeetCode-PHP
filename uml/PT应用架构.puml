@@ -1,0 +1,62 @@
+@startuml
+
+
+package "RocketMQ"{
+	[解析API原数据]
+}
+
+package "platform-sms-core-application"{
+	[PT数据版本结果应用]
+    [新增/忽略PT单据应用]
+    [新增/更新推荐PT应用]
+}
+'platform-sms-core-application
+
+package "platform-item-service"{
+	[PT数据版本结果服务]
+	[PT单据服务]
+}
+
+package "product_operation_listing_management_nodejs_app"{
+	[PT关系映射表配置服务]
+}
+
+package "poms_listing_nestjs"{
+	[PT原数据map表服务]
+	[推荐PT表服务]
+}
+
+package "新前端web"{
+	[amazon目录变更管理页面]
+}
+
+package "platform-message-service"{
+	[钉钉告警通知]
+}
+
+
+
+
+
+'DataAccess - [First Component]
+'[First Component] ..> HTTP : use
+
+[解析API原数据] ..> [PT数据版本结果应用] : MQ消费
+[PT数据版本结果应用] --> [PT数据版本结果服务] : 新增/更新PT数据版本结果
+[PT数据版本结果应用] --> [PT单据服务] : 忽略单据
+
+
+[新增/忽略PT单据应用] --> [PT原数据map表服务]
+[新增/忽略PT单据应用] --> [PT关系映射表配置服务]
+[新增/忽略PT单据应用] --> [推荐PT表服务]
+[新增/忽略PT单据应用] --> [钉钉告警通知]
+[新增/忽略PT单据应用] --> [PT单据服务] : 新增单据
+
+[amazon目录变更管理页面] --> [新增/更新推荐PT应用] : 更新/忽略单据
+
+[新增/更新推荐PT应用] --> [PT原数据map表服务]
+[新增/更新推荐PT应用] --> [PT关系映射表配置服务]
+[新增/更新推荐PT应用] --> [推荐PT表服务] : 新增/更新推荐PT
+[新增/更新推荐PT应用] --> [钉钉告警通知]
+
+@enduml

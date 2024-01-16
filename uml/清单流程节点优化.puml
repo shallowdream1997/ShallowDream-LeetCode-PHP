@@ -1,0 +1,88 @@
+@startuml
+title 清单流程节点优化
+autonumber
+
+actor "customer" as customer
+
+box "product_operation_js_angular5" #lightBlue
+participant "新增开发清单" as html1
+participant "提交组长检查" as html2
+participant "开发清单审核通过" as html3
+participant "修改品牌" as html3
+end box
+
+box "product_operation_listing_management_nodejs_app" #lightBlue
+participant "pa_product" as node1
+participant "pa_product_detail" as node2
+participant "pa_sku_attribute" as node3
+participant "pa_product_brand" as node3
+end box
+
+box "poms_listing_nestjs" #lightBlue
+participant "pa_product_brand_score_base" as node4
+end box
+
+box "db" #lightBlue
+participant "pa_product" as db1
+participant "pa_product_detail" as db2
+participant "pa_sku_attribute" as db3
+end box
+
+customer -> html1 : 新增开发清单
+activate html1
+html1 -> html1 : ...导入清单文件保存开发清单\n<color #red>按照当前日期new date()，yyMMddHHmmss格式生成T号
+
+Par #lightGreen 新增开发清单
+html1 -> node1 : 新增开发清单主表
+activate node1
+node1 -> db1 : 保存数据
+activate db1
+db1 --> node1 : 返回结果
+deactivate db1
+node1 --> html1 :
+deactivate node1
+else
+html1 -> node2 : 新增开发清单明细
+activate node2
+node2 -> db2 : 保存数据
+activate db2
+db2 --> node2 : 返回结果
+deactivate db2
+node2 --> html1 : 返回结果
+deactivate node2
+
+end
+html1 --> customer : 结束
+deactivate html1
+
+
+customer -> html2 : 提交组长检查
+activate html2
+html2 -> node2 : 判断提交组长检查的清单明细权限
+activate node2
+group #orange 判断提交组长检查的清单明细权限 接口
+node2 -> db2 : 用paProductId 来获取status = 'ipCheckDone'的所有detail明细数据
+activate db2
+db2 --> node2 : 返回明细内的T号
+deactivate db2
+node2 -> node3 : 用清单明细的所有的T号\n查询在pa_sku_attribute是否存在且是否duplicate都为空
+activate node3
+node3 -> db3 : 查询结果
+activate db3
+db3 --> node3 : 返回结果
+deactivate db3
+node3 --> node2 : 返回结果
+deactivate node3
+alt detail数量和pa_sku_attribute的数量想到，且duplicate均为空
+node2 --> html2 : 可提交组长检查
+else
+node2 --> html2 : 不可提交组长检查
+end
+deactivate node2
+end
+deactivate html2
+
+html2 --> customer : 结束
+
+
+@enduml

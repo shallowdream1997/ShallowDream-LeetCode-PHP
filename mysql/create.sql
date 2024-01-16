@@ -1318,3 +1318,53 @@ CREATE TABLE pa_product_brand_score_base
     createdBy       VARCHAR(255) NULL COMMENT '记录创建时间'
 )ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
+CREATE TABLE pa_sale_forecast_v4
+(
+    platform     VARCHAR(255) NULL COMMENT '平台',
+    channel      VARCHAR(255) NULL COMMENT '渠道',
+    sellerId     VARCHAR(255) NULL COMMENT '账号',
+    vertical     VARCHAR(255) NULL COMMENT '垂直',
+    tag          VARCHAR(255) NULL COMMENT '产品类型',
+    pl           INT NULL COMMENT 'pl',
+    turnOver     INT NULL COMMENT '预估销售额',
+    forecastDate DATETIME NULL COMMENT '预估日期',
+    version      VARCHAR(255) NULL COMMENT '目标版本号',
+
+    modifiedBy   VARCHAR(255) NULL COMMENT '记录修改人',
+    modifiedOn   DATETIME NULL COMMENT '记录修改时间',
+    createdOn    DATETIME NULL COMMENT '记录创建时间',
+    createdBy    VARCHAR(255) NULL COMMENT '记录创建时间'
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;
+us - 海外仓
+"ebay_us_careudepot",
+"carpopart",
+"automall_tech",
+"uauto1",
+"auto_fit_online",
+"vocoste",
+"x-autohaux_us",
+"tasharinacorp"
+
+uk - 海外仓
+"supautoparts",
+"x-autohaux_uk"
+
+
+au - 海外仓
+"vehicleaccbuy"
+"x-autohaux_au"
+
+
+us 直发仓
+"care4you_store",
+"autopart_near_me",
+"productcollect",
+
+uk - 直发仓
+"pretty_decor",
+"ceo1shop"
+
+
+au - 直发仓
+"natural_preserved",
+"uxcell"

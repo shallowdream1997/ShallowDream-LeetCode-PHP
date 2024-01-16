@@ -1,13 +1,24 @@
-januaryBagging: { $sum: "$JanTotalBagging" },
-                    februaryBagging: { $sum: "$FebTotalBagging" },
-                    marchBagging: { $sum: "$MarTotalBagging" },
-                    aprilBagging: { $sum: "$AprTotalBagging" },
-                    mayBagging: { $sum: "$MayTotalBagging" },
-                    juneBagging: { $sum: "$JunTotalBagging" },
-                    julyBagging: { $sum: "$JulTotalBagging" },
-                    augustBagging: { $sum: "$AugTotalBagging" },
-                    septemberBagging: { $sum: "$SepTotalBagging" },
-                    octoberBagging: { $sum: "$OctTotalBagging" },
-                    novemberBagging: { $sum: "$NovTotalBagging" },
-                    decemberBagging: { $sum: "$DecTotalBagging" },
-                    totalPaidYearSumBagging: { $sum: "$fullYearTotalBagging" },
+1. 读取表product_development_dashboards的当前年份全部PA的数据，返回数据List
+2. 在List数据里面，筛出productListNoStatusMap字段，拿到QD单和QD单对应的状态值(apply = 5,assign = 6,retire = 7),对状态值来做分组，每个状态下记录QD单号
+3. 拿到第2步的QD单号，通过QD单号去查询PA的产品清单主表pa_product，获取对应的主表_id
+4. 然后再拿第3步的主表_id，去查对应的主表_id的PA产品清单明细pa_product_detail里 状态 不为 "cancel", "delete", "inactive", "reviewFail", "categoryCheckFail"的数据的数量
+5. 通过2，3，4步，可以拿到每个周期下所有QD单的每个产品清单的明细数量，然后再按照状态值分组汇总对应值下的QD单的清单明细数量
+
+字段说明：
+assignCount - 接单sku数 - 步骤5获取（QD状态取值 = 6）
+assignNum - 接单数 - 步骤1获取，直接读表assignNum字段（由脚本处理：ux168.product_development_list表draftBeginDate发版周期内，status = 6的清单数量）
+
+applyCount - 流拍sku数 - 步骤5获取（QD状态取值 = 5）
+applyNum - 流拍数 - 步骤1获取，直接读表applyNum字段（由脚本处理：ux168.product_development_list表draftBeginDate发版周期内，status = 5的清单数量）
+
+
+retireCount - 放弃sku数 - 步骤5获取（QD状态取值 = 7）
+retiredNum - 放弃数 - 步骤1获取，直接读表retiredNum字段（由脚本处理：ux168.product_development_list表draftBeginDate发版周期内，status = 7的清单数量）
+
+assignRate - 接单率 - 步骤1获取，直接读表assignRate字段（由脚本处理：assignNum / ux168.product_development_list表draftBeginDate发版周期内清单发布总数量）
+
+skuAssignRate - SKU接单率 - assignCount和retireCount均为0 的时候，skuAssignRate为0；否则 = assignCount / (item.assignCount + item.retireCount);
+
+consignmentNum - 本轮供应商投标数量 - 步骤1获取，直接读表consignmentNum字段（由脚本处理：productListNo清单在ux168.consignment_apply表下的供应商投标数量）
+
+consignmentTwoNum - 连续2轮参与投标供应商数量 - 步骤1获取，直接读表consignmentTwoNum字段（productListNo清单在ux168.consignment_apply表下的上轮参与供应商投标数量）

@@ -1,0 +1,35 @@
+@startuml
+title 资料覆盖上架品牌
+autonumber
+
+actor "customer" as customer
+
+box "product_operation_js_angular5" #lightBlue
+participant "资料覆盖" as html1
+end box
+
+box "product_operation_listing_management_nodejs_app" #lightBlue
+participant "product_base_info" as node1
+participant "product_sku\noverriedWriter" as node2
+end box
+
+
+customer -> html1 : 选择上架品牌
+activate html1
+html1 -> node1 : 查询prodcut产品信息,看是否属于PA
+activate node1
+node1 --> html1 : 返回结果
+deactivate node1
+alt 是PA产品
+html1 -> html1 : 需要覆盖同步的attribute里面新增\n一个channel = ‘local’ & label = ‘salesBrand 的数据
+html1 -> node2 : 调用sku同步接口
+activate node2
+node2 --> html1 : 返回结果
+deactivate node2
+end
+html1 --> customer : 结束
+deactivate html1
+
+
+
+@enduml

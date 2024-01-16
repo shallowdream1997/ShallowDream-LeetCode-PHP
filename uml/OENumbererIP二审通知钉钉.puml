@@ -1,0 +1,60 @@
+@startuml
+title OE Number IP审核中 钉钉通知给个人
+autonumber
+
+actor "xxl-job" as customer
+
+box "pa-biz-application" #lightBlue
+
+participant "IpReviewSendMessage\nIp审核钉钉通知" as java1
+participant "OeFitmentDataApply\nOeNumber申请Feign类" as java2
+end box
+
+box "platform-message-service" #pink
+participant "钉钉消息" as java3
+end box
+
+box "platform-config-service" #pink
+participant "配置中心" as java4
+end box
+
+box "product_operation_listing_management_nodejs_app" #orange
+participant "OE申请" as node1
+end box
+
+box "database" #lightYellow
+participant "pa_oe_fitment_data_apply" as db
+end box
+
+customer -> java1 : 定时任务执行
+activate java1
+java1 -> java2 : 查询OeNumber申请数据\n状态为5(IP审核中)的数据是否存在
+activate java2
+java2 -> node1 : 查询pa_oe_fitment_data_apply
+activate node1
+node1 -> db : 查询数据
+activate db
+db --> node1 : 返回数据
+deactivate db
+node1 --> java2 : 返回结果
+deactivate node1
+java2 --> java1 : 返回结果
+deactivate java2
+
+alt 存在OENumber的IP审核中的数据
+java1 -> java4 : 获取要发送通知的IP审核人
+activate java4
+java4 --> java1 : 返回数据
+deactivate java4
+alt 存在数据
+java1 -> java3 : 按照模板发送钉钉消息给审核人
+activate java3
+java3 --> customer : 接送钉钉推送，结束
+deactivate java3
+end
+end
+deactivate java1
+
+
+
+@enduml
