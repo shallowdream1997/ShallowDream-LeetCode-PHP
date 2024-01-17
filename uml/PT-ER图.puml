@@ -1,0 +1,127 @@
+@startuml
+
+object API原数据表 {
+    <color #red>Amazon 站点名称
+    PT的json文件内容
+    ...
+}
+
+object PT数据版本结果 {
+     <color #red>Amazon 站点名称
+     分类路径ID
+     分类路径名称
+     <color #red>Amazon分类 ID
+     Amazon 分类名称
+     Amazon分类等级
+     Amazon 父级分类ID
+     Amazon 是否末级分类
+     科目类型
+     首个分类路径ID
+     项类型
+     解析出来的所有itk
+     itk解析前的原文
+     创建人
+     创建时间
+     修改人
+     修改时间
+     产品类型
+     <color #red>推荐PT
+     <color #red>版本
+}
+
+object PT单据表 {
+	<color #red>目录ID
+	<color #red>渠道
+    <color #red>单据类型
+    变更前目录路径id
+    新目录路径id
+    变更前目录全路径名称
+    新目录全路径名称
+    变更前父级目录id
+    父级目录id
+    变更前目录名称
+    <color #red>变更后目录名称
+    变更前PT
+    <color #red>变更后PT
+    是否推荐pt
+    <color #red>单据状态
+    <color #red>单据ID
+    审批人
+    审批时间
+    <color #red>PT数据版本号
+	创建人
+    创建时间
+    修改人
+    修改时间
+}
+
+object PT元数据map表 {
+	_id
+	xsd文件名称
+	推荐PT全路径
+    PT主题
+    渠道
+    是否启用
+    是否删除
+    创建人
+    修改人
+    创建时间
+    修改时间
+}
+
+
+object 推荐PT表 {
+    amazon推荐PT
+    目录全ID
+    目录全路径
+    目录ID
+    目录一级ID
+    目录渠道
+    产品类型全路径
+    产品类型
+    产品类型等于amazon推荐PT
+    变体主题
+    xsd名称
+    创建人
+    修改人
+    创建时间
+    修改时间
+}
+
+object PT关系映射配置表 {
+  寄卖商id
+	年度数量
+	年度金额
+	接单频率
+	近期意愿
+	'最大滞留量
+	最后变更时间
+	接受半年合作计划
+	寄卖商名称
+	注册时间
+	源表修改时间
+	单次数量
+	供应链专员id
+	供应链专员名称
+
+}
+
+
+'object Tire
+'object Engine
+'object Driver
+
+
+'Car <|- Bus
+'Car *-down- Tire
+API原数据表 -right-> PT数据版本结果 : 1..N
+
+PT数据版本结果 -right-> PT单据表 : 1..N
+
+PT元数据map表 -right-> 推荐PT表 : 1..N
+
+PT单据表 -right- 推荐PT表 : 1..1
+
+'Bus o-down- Driver
+
+@enduml

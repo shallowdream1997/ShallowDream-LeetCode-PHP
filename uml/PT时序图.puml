@@ -1,70 +1,212 @@
 @startuml
-title 新增/忽略PT单据
+title PT类目变更单据全流程
 autonumber
 
-actor "RocketMQ" as customer
+actor "RocketMQ" as mq
+actor "customer" as customer
+
+box "新前端Web" #lightBlue
+participant "变更类目PT管理页面" as web
+end box
 
 box "platform-sms-core-application" #lightBlue
-participant "PT数据版本结果应用" as java1
+participant "PT数据结果版本应用" as java1
 participant "新增/忽略PT单据应用" as java2
 participant "新增/更新推荐PT应用" as java3
+participant "PT元数据feign类" as feign1
+participant "推荐PTfeign类" as feign2
 end box
 
 box "platform-item-service" #pink
-participant "PT数据版本结果服务" as java4
-participant "PT单据服务" as java5
+participant "platform_amazon_browse_tree\nAPI原数据表服务" as java4
+participant "PT数据结果版本服务" as java5
+participant "PT单据服务" as java6
 end box
 
-box "product_operation_listing_management_nodejs_app" #orange
-participant "PT关系映射服务" as node1
+box "platform-config-service" #orange
+participant "PT关系映射配置服务" as node1
 end box
 
-box "poms_listing_nestjs" #orange
+box "poms_listing_nestjs" #lightGreen
 participant "PT原数据map表服务" as node2
 participant "推荐PT表服务" as node3
 end box
 
 box "mysql" #lightYellow
-participant "s" as sql1
+participant "API原数据表" as sql1
+participant "PT数据结果版本表" as sql2
+participant "PT单据表" as sql3
+
 end box
 
 box "mongodb" #lightYellow
-participant "s" as db1
+participant "option_val_list\n配置表" as db1
+participant "amazon_producttype_variationtheme_map\nPT元数据表" as db2
+participant "amazon_category_productType\n推荐PT表" as db3
 end box
 
 box "platform-message-service" #pink
-participant "钉钉消息" as java3
+participant "钉钉消息" as dingding
 end box
 
-customer -> java1 : 定时任务执行
+mq -> java1 : 接收商品服务传来的mq\n获取API原数据的Id
+
+group #lightYellow 解析API原数据，处理PT数据结果版本和PT单据
 activate java1
-java1 -> java2 : 查询OeNumber申请数据\n状态为5(IP审核中)的数据是否存在
-activate java2
-java2 -> node1 : 查询pa_oe_fitment_data_apply
-activate node1
-node1 -> db : 查询数据
-activate db
-db --> node1 : 返回数据
-deactivate db
-node1 --> java2 : 返回结果
-deactivate node1
-java2 --> java1 : 返回结果
-deactivate java2
-
-alt 存在OENumber的IP审核中的数据
-java1 -> java4 : 获取要发送通知的IP审核人
+java1 -> java4 : 用Id查询API原数据，获取PT站点和PT内容
 activate java4
-java4 --> java1 : 返回数据
-deactivate java4
-alt 存在数据
-java1 -> java3 : 按照模板发送钉钉消息给审核人
-activate java3
-java3 --> customer : 接送钉钉推送，结束
-deactivate java3
+java4 -> sql1 : 查询数据
+note over sql1#FFAAAA: channel - PT站点\nbrowseNodeId - Amazon分类Id\nbrowseNodeName - Amazon分类名称\nbrowseNodeStoreContextName - 目录文件名\nproductTypeDefinitions - 推荐PT
+
+sql1 --> java4 : 返回结果
+
+java4 --> java1 : 返回结果
+
+java1 -> java5 : 用channel + browseNodeId查询PT数据结果版本表
+
+java5 -> sql2 : 查询数据
+note over sql2#FFAAAA: channel - PT站点\nbrowseNodeId - Amazon分类Id\nbrowseNodeName - Amazon分类名称\nbrowseNodeStoreContextName - 目录文件名\nproductTypeDefinitions - 推荐PT\nproductType - 产品类型\nversion - 版本
+
+sql2 --> java5 : 返回结果
+
+java5 --> java1 : 返回结果
+
+alt #LightGreen <color #red>存在满足channel+browseNodeId的PT数据结果版本 数据
+alt #lightYellow <color #Green>PT数据结果版本表的推荐PT != API原数据的推荐PT
+java1 -> java6 : PT数据结果版本的版本发生了变化\n需要忽略当前channel+browseNodeId+status = “待审核”的PT单据
+java6 -> sql3 : 查询当前channel+browseNodeId+status = “待审核”的PT单据
+sql3 --> java6 : 返回结果
+java6 --> java1 : 返回结果
+alt <color #Green>存在待审核的PT单据
+java1 -> java6 : 对该channel+browseNodeId的原version版本的PT单据 "待审核" 更新状态为 "已忽略"
+java6 -> sql3 : 更新状态为 "已忽略"
+sql3 --> java6 : 返回结果
+java6 --> java1 : 返回结果
+end
+
+end
+else <color #Green>不存在PT数据结果版本
+java1 -> java5 : 创建channel+browseNodeId的PT数据结果版本
+java5 -> sql2 : 创建数据
+sql2 --> java5 : 返回结果
+java5 --> java1 : 返回结果
 end
 end
-deactivate java1
 
+group #lightYellow 对比PT的各种表，处理PT单据
+note over java1 : productTypeDefinitions原值按照英文逗号分割\n取分割后的最后一个PT值，再转大驼峰格式eg:(BedAndBath)
+java1 -> feign1 : 查找并判断是否存在PT元数据
+note over feign1,node2 #FFAAAA: 传参：\n转义后的productTypeDefinitions\nchannel\nbrowseNodeId
+feign1 -> node2 : 查找并判断是否存在PT元数据，调取node接口
 
+node2 -> db2 : 转义后的productTypeDefinitions，+ channel\n模糊查询PT元数据的productType字段第一个>符号的最右值
+db2 --> node2 : 返回结果
+alt #lightGreen 存在PT元数据
+note over node2,node3 #FFAAAA: 传参：\nchannel\nbrowseNodeId
+node2 -> node3 : 查询推荐PT
 
+node3 -> db3 : 查询数据
+db3 --> node3 : 返回数据
+node3 --> node2 : 返回数据
+
+alt #lightYellow 存在推荐PT
+
+loop for of 遍历推荐PT
+note over node2 #FFAAAA: 判断 ptName 和 转以后的productTypeDefinitions 是否相等\n如果不相等则视为新增更新PT的单据，\n全部相等则视为不新增单据
+end
+alt #lightGreen 遍历里存在任一个不相等PT
+node2 --> feign1 : 返回channel+browseNodeId+productTypeDefinitions,scene = "更新"
+end
+else 不存在推荐PT
+node2 --> feign1 : 返回channel+browseNodeId+productTypeDefinitions,scene = "新增"
+end
+else 不存在PT元数据
+node2 -> node1 : 用productTypeDefinitions查询PT关系映射配置，查询映射的推荐PT
+node1 --> node2 : 返回数据
+alt 不存在映射的PT数据(即：PT数据都不存在)
+node2 -> feign1 : 返回null
+
+end
+
+end
+note over feign1,java1 #FFAAAA: 接收到接口传参返回来的结果，开始判断是否做PT单据的新增/更新/发送告警
+feign1 --> java1 : 返回结果
+alt #lightGreen <color #red>存在数据
+note over java1 #FFAAAA: channel\nbrowseNodeId\nscene
+java1 -> java2 : 调处理PT单据的方法
+note over java2 #FFAAAA: channel\nbrowseNodeId\nstatus = "待审核"
+java2 -> java6 : 查询该条件下PT单据是否存在
+java6 -> sql3 : 查询结果
+sql3 --> java6 : 返回结果
+java6 --> java2 : 返回结果
+alt #lightYellow 不存在PT单据
+note over java2 #FFAAAA: channel\nbrowseNodeId\nstatus = "待审核"\nscene决定"新增"还是"更新"\nbrowsePathId\nproductTypeDefinitions\n...
+java2 -> java6 : 创建PT单据
+java6 ->sql3 : 创建数据
+sql3 --> java6 : 返回创建结果
+java6 --> java2 : 返回结果
+java2 --> java1 : 返回结果
+
+else 存在PT单据
+java2 --> java1 : 不新增单据。结束
+end
+
+else 不存在数据
+
+java1 -> dingding : 发送钉钉告警到群组
+note over dingding #FFAAAA: 平台推荐PT：xxxxx，找不到对应的系统推荐PT，请及时配置系统推荐PT
+end
+
+'group的end
+end
+
+group #lightYellow 审核人审核PT单据，做推荐PT更新
+activate web
+customer -> web : 访问页面
+alt #lightYellow 忽略单据
+web -> java2 : 更新PT单据状态为"已忽略"
+java2 -> sql3 : 更新状态为"已忽略"
+sql3 --> java2 : 返回结果
+java2 --> web : 返回结果
+web --> customer : 结束
+end
+
+alt #lightYellow 更新单据
+web -> java2 : 执行更新推荐PT接口
+
+java2 -> feign1 : 查找并判断是否存在PT元数据
+note over feign1 #FFAAAA: 传参：\nproductTypeDefinitions\nchannel\nbrowseNodeId
+feign1 -> node2 : 查找并判断是否存在PT元数据，调取node接口
+
+node2 -> db2 : productTypeDefinitions + channel\n模糊查询PT元数据的productType字段第一个>符号的最右值
+db2 --> node2 : 返回结果
+alt #lightGreen 不存在PT元数据
+node2 -> node1 : 用productTypeDefinitions查询PT关系映射配置，查询映射的推荐PT
+node1 --> node2 : 返回数据
+alt #lightYellow 不存在映射的PT数据(即：PT数据都不存在)
+node2 -> feign2 : 返回null
+
+end
+end
+note over feign1,java2 #FFAAAA: 接收到接口传参返回来的结果，开始判断是否做推荐PT的新增/更新/发送告警
+feign1 --> java2 : 返回结果
+alt 存在PT元数据 且 PT单据类型 = "新增"
+java2 -> feign2 : 创建推荐PT
+feign2 -> node3 : 创建推荐PT
+node3 -> db3 : 创建数据
+db3 --> node3 : 返回结果
+node3 --> feign2 : 返回结果
+else 存在PT元数据 且 PT单据类型 = "更新"
+java2 -> feign2 : 更新推荐PT
+feign2 -> node3 : 更新推荐PT
+node3 -> db3 : 更新数据
+db3 --> node3 : 返回结果
+node3 --> feign2 : 返回结果
+end
+
+feign2 --> java2 : 返回结果
+java2 --> web : 返回结果
+web --> customer : 结束
+end
+deactivate web
 @enduml

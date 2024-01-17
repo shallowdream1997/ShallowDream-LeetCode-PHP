@@ -6,14 +6,14 @@ package "RocketMQ"{
 }
 
 package "platform-sms-core-application"{
-	[PT数据版本结果应用]
+	[PT数据结果版本应用]
     [新增/忽略PT单据应用]
     [新增/更新推荐PT应用]
 }
 'platform-sms-core-application
 
 package "platform-item-service"{
-	[PT数据版本结果服务]
+	[PT数据结果版本服务]
 	[PT单据服务]
 }
 
@@ -41,9 +41,9 @@ package "platform-message-service"{
 'DataAccess - [First Component]
 '[First Component] ..> HTTP : use
 
-[解析API原数据] ..> [PT数据版本结果应用] : MQ消费
-[PT数据版本结果应用] --> [PT数据版本结果服务] : 新增/更新PT数据版本结果
-[PT数据版本结果应用] --> [PT单据服务] : 忽略单据
+[解析API原数据] ..> [PT数据结果版本应用] : MQ消费
+[PT数据结果版本应用] --> [PT数据结果版本服务] : 新增/更新PT数据结果版本
+[PT数据结果版本应用] --> [PT单据服务] : 忽略单据
 
 
 [新增/忽略PT单据应用] --> [PT原数据map表服务]
