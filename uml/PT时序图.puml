@@ -9,7 +9,7 @@ box "新前端Web" #lightBlue
 participant "变更类目PT管理页面" as web
 end box
 
-box "platform-sms-core-application" #lightBlue
+box "platform-sms-support-application" #lightBlue
 participant "PT数据结果版本应用" as java1
 participant "新增/忽略PT单据应用" as java2
 participant "新增/更新推荐PT应用" as java3
@@ -40,7 +40,7 @@ participant "PT单据表" as sql3
 end box
 
 box "mongodb" #lightYellow
-participant "option_val_list\n配置表" as db1
+'participant "option_val_list\n配置表" as db1
 participant "amazon_producttype_variationtheme_map\nPT元数据表" as db2
 participant "amazon_category_productType\n推荐PT表" as db3
 end box
@@ -245,6 +245,15 @@ db3 --> node3 : 返回结果
 deactivate db3
 node3 --> feign2 : 返回结果
 deactivate node3
+node3 --> java2 : 返回结果
+alt #LightGreen <color #red>系统请求异常
+loop <color #red>重试3次
+java2 -> feign2 : <color #red>重试，重试前查询是否更新
+feign2 --> java2 : <color #red>返回结果
+end
+end
+
+
 deactivate feign2
 else 存在PT元数据 且 PT单据类型 = "更新"
 java2 -> feign2 : 更新推荐PT
@@ -258,6 +267,14 @@ deactivate db3
 node3 --> feign2 : 返回结果
 deactivate node3
 deactivate feign2
+
+node3 --> java2 : 返回结果
+alt #LightGreen <color #red>系统请求异常
+loop <color #red>重试3次
+java2 -> feign2 : <color #red>重试，重试前查询是否更新
+feign2 --> java2 : <color #red>返回结果
+end
+end
 end
 
 feign2 --> java2 : 返回结果
