@@ -1,0 +1,36 @@
+@startuml
+
+
+package "nsq_worker_nodejs_app"{
+	[topic：HK_Poms_Send_New_Amazon_Create_Pa_Sp]
+}
+
+package "pa-biz-application"{
+	[Amazon广告投放应用]
+}
+'platform-sms-core-application
+
+package "pa-biz-service"{
+	[Amazon广告投放服务]
+}
+
+package "pa-biz-web"{
+	[Amazon广告投放管理页面]
+}
+
+package "product_operation_php_restful"{
+	[广告自动化接口]
+}
+
+
+'DataAccess - [First Component]
+'[First Component] ..> HTTP : use
+
+[Amazon广告投放管理页面] ..> [Amazon广告投放应用] : 投放数据的增删改查导出等操作
+[Amazon广告投放应用] --> [Amazon广告投放服务] : 投放数据的增删改查导出等服务调用
+
+[Amazon广告投放应用] --> [广告自动化接口] : 传输数据给接口
+[广告自动化接口] --> [topic：HK_Poms_Send_New_Amazon_Create_Pa_Sp] : 调mq，mq调接口
+
+
+@enduml

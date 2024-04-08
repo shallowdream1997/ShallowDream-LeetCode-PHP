@@ -1,0 +1,43 @@
+@startuml
+
+object amazon_sp_auto_delivery_document_main {
+amazon广告自动化投放单据数据主表
+--
+id
+单据号
+投放类型
+投放状态
+创建人
+创建时间
+修改人
+修改时间
+}
+
+object amazon_sp_auto_delivery_document_detail {
+amazon广告自动化投放单据数据明细表
+--
+id
+渠道
+账号
+sku号
+keyword类型
+keyword内容
+投放状态
+创建人
+创建时间
+修改人
+修改时间
+}
+
+object amazon_sp_campaign {
+campaign表
+}
+
+object amazon_sp_adgroup {
+adgroup表
+}
+amazon_sp_auto_delivery_document_main -> amazon_sp_auto_delivery_document_detail : 1:N
+
+amazon_sp_campaign -> amazon_sp_adgroup : 1:N
+
+@enduml

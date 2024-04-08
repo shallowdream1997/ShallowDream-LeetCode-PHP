@@ -1335,36 +1335,71 @@ CREATE TABLE pa_sale_forecast_v4
     createdOn    DATETIME NULL COMMENT '记录创建时间',
     createdBy    VARCHAR(255) NULL COMMENT '记录创建时间'
 )ENGINE = InnoDB DEFAULT CHARSET = utf8;
-us - 海外仓
-"ebay_us_careudepot",
-"carpopart",
-"automall_tech",
-"uauto1",
-"auto_fit_online",
-"vocoste",
-"x-autohaux_us",
-"tasharinacorp"
-
-uk - 海外仓
-"supautoparts",
-"x-autohaux_uk"
 
 
-au - 海外仓
-"vehicleaccbuy"
-"x-autohaux_au"
+
+CREATE TABLE `platform_amazon_pt_document`
+(
+    `id`                           bigint unsigned NOT NULL COMMENT '自增Id',
+    `channel`                      varchar(32)  NOT NULL COMMENT 'Amazon 站点名称',
+    `category_id`                  varchar(32)  NOT NULL COMMENT 'Amazon分类ID',
+    `old_browse_path_id`           varchar(120) NOT NULL DEFAULT '' COMMENT '变更前目录路径id',
+    `new_browse_path_id`           varchar(120) NOT NULL DEFAULT '' COMMENT '新目录路径id',
+    `old_browse_path_name`         varchar(255) NOT NULL DEFAULT '' COMMENT '变更前目录全路径名称',
+    `new_browse_path_name`         varchar(255) NOT NULL DEFAULT '' COMMENT '新目录全路径名称',
+    `old_parent_browse_id`         varchar(120) NOT NULL DEFAULT '' COMMENT '变更前父级目录id',
+    `new_parent_browse_id`         varchar(120) NOT NULL DEFAULT '' COMMENT '新父级目录id',
+    `old_browse_name`              varchar(255) NOT NULL DEFAULT '' COMMENT '变更前目录名称',
+    `new_browse_name`              varchar(255) NOT NULL DEFAULT '' COMMENT '新目录名称',
+    `old_product_type_definitions` varchar(255) NOT NULL DEFAULT '' COMMENT '变更前PT',
+    `new_product_type_definitions` varchar(255) NOT NULL DEFAULT '' COMMENT '新PT',
+    `doc_id`                       varchar(100) NOT NULL COMMENT '单据ID',
+    `apply_by`                     varchar(32)  NOT NULL DEFAULT '' COMMENT '审批人',
+    `apply_time`                   timestamp    NOT NULL COMMENT '审批时间',
+    `version`                      int          NOT NULL COMMENT 'PT数据版本号',
+    `doc_type`                     tinyint(1) NOT NULL COMMENT '单据类型(1-新增/2-更新)',
+    `is_suggested_pt`              tinyint(1) NOT NULL COMMENT '是否推荐PT(0-否/1-是)',
+    `status`                       tinyint(1) NOT NULL COMMENT '单据状态(1-待审核/2-已更新/3-已忽略)',
+    `update_by`                    varchar(32)  NOT NULL COMMENT '修改人',
+    `update_time`                  timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间',
+    `create_time`                  timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `create_by`                    varchar(32)  NOT NULL COMMENT '创建人',
+    `tenant_id`                    bigint                DEFAULT NULL COMMENT '租户ID',
+    `application_id`               bigint                DEFAULT NULL COMMENT '应用ID',
+    `is_deleted`                   tinyint      NOT NULL DEFAULT '0' COMMENT '逻辑删除标识符',
+    PRIMARY KEY (`id`),
+    KEY                            `idx_channel_categoryId` (`channel`,`category_id`) COMMENT '渠道+分类ID'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='amazonPT单据表';
 
 
-us 直发仓
-"care4you_store",
-"autopart_near_me",
-"productcollect",
+CREATE TABLE `platform_amazon_pt_version`
+(
+    `id`                       bigint unsigned NOT NULL COMMENT '自增Id',
+    `channel`                  varchar(32)  NOT NULL COMMENT 'Amazon 站点名称',
+    `browse_path_id`           varchar(100) NOT NULL COMMENT '分类目录路径ID',
+    `browse_path_name`         varchar(100) NOT NULL COMMENT '分类目录路径名称',
+    `category_id`              varchar(100) NOT NULL COMMENT 'Amazon分类ID',
+    `category_name`            varchar(100) NOT NULL COMMENT 'Amazon分类名称',
+    `category_level`           int          NOT NULL COMMENT 'Amazon分类等级',
+    `parent_category_id`       varchar(255) NOT NULL COMMENT 'Amazon父级分类ID',
+    `department_type`          varchar(255) NOT NULL DEFAULT '' COMMENT '科目类型',
+    `first_browse_path_id`     varchar(255) NOT NULL DEFAULT '' COMMENT '首个分类路径ID',
+    `item_type`                varchar(255) NOT NULL DEFAULT '' COMMENT '值类型',
+    `item_type_list`           varchar(255) NOT NULL DEFAULT '' COMMENT '解析出来的所有item',
+    `product_type`             varchar(255) NOT NULL DEFAULT '' COMMENT '产品类型',
+    `product_type_definitions` varchar(255) NOT NULL DEFAULT '' COMMENT '推荐PT',
+    `version`                  int          NOT NULL DEFAULT '' COMMENT '版本',
+    `is_last_category`         tinyint(1) NOT NULL COMMENT 'Amazon是否末级分类(0-否，1-是)',
+    `orignal_item_text`        longtext COMMENT 'itk解析前的原文',
+    `update_by`                varchar(32)  NOT NULL COMMENT '修改人',
+    `update_time`              timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间',
+    `create_time`              timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+    `create_by`                varchar(32)  NOT NULL COMMENT '创建人',
+    `tenant_id`                bigint                DEFAULT NULL COMMENT '租户ID',
+    `application_id`           bigint                DEFAULT NULL COMMENT '应用ID',
+    `is_deleted`               tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除标识符',
+    PRIMARY KEY (`id`),
+    KEY                        `idx_channel_categoryId` (`channel`,`category_id`) COMMENT '渠道+分类ID'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='amazonPT版本结果表';
 
-uk - 直发仓
-"pretty_decor",
-"ceo1shop"
 
-
-au - 直发仓
-"natural_preserved",
-"uxcell"

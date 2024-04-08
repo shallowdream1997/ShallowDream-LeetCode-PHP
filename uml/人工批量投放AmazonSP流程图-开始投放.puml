@@ -1,0 +1,17 @@
+@startuml
+title 开始投放
+start
+:点击开始投放;
+:根据投放类型 \n组织账号+渠道+sku\n (含：其他选填的投放内容)\n调用restful端的广告投放接口，准备mq;
+switch(keyword类型的投放)
+case(yes)
+#lightYellow:只能调用asin和category的mq;
+stop
+case(no)
+#lightGreen:可以调用auto，asin,category的mq;
+stop
+
+
+
+
+@enduml

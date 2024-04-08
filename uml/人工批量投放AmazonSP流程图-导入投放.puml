@@ -1,0 +1,25 @@
+@startuml
+title 人工批量投放Amazon广告
+start
+:下载模板,按需填写投放的内容;
+switch(判断导入的投放数据)
+case(账号、渠道、sku都<color #red>未填写)
+#pink:报错，抛出异常;
+stop
+case(账号、渠道、sku都填写)
+switch(判断投放类型)
+case(是keyword类型)
+if(keyword类型和内容<color #red>未填写) is (yes) then
+#pink:抛出异常;
+stop
+else (no)
+:新增投放单据,创建投放详情;
+stop
+endif
+case(不是keyword类型)
+:新增投放单据,创建投放详情;
+stop
+
+
+
+@enduml

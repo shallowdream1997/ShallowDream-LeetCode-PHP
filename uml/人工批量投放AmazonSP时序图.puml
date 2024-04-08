@@ -1,0 +1,155 @@
+@startuml
+title 人工批量投放Amazon广告
+autonumber
+
+
+actor "customer" as customer
+
+box "pa-biz-web"
+participant "amazon广告投放管理页面" as web
+end box
+
+box "pa-biz-application"
+participant "新增广告单据应用" as app1
+participant "广告单据主表查询应用" as app2
+participant "广告单据主表导出应用" as app3
+participant "广告投放应用" as app4
+end box
+
+box "pa-biz-service"
+participant "新增广告单据service" as service1
+participant "分页广告单据service" as service2
+end box
+
+
+box "product_operation_php_restful"
+participant "发送广告自动化mq" as php1
+participant "广告自动化接口" as php2
+end box
+
+box "nsq_worker_nodejs_app"
+participant "HK_Poms_Send_New_Amazon_Create_Pa_Sp" as nsq
+end box
+
+box "mysql"
+participant "amazon广告自动化投放单据数据主表" as sql1
+participant "amazon广告自动化投放单据数据明细表" as sql2
+end box
+
+box "mongodb"
+participant "amazon_sp_系列广告表" as db1
+end box
+
+
+customer -> web : 访问广告投放单据页面
+
+group #lightYellow 广告单据新增
+
+
+activate web
+note over web#FFAAAA: 下载模板，填写内容
+web -> app1 : 导入文件，传输文件
+activate app1
+note over app1#FFAAAA: 解析导入的文件数据\n提取广告投放明细数据，以及投放类型
+app1 -> service1 : 传入数据到service层，广告投放的明细数据list，投放类型type
+activate service1
+service1 -> service1 : 校验导入数据
+alt #lightBlue channel+sellerId+sku全部填写
+service1 -> service1 : 判断投放类型
+alt #lightYellow 投放类型type = keyword
+service1 -> service1 : 判断keyword内容和类型是否填写
+alt #lightGreen 都有填写
+
+group #lightGreen 插入广告单据主表和明细
+service1 -> sql1 : 新增广告单据主表
+activate sql1
+sql1 --> service1 : 返回主表id
+deactivate sql1
+service1 -> sql2 : 新增广告单据明细表
+activate sql2
+sql2 --> service1 : 返回结果
+deactivate sql2
+service1 --> app1 : 返回结果
+app1 --> web : 返回结果
+end
+else #lightPink
+service1 --> app1 : <color #red>异常报错：投放类型为keyword，keyword内容和类型必填
+end
+
+else
+group #lightGreen 插入广告单据主表和明细
+service1 -> sql1 : 新增广告单据主表
+activate sql1
+sql1 --> service1 : 返回主表id
+deactivate sql1
+service1 -> sql2 : 新增广告单据明细表
+activate sql2
+sql2 --> service1 : 返回结果
+deactivate sql2
+service1 --> app1 : 返回结果
+app1 --> web : 返回结果
+end
+end
+else #lightPink
+service1 --> app1 : <color #red>异常报错：渠道，账号，sku必填
+end
+deactivate service1
+deactivate app1
+deactivate web
+
+
+group #lightBlue 分页
+
+web -> app2 : 分页查询
+activate web
+activate app2
+app2 -> service2 : 分页查询
+activate service2
+service2 -> sql1 : 分页查询
+activate sql1
+sql1 --> service2 : 返回结果
+deactivate sql1
+service2 --> app2 : 返回结果
+deactivate service2
+app2 --> web : 返回结果
+deactivate app2
+end
+deactivate web
+
+
+group #lightBlue 导出数据
+web -> app3 : 按条件查询
+activate web
+activate app3
+app3 -> service2 : 按条件查询
+activate service2
+service2 -> sql1 : 按条件查询
+activate sql1
+sql1 --> service2 : 返回结果
+deactivate sql1
+service2 --> app3 : 返回结果
+note over app3#FFAAAA: 调用导出组件，按导出文件格式导出文件
+deactivate service2
+app3 --> web : 导出
+deactivate app3
+end
+deactivate web
+
+group #lightBlue 投放广告
+web -> app4 : 投放广告
+note over app4#FFAAAA: 因为不能直接调mq，通过feign类对接restful接口
+app4 -> php1 : 调用投放广告的中间接口
+note over php1#FFAAAA: 通过投放类型，判断投放mq
+
+alt #lightGreen 投放类型type = keyword
+php1 -> nsq : 调用mq：只能调asin和category
+else
+php1 -> php1 : 判断sku所在的campaign是否存在target，keyword共存的情况，总之两者不能共存
+
+end
+
+nsq -> php2 : 广告自动化
+
+end
+
+@enduml
