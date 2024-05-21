@@ -1402,4 +1402,43 @@ CREATE TABLE `platform_amazon_pt_version`
     KEY                        `idx_channel_categoryId` (`channel`,`category_id`) COMMENT '渠道+分类ID'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='amazonPT版本结果表';
 
+create table sms_sp_amazon_auto_placement_detail
+(
+    id                               bigint unsigned         null,
+    sp_amazon_auto_placement_main_id bigint unsigned         null comment 'sp_amazon_auto_placement_main表的主键id',
+    campaign_name                    varchar(100) default '' null comment 'campaign广告名称',
+    adgroup_name                     varchar(100) default '' null comment 'adGroup广告名称',
+    sku                              varchar(32)  default '' null comment 'skuId',
+    scu                              varchar(32)  default '' null comment 'scuId',
+    keyword_type                     varchar(15)  default '' null comment '关键词类型',
+    keyword_content                  text                    null comment '关键词内容',
+    status                           tinyint                 null invisible comment '投放状态',
+    create_time                      datetime                null comment '创建日期',
+    create_by                        varchar(32)  default '' null comment '创建人',
+    update_time                      datetime                null comment '更新日期',
+    update_by                        varchar(32)  default '' null comment '更新人',
+    is_deleted                       tinyint                 null comment '是否删除',
+    tenant_id                        bigint                  null comment 'tenant_id',
+    application_id                   bigint                  null comment 'application_id'
+)
+    comment '批量sp自动投放明细表';
+
+create table sms_sp_amazon_auto_placement_main
+(
+    id             bigint unsigned        null,
+    doc_number     varchar(32) default '' null comment '批次号',
+    channel        varchar(15) default '' null comment '渠道',
+    seller_id      varchar(15) default '' null comment '账号',
+    type           tinyint                null comment '自动投放类型:1-自动广告/2-手动keyword广告/3-手动asin广告/4-手动category广告/5-手动keyword广告-指定活动组、广告组',
+    status         tinyint                null comment '投放状态:1-新建/2-投放中/3-部分完成/4-完成',
+    create_time    datetime               null comment '创建日期',
+    create_by      varchar(32) default '' null comment '创建人',
+    update_time    datetime               null comment '更新日期',
+    update_by      varchar(32) default '' null comment '更新人',
+    is_deleted     tinyint                null comment '是否删除',
+    tenant_id      bigint                 null comment 'tenant_id',
+    application_id bigint                 null comment 'application_id'
+)
+    comment '批量sp自动投放主表';
+
 

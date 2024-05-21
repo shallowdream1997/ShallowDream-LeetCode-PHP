@@ -1,0 +1,25 @@
+@startuml
+
+
+package "product_operation_js_angular5"{
+	[开发清单寄卖转自营]
+}
+
+package "product_operation_listing_management_nodejs_app"{
+	[开发清单主单]
+	[开发清单明细]
+	[sku技术维度]
+}
+
+
+
+
+
+'DataAccess - [First Component]
+'[First Component] ..> HTTP : use
+
+[开发清单寄卖转自营] ..> [开发清单主单] : \t选择作废原因，作废批次\n更新主单状态，生成新批次
+[开发清单主单] --> [开发清单明细] : 复制主单原数据，保留T号\r\n覆盖新批次,兼并cost系数处理
+[开发清单明细] --> [sku技术维度] : \t明细T号对应sku技术维度覆盖
+
+@enduml

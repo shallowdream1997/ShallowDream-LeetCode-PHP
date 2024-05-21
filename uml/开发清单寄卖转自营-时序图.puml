@@ -1,0 +1,59 @@
+@startuml
+title 开发清单寄卖转自营
+autonumber
+
+
+actor "customer" as customer
+
+box "product_operation_js_angular5"
+participant "产品清单" as web
+end box
+
+box "product_operation_listing_management_nodejs_app"
+participant "pa_products\n寄卖转自营接口" as node1
+end box
+
+box "mongodb"
+participant "产品清单主表" as db1
+participant "产品清单明细表" as db2
+participant "sku技术维度表" as db3
+end box
+
+
+customer -> web : 访问产品清单页面
+
+group #lightYellow 寄卖转自营
+
+
+activate web
+note over web#FFAAAA: 点击寄卖转自营按钮
+web -> node1 : 传参：\npaProductId：清单主表主键Id\ndeleteType：作废类型\noperator：操作人
+activate node1
+Par 通过产品清单主键Id，promise同时查主表和明细表
+
+node1 ->db1 : 用id查询主表和明细表
+db1 --> node1 : 返回批次主表
+node1 -> db1 : 更新主表状态status = 'cancel'
+node1 ->db2 : 用id查询主表和明细表
+db2 --> node1 : 返回批次明细表
+node1 -> db2 : 更新明细表状态 status = 'cancel'
+end
+
+note over node1#FFAAAA: 复制原批次主表和明细表信息,生成新批次,修改开发类型为'自营转寄卖'\t\n主表status = 'leaderCheck'(待组长审核)\t\n明细status = 'leaderActive'(待组长审核)\t\n明细数据T号重新生成\n删除原来T号的重复品排查记录
+
+Par promise同时生成新批次的主表和明细表
+
+node1 ->db1 : 生成产品清单主表
+db1 --> node1 : 返回结果
+node1 -> db2 : 生成产品清单子表
+db2 --> node1 : 返回结果
+
+end
+
+node1 --> web : 返回结果
+web --> customer : 结束
+end
+
+
+
+@enduml

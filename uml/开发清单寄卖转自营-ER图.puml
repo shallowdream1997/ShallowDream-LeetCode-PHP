@@ -1,0 +1,52 @@
+@startuml
+
+object 产品清单主表 {
+    <color #red>批次号
+    <color #red>批次状态
+    <color #red>备注
+    ...
+    创建人
+    创建时间
+    修改人
+    修改时间
+}
+
+object 产品清单明细表 {
+     <color #red>清单主表ID
+     <color #red>状态
+     <color #red>临时编号T号
+     分类名称
+     品牌
+     ...
+     创建人
+     创建时间
+     修改人
+     修改时间
+}
+
+object sku技术维度表 {
+    <color #red>sku
+    分类Id
+    <color #red>分组名称
+    属性
+    是否完成重复品脚本检查
+    <color #red>是否重复品确认
+    是否锁定
+    创建人
+    创建时间
+    修改人
+    修改时间
+}
+
+'object Tire
+'object Engine
+'object Driver
+
+'Car <|- Bus
+'Car *-down- Tire
+产品清单主表 -right-> 产品清单明细表 : 1..N
+
+
+'Bus o-down- Driver
+
+@enduml
