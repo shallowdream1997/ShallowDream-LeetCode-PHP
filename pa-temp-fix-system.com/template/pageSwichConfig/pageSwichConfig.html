@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>提交组长审核重复品豁免配置</title>
+    <link href="../css_js/bootstrap-5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../css_js/script/jquery-3.7.0.min.js"></script>
+    <script src="../css_js/bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <script src="../css_js/script/qs.min.js"></script>
+</head>
+<body>
+<div class="container text-center" id="app">
+    <div style="margin-top: 20px" class="row">
+        <div class="col-5"><h3>{{message}}</h3></div>
+        <div class="col-7">
+            <div class="row">
+                <div class="col-3">
+                    <button class="btn btn-primary" @click="search">查看配置</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12" style="margin-top: 20px">
+            <table class="table table-striped table-striped" v-if="list && list.length > 0">
+                <thead>
+                <tr>
+                    <th scope="col">主键</th>
+                    <th scope="col">批次号</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="info in list" :key="info._id">
+                    <td>{{info._id}}</td>
+                    <td>
+                        {{info.batchName}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-4"><h5>需要重复品豁免的批次号</h5></div>
+        <div class="col-8">
+            <div class="mb-3">
+                <textarea v-model="batchNameList" class="form-control" placeholder="批次号,多个请换行" @change="batchNameCount" rows="10"/>
+                </textarea>
+                <p style="color: red">共有：{{count}} 个批次</p>
+            </div>
+            <div class="mb-3">
+                <select class="form-select" aria-label="请选择" v-model="status" @change="changeStatus">
+                    <option value="">请选择</option>
+                    <option value="1">全量覆盖</option>
+                    <option value="2">尾部新增</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col-3">
+                    <button class="btn btn-primary" @click="update">确认</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <h5 style="color: red">{{loading}}</h5>
+        </div>
+        <div class="col-12">
+            <h4 style="color: red">{{errorMsg}}</h4>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+
+
+<script>
+
+    const {createApp, ref,onMounted} = Vue
+
+
+    createApp({
+
+        data() {
+            return {
+                message: '提交组长审核重复品豁免配置',
+                batchNameList: '',
+                errorMsg: '',
+                successMsg: '',
+                list: [],
+                loading: '',
+                count: 0,
+                status: "",
+            }
+        },
+
+        methods: {
+            async batchNameCount(){
+                //做转义
+                let batchNameList = this.batchNameList.split("\n");
+                batchNameList =  [...new Set(batchNameList.filter(item => item))];
+                this.count = batchNameList.length;
+            },
+            async update() {
+                this.loading = "............请等待，正在处理数据中..........";
+                this.errorMsg = "";
+
+                if (!this.batchNameList && this.batchNameCount === 0) {
+                    this.errorMsg = "你要是不想填就找港港，不要用这个系统!!!!!!";
+                    this.loading = "............报错..........";
+                    return;
+                }
+                if (!this.status){
+                    this.errorMsg = "请选择是全量覆盖还是尾部新增!!!!!!";
+                    this.loading = "............报错..........";
+                    return;
+                }
+                if (this.batchNameCount > 100){
+                    this.errorMsg = "别超过100个批次，建议清掉原来的!!!!!!";
+                    this.loading = "............报错..........";
+                    return;
+                }
+                //做转义
+                let batchNameList = this.batchNameList.split("\n");
+                batchNameList =  [...new Set(batchNameList.filter(item => item))];
+                console.log(batchNameList)
+                const data = window.Qs.stringify({
+                    batchNameList: batchNameList,
+                    status: this.status,
+                });
+                let res = await axios.post("http://172.16.29.2/testProject/php/pageSwichConfig/update.php", data).catch(function (error) {
+                    this.errorMsg = "网络错误";
+                });
+                console.log(res)
+                if (res.status === 200 && res.data === true) {
+                    this.loading = "............可以刷新配置查看了..........";
+                    this.search();
+                } else {
+                    this.errorMsg = "............报错：你输入的批次号里面可能不存在..........";
+                }
+
+                this.loading = "";
+            },
+
+            async search() {
+                this.loading = "............请等待，正在处理数据中..........";
+                this.errorMsg = "";
+                const data = window.Qs.stringify({
+                });
+                // {
+                //     headers: {
+                //         "Content-Type": "application/json",
+                //         // 'Authorization': 'Bearer your-token'
+                //     }
+                // }
+                let res = await axios.post("http://172.16.29.2/testProject/php/pageSwichConfig/search.php", data).catch(function (error) {
+                    this.errorMsg = "网络错误";
+                });
+                console.log(res)
+                this.loading = "";
+                if (res.status === 200) {
+                    if (res.data.length === 0) {
+                        this.errorMsg = "没有数据";
+                    } else {
+                        this.list = res.data;
+                    }
+                }
+
+            }
+        },
+
+
+    }).mount('#app')
+
+
+</script>
