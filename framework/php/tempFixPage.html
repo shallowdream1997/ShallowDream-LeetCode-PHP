@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>临时数据修复系统</title>
+    <link href="bootstrap-5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../jquery-3.7.0.min.js"></script>
+    <script src="bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <script src="script/qs.min.js"></script>
+</head>
+<body>
+<div class="container text-center" id="app">
+    <div style="margin-top: 20px" class="row">
+        <div class="col-4"><h3 style="color: darkred">{{message}}</h3></div>
+        <div class="col-8"></div>
+        <div class="col-12" style="margin-top: 20px">
+            <table class="table table-dark table-striped" v-if="list && list.length > 0">
+                <thead>
+                <tr>
+                    <th scope="col">系统名称</th>
+                    <th scope="col">页面链接</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="info in list" :key="info._id">
+                    <td>{{info.title}}</td>
+                    <td><a :href="info.url" target="_blank">点击</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+
+<script>
+
+    const {createApp, ref} = Vue
+
+
+    createApp({
+
+        data() {
+            return {
+                message: '临时数据修复系统',
+                list: [
+                    {
+                        title: '修改翻译状态',
+                        url:'translationManagement/fixTranslationManagements.html'
+                    },
+                    {
+                        title: '恢复CE资料呈现为已发布',
+                        url:'ceMaterial/fixCeMaterials.html'
+                    },
+                    {
+                        title: 'FBA海外仓上架前移库申请渠道仓库配置',
+                        url:'optionVal/paFbaChannelSellerConfig.html'
+                    },
+                    {
+                        title: '提交组长审核重复品豁免配置',
+                        url:'pageSwichConfig/pageSwichConfig.html'
+                    },
+                    {
+                        title: '添加开发清单品牌轮单',
+                        url:'paProductBrand/paProductBrand.html'
+                    }
+                ],
+            }
+        },
+
+        methods: {
+
+        }
+
+    }).mount('#app')
+
+
+</script>
