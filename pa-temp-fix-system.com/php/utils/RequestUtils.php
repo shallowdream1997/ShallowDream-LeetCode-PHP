@@ -154,6 +154,15 @@ class RequestUtils
     {
         return DataUtils::getResultData($this->curlService->s3015()->put("option-val-lists/{$params['_id']}",$params));
     }
+
+    public function deleteOptionValListInfo($params): array
+    {
+        return DataUtils::getResultData($this->curlService->s3015()->delete("option-val-lists/{$params['_id']}"));
+    }
+    public function createOptionValListInfo($params): array
+    {
+        return DataUtils::getResultData($this->curlService->s3015()->post("option-val-lists",$params));
+    }
     // ===================================== option_val_list 表的 基本接口 end =====================================
 
 
