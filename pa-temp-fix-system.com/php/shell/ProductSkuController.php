@@ -266,122 +266,13 @@ class ProductSkuController
     }
 
     public function test(){
-        $json = '[{"status":1,"matchType":"broad","rule":["make","model","word"]},{"status":1,"matchType":"broad","rule":["model","word"]}]';
-        $arr = json_decode($json,true);
         $proCurlService = new CurlService();
-        $list = DataUtils::getArrHeadData(DataUtils::getPageDocList($proCurlService->test()->s3044()->get("pa_sku_materials/queryPage",["skuId"=>"a24051600ux0001"])));
-        $return = [
-            "keywords" => $list['keywords'],
-            "cpAsin" => $list['cpAsin'],
-            "fitment" => $list['fitment']
-        ];
-        echo json_encode($return,JSON_UNESCAPED_UNICODE)."\n";
-
-        foreach ($arr as $info) {
-            echo json_encode($info['rule'],JSON_UNESCAPED_UNICODE)."：\n";
-            $canPipe = true;
-            $order = array();
-            for ($index = 0;$index < count($info['rule']);$index++){
-                $field = $info['rule'][$index];
-                if ($field == 'make' || $field == 'model'){
-                    $order['fitment'] = 1;
-                }elseif($field == 'word'){
-                    $order['keywords'] = 2;
-                }
-            }
-
-            if (in_array('make',$info['rule']) || in_array('model',$info['rule'])){
-                if (empty($return['fitment'])){
-                    echo "fitment数组中没有找到数据。\n";
-                    $canPipe = false;
-                    continue;
-                }
-            }elseif (in_array('word',$info['rule'])){
-                if (empty($return['keywords'])){
-                    echo "keywords数组中没有找到数据。\n";
-                    $canPipe = false;
-                    continue;
-                }
-            }
-
-            if ($canPipe){
-                $keywordsContentArray = array();
-                //预计fitment的长度，假设从第一条fitment数据开始拼接
-                $fitmentLength = count($return['fitment']);
-                $fitmentIndex = 0;
-                $keywordsLength = count($return['keywords']);
-                $keywordsIndex = 0;
-
-                for ($index = 0;$index < count($info['rule']);$index++){
-                    $field = $info['rule'][$index];
-
-                    if ($field == 'make' || $field == 'model'){
-                        if ($index === 0){
-                            //假如第一个是make或者model
-                            do{
-                                $fitmentInfo = $return['fitment'][$fitmentIndex];
-                                $keywordsContentArray[$fitmentIndex][$field][$index] = $fitmentInfo[$field];
-
-                                $fitmentIndex++;
-                            }while($fitmentIndex < $fitmentLength);
-                        }else{
-                            //假如第二个或者后面的是make 或者 model
-                            if ($keywordsContentArray){
-                                foreach ($keywordsContentArray as $aIndex => $contentArr){
-                                    foreach ($contentArr as $content){
-                                        $fitmentInfo = $return['fitment'][$aIndex];
-                                        $keywordsContentArray[$aIndex][$field][$index] = $fitmentInfo[$field];
-                                    }
-                                }
-                            }
-                        }
-
-                    }elseif($field == 'word'){
-                        if ($index === 0){
-                            //假如第一个是word字段
-                            do{
-                                $keywordInfo = $return['keywords'][$keywordsIndex];
-                                $keywordsContentArray[$keywordsIndex]['word'][$index] = $keywordInfo;
-
-                                $keywordsIndex ++;
-                            }while($keywordsIndex < $keywordsLength);
-
-                        }else{
-                            //如果第二个或者后面的字段，是word字段
-                            if ($keywordsContentArray){
-                                foreach ($keywordsContentArray as $aIndex => $content){
-                                    $keywordsContentArray[$aIndex]['word'][$index] = $return['keywords'];
-                                }
-                            }
-
-
-                        }
-
-                    }
-
-                }
-                $ruleDataList = array();
-                foreach ($keywordsContentArray as $aIndex => $content){
-                    foreach ($content as $field => $data){
-                        if ($field === 'word'){
-                            foreach ($data as $item){
-                                $ruleDataList[] = $item;
-                            }
-                        }
-
-                    }
-                }
-                print_r($keywordsContentArray);
-            }
-            echo "排列完毕 end：\n";
-        }
-
-
-
+        $res = $proCurlService->pro()->s3015()->post("pa_products/queryPagePost",["batchName_like"=>"20240809 - 林泽键 - 13","limit"=>1,"page"=>1]);
+        print_r($res);
     }
 
 
-    public function test2(){
+    public function combineKeyword(){
         $json = '[{"status":1,"matchType":"broad","rule":["make","model","word"]},{"status":1,"matchType":"broad","rule":["model","word"]},{"status":1,"matchType":"broad","rule":["model","word","make"]}]';
         $arr = json_decode($json,true);
         $proCurlService = new CurlService();
@@ -418,7 +309,7 @@ class ProductSkuController
     }
 
 
-    public function getLastContent($ruleStart, $fieldRule, $fitmentIndex,$fitmentList, $wordIndex,$wordsList, $combine = [], $returnData = []){
+    private function getLastContent($ruleStart, $fieldRule, $fitmentIndex,$fitmentList, $wordIndex,$wordsList, $combine = [], $returnData = []){
         //从0开始，拿到当前规则的第一个属性
         $field = isset($fieldRule[$ruleStart]) ? $fieldRule[$ruleStart] : null;
         if (!$field){
@@ -476,5 +367,5 @@ $s = new ProductSkuController();
 //$s->updateProductSku();
 //$s->updatePaProductAndDetail();
 //$s->syncProSkuSPInfoToTest();
-//$s->test();
-$s->test2();
+$s->test();
+//$s->combineKeyword();

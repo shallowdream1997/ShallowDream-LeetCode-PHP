@@ -1,0 +1,38 @@
+@startuml
+
+'actor A
+'actor B
+actor 组长 as leader
+actor 员工A as employee
+
+
+
+
+leader --> (确认转自营采购)
+(确认转自营采购) --> (解析开发清单数据)
+(解析开发清单数据) --> (创建样品数据)
+(创建样品数据) --> (回写sku)
+(回写sku) --> (解析\n开发项目\n方向\n产品线\n市场分析...)
+(解析\n开发项目\n方向\n产品线\n市场分析...) -->(创建PMO单)
+(创建PMO单) .down.> (钉钉提醒采购计划待确认)
+
+employee --> (确认转CE单)
+(确认转CE单) --> (获取组长审核通过的清单明细)
+(获取组长审核通过的清单明细) --> (创建样品数据)
+(创建样品数据) --> (创建产品线和其明细)
+(创建产品线和其明细) --> (创建CE单和其明细)
+(创建CE单和其明细) --> (sku初始化)
+(sku初始化) --> (CE单信息回写:\n清单明细\n重复品\npa产品清单\n清单得分\n更新补货负责人\nsku留样...)
+
+
+'A -up-> (up)
+'A -right-> (center)
+'A -down-> (down)
+'A -left-> (left)
+
+'B -up-> (up)
+'B -left-> (center)
+'B -right-> (right)
+'B -down-> (down)
+
+@enduml

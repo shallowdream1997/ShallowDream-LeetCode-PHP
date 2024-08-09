@@ -194,6 +194,25 @@ class DataUtils
         }
         return $data;
     }
+
+
+    /**
+     * 接收新架构的响应数据， 返回结果
+     * @param null $response
+     * @return array
+     */
+    public static function getNewResultData($response = null): array
+    {
+        $data = [];
+        if (!$response){
+            return $data;
+        }
+        if ($response && isset($response['httpCode']) &&
+            $response['httpCode'] && isset($response['result']) && !empty($response['result']) && isset($response['result']['state']) && $response['result']['state']['code'] === 2000000){
+            $data = $response['result']['data'];
+        }
+        return $data;
+    }
 }
 
 

@@ -18,6 +18,7 @@ class CurlService
     private $ux168 = null;
     private $s3010 = null;
     private $s3035 = null;
+    private $gateway = null;
 
 
     public function __construct() {
@@ -190,6 +191,26 @@ class CurlService
         return $this;
     }
 
+    public function gateway(): CurlService
+    {
+        $this->port = "gateway";
+
+        $requestKey = "";
+        if ($this->environment == 'test'){
+            $requestKey = "bearer 8585fe5e-c604-43b7-83f7-2360dd986c5e";
+        }elseif ($this->environment == 'uat'){
+            $requestKey = "";
+        }elseif ($this->environment == 'pro'){
+            $requestKey = "bearer dd63d1ec-3b31-4a15-a05a-1ea5daa5aeb0";
+        }
+        $this->setHeader(['Authorization: ' . $requestKey]);
+
+        $this->setBaseComponentByEnv();
+        return $this;
+    }
+
+
+
 
     /**
      * get请求
@@ -220,6 +241,21 @@ class CurlService
         $resp = null;
         if ($this->port != null){
             $resp = $this->curlRequestMethod($this->port,$module,$params,"POST");
+        }
+        return $resp;
+    }
+
+    /**
+     * 新架构post请求
+     * @param string $module 模块
+     * @param array $params 参数
+     * @return array|null
+     */
+    public function getWayPost($module,$params = array()): ?array
+    {
+        $resp = null;
+        if ($this->port != null){
+            $resp = $this->curlRequestMethod($this->port,$module,$params,"POST",true);
         }
         return $resp;
     }
@@ -314,6 +350,9 @@ class CurlService
             case "s3010":
                 $this->s3010 = "http://172.16.29.2:3010";
                 break;
+            case "gateway":
+                $this->gateway = "https://gateway-test.ux168.cn";
+                break;
         }
         return $this;
     }
@@ -351,6 +390,9 @@ class CurlService
             case "s3010":
                 $this->s3010 = "http://172.16.10.62:3010";
                 break;
+            case "gateway":
+                $this->gateway = "https://gateway-test.ux168.cn";
+                break;
         }
         return $this;
     }
@@ -387,6 +429,9 @@ class CurlService
                 break;
             case "s3010":
                 $this->s3010 = "http://172.16.11.221:3010";
+                break;
+            case "gateway":
+                $this->gateway = "https://gateway-uat.ux168.cn";
                 break;
         }
         return $this;
@@ -429,6 +474,9 @@ class CurlService
             case "s3035":
                 $this->s3035 = "https://master-nodejs-poms-log.ux168.cn";
                 break;
+            case "gateway":
+                $this->gateway = "https://gateway.ux168.cn";
+                break;
         }
         return $this;
     }
@@ -444,12 +492,16 @@ class CurlService
      * @param int $tryTimes 失败重试次数
      * @return array
      */
-    private function curlRequestMethod($port, $module, $params = array(), $method = "GET", $timeout = 30, $tryTimes = 1): array
+    private function curlRequestMethod($port, $module, $params = array(), $method = "GET", $isNew = false, $timeout = 30, $tryTimes = 1): array
     {
         if (stripos($module, "/") !== 0 && !empty($module)) {
             $module = "/" . $module;
         }
-        $url = $this->$port . '/api' . $module;
+        if (!$isNew){
+            $url = $this->$port . '/api' . $module;
+        }else{
+            $url = $this->$port . $module;
+        }
 
         $result = $httpCode = $headerResponse = $body = "";
         $t = 1;
@@ -463,7 +515,14 @@ class CurlService
                 curl_setopt($connection, CURLOPT_SSL_VERIFYHOST, false);//跳过证书的验证
                 curl_setopt($connection, CURLOPT_RETURNTRANSFER, true);//把curl_exec()结果转化为字串，而不是直接输出
                 curl_setopt($connection, CURLOPT_TIMEOUT, $timeout);
-
+                // 设置自定义Referer
+                curl_setopt($connection, CURLOPT_REFERER, 'https://poms-ssl.ux168.cn/');
+                // 设置自定义User-Agent
+                curl_setopt($connection, CURLOPT_USERAGENT, 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36');
+                // 设置服务器代理
+//                curl_setopt($connection, CURLOPT_HTTPHEADER, array(
+//                    'X-Forwarded-For: 172.16.29.3' // 伪造的IP地址
+//                ));
                 $method = strtoupper($method);
                 switch ($method){
                     case "POST":

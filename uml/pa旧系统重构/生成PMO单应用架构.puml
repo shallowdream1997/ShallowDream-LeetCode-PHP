@@ -1,0 +1,122 @@
+@startuml
+
+
+package "product_operation_js_angular5"{
+	[转自营采购]
+}
+
+package "新前端web"{
+	[转CE单-web]
+}
+
+package "pa-biz-application"{
+	[转自营采购-重构]
+    [转CE单-重构]
+}
+'platform-sms-support-application
+
+
+package "product_operation_listing_management_nodejs_app"{
+	[pa产品清单应用]
+	[sku初始化]
+	[重复品信息应用：表pa_sku_attributes]
+	[sku卖数信息应用：表skuId_quantity_unit]
+	[清单得分信息应用：表pa_goods_bid]
+	[pa sku信息应用：表pa_sku_info]
+}
+
+'package "poms_listing_nestjs"{
+'	[资料呈现信息应用：\n表pa_ce_material\pa_sku_material]
+'}
+
+package "product_operation_nodejs_app"{
+	[sku报告应用：表skuId_info_main_table]
+	[市场分析报告应用：表market_analysis_report]
+	[开发方向报告应用：表development_direction]
+	[用户信息应用：表user_sheet]
+	[产品线信息应用：表product_line]
+	[产品线sku信息应用：表product_operator_line]
+}
+
+package "ux168_nodejs_app"{
+[寄卖商信息应用：表business_module]
+}
+
+
+package "inventory_app"{
+[中文分类信息应用：SupplierCategoryComponent\n表inventory.supplier_categories]
+}
+
+package "esm_app"{
+[样品信息应用：SampleSkuInfoComponent\n表esm.sample_sku_info]
+}
+
+package "ux168_app"{
+[168工厂信息应用：FactoryInfoComponent\n表ux168.factory_info]
+[创建CE单：\n表ux168.ce_master,ce_detail]
+}
+
+package "platform-message-service"{
+	[钉钉告警通知]
+}
+
+package "product_operation_php_restful"{
+	[sku自动分配补货负责人]
+}
+
+package "platform-wms-application"{
+	[sku留样]
+}
+
+
+
+'DataAccess - [First Component]
+'[First Component] ..> HTTP : use
+
+[转自营采购] ...> [转自营采购-重构]
+[转自营采购-重构] --> [pa产品清单应用] : 1.获取明细产品名称、分类、工厂等
+[pa产品清单应用] --> [中文分类信息应用：SupplierCategoryComponent\n表inventory.supplier_categories] : 2.中文分类校验
+[pa产品清单应用] --> [168工厂信息应用：FactoryInfoComponent\n表ux168.factory_info] : 3.168工厂信息校验
+
+[pa产品清单应用] --> [sku报告应用：表skuId_info_main_table] : 4.查看PMO单
+[sku报告应用：表skuId_info_main_table] --> [样品信息应用：SampleSkuInfoComponent\n表esm.sample_sku_info] : 5.查看sku样品
+[样品信息应用：SampleSkuInfoComponent\n表esm.sample_sku_info] ..> [sku报告应用：表skuId_info_main_table] : 6.返回样品回写
+
+[sku报告应用：表skuId_info_main_table] --> [市场分析报告应用：表market_analysis_report]
+[sku报告应用：表skuId_info_main_table] --> [开发方向报告应用：表development_direction]
+[sku报告应用：表skuId_info_main_table] --> [用户信息应用：表user_sheet]
+
+[市场分析报告应用：表market_analysis_report] --> [市场分析报告应用：表market_analysis_report] : 7.有就跳过无则新增
+[开发方向报告应用：表development_direction] --> [开发方向报告应用：表development_direction] : 8.有就跳过无则新增
+
+[市场分析报告应用：表market_analysis_report]..> [sku报告应用：表skuId_info_main_table] : 9.市场分析和开发方向校验结束后，更新或创建
+[开发方向报告应用：表development_direction] ..> [sku报告应用：表skuId_info_main_table] : 9.市场分析和开发方向校验结束后，更新或创建
+
+[sku报告应用：表skuId_info_main_table] ..> [钉钉告警通知]
+
+skinparam arrowColor red
+[转CE单-web] ..> [转CE单-重构]
+[转CE单-重构] --> [pa产品清单应用] : <color red>1.获取明细产品名称、分类、工厂等
+[pa产品清单应用] --> [中文分类信息应用：SupplierCategoryComponent\n表inventory.supplier_categories] : <color red>2.中文分类校验
+[pa产品清单应用] --> [168工厂信息应用：FactoryInfoComponent\n表ux168.factory_info] : <color red>3.168工厂信息校验
+[pa产品清单应用] --> [寄卖商信息应用：表business_module] : <color red>4.寄卖商信息校验
+[sku报告应用：表skuId_info_main_table] --> [样品信息应用：SampleSkuInfoComponent\n表esm.sample_sku_info] : <color red>5.查看sku样品
+[样品信息应用：SampleSkuInfoComponent\n表esm.sample_sku_info] --> [pa产品清单应用] : <color red>6.回写sku
+
+[pa产品清单应用] --> [产品线信息应用：表product_line] : 7.创建或更新产品线
+[产品线信息应用：表product_line] --> [产品线sku信息应用：表product_operator_line] : 8.创建或更新产品线sku
+
+[pa产品清单应用] --> [创建CE单：\n表ux168.ce_master,ce_detail] : 9.创建CE单
+[创建CE单：\n表ux168.ce_master,ce_detail] --> [sku初始化] : 10.创建或更新sku、可售表等...
+[sku初始化] --> [重复品信息应用：表pa_sku_attributes] : 回写重复品
+
+[pa产品清单应用] --> [sku卖数信息应用：表skuId_quantity_unit] : 创建卖数
+[pa产品清单应用] --> [pa sku信息应用：表pa_sku_info] : 创建pa_sku
+[pa产品清单应用] --> [产品线sku信息应用：表product_operator_line] : 回写产品线信息
+[pa产品清单应用] --> [清单得分信息应用：表pa_goods_bid] : 回写清单得分
+[pa产品清单应用] --> [资料呈现信息应用：\n表pa_ce_material\pa_sku_material] : 创建资料呈现
+
+[pa产品清单应用] --> [sku自动分配补货负责人] : 分配补货负责人
+[pa产品清单应用] --> [sku留样] : sku留样标识
+
+@enduml
