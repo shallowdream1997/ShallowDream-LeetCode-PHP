@@ -1,0 +1,98 @@
+@startuml
+'语雀文档
+'https://ux168.yuque.com/hgi29i/zv5uea/dvxvegcg1ea6vcub
+title 生成PMO单流程
+autonumber
+
+actor "xxl-job" as job
+actor "customer" as customer
+
+box "angular5" #lightBlue
+participant "转自营采购" as web1
+end box
+
+box "新前端Web" #lightBlue
+participant "转CE单" as web2
+end box
+
+box "pa-biz-application" #lightBlue
+participant "转自营采购" as java1
+participant "转CE单" as java2
+end box
+
+
+box "product_operation_listing_management_nodejs_app" #orange
+participant "开发清单" as node1
+participant "开发清单明细" as node2
+'participant "sku初始化" as node3
+'participant "重复品" as node4
+'participant "sku卖数" as node5
+end box
+
+box "product_operation_nodejs_app" #lightGreen
+participant "开发方向" as node6
+participant "市场分析" as node7
+participant "PMO单" as node7
+end box
+
+box "poms_listing_nestjs" #lightGreen
+participant "资料呈现" as node8
+end box
+
+box "inventory_app" #lightBlue
+participant "中文分类" as inventory
+end box
+
+box "esm_app" #lightBlue
+participant "sku样品" as esm
+end box
+
+box "platform-message-service" #pink
+participant "钉钉消息" as dingding
+end box
+
+box "mysql" #lightYellow
+participant "supplier_categories" as sql1
+participant "factory_info" as sql2
+participant "sample_sku_info" as sql3
+
+end box
+
+box "mongodb" #lightYellow
+participant "pa_product" as db1
+participant "pa_product_detail" as db2
+
+participant "skuId_info_main_table" as db3
+participant "skuId_info" as db4
+
+participant "market_analysis_report" as db5
+participant "product_line" as db6
+participant "development_direction" as db7
+participant "product_operator_main_info" as db8
+end box
+
+
+note over web1#FFAAAA: 清单主键Id
+activate web1
+web1 -> java1 : 开始转自营采购
+group #lightYellow 解析API原数据，处理PT数据结果版本和PT单据
+activate java1
+java1 -> node1 : 获取开发清单
+node1 -> node2 : 获取开发清单明细
+node2 --> node1 : 返回数据
+node1 --> java1 : 返回开发清单主单和明细所有数据
+
+
+
+
+deactivate java1
+end
+
+
+deactivate web1
+
+
+group #lightYellow 解析API原数据，处理PT数据结果版本和PT单据
+
+end
+@enduml
