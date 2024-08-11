@@ -1,0 +1,190 @@
+@startuml
+'语雀文档
+'https://ux168.yuque.com/hgi29i/zv5uea/dvxvegcg1ea6vcub
+title 生成PMO单流程
+autonumber
+
+actor "xxl-job" as job
+actor "customer" as customer
+
+box "angular5" #lightBlue
+participant "转自营采购" as web1
+end box
+
+box "新前端Web" #lightBlue
+participant "转CE单" as web2
+end box
+
+box "pa-biz-application" #lightBlue
+participant "转自营采购" as java1
+participant "转CE单" as java2
+end box
+
+box "product_operation_php_restful" #lightGreen
+participant "自动分配补货负责人" as php1
+end box
+
+box "platform-wms-application" #lightBlue
+participant "sku留样" as java3
+end box
+
+
+box "product_operation_listing_management_nodejs_app" #orange
+participant "开发清单" as node1
+participant "开发清单明细" as node2
+participant "sku初始化\可售表\sku卖数" as node3
+participant "重复品" as node4
+participant "pa产品信息" as node5
+end box
+
+box "product_operation_nodejs_app" #lightGreen
+participant "开发方向" as node6
+participant "市场分析" as node7
+participant "PMO单" as node7
+
+participant "开发方向和市场分析处理公共类" as node9
+end box
+
+box "poms_listing_nestjs" #lightGreen
+participant "资料呈现" as node8
+end box
+
+box "inventory_app" #lightBlue
+participant "中文分类" as inventory
+end box
+
+box "ux168_app" #lightBlue
+participant "168工厂" as ux168
+participant "CE单主表" as ce_master
+participant "CE单明细" as ce_detail
+end box
+
+box "esm_app" #lightBlue
+participant "sku样品" as esm
+end box
+
+box "platform-message-service" #pink
+participant "钉钉消息" as dingding
+end box
+
+box "mysql" #lightYellow
+participant "supplier_categories" as sql1
+participant "factory_info" as sql2
+participant "sample_sku_info" as sql3
+
+end box
+
+box "mongodb" #lightYellow
+participant "pa_product" as db1
+participant "pa_product_detail" as db2
+
+participant "skuId_info_main_table" as db3
+participant "skuId_info" as db4
+
+participant "ce_master" as db5
+participant "ce_detail" as db6
+end box
+
+
+group 用户操作转CE单
+note over web2#FFAAAA: 通过判断清单的转CE单状态来决定是否转CE单
+web2 -> java2 : 通过清单主键Id查询可转CE单的数据
+java2 -> node2 : 通过清单主键Id查询可转CE单的数据
+node2 -> db2 : 查询pa_product_details
+db2 --> java2 : 返回结果
+alt if 没有可以转CE单的明细数据
+java2 --> web2 : 报错提示
+else
+java2 -> node1 : 修改正在转CE单状态
+node1 -> java2 : 返回结果
+java2 --> web2 : 提示正在转CE单中，请稍等
+end
+
+end
+
+group xxl-job 执行转CE单
+job -> java2 : 开始执行转CE单动作，获取清单主键
+java2 -> node1 : 通过清单主键Id查询清单和明细数据
+note over node1#FFAAAA: 获取清单主键、批次号等信息
+node1 -> node2 : 根据清单主键获取开发清单组长审核通过的明细
+node2 -> db2 : 获取pa_product_detail
+db2 --> node2 : 返回结果
+node2 --> node1 : 返回明细数据
+node1 --> java2 : 返回开发清单主单和明细所有数据
+par
+java2 -> inventory : 获取中文分类
+java2 -> ux168 : 获取工厂
+
+inventory -> sql1 : 获取数据
+ux168 -> sql2 : 获取工厂
+sql1 --> inventory : 返回结果
+sql2 --> ux168 : 返回结果
+inventory --> java2 : 返回中文分类
+ux168 --> java2 : 返回工厂名称
+note over java2#FFAAAA: 从明细里的数据先去校验中文分类、168工厂等信息是否正确
+
+alt if 中文分类不存在 || 工厂不存在
+java2 --> node1 : 转CE单失败，记录失败信息
+node1 --> java2 : 结束
+java2 --> job : 结束
+else
+
+note over java2#FFAAAA: 从明细里的提取skuId
+java2 -> esm : 明细sku查看样品(没有sku可直接跳过)
+esm -> sql3 : 获取sku样品
+sql3 --> esm : 返回结果
+esm --> java2 : 返回样品
+alt if 部分样品不存在
+java2 -> esm : 明细sku查看样品(没有sku可直接跳过)
+esm -> sql3 : 创建sku样品
+sql3 --> esm : 返回sku
+esm --> java2 : 返回sku
+else
+java2 -> java2 : 获取sku，sku回写对应产品线标题的明细
+
+java2 -> ce_detail : sku查询CE单明细
+ce_detail -> db6 : 查询ce_detail
+db6 --> ce_detail : 返回数据
+ce_detail --> java2 : 返回CE单明细
+
+alt if CE单明细部分不存在
+java2 -> ce_master : 创建CE单
+ce_master --> ce_detail : 创建CE单明细
+ce_detail -> esm : 返回CE单后，将CE单号回写到样品表
+esm -> java2 : 返回结果
+
+
+else 存在CE单明细
+note over java2#FFAAAA: 存在CE单，校验已存在的CE单并且剩余未补全的sku写入到原本的CE单中
+
+end
+note over java2#FFAAAA: 对明细sku数据做资料初始化
+java2 -> node3 : sku资料初始化、卖数信息初始化、可售表初始化等
+node3 --> java2 : 返回结果
+
+
+java2 -> node1 : 回写CE单到清单主表，并更新清单状态，并且回写清单得分
+node1 --> java2 : 返回结果
+
+java2 -> node4 : sku原tempSkuId 的重复品回写
+node4 --> java2 : 返回结果
+
+java2 -> node5 : 创建pa_sku_info
+node5 --> java2 : 返回结果
+
+java2 -> php1 : 自动分配补货负责人
+php1 --> java2 : 返回结果
+
+java2 -> java3 : sku留样
+java3 --> java2 : 返回结果
+
+
+deactivate java2
+end
+java2 -> java2 : 更新转CE单状态为成功
+
+deactivate java2
+
+
+end
+@enduml

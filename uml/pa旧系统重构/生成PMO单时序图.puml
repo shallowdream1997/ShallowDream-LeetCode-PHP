@@ -33,6 +33,8 @@ box "product_operation_nodejs_app" #lightGreen
 participant "开发方向" as node6
 participant "市场分析" as node7
 participant "PMO单" as node7
+
+participant "开发方向和市场分析处理公共类" as node9
 end box
 
 box "poms_listing_nestjs" #lightGreen
@@ -41,6 +43,10 @@ end box
 
 box "inventory_app" #lightBlue
 participant "中文分类" as inventory
+end box
+
+box "ux168_app" #lightBlue
+participant "168工厂" as ux168
 end box
 
 box "esm_app" #lightBlue
@@ -78,10 +84,83 @@ web1 -> java1 : 开始转自营采购
 group #lightYellow 解析API原数据，处理PT数据结果版本和PT单据
 activate java1
 java1 -> node1 : 获取开发清单
-node1 -> node2 : 获取开发清单明细
-node2 --> node1 : 返回数据
+
+node1 -> db1 : 调用pa_product
+db1 --> node1 : 返回结果
+note over node1#FFAAAA: 获取清单主键、批次号等信息
+
+node1 -> node2 : 根据清单主键获取开发清单组长审核通过的明细
+node2 -> db2 : 获取pa_product_detail
+db2 --> node2 : 返回结果
+node2 --> node1 : 返回明细数据
 node1 --> java1 : 返回开发清单主单和明细所有数据
 
+par
+java1 -> inventory : 获取中文分类
+java1 -> ux168 : 获取工厂
+
+inventory -> sql1 : 获取数据
+ux168 -> sql2 : 获取工厂
+sql1 --> inventory : 返回结果
+sql2 --> ux168 : 返回结果
+inventory --> java1 : 返回中文分类
+ux168 --> java1 : 返回工厂名称
+note over java1#FFAAAA: 从明细里的数据先去校验中文分类、168工厂等信息是否正确
+
+alt if 中文分类不存在 || 工厂不存在
+java1 --> customer : 报错提示
+else
+
+note over java1#FFAAAA: 从明细里的提取skuId
+java1 -> esm : 明细sku查看样品(没有sku可直接跳过)
+esm -> sql3 : 获取sku样品
+sql3 --> esm : 返回结果
+esm --> java1 : 返回样品
+alt if 部分样品不存在
+java1 -> esm : 明细sku查看样品(没有sku可直接跳过)
+esm -> sql3 : 创建sku样品
+sql3 --> esm : 返回sku
+esm --> java1 : 返回sku
+else
+java1 -> java1 : 获取sku，sku回写对应产品线标题的明细
+
+note over java1#FFAAAA: 清单明细产品线productLineName+traceMan\n指定开发方向和市场分析的规则
+java1 -> node9 : 判断开发方向和市场分析
+par
+node9 -> db5 : 获取market_analysis_report市场分析报告
+node9 -> db6 : 获取product_line产品线
+node9 -> db7 : 获取development_direction开发方向
+node9 -> db8 : 获取product_operator_main_info产品线主表
+db5 --> node9 : 返回结果
+db6 --> node9 : 返回结果
+db7 --> node9 : 返回结果
+db8 --> node9 : 返回结果
+end
+node9 --> java1 : 返回开发方向和市场分析
+
+alt if 判断开发方向 || 市场分析 不存在
+java1 -> node9 : 创建并更新开发方向和市场分析,(<color #red>关联新增产品线主表和产品线)
+node9 --> java1 : 返回结果
+
+else
+java1 -> node7 : 批次号查询PMO单
+node7 -> db3 : 查询skuId_info_main_table
+node7 -> db4 : 查询skuId_info
+db3 --> node7 : 返回pmo单主表
+db4 --> node7 : 返回pmo单的sku信息
+
+node7 --> java1 : 返回pmo单及其所有已有的sku信息
+
+alt if pmo不存在
+java1 -> node7 : 创建pmo单以及sku明细
+node7 --> java1 : 返回pmo单号
+else 存在pmo单
+note over java1#FFAAAA: 存在pmo单，校验已存在的pmo单中是否sku都齐全\n不全的sku直接补上，多余的sku直接删除
+java1 -> dingding : 发送钉钉
+
+java1 --> customer : 创建pmo单成功
+
+end
 
 
 
