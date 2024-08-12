@@ -10,8 +10,8 @@ class Calc
         date_default_timezone_set('Asia/Shanghai');
 
         // 获取当前月份的第一天和最后一天
-        $firstDay = new DateTime('first day of this month');
-        $lastDay = new DateTime('last day of this month');
+        $firstDay = new DateTime('first day of last month');
+        $lastDay = new DateTime('last day of last month');
 
         // 计算工作日
         $workDays = 0;
@@ -26,10 +26,31 @@ class Calc
             $currentDay->modify('+1 day');
         }
 
-        echo "本月工作日数量为：" . $workDays . "天";
+        echo "上月工作日数量为：" . $workDays . "天";
+        echo "\n";
         // 如果需要计算每日8小时的工作小时数
         $workHours = $workDays * 8;
-        echo "本月总工作小时数为：" . $workHours . "小时";
+        echo "上月总工作小时数为：" . $workHours . "小时";
+        echo "\n";
+        $meritsSalary = 0;
+        if ($otHour <= 10){
+            $meritsSalary = $otHour * 66;
+        }elseif ($otHour > 10 && $otHour <= 60){
+            $meritsSalary = $otHour * 72;
+        }else{
+            $meritsSalary = $otHour * 79;
+        }
+        $shebao = 547.24 + 422.72 + 119.92 + 4.6 + 360;
+
+        $totalSalary = (($baseSalary/$workHours) * $actualHour) + ($otOut8Count * 30) + $meritsSalary - $shebao;
+
+        echo "税前工资：".$totalSalary."\n";
+
+        $koushui = ($totalSalary - 5000) * 0.03;
+        echo "应该缴纳个税：".$koushui."\n";
+
+        $shuiHou = $totalSalary - $koushui;
+        echo "税后工资：".$shuiHou."\n";
 
     }
 }
