@@ -68,9 +68,13 @@ participant "钉钉消息" as dingding
 end box
 
 box "mysql" #lightYellow
-participant "supplier_categories" as sql1
-participant "factory_info" as sql2
-participant "sample_sku_info" as sql3
+participant "inventory.\nsupplier_categories" as sql1
+participant "ux168.\nfactory_info" as sql2
+participant "esm.\nsample_sku_info" as sql3
+participant "platform_storage_service.\nsku_sample_expect" as sql4
+participant "ux168.\nce_master" as sql5
+participant "ux168.\nce_detail" as sql6
+participant "inventory.\nupc_record" as sql7
 
 end box
 
@@ -81,8 +85,18 @@ participant "pa_product_detail" as db2
 participant "skuId_info_main_table" as db3
 participant "skuId_info" as db4
 
-participant "ce_master" as db5
-participant "ce_detail" as db6
+
+participant "pa_sku_attribute" as db7
+participant "pa_goods_bid" as db8
+
+participant "batch_create_cebillno" as db9
+participant "sku_sale_status" as db10
+participant "product_sku" as db11
+
+participant "pa_sku_material" as db12
+
+participant "product_line" as db13
+participant "product_operator_main_info" as db14
 end box
 
 
@@ -143,8 +157,8 @@ else
 java2 -> java2 : 获取sku，sku回写对应产品线标题的明细
 
 java2 -> ce_detail : sku查询CE单明细
-ce_detail -> db6 : 查询ce_detail
-db6 --> ce_detail : 返回数据
+ce_detail -> sql6 : 查询ce_detail
+sql6 --> ce_detail : 返回数据
 ce_detail --> java2 : 返回CE单明细
 
 alt if CE单明细部分不存在
@@ -159,23 +173,27 @@ note over java2#FFAAAA: 存在CE单，校验已存在的CE单并且剩余未补�
 
 end
 note over java2#FFAAAA: 对明细sku数据做资料初始化
-java2 -> node3 : sku资料初始化、卖数信息初始化、可售表初始化等
+java2 -> node3 : 产品线product_line、product_operator_main_info、sku资料初始化product_sku、sku的upc、卖数信息初始化skuId_quantity_unit、可售表初始化sku_sale_status等
 node3 --> java2 : 返回结果
 
 
 java2 -> node1 : 回写CE单到清单主表，并更新清单状态，并且回写清单得分
+note over node1#FFAAAA: 这里面涉及到的表有\nbatch_create_cebillno(保存操作记录CE单的)\nsample_sku_info(CE单号回写样品)
 node1 --> java2 : 返回结果
 
-java2 -> node4 : sku原tempSkuId 的重复品回写
+java2 -> node4 : sku原tempSkuId 的重复品回写pa_sku_attribute.tempSkuId
 node4 --> java2 : 返回结果
 
 java2 -> node5 : 创建pa_sku_info
 node5 --> java2 : 返回结果
 
 java2 -> php1 : 自动分配补货负责人
+note over php1#FFAAAA: 这里面涉及到的表有\npa_goods_target_group(查补货负责人)，\nfactory_info(查工厂Id)，\nskuId_info(查工厂Id下最新sku的最后分配的supplierId)，\npa_sku_info(查同工厂下的所有sku,回写补货负责人)
 php1 --> java2 : 返回结果
 
 java2 -> java3 : sku留样
+java3 -> sql4 : 创建数据
+sql4 --> java3 : 返回数据
 java3 --> java2 : 返回结果
 
 
