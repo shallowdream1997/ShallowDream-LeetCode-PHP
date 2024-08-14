@@ -271,7 +271,7 @@ class ProductSkuController
         print_r($res);
     }
 
-
+    //拼接广告关键词
     public function combineKeyword(){
         $json = '[{"status":1,"matchType":"broad","rule":["make","model","word"]},{"status":1,"matchType":"broad","rule":["model","word"]},{"status":1,"matchType":"broad","rule":["model","word","make"]}]';
         $arr = json_decode($json,true);
@@ -307,8 +307,6 @@ class ProductSkuController
 
 
     }
-
-
     private function getLastContent($ruleStart, $fieldRule, $fitmentIndex,$fitmentList, $wordIndex,$wordsList, $combine = [], $returnData = []){
         //从0开始，拿到当前规则的第一个属性
         $field = isset($fieldRule[$ruleStart]) ? $fieldRule[$ruleStart] : null;
@@ -361,11 +359,24 @@ class ProductSkuController
         return [];
     }
 
+
+    public function buildScuSkuProductMap(){
+
+        $list = $this->getXlsxByFile("productIds.xlsx");
+        $batchNameList = array_column($list, 'productId');
+
+
+        $request = new CurlService();
+        $request->test()->s3015()->get("");
+
+
+
+    }
 }
 
 $s = new ProductSkuController();
 //$s->updateProductSku();
 //$s->updatePaProductAndDetail();
 //$s->syncProSkuSPInfoToTest();
-$s->test();
+$s->buildSamePaProduct();
 //$s->combineKeyword();

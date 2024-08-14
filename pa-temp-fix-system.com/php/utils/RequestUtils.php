@@ -125,6 +125,10 @@ class RequestUtils
     {
         return DataUtils::getResultData($this->curlService->s3015()->delete("pa_product_details/{$id}"));
     }
+    public function createPaProductDetail($params): array
+    {
+        return DataUtils::getResultData($this->curlService->s3015()->post("pa_product_details",$params));
+    }
 
     public function updateBrandByPaProduct($paProductDetailList, $salesBrand, $reason): array
     {
@@ -221,10 +225,27 @@ class RequestUtils
                     "verticalSequenceId" => $info['verticalSequenceId'],
                     "dingUserId" => $info['dingUserId'],
                 ];
-                $redisService->hSet(REDIS_USER_NAME_KEY, $info['userName'], json_encode($userInfo, JSON_UNESCAPED_UNICODE), 60 * 60 * 12);
+                $redisService->hSet(REDIS_USER_NAME_KEY, $info['userName'], json_encode($userInfo, JSON_UNESCAPED_UNICODE), 60 * 60 * 72);
             }
         }
         return $this;
+    }
+
+    public function returnEmployeeByCompanySequenceId(): array
+    {
+
+        $redisService = new RedisService();
+        $get = $redisService->hGetAll(REDIS_USER_NAME_KEY);
+
+        $return = [];
+        if ($get){
+            foreach ($get as $userName => $json){
+                $info = json_decode($json,true);
+                $return[$userName] = $info;
+            }
+        }
+
+        return $return;
     }
 
     // ===================================== system-manages 接口 end =====================================
@@ -411,9 +432,9 @@ class RequestUtils
 
 }
 
-$request = new RequestUtils("test");
+//$request = new RequestUtils("test");
 
-
+//$request->returnEmployeeByCompanySequenceId();
 //if (DataUtils::checkArrFilesIsExist($data, "attribute")) {
 //    $info = [
 //        [

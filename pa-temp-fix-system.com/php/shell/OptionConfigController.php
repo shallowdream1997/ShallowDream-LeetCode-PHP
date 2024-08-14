@@ -41,6 +41,12 @@ class OptionConfigController
 
     }
 
+    public function getSystemUserNameList(){
+        $return = $this->requestUtils->returnEmployeeByCompanySequenceId();
+        foreach ($return as $userName => $info){
+            $this->log($userName.'  '.$info['cName']);
+        }
+    }
     private function log(string $string = "")
     {
         $this->log->log2($string);
@@ -48,4 +54,5 @@ class OptionConfigController
 }
 
 $p = new OptionConfigController();
-$p->syncOptionValListInfoToTest();
+//$p->syncOptionValListInfoToTest();
+$p->getSystemUserNameList();
