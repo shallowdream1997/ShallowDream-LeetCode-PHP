@@ -1,5 +1,4 @@
-import axios from 'axios';
-import Vue from "vue";
+
 
 function errorCatch(error,message = '网络错误~'){
     return {

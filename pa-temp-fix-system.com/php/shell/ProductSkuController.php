@@ -361,16 +361,36 @@ class ProductSkuController
 
 
     public function buildScuSkuProductMap(){
-
-        $list = $this->getXlsxByFile("productIds.xlsx");
-        $batchNameList = array_column($list, 'productId');
-
-
-        $request = new CurlService();
-        $request->test()->s3015()->get("");
-
-
-
+        $requestUtils = new RequestUtils("pro");
+        $skuIdList = [
+            "g24080300ux0059",
+            "g24080300ux0057",
+            "g24080300ux0056",
+            "g24080300ux0053",
+            "g24081400ux0063",
+            "g24081400ux0062",
+            "g24081400ux0060",
+            "g24081400ux0061",
+            "g24081400ux0059",
+            "g24081400ux0058",
+            "g24081400ux0057",
+            "g24081400ux0056"
+        ];
+        $skuIdListInfossArray = $requestUtils->getProductSkuList($skuIdList);
+        foreach ($skuIdListInfossArray as $info){
+//            $info['status'] = "firstVeroChecking";
+            $info['status'] = "managerReviewing";
+            $e = $requestUtils->updateProductSku($info);
+            $this->log(json_encode($e,JSON_UNESCAPED_UNICODE));
+        }
+//        $skuIdListInfoArray = $requestUtils->getProductBaseInfoList($skuIdList);
+//        if ($skuIdListInfoArray){
+//            foreach ($skuIdListInfoArray as $item){
+//                $item['status'] = "firstVeroChecking";
+//                $up = $requestUtils->updateProductBaseInfo($item);
+//                $this->log(json_encode($up,JSON_UNESCAPED_UNICODE));
+//            }
+//        }
     }
 }
 
@@ -378,5 +398,5 @@ $s = new ProductSkuController();
 //$s->updateProductSku();
 //$s->updatePaProductAndDetail();
 //$s->syncProSkuSPInfoToTest();
-$s->buildSamePaProduct();
+$s->buildScuSkuProductMap();
 //$s->combineKeyword();
