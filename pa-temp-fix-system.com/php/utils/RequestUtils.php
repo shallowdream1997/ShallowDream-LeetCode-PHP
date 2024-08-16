@@ -1,6 +1,6 @@
 <?php
-require_once("../requiredfile/requiredfile.php");
-require_once("ProductUtils.php");
+require_once(dirname(__FILE__) ."/../../php/requiredfile/requiredfile.php");
+require_once(dirname(__FILE__) ."/../../php/utils/ProductUtils.php");
 
 
 class RequestUtils
@@ -423,11 +423,6 @@ class RequestUtils
     public function deletePaSkuAttribute($id): array
     {
         return DataUtils::getResultData($this->curlService->s3015()->delete("pa_sku_attributes/{$id}"));
-    }
-
-    public function export()
-    {
-
     }
 
 }

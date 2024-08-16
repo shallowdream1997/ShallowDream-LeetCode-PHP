@@ -1,5 +1,5 @@
 <?php
-
+require_once(dirname(__FILE__) ."/../../php/class/Logger.php");
 
 class CurlService
 {
@@ -20,9 +20,12 @@ class CurlService
     private $s3035 = null;
     private $gateway = null;
 
+    private $log;
 
     public function __construct() {
         $this->setHeader();
+        $this->log = new MyLogger("curl/request");
+
     }
 
     /**
@@ -538,6 +541,8 @@ class CurlService
                         curl_setopt($connection, CURLOPT_POSTFIELDS, json_encode($params,JSON_UNESCAPED_UNICODE));
                         break;
                 }
+                $this->log->log("请求: {$method}：{$url}");
+                $this->log->log("参数：".json_encode($params,JSON_UNESCAPED_UNICODE));
 
                 $result = curl_exec($connection);
 

@@ -15,8 +15,8 @@ class MyLogger {
 
     private $logFile;
     public function __construct($logFile = ""){
-        $logDefaultFile = "../log/default/".date('Ymd').".log";
-        $this->logFile = !empty($logFile) ? "../log/".$logFile."_".date('Ymd').".log" : $logDefaultFile;
+        $logDefaultFile = dirname(__FILE__) . "/../../php/log/default/".date('Ymd').".log";
+        $this->logFile = !empty($logFile) ? dirname(__FILE__) . "/../../php/log/".$logFile."_".date('Ymd').".log" : $logDefaultFile;
     }
 
     public function log($message) {

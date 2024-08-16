@@ -213,6 +213,11 @@ class DataUtils
         }
         return $data;
     }
+
+    public static function jsonEncode($list,$option = JSON_UNESCAPED_UNICODE)
+    {
+        echo json_encode($list,$option);
+    }
 }
 
 

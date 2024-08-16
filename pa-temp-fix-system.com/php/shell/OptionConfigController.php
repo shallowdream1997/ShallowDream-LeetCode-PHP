@@ -1,5 +1,5 @@
 <?php
-require_once("../requiredfile/requiredfile.php");
+require_once(dirname(__FILE__) ."/../../php/requiredfile/requiredfile.php");
 
 class OptionConfigController
 {
