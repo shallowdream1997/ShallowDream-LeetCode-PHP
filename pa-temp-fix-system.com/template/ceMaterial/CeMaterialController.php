@@ -49,7 +49,3 @@ class CeMaterialController
 
     }
 }
-
-$json = file_get_contents('php://input');
-$data = json_decode($json, true); // 将JSON字符串转换为关联数组
-var_export($data);

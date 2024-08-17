@@ -363,23 +363,12 @@ class ProductSkuController
     public function buildScuSkuProductMap(){
         $requestUtils = new RequestUtils("pro");
         $skuIdList = [
-            "g24080300ux0059",
-            "g24080300ux0057",
-            "g24080300ux0056",
-            "g24080300ux0053",
-            "g24081400ux0063",
-            "g24081400ux0062",
-            "g24081400ux0060",
-            "g24081400ux0061",
-            "g24081400ux0059",
-            "g24081400ux0058",
-            "g24081400ux0057",
-            "g24081400ux0056"
+            "f24072600ux0899",
         ];
         $skuIdListInfossArray = $requestUtils->getProductSkuList($skuIdList);
         foreach ($skuIdListInfossArray as $info){
-//            $info['status'] = "firstVeroChecking";
-            $info['status'] = "managerReviewing";
+            $info['status'] = "picReviewing";
+//            $info['status'] = "managerReviewing";
             $e = $requestUtils->updateProductSku($info);
             $this->log(json_encode($e,JSON_UNESCAPED_UNICODE));
         }
@@ -394,9 +383,9 @@ class ProductSkuController
     }
 }
 
-$s = new ProductSkuController();
+//$s = new ProductSkuController();
 //$s->updateProductSku();
 //$s->updatePaProductAndDetail();
 //$s->syncProSkuSPInfoToTest();
-$s->buildScuSkuProductMap();
+//$s->buildScuSkuProductMap();
 //$s->combineKeyword();
