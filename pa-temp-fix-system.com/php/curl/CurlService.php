@@ -18,6 +18,7 @@ class CurlService
     private $ux168 = null;
     private $s3010 = null;
     private $s3035 = null;
+    private $s3016 = null;
     private $gateway = null;
 
     private $log;
@@ -194,6 +195,15 @@ class CurlService
         return $this;
     }
 
+    public function s3016(): CurlService
+    {
+        $this->port = "s3016";
+        $this->setBaseComponentByEnv();
+        return $this;
+    }
+
+
+
     public function gateway(): CurlService
     {
         $this->port = "gateway";
@@ -353,6 +363,9 @@ class CurlService
             case "s3010":
                 $this->s3010 = "http://172.16.29.2:3010";
                 break;
+            case "s3016":
+                $this->s3016 = "http://172.16.29.2:3016";
+                break;
             case "gateway":
                 $this->gateway = "https://gateway-test.ux168.cn";
                 break;
@@ -391,7 +404,10 @@ class CurlService
                 $this->ux168 = "http://172.16.10.62:30013";
                 break;
             case "s3010":
-                $this->s3010 = "http://172.16.10.62:3010";
+                $this->s3010 = "http://172.16.10.62:30010";
+                break;
+            case "s3016":
+                $this->s3016 = "http://172.16.10.62:30016";
                 break;
             case "gateway":
                 $this->gateway = "https://gateway-test.ux168.cn";
@@ -431,7 +447,10 @@ class CurlService
                 $this->ux168 = "http://172.16.11.221:30013";
                 break;
             case "s3010":
-                $this->s3010 = "http://172.16.11.221:3010";
+                $this->s3010 = "http://172.16.11.221:30010";
+                break;
+            case "s3016":
+                $this->s3016 = "http://172.16.11.221:30016";
                 break;
             case "gateway":
                 $this->gateway = "https://gateway-uat.ux168.cn";
@@ -476,6 +495,9 @@ class CurlService
                 break;
             case "s3035":
                 $this->s3035 = "https://master-nodejs-poms-log.ux168.cn";
+                break;
+            case "s3016":
+                $this->s3016 = "http://master.nodejs.poms.qms.ux168.cn:60016";
                 break;
             case "gateway":
                 $this->gateway = "https://gateway.ux168.cn";

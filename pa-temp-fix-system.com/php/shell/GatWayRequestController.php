@@ -31,18 +31,13 @@ class GatWayRequestController
     }
 
 
+    /**
+     * sku留样 - 打标识
+     */
     public function getReceiveSampleExpectPage()
     {
         $skuIdList = [
-            "a24071200ux0082",
-            "a24062000ux0312",
-            "a24051300ux0304",
-            "a24051300ux0305",
-            "a24072700ux0733",
-            "a24062000ux0311",
-            "a24071200ux0081",
-            "a24072700ux0727",
-            "a24070100ux0226",
+            "a24080500ux3195",
         ];
         $resp = DataUtils::getNewResultData($this->getModule('wms')->curlService->getWayPost($this->module . "/receive/sample/expect/v1/page", [
             "skuIdIn" => $skuIdList,
@@ -83,5 +78,5 @@ class GatWayRequestController
 
 }
 
-$getWay = new GatWayRequestController('test');
+$getWay = new GatWayRequestController('pro');
 $getWay->getReceiveSampleExpectPage();

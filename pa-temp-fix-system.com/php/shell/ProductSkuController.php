@@ -381,11 +381,93 @@ class ProductSkuController
 //            }
 //        }
     }
+
+    //生成PMO单 - 新(可重复试行)
+    public function savePaPmo(){
+        $requestUtils = new RequestUtils("test");
+        //$list = $requestUtils->getPaProductDetailPageList(['paProductId'=>"66977efa5305ef6e841db297","limit"=>1000]);
+
+        $batchNameData = $requestUtils->getPaProductInfoByBatchName("20240717 - 郑雨生 - 3");
+        $paProductInfo = $batchNameData['paProductIdInfo'];
+        $list = $batchNameData['detailList'];
+
+        $supplierId = $paProductInfo['supplierType'] == '好彩汽配2013u' ? 1278 : 1990;
+        $factoryInfo = $requestUtils->getFactoryInfoByFactoryFullName($supplierId,'南宫市固卡汽车配件有限公司');
+
+        $skuIdInfoList = [];
+        foreach ($list as $info){
+            $skuIdInfoList[] = [
+                "skuId" => $info['skuId'],
+                "tempId" => $info['tempId'],
+                "productLineName" => $info['productName'],
+                "productModel" => $info['productModel'] ?: $info['tempSkuId'],
+                "purchasePrice" => $info['itemPrice'],
+                "quantity" => $info['itemMoq'],
+                "sellingNum" => $info['itemUnitQuantity'],
+                "unit" => $info['itemUnitQuantityUnit'],
+                "purchaseLink" => $info['purchaseLink'],
+                "factoryName" => $factoryInfo['factoryFullName'] ?? $info['suppliersCompanyName'],
+                "factoryId" => $factoryInfo['id'] ?? "",
+                "salesRegion" => $info['salesRegion'] ?? [],
+                "photoAddress" => $info['picUrl'],
+                "supplierName" => $paProductInfo['supplierType'] == '好彩汽配2013u' ? "好彩汽配2013u" : "个人护理2016u",
+                "supplierSequenceId" => $supplierId,
+                "titleEn" => "Not filled",
+                "brand" => $paProductInfo['salesBrand'],
+                "developer" => $paProductInfo['developer'],
+                "traceman" => $paProductInfo['traceMan'],
+                "ceBillNo" => $info['ceBillNo'] ?? "",
+            ];
+        }
+        $this->log(json_encode($skuIdInfoList,JSON_UNESCAPED_UNICODE));
+        $this->log(date("Ymd",time()));
+
+        $userName = "zhouangang";
+        $pmoResult = ["sequenceId" => "PMO2024081900006"];
+//        $pmoResult = $requestUtils->getSequenceId("PMO");
+        if ($pmoResult) {
+            $pmoBillNo = $pmoResult['sequenceId'];
+            $traceManInfo = $requestUtils->getUserSheetByUserName($paProductInfo['traceMan']);
+            $pmoMainTableInfo = [
+                "pmoBillNo" => $pmoBillNo,
+                "verticalName" => "PA",
+                "operatorName" => $traceManInfo['cName'],
+                "batch" => $paProductInfo['batchName'],
+                "traceman" => $paProductInfo['traceMan'],
+                "purchaseType" => "new",
+                "type" => "normal",
+                "remark" => "",
+                "departmentId" => $traceManInfo['verticalSequenceId'],
+                "departmentCn" => $traceManInfo['verticalName'],
+            ];
+            $curlService = new CurlService();
+            $savePAPmoRes = DataUtils::getResultData($curlService->local()->s3009()->post("market-analysis-reports/savePaPmoMainTableAndSkuIdInfo", [
+                'pmoMainTableInfo' => $pmoMainTableInfo,
+                'skuIdInfoList' => $skuIdInfoList,
+                'userName' => $userName,
+            ]));
+            if ($savePAPmoRes) {
+                $this->log($savePAPmoRes['message']);
+                if ($savePAPmoRes['isAddMainTableSuccess']){
+                    $this->log(json_encode($savePAPmoRes['mainSkuIdInfo'],JSON_UNESCAPED_UNICODE));
+                    $this->log("共有sku：".count($savePAPmoRes['skuIdList'])." 个，为：".implode(',',$savePAPmoRes['skuIdList']));
+                }
+            }
+        }
+//
+    }
+
+    public function getQms(){
+        $theDayAfterTomorrow = date("Y-m-d 08:00:00",strtotime("+1 day"));
+        echo $theDayAfterTomorrow;
+    }
 }
 
-//$s = new ProductSkuController();
+$s = new ProductSkuController();
 //$s->updateProductSku();
 //$s->updatePaProductAndDetail();
 //$s->syncProSkuSPInfoToTest();
 //$s->buildScuSkuProductMap();
 //$s->combineKeyword();
+//$s->ssssgegt();
+$s->getQms();

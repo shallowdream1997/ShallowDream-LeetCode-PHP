@@ -425,6 +425,38 @@ class RequestUtils
         return DataUtils::getResultData($this->curlService->s3015()->delete("pa_sku_attributes/{$id}"));
     }
 
+    /**
+     * 获取工厂信息
+     * @param $supplierId
+     * @param $factoryFullName
+     * @return array|mixed
+     */
+    public function getFactoryInfoByFactoryFullName($supplierId,$factoryFullName){
+         $res = DataUtils::getResultData($this->curlService->s3009()->post("consignment-bills/factoryInfo",[
+            'conditionsJsonEncode' => json_encode(["supplierId"=>$supplierId,"factoryFullName"=>$factoryFullName,"factoryStatus"=>"active"]),
+            'orderBy' => "",
+            'pageNumber' => 1,
+            'entriesPerPage' => 10,
+        ]));
+        $factoryInfo = [];
+        if ($res['factoryInfoResponse'] && isset($res['factoryInfoResponse']['factoryInfos']) && count($res['factoryInfoResponse']['factoryInfos']) > 0){
+            $factoryInfo = $res['factoryInfoResponse']['factoryInfos'][0];
+        }
+        return $factoryInfo;
+    }
+
+    /**
+     * 生成批次号
+     * @param $type
+     * @return array
+     */
+    public function getSequenceId($type){
+        return DataUtils::getResultData($this->curlService->s3009()->get("commons/getSequenceId",[
+            "userName" => "zhouangang",
+            "date" => date("Ymd",time()),
+            "type" => $type,
+        ]));
+    }
 }
 
 //$request = new RequestUtils("test");
