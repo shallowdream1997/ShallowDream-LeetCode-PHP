@@ -9,7 +9,7 @@ class ProductSkuController
     public function __construct()
     {
         $this->log = new MyLogger("product_sku");
-        $this->requestUtils = new RequestUtils("test");
+        $this->requestUtils = new RequestUtils("pro");
     }
 
     /**
@@ -140,7 +140,7 @@ class ProductSkuController
                         continue;
                     }
                     $batchInfo = $paProductIdCollectorList[$updateData['batchName']];
-                    $this->updatePPMain($batchInfo['paProductInfo'], $updateData,$score);
+                    //$this->updatePPMain($batchInfo['paProductInfo'], $updateData,$score);
                     if ($score){
                         if (DataUtils::checkArrFilesIsExist($updateData, 'salesBrand')) {
                             $scoreDetailList = [];
@@ -198,19 +198,90 @@ class ProductSkuController
     }
     private function updatePPDetail($paProductDetailList,$updateData){
         $this->log("明细 开始更新");
+
+        $updateSkuIdInfoGroupByProductId = [];
+        if (count($paProductDetailList) > 0){
+            $updateSkuIdsList = [];
+            foreach ($paProductDetailList as $detail){
+                if (!empty($detail['skuId'])){
+                    $updateSkuIdsList[] = $detail['skuId'];
+                }
+            }
+            if (count($updateSkuIdsList) > 0){
+                $updateSkuIdInfoList = $this->requestUtils->getProductSkuList($updateSkuIdsList);
+                $updateSkuIdInfoGroupByProductId = array_column($updateSkuIdInfoList, null, "productId");
+            }
+        }
+
         foreach ($paProductDetailList as $detailInfo) {
             $this->log("{$detailInfo['productName']}");
 
-            if (DataUtils::checkArrFilesIsExist($updateData, 'salesBrand')) {
+            if (DataUtils::checkArrFilesIsExist($updateData, 'salesBrand') && $detailInfo['salesBrand'] != $updateData['salesBrand']) {
                 $this->log("salesBrand: {$detailInfo['salesBrand']} -> {$updateData['salesBrand']}");
                 $detailInfo['salesBrand'] = $updateData['salesBrand'];
             }
 
             $updateResp = $this->requestUtils->updatePaProductDetailInfo($detailInfo);
             if ($updateResp) {
-                $this->log("success");
+                $this->log("update pa product detail success");
             } else {
-                $this->log("fail");
+                $this->log("update pa product detail fail");
+            }
+
+            //更新product-sku资料表
+            if (!DataUtils::checkArrFilesIsExist($updateSkuIdInfoGroupByProductId, $detailInfo['skuId'])) {
+                $this->log("{$detailInfo['skuId']} 不存在POMS");
+                continue;
+            }
+            $this->log("{$detailInfo['skuId']} 开始修改");
+            $productInfo = $updateSkuIdInfoGroupByProductId[$detailInfo['skuId']];
+
+            $updateAttribute = [];
+            //有品牌的修改
+            $fixSaleBrand = true;
+            $oldSaleBrand = "";
+            if (DataUtils::checkArrFilesIsExist($updateData, 'salesBrand')) {
+
+                $filter = DataUtils::findIndexInArray($productInfo['attribute'], [
+                    "label" => "salesBrand",
+                    "channel" => "local"
+                ]);
+                if (!empty($filter)){
+                    foreach ($filter as $index => $array) {
+                        $oldSaleBrand = $productInfo['attribute'][$index]['value'];
+                        if ($productInfo['attribute'][$index]['value'] == $updateData['salesBrand']){
+                            //一样的品牌，不做修改
+                            $fixSaleBrand = false;
+                            continue;
+                        }
+                    }
+                }
+
+                $updateAttribute[] = [
+                    "channel" => "local",
+                    "label" => "salesBrand",
+                    "value" => $updateData['salesBrand'],
+                ];
+
+            }else{
+                $fixSaleBrand = false;
+            }
+            if (!$fixSaleBrand){
+                continue;
+            }
+            $this->log("品牌不一样可以修改：{$oldSaleBrand} --> {$updateData['salesBrand']}");
+            if (!empty($updateAttribute)) {
+                //要修改的字段里面有业务类型，品牌，
+                if (DataUtils::checkArrFilesIsExist($productInfo, "attribute")) {
+                    ProductUtils::editProductAttributeByArr($productInfo['attribute'], $updateAttribute);
+                }
+            }
+
+            $updateProductResp = $this->requestUtils->updateProductSku($productInfo);
+            if ($updateProductResp) {
+                $this->log("update sku success");
+            } else {
+                $this->log("update sku fail");
             }
         }
 
@@ -273,7 +344,7 @@ class ProductSkuController
 
     //拼接广告关键词
     public function combineKeyword(){
-        $json = '[{"status":1,"matchType":"broad","rule":["make","model","word"]},{"status":1,"matchType":"broad","rule":["model","word"]},{"status":1,"matchType":"broad","rule":["model","word","make"]}]';
+        $json = '[{"status":1,"matchType":"broad","rule":["make"]}]';
         $arr = json_decode($json,true);
         $proCurlService = new CurlService();
         $list = DataUtils::getArrHeadData(DataUtils::getPageDocList($proCurlService->test()->s3044()->get("pa_sku_materials/queryPage",["skuId"=>"a24051600ux0001"])));
@@ -332,6 +403,9 @@ class ProductSkuController
             if (isset($fitmentList[$fitmentIndex])){
                 //查找该字段 - 获取字段值,放在这里
                 $combine[] = $fitmentList[$fitmentIndex][$field] ? $fitmentList[$fitmentIndex][$field] : "";
+                $tempCombine = $combine;
+                $returnData[] = $tempCombine;
+
                 //到下一个属性
                 $ruleStart++;
                 return $this->getLastContent($ruleStart, $fieldRule, $fitmentIndex,$fitmentList, $wordIndex,$wordsList, $combine,$returnData);
@@ -465,9 +539,9 @@ class ProductSkuController
 
 $s = new ProductSkuController();
 //$s->updateProductSku();
-//$s->updatePaProductAndDetail();
+$s->updatePaProductAndDetail();
 //$s->syncProSkuSPInfoToTest();
 //$s->buildScuSkuProductMap();
 //$s->combineKeyword();
-//$s->ssssgegt();
-$s->getQms();
+//$s->savePaPmo();
+//$s->getQms();
