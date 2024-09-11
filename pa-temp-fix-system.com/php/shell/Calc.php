@@ -56,4 +56,4 @@ class Calc
 }
 
 $calc = new Calc();
-$calc->calcSalary(177.5,25.5,6);
+$calc->calcSalary(171.5,40.5,5);

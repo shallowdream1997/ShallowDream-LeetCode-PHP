@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__) ."/../../php/requiredfile/requiredfile.php");
+require_once(dirname(__FILE__) . "/../../php/requiredfile/requiredfile.php");
 
 class ProductSkuController
 {
@@ -20,6 +20,7 @@ class ProductSkuController
     {
         $this->log->log2($message);
     }
+
     public function getXlsxByFile($file = ""): array
     {
         $excelUtils = new ExcelUtils();
@@ -27,17 +28,19 @@ class ProductSkuController
         switch ($file) {
             case "UpdatePaProduct.xlsx":
             case "UpdateProductSku.xlsx":
+            case "UpdatePaSkuInfo.xlsx":
                 break;
             default:
                 die("请选择文件!");
         }
 
         try {
-            return $excelUtils->getXlsxData($fileName.$file);
+            return $excelUtils->getXlsxData($fileName . $file);
         } catch (Exception $e) {
             die("获取数据失败");
         }
     }
+
     /**
      * 批量修改product-sku表关键字段：品牌，业务类型，分类，销售，开发
      */
@@ -120,7 +123,7 @@ class ProductSkuController
      * @param false $score
      * @param string $updateBrandRemark
      */
-    public function updatePaProductAndDetail($score = false,$updateBrandRemark = "指定修改品牌")
+    public function updatePaProductAndDetail($score = false, $updateBrandRemark = "指定修改品牌")
     {
         $list = $this->getXlsxByFile("UpdatePaProduct.xlsx");
         $batchNameList = array_column($list, 'batchName');
@@ -140,28 +143,28 @@ class ProductSkuController
                         continue;
                     }
                     $batchInfo = $paProductIdCollectorList[$updateData['batchName']];
-                    //$this->updatePPMain($batchInfo['paProductInfo'], $updateData,$score);
-                    if ($score){
+                    $this->updatePPMain($batchInfo['paProductInfo'], $updateData,$score);
+                    if ($score) {
                         if (DataUtils::checkArrFilesIsExist($updateData, 'salesBrand')) {
                             $scoreDetailList = [];
-                            foreach ($batchInfo['paProductDetailList'] as $detailInfo){
-                                if (DataUtils::checkArrFilesIsExist($detailInfo,'skuId') &&
-                                    !DataUtils::checkArrFilesIsExistEqualValue($detailInfo,'status','delete')){
+                            foreach ($batchInfo['paProductDetailList'] as $detailInfo) {
+                                if (DataUtils::checkArrFilesIsExist($detailInfo, 'skuId') &&
+                                    !DataUtils::checkArrFilesIsExistEqualValue($detailInfo, 'status', 'delete')) {
                                     $scoreDetailList[] = $detailInfo;
                                 }
                             }
-                            if (count($scoreDetailList) > 0){
+                            if (count($scoreDetailList) > 0) {
                                 $this->log("{$updateData['salesBrand']}: 扣分加分");
                                 //修改品牌要扣分的
                                 $resp = $this->requestUtils->updateBrandByPaProduct($scoreDetailList, $updateData['salesBrand'], $updateBrandRemark);
-                                $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
-                            }else{
+                                $this->log(json_encode($resp, JSON_UNESCAPED_UNICODE));
+                            } else {
                                 $this->log("{$updateData['salesBrand']}: 没有要扣分加分更新品牌的数据");
                             }
 
                         }
 
-                    }else{
+                    } else {
                         $this->updatePPDetail($batchInfo['paProductDetailList'], $updateData);
                     }
 
@@ -172,18 +175,18 @@ class ProductSkuController
         $this->log("结束");
     }
 
-    private function updatePPMain($paProductInfo, $updateData,$score)
+    private function updatePPMain($paProductInfo, $updateData, $score)
     {
         $this->log("{$updateData['batchName']} 开始更新");
-        foreach (['developer', 'platform', 'productlineId', 'salesBrand', 'tag', 'tag2', 'traceMan','ebayTraceMan'] as $field) {
+        foreach (['developer', 'platform', 'productlineId', 'salesBrand', 'tag', 'tag2', 'traceMan', 'ebayTraceMan'] as $field) {
             if (DataUtils::checkArrFilesIsExist($updateData, $field)) {
-                if ($score && $field == 'salesBrand'){
+                if ($score && $field == 'salesBrand') {
                     //品牌扣分的话，不能更新品牌
                     continue;
                 }
                 $this->log("{$field}: {$paProductInfo[$field]} -> {$updateData[$field]}");
                 $paProductInfo[$field] = $updateData[$field];
-                if ($field === 'traceMan'){
+                if ($field === 'traceMan') {
                     //如果是traceMan的更新，还需要更新amazonTraceMan
                     $paProductInfo['amazonTraceMan'] = $updateData[$field];
                 }
@@ -196,18 +199,20 @@ class ProductSkuController
             $this->log("fail");
         }
     }
-    private function updatePPDetail($paProductDetailList,$updateData){
+
+    private function updatePPDetail($paProductDetailList, $updateData)
+    {
         $this->log("明细 开始更新");
 
         $updateSkuIdInfoGroupByProductId = [];
-        if (count($paProductDetailList) > 0){
+        if (count($paProductDetailList) > 0) {
             $updateSkuIdsList = [];
-            foreach ($paProductDetailList as $detail){
-                if (!empty($detail['skuId'])){
+            foreach ($paProductDetailList as $detail) {
+                if (!empty($detail['skuId'])) {
                     $updateSkuIdsList[] = $detail['skuId'];
                 }
             }
-            if (count($updateSkuIdsList) > 0){
+            if (count($updateSkuIdsList) > 0) {
                 $updateSkuIdInfoList = $this->requestUtils->getProductSkuList($updateSkuIdsList);
                 $updateSkuIdInfoGroupByProductId = array_column($updateSkuIdInfoList, null, "productId");
             }
@@ -215,18 +220,24 @@ class ProductSkuController
 
         foreach ($paProductDetailList as $detailInfo) {
             $this->log("{$detailInfo['productName']}");
-
+            $fixDetail = false;
             if (DataUtils::checkArrFilesIsExist($updateData, 'salesBrand') && $detailInfo['salesBrand'] != $updateData['salesBrand']) {
                 $this->log("salesBrand: {$detailInfo['salesBrand']} -> {$updateData['salesBrand']}");
                 $detailInfo['salesBrand'] = $updateData['salesBrand'];
+                $fixDetail = true;
             }
 
-            $updateResp = $this->requestUtils->updatePaProductDetailInfo($detailInfo);
-            if ($updateResp) {
-                $this->log("update pa product detail success");
+            if ($fixDetail) {
+                $updateResp = $this->requestUtils->updatePaProductDetailInfo($detailInfo);
+                if ($updateResp) {
+                    $this->log("update pa product detail success");
+                } else {
+                    $this->log("update pa product detail fail");
+                }
             } else {
-                $this->log("update pa product detail fail");
+                $this->log("不需要更新明细");
             }
+
 
             //更新product-sku资料表
             if (!DataUtils::checkArrFilesIsExist($updateSkuIdInfoGroupByProductId, $detailInfo['skuId'])) {
@@ -246,10 +257,10 @@ class ProductSkuController
                     "label" => "salesBrand",
                     "channel" => "local"
                 ]);
-                if (!empty($filter)){
+                if (!empty($filter)) {
                     foreach ($filter as $index => $array) {
                         $oldSaleBrand = $productInfo['attribute'][$index]['value'];
-                        if ($productInfo['attribute'][$index]['value'] == $updateData['salesBrand']){
+                        if ($productInfo['attribute'][$index]['value'] == $updateData['salesBrand']) {
                             //一样的品牌，不做修改
                             $fixSaleBrand = false;
                             continue;
@@ -263,10 +274,10 @@ class ProductSkuController
                     "value" => $updateData['salesBrand'],
                 ];
 
-            }else{
+            } else {
                 $fixSaleBrand = false;
             }
-            if (!$fixSaleBrand){
+            if (!$fixSaleBrand) {
                 continue;
             }
             $this->log("品牌不一样可以修改：{$oldSaleBrand} --> {$updateData['salesBrand']}");
@@ -290,7 +301,8 @@ class ProductSkuController
     /**
      * 同步生产环境sku -> sit环境
      */
-    public function syncProSkuSPInfoToTest(){
+    public function syncProSkuSPInfoToTest()
+    {
         $skuIdList = [
             "a24051600ux0001"
         ];
@@ -300,11 +312,11 @@ class ProductSkuController
         $skuIdListInfoArrayPro = $proRequestUtils->getProductSkuList($skuIdList);
 
         $skuIdListInfoArrayTest = $this->requestUtils->getProductSkuList($skuIdList);
-        $testProductSkuInfoMap = array_column($skuIdListInfoArrayTest,null,'productId');
+        $testProductSkuInfoMap = array_column($skuIdListInfoArrayTest, null, 'productId');
         foreach ($skuIdListInfoArrayPro as $info) {
             if (DataUtils::checkArrFilesIsExist($testProductSkuInfoMap, $info['productId'])) {
                 $deleteResp = $this->requestUtils->deleteProductSku($testProductSkuInfoMap[$info['productId']]['_id']);
-                if ($deleteResp){
+                if ($deleteResp) {
                     $this->log("delete test product-skus {$info['productId']}");
                 }
             }
@@ -336,39 +348,41 @@ class ProductSkuController
 
     }
 
-    public function test(){
+    public function test()
+    {
         $proCurlService = new CurlService();
-        $res = $proCurlService->pro()->s3015()->post("pa_products/queryPagePost",["batchName_like"=>"20240809 - 林泽键 - 13","limit"=>1,"page"=>1]);
+        $res = $proCurlService->pro()->s3015()->post("pa_products/queryPagePost", ["batchName_like" => "20240809 - 林泽键 - 13", "limit" => 1, "page" => 1]);
         print_r($res);
     }
 
     //拼接广告关键词
-    public function combineKeyword(){
+    public function combineKeyword()
+    {
         $json = '[{"status":1,"matchType":"broad","rule":["make"]}]';
-        $arr = json_decode($json,true);
+        $arr = json_decode($json, true);
         $proCurlService = new CurlService();
-        $list = DataUtils::getArrHeadData(DataUtils::getPageDocList($proCurlService->test()->s3044()->get("pa_sku_materials/queryPage",["skuId"=>"a24051600ux0001"])));
+        $list = DataUtils::getArrHeadData(DataUtils::getPageDocList($proCurlService->test()->s3044()->get("pa_sku_materials/queryPage", ["skuId" => "a24051600ux0001"])));
         $return = [
             "keywords" => $list['keywords'],
             "cpAsin" => $list['cpAsin'],
             "fitment" => $list['fitment']
         ];
-        echo json_encode($return,JSON_UNESCAPED_UNICODE)."\n";
+        echo json_encode($return, JSON_UNESCAPED_UNICODE) . "\n";
 
         $index = 1;
         foreach ($arr as $info) {
-            echo json_encode($info['rule'],JSON_UNESCAPED_UNICODE)."：\n";
+            echo json_encode($info['rule'], JSON_UNESCAPED_UNICODE) . "：\n";
             $canPipe = true;
             $order = array();
             $this->log("====正在读取规则 {$index} ====");
-            $this->log("==>规则是：".implode(" ",$info['rule']));
-            $this->log("==>fitment的值有：".json_encode($return['fitment'],JSON_UNESCAPED_UNICODE));
-            $this->log("==>核心词的值有：".json_encode($return['keywords'],JSON_UNESCAPED_UNICODE));
+            $this->log("==>规则是：" . implode(" ", $info['rule']));
+            $this->log("==>fitment的值有：" . json_encode($return['fitment'], JSON_UNESCAPED_UNICODE));
+            $this->log("==>核心词的值有：" . json_encode($return['keywords'], JSON_UNESCAPED_UNICODE));
             $this->log("====开始组装====");
-            $returnData = $this->getLastContent(0,$info['rule'],0,$return['fitment'],0,$return['keywords']);
-            if ($returnData){
-                foreach ($returnData as $combine){
-                    $this->log(implode(" ",$combine));
+            $returnData = $this->getLastContent(0, $info['rule'], 0, $return['fitment'], 0, $return['keywords']);
+            if ($returnData) {
+                foreach ($returnData as $combine) {
+                    $this->log(implode(" ", $combine));
                 }
             }
             $this->log("====结束组装====");
@@ -378,29 +392,31 @@ class ProductSkuController
 
 
     }
-    private function getLastContent($ruleStart, $fieldRule, $fitmentIndex,$fitmentList, $wordIndex,$wordsList, $combine = [], $returnData = []){
+
+    private function getLastContent($ruleStart, $fieldRule, $fitmentIndex, $fitmentList, $wordIndex, $wordsList, $combine = [], $returnData = [])
+    {
         //从0开始，拿到当前规则的第一个属性
         $field = isset($fieldRule[$ruleStart]) ? $fieldRule[$ruleStart] : null;
-        if (!$field){
+        if (!$field) {
             //没有下一个指标属性，要开始组装了
             //$returnData[] = $combine;
             $ruleStart = 0;
             $fitmentIndex++;
             $combine = [];
-            if ($fitmentIndex >= count($fitmentList)){
+            if ($fitmentIndex >= count($fitmentList)) {
                 //fitment已经用完了，直接导出来
                 return $returnData;
             }
 
-            return $this->getLastContent($ruleStart, $fieldRule, $fitmentIndex,$fitmentList, $wordIndex,$wordsList, $combine,$returnData);
+            return $this->getLastContent($ruleStart, $fieldRule, $fitmentIndex, $fitmentList, $wordIndex, $wordsList, $combine, $returnData);
         }
 
         //判断属性开始获取属性值
-        if ($field === 'make' || $field === 'model'){
+        if ($field === 'make' || $field === 'model') {
             //因为这个字段的特殊性，需要记录下标
 
             //获取当前的make model的下标
-            if (isset($fitmentList[$fitmentIndex])){
+            if (isset($fitmentList[$fitmentIndex])) {
                 //查找该字段 - 获取字段值,放在这里
                 $combine[] = $fitmentList[$fitmentIndex][$field] ? $fitmentList[$fitmentIndex][$field] : "";
                 $tempCombine = $combine;
@@ -408,25 +424,25 @@ class ProductSkuController
 
                 //到下一个属性
                 $ruleStart++;
-                return $this->getLastContent($ruleStart, $fieldRule, $fitmentIndex,$fitmentList, $wordIndex,$wordsList, $combine,$returnData);
+                return $this->getLastContent($ruleStart, $fieldRule, $fitmentIndex, $fitmentList, $wordIndex, $wordsList, $combine, $returnData);
             }
 
 
-        }elseif($field === 'word'){
+        } elseif ($field === 'word') {
             //word 核心词先不顺序，直接用全部的数据
 
-            if (isset($wordsList[$wordIndex])){
+            if (isset($wordsList[$wordIndex])) {
                 //
                 $tempCombine = $combine;
                 $tempCombine[] = $wordsList[$wordIndex];
                 $returnData[] = $tempCombine;
                 $wordIndex++;
-                return $this->getLastContent($ruleStart, $fieldRule, $fitmentIndex,$fitmentList, $wordIndex,$wordsList, $combine,$returnData);
-            }else{
+                return $this->getLastContent($ruleStart, $fieldRule, $fitmentIndex, $fitmentList, $wordIndex, $wordsList, $combine, $returnData);
+            } else {
                 //没有了
                 $ruleStart++;
                 $wordIndex = 0;
-                return $this->getLastContent($ruleStart, $fieldRule, $fitmentIndex,$fitmentList, $wordIndex,$wordsList, $combine,$returnData);
+                return $this->getLastContent($ruleStart, $fieldRule, $fitmentIndex, $fitmentList, $wordIndex, $wordsList, $combine, $returnData);
             }
         }
 
@@ -434,30 +450,10 @@ class ProductSkuController
     }
 
 
-    public function buildScuSkuProductMap(){
-        $requestUtils = new RequestUtils("pro");
-        $skuIdList = [
-            "f24072600ux0899",
-        ];
-        $skuIdListInfossArray = $requestUtils->getProductSkuList($skuIdList);
-        foreach ($skuIdListInfossArray as $info){
-            $info['status'] = "picReviewing";
-//            $info['status'] = "managerReviewing";
-            $e = $requestUtils->updateProductSku($info);
-            $this->log(json_encode($e,JSON_UNESCAPED_UNICODE));
-        }
-//        $skuIdListInfoArray = $requestUtils->getProductBaseInfoList($skuIdList);
-//        if ($skuIdListInfoArray){
-//            foreach ($skuIdListInfoArray as $item){
-//                $item['status'] = "firstVeroChecking";
-//                $up = $requestUtils->updateProductBaseInfo($item);
-//                $this->log(json_encode($up,JSON_UNESCAPED_UNICODE));
-//            }
-//        }
-    }
 
     //生成PMO单 - 新(可重复试行)
-    public function savePaPmo(){
+    public function savePaPmo()
+    {
         $requestUtils = new RequestUtils("test");
         //$list = $requestUtils->getPaProductDetailPageList(['paProductId'=>"66977efa5305ef6e841db297","limit"=>1000]);
 
@@ -466,10 +462,10 @@ class ProductSkuController
         $list = $batchNameData['detailList'];
 
         $supplierId = $paProductInfo['supplierType'] == '好彩汽配2013u' ? 1278 : 1990;
-        $factoryInfo = $requestUtils->getFactoryInfoByFactoryFullName($supplierId,'南宫市固卡汽车配件有限公司');
+        $factoryInfo = $requestUtils->getFactoryInfoByFactoryFullName($supplierId, '南宫市固卡汽车配件有限公司');
 
         $skuIdInfoList = [];
-        foreach ($list as $info){
+        foreach ($list as $info) {
             $skuIdInfoList[] = [
                 "skuId" => $info['skuId'],
                 "tempId" => $info['tempId'],
@@ -493,8 +489,8 @@ class ProductSkuController
                 "ceBillNo" => $info['ceBillNo'] ?? "",
             ];
         }
-        $this->log(json_encode($skuIdInfoList,JSON_UNESCAPED_UNICODE));
-        $this->log(date("Ymd",time()));
+        $this->log(json_encode($skuIdInfoList, JSON_UNESCAPED_UNICODE));
+        $this->log(date("Ymd", time()));
 
         $userName = "zhouangang";
         $pmoResult = ["sequenceId" => "PMO2024081900006"];
@@ -522,19 +518,95 @@ class ProductSkuController
             ]));
             if ($savePAPmoRes) {
                 $this->log($savePAPmoRes['message']);
-                if ($savePAPmoRes['isAddMainTableSuccess']){
-                    $this->log(json_encode($savePAPmoRes['mainSkuIdInfo'],JSON_UNESCAPED_UNICODE));
-                    $this->log("共有sku：".count($savePAPmoRes['skuIdList'])." 个，为：".implode(',',$savePAPmoRes['skuIdList']));
+                if ($savePAPmoRes['isAddMainTableSuccess']) {
+                    $this->log(json_encode($savePAPmoRes['mainSkuIdInfo'], JSON_UNESCAPED_UNICODE));
+                    $this->log("共有sku：" . count($savePAPmoRes['skuIdList']) . " 个，为：" . implode(',', $savePAPmoRes['skuIdList']));
                 }
             }
         }
 //
     }
 
-    public function getQms(){
-        $theDayAfterTomorrow = date("Y-m-d 08:00:00",strtotime("+1 day"));
+    public function getQms()
+    {
+        $theDayAfterTomorrow = date("Y-m-d 08:00:00", strtotime("+1 day"));
         echo $theDayAfterTomorrow;
     }
+
+
+    public function updatePaSkuInfoReplenishManBySkuIds()
+    {
+        $requestService = (new CurlService())->test();
+        $list = $this->getXlsxByFile("UpdatePaSkuInfo.xlsx");
+        $lists = array_column($list,"skuId");
+        foreach (array_chunk($lists, 150) as $skuIdList) {
+            $resp = DataUtils::getPageList($requestService->s3015()->get("pa_sku_infos/queryPage", [
+                "limit" => 1000,
+                "skuId_in" => implode(",", $skuIdList)
+            ]));
+            if ($resp) {
+                foreach ($resp as $info){
+                    $info['replenishMan'] = "huangzheng";
+                    $requestService->s3015()->put("pa_sku_infos/{$info['_id']}",$info);
+                }
+            }
+        }
+    }
+
+    public function ssss()
+    {
+        $a = [
+            [
+                "type" => "pmoFiledMap",
+                "fieldList" => [
+                    "skuId:custom-skuInfo-skuId",
+                    "productLineName:custom-skuInfo-outsideTitle",
+                    "productModel:product_model",
+                    "purchasePrice:cost",
+                    "quantity:min_arrival_quantity",
+                    "sellingNum:measurement",
+                    "unit:measurement_unit",
+                    "purchaseLink:purchase_link",
+                    "factoryName:custom-skuInfo-factoryName",
+                    "factoryId:custom-skuInfo-factoryId",
+                    "photoAddress:product_image[0]",
+                    "supplierName:custom-skuInfo-supplierName",
+                    "supplierSequenceId:custom-skuInfo-supplierId",
+                    "brand:custom-skuInfo-brand",
+                    "developer:custom-common-developerUserName",
+                    "traceMan:custom-common-salesUserName"
+                ],
+            ],
+            [
+                "type" => "ceFiledMap",
+                "fieldList" => [
+                    "skuId:custom-skuInfo-skuId",
+                    "tempSkuId:custom-skuInfo-tempSkuId",
+                    "productLineName:custom-skuInfo-outsideTitle",
+                    "supplierSequenceId:custom-skuInfo-supplierId",
+                    "supplierName:custom-skuInfo-supplierName",
+                    "factoryName:custom-skuInfo-factoryName",
+                    "factoryId:custom-skuInfo-factoryId",
+                    "cost:consignment_price",
+                    "quantity:min_arrival_quantity",
+                    "traceMan:custom-common-salesUserName",
+                    "brandPosition:brand_positon",
+                    "brandDetail:brand_detail",
+                    "brandType:brand_type",
+                    "oeNumber:oe_number",
+                    "productModel:product_model",
+                    "unit:measurement_unit",
+                    "purchaseLink:purchase_link",
+                    "photoAddress:product_image[0]",
+                    "brand:custom-skuInfo-brand",
+                    "developer:custom-common-developerUserName"
+                ]
+            ]
+        ];
+
+        echo json_encode($a,JSON_UNESCAPED_UNICODE);
+    }
+
 }
 
 $s = new ProductSkuController();
@@ -545,3 +617,5 @@ $s->updatePaProductAndDetail();
 //$s->combineKeyword();
 //$s->savePaPmo();
 //$s->getQms();
+//$s->updatePaSkuInfoReplenishManBySkuIds();
+//$s->ssss();

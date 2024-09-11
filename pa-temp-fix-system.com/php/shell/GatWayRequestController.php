@@ -39,6 +39,11 @@ class GatWayRequestController
         $skuIdList = [
             "a24080500ux3195",
         ];
+        $requestUtils = new RequestUtils("pro");
+        $batchNameData = $requestUtils->getPaProductInfoByBatchName("20240815 - 伍燕妮 - 2");
+        $list = $batchNameData['detailList'];
+        $skuIdList = array_column($list,"skuId");
+
         $resp = DataUtils::getNewResultData($this->getModule('wms')->curlService->getWayPost($this->module . "/receive/sample/expect/v1/page", [
             "skuIdIn" => $skuIdList,
             "vertical" => "PA",

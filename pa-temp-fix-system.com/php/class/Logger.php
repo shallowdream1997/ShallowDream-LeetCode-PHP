@@ -1,11 +1,11 @@
 <?php
-require_once("../../vendor/autoload.php");
+//require_once("../../vendor/autoload.php");
 
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-use LoggerOne\Logger as loggerOne;
-use LoggerOne\Handler\FileHandler;
-use LoggerOne\Formatter\CommonFormatter;
+//use Monolog\Logger;
+//use Monolog\Handler\StreamHandler;
+//use LoggerOne\Logger as loggerOne;
+//use LoggerOne\Handler\FileHandler;
+//use LoggerOne\Formatter\CommonFormatter;
 
 /**
  * 日志类
@@ -26,13 +26,14 @@ class MyLogger {
 
     public function log2($message){
         // 创建日志器
-        $logger = new Logger('FixLogger');
+//        $logger = new Logger('FixLogger');
+//
+//        $logger->pushHandler(new StreamHandler($this->logFile, Logger::INFO));
+//        echo $message."\n";
+//        $logger->info($message);
 
-        $logger->pushHandler(new StreamHandler($this->logFile, Logger::INFO));
-        echo $message."\n";
-        $logger->info($message);
-
-
+        file_put_contents($this->logFile, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL, FILE_APPEND);
+        error_log($message);
     }
 
     public function log3($message = ""){
