@@ -273,14 +273,43 @@ class ProductSkuController
                     "label" => "salesBrand",
                     "value" => $updateData['salesBrand'],
                 ];
-
+                $this->log("品牌不一样可以修改：{$oldSaleBrand} --> {$updateData['salesBrand']}");
             } else {
                 $fixSaleBrand = false;
             }
-            if (!$fixSaleBrand) {
+
+            $fixSaleBusinessType = true;
+            $oldSaleBusinessType = "";
+            if (DataUtils::checkArrFilesIsExist($updateData, 'tag')) {
+
+                $filter = DataUtils::findIndexInArray($productInfo['attribute'], [
+                    "label" => "Business Type",
+                    "channel" => "local"
+                ]);
+                if (!empty($filter)) {
+                    foreach ($filter as $index => $array) {
+                        $oldSaleBusinessType = $productInfo['attribute'][$index]['value'];
+                        if ($productInfo['attribute'][$index]['value'] == $updateData['tag']) {
+                            $fixSaleBusinessType = false;
+                            continue;
+                        }
+                    }
+                }
+
+                $updateAttribute[] = [
+                    "channel" => "local",
+                    "label" => "Business Type",
+                    "value" => $updateData['tag'],
+                ];
+                $this->log("业务不一样可以修改：{$oldSaleBusinessType} --> {$updateData['tag']}");
+            } else {
+                $fixSaleBusinessType = false;
+            }
+
+            if (!$fixSaleBrand && !$fixSaleBusinessType) {
                 continue;
             }
-            $this->log("品牌不一样可以修改：{$oldSaleBrand} --> {$updateData['salesBrand']}");
+
             if (!empty($updateAttribute)) {
                 //要修改的字段里面有业务类型，品牌，
                 if (DataUtils::checkArrFilesIsExist($productInfo, "attribute")) {
