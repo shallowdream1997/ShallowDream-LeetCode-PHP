@@ -143,7 +143,7 @@ class ProductSkuController
                         continue;
                     }
                     $batchInfo = $paProductIdCollectorList[$updateData['batchName']];
-                    //$this->updatePPMain($batchInfo['paProductInfo'], $updateData,$score);
+                    $this->updatePPMain($batchInfo['paProductInfo'], $updateData,$score);
                     if ($score) {
                         if (DataUtils::checkArrFilesIsExist($updateData, 'salesBrand')) {
                             $scoreDetailList = [];
