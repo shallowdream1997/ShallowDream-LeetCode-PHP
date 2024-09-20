@@ -1,6 +1,9 @@
 # fixclient
 请求接口写法示例：
 
+在定义类之前：先引入加载类文件
+require_once(dirname(__FILE__) . "/../../php/requiredfile/requiredfile.php");
+
 step1.实例化curl服务类 ：$curlService = new CurlService();
 
 step2.引用环境：
