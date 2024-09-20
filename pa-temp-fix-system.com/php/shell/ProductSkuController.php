@@ -143,7 +143,7 @@ class ProductSkuController
                         continue;
                     }
                     $batchInfo = $paProductIdCollectorList[$updateData['batchName']];
-                    $this->updatePPMain($batchInfo['paProductInfo'], $updateData,$score);
+                    //$this->updatePPMain($batchInfo['paProductInfo'], $updateData,$score);
                     if ($score) {
                         if (DataUtils::checkArrFilesIsExist($updateData, 'salesBrand')) {
                             $scoreDetailList = [];
@@ -178,7 +178,7 @@ class ProductSkuController
     private function updatePPMain($paProductInfo, $updateData, $score)
     {
         $this->log("{$updateData['batchName']} 开始更新");
-        foreach (['developer', 'platform', 'productlineId', 'salesBrand', 'tag', 'tag2', 'traceMan', 'ebayTraceMan'] as $field) {
+        foreach (['developer', 'platform', 'productlineId', 'salesBrand', 'tag', 'tag2', 'traceMan', 'ebayTraceMan','categoryId'] as $field) {
             if (DataUtils::checkArrFilesIsExist($updateData, $field)) {
                 if ($score && $field == 'salesBrand') {
                     //品牌扣分的话，不能更新品牌
@@ -227,6 +227,18 @@ class ProductSkuController
                 $fixDetail = true;
             }
 
+
+            if (DataUtils::checkArrFilesIsExist($updateData, 'categoryId') && $detailInfo['categoryId'] != $updateData['categoryId']) {
+                $categoryIdInfo = $this->requestUtils->getCategoryIdInfoV2($updateData['categoryId']);
+
+                $this->log("categoryId: {$detailInfo['categoryId']} -> {$categoryIdInfo['categoryId']}");
+                $this->log("cnCategory: {$detailInfo['cnCategory']} -> {$categoryIdInfo['cnCategoryFullPath']}");
+                $detailInfo['categoryId'] = $categoryIdInfo['categoryId'];
+                $detailInfo['cnCategory'] = $categoryIdInfo['cnCategoryFullPath'];
+                $fixDetail = true;
+            }
+
+
             if ($fixDetail) {
                 $updateResp = $this->requestUtils->updatePaProductDetailInfo($detailInfo);
                 if ($updateResp) {
@@ -246,6 +258,28 @@ class ProductSkuController
             }
             $this->log("{$detailInfo['skuId']} 开始修改");
             $productInfo = $updateSkuIdInfoGroupByProductId[$detailInfo['skuId']];
+
+            //category的修改
+            $fixCategory = true;
+            $oldCategory = "";
+            if (DataUtils::checkArrFilesIsExist($updateData, 'categoryId')) {
+                //获取分类的信息
+                $oldCategory = $productInfo['category'];
+                $categoryIdInfo = $this->requestUtils->getCategoryIdInfoV2($updateData['categoryId']);
+                $this->log("category: {$productInfo['category']} -> {$categoryIdInfo['categoryId']}");
+                $this->log("categoryPaths: {$productInfo['categoryPaths']} -> {$categoryIdInfo['categoryIds']}");
+                $this->log("cn_Category: {$productInfo['cn_Category']} -> {$categoryIdInfo['cnCategoryFullPath']}");
+
+                $productInfo['category'] = $categoryIdInfo['categoryId'];
+                $productInfo['categoryPaths'] = $categoryIdInfo['categoryIds'];
+                $productInfo['cn_Category'] = $categoryIdInfo['cnCategoryFullPath'];
+
+                if ($oldCategory == $productInfo['category']){
+                    $fixCategory = false;
+                }else{
+                    $this->log("分类不一样可以修改：{$oldCategory} -> {$productInfo['category']}");
+                }
+            }
 
             $updateAttribute = [];
             //有品牌的修改
@@ -306,7 +340,7 @@ class ProductSkuController
                 $fixSaleBusinessType = false;
             }
 
-            if (!$fixSaleBrand && !$fixSaleBusinessType) {
+            if (!$fixSaleBrand && !$fixSaleBusinessType && !$fixCategory) {
                 continue;
             }
 

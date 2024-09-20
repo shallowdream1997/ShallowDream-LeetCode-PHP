@@ -25,6 +25,24 @@ class SpController
         $this->log->log2($string);
     }
 
+    public function dingTalk(){
+        $proCurlService = new CurlService();
+        $ali = $proCurlService->test()->phpali();
+
+        $postData = array(
+            'userType' => 'userName',
+            'userIdList' => "zhouangang",
+            'title' => "【sp广告已经投放】提醒",
+            'msg' => [
+                [
+                    "key" => "",
+                    "value" => "{$this->channel} {$this->sellerId} 已经投放完毕"
+                ]
+            ]
+        );
+        $ali->post("dingding/sendOaNotice",$postData);
+        return $this;
+    }
 
     /**
      * 初始化变量
@@ -82,7 +100,7 @@ class SpController
             } else {
                 die("未知的投放");
             }
-
+            $this->dingTalk();
         } else {
             $this->log("没有投放内容");
         }
@@ -169,7 +187,7 @@ class SpController
 
         $res = $this->phphkpro->post("amazonSpApi/autoAddPaCampaignNew", $params);
         if (!isset($res['result']) || !$res['result']) {
-            $this->log("接口请求失败");
+            $this->log("接口请求失败：" . json_encode($res,JSON_UNESCAPED_UNICODE));
             return $this;
         }
 
@@ -222,6 +240,7 @@ class SpController
 
 $con = new SpController();
 
+//$con->dingTalk();
 foreach ([
 //             ["channel" => "amazon_ca", "sellerId" => "amazon_ca_luux", "auto" => true, "asin" => true, "category" => true, "keyword" => false],
 //             ["channel" => "amazon_uk", "sellerId" => "amazon_uk_luux", "auto" => true, "asin" => true, "category" => true, "keyword" => false],
@@ -231,14 +250,14 @@ foreach ([
 //             ["channel" => "amazon_us", "sellerId" => "amazon_us_tuc", "auto" => true, "asin" => true, "category" => true, "keyword" => false],
 //             ["channel" => "amazon_us", "sellerId" => "amazon_us_tuto", "auto" => true, "asin" => true, "category" => true, "keyword" => false],
 //             ["channel" => "amazon_us", "sellerId" => "amazon_us_moto", "auto" => true, "asin" => true, "category" => true, "keyword" => false],
-             ["channel" => "amazon_jp", "sellerId" => "amazon_jp_bull", "auto" => true, "asin" => false, "category" => false, "keyword" => false],
-             ["channel" => "amazon_ca", "sellerId" => "amazon_ca_find", "auto" => true, "asin" => true, "category" => true, "keyword" => false],
+//             ["channel" => "amazon_jp", "sellerId" => "amazon_jp_bull", "auto" => true, "asin" => false, "category" => false, "keyword" => false],
+             ["channel" => "amazon_ca", "sellerId" => "amazon_ca_find", "auto" => false, "asin" => false, "category" => true, "keyword" => false],
          ] as $data) {
 
     $con->initSPParams(
         $data['channel'],
         $data['sellerId'],
-        true,
+        false,
         $data['auto'],
         $data['asin'],
         $data['category'],
