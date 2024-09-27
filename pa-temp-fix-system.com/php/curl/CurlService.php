@@ -6,7 +6,7 @@ class CurlService
     private $header = array();
 
     private $port = null;
-    private $environment = 'test';
+    public $environment = 'test';
 
     private $s3015 = null;
     private $s3047 = null;

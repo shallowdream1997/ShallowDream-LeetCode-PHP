@@ -13,7 +13,7 @@
 <body>
 <div class="container text-center" id="app">
     <div style="margin-top: 20px" class="row">
-        <div class="col-5"><h3>{{message}}</h3></div>
+        <div class="col-5"><h3>{{message}} <br> <span style="color: red">当前环境：{{env == 'test' ? '测试环境' : '生产环境'}}</span></h3></div>
         <div class="col-7">
             <div class="row">
                 <div class="col-3">
@@ -86,6 +86,7 @@
     createApp({
 
         data() {
+            this.search();
             return {
                 message: '提交组长审核重复品豁免配置',
                 batchNameList: '',
@@ -95,6 +96,7 @@
                 loading: '',
                 count: 0,
                 status: "",
+                env:"",
             }
         },
 
@@ -128,11 +130,19 @@
                 let batchNameList = this.batchNameList.split("\n");
                 batchNameList =  [...new Set(batchNameList.filter(item => item))];
                 console.log(batchNameList)
-                const data = window.Qs.stringify({
-                    batchNameList: batchNameList,
-                    status: this.status,
-                });
-                let res = await axios.post("http://172.16.29.2/testProject/php/pageSwichConfig/update.php", data).catch(function (error) {
+                const data = {
+                    action: "pageSwitchConfig",
+                    params: {
+                        batchNameList: batchNameList,
+                        status: this.status,
+                    },
+                };
+                let res = await axios.post("http://www.pa-temp-fix-system.com:89/php/controller/update.php", data,{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 其他自定义头
+                    }
+                }).catch(function (error) {
                     this.errorMsg = "网络错误";
                 });
                 console.log(res)
@@ -149,24 +159,29 @@
             async search() {
                 this.loading = "............请等待，正在处理数据中..........";
                 this.errorMsg = "";
-                const data = window.Qs.stringify({
-                });
-                // {
-                //     headers: {
-                //         "Content-Type": "application/json",
-                //         // 'Authorization': 'Bearer your-token'
-                //     }
-                // }
-                let res = await axios.post("http://172.16.29.2/testProject/php/pageSwichConfig/search.php", data).catch(function (error) {
+                const data = {
+                    action: "pageSwitchConfig",
+                    params: {
+
+                    },
+                };
+
+                let res = await axios.post("http://www.pa-temp-fix-system.com:89/php/controller/search.php", data,{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 其他自定义头
+                    }
+                }).catch(function (error) {
                     this.errorMsg = "网络错误";
                 });
                 console.log(res)
                 this.loading = "";
                 if (res.status === 200) {
-                    if (res.data.length === 0) {
+                    if (res.data.data.length === 0) {
                         this.errorMsg = "没有数据";
                     } else {
-                        this.list = res.data;
+                        this.list = res.data.data;
+                        this.env = res.data.env;
                     }
                 }
 

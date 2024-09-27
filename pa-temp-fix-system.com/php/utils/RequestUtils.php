@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__) ."/../../php/requiredfile/requiredfile.php");
+require_once(dirname(__FILE__) ."/../../php/requiredfile/requiredChorm.php");
 require_once(dirname(__FILE__) ."/../../php/utils/ProductUtils.php");
 
 

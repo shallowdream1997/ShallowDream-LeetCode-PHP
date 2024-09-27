@@ -241,7 +241,7 @@
                     scenceList: scenceList
                 };
 
-                let res = await axios.post("http://172.16.29.2/testProject/php/paProductBrand/update.php", data,{
+                let res = await axios.post("http://www.pa-temp-fix-system.com:89/php/paProductBrand/update.php", data,{
                     headers: {
                         'Content-Type': 'application/json',
                         // 其他自定义头
@@ -262,15 +262,20 @@
             async search() {
                 this.loading = "............请等待，正在处理数据中..........";
                 this.errorMsg = "";
-                const data = window.Qs.stringify({
-                });
-                // {
-                //     headers: {
-                //         "Content-Type": "application/json",
-                //         // 'Authorization': 'Bearer your-token'
-                //     }
-                // }
-                let res = await axios.post("http://172.16.29.2/testProject/php/paProductBrand/search.php", data).catch(function (error) {
+
+                const data = {
+                    action: "paproductbrand",
+                    params: {
+                        optionName: "pa_product_brand_config"
+                    },
+                };
+
+                let res = await axios.post("http://www.pa-temp-fix-system.com:89/php/controller/search.php", data,{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 其他自定义头
+                    }
+                }).catch(function (error) {
                     this.errorMsg = "网络错误";
                 });
                 console.log(res)
