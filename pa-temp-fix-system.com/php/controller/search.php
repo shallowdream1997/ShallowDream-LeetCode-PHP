@@ -42,8 +42,26 @@ class search{
 
     }
 
+    public function fixTranslationManagements($params){
+        $curlService = (new CurlService())->test();
+        $env = $curlService->environment;
+        $list = [];
+        if (isset($params['title']) && $params['title']){
+            $list = DataUtils::getPageList($curlService->s3015()->get("translation_managements/queryPage",[
+                "limit" => 100,
+                "page" => 1,
+                "title_in" => $params['title'],
+            ]));
+        }
 
-    public function paProductBrandSearch($params){
+        return [
+            "env" => $env,
+            "data" => $list
+        ];
+    }
+
+
+    public function paProductBrand($params){
 
         $curlService = (new CurlService())->test();
 
@@ -76,12 +94,17 @@ $return = [];
 switch ($data['action']){
     case "paProductBrandSearch":
         $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->paProductBrandSearch($params);
+        $return = $class->paProductBrand($params);
         break;
     case "pageSwitchConfig":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->pageSwitchConfig($params);
         break;
+        case "fixTranslationManagements":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->fixTranslationManagements($params);
+        break;
+
 }
 
 echo json_encode($return,JSON_UNESCAPED_UNICODE);
