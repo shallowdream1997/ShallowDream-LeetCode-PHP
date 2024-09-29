@@ -126,6 +126,37 @@ class search
             "data" => $list
         ];
     }
+
+    /**
+     * 上架前海外仓移库申请
+     * @param $params
+     * @return array
+     */
+    public function paFbaChannelSellerConfig($params)
+    {
+        $curlService = (new CurlService())->test();
+        $env = $curlService->environment;
+
+        $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
+            "optionName" => "pa_fba_channel_seller_config",
+            "limit" => 1
+        ]));
+        $list = [];
+        foreach ($info['optionVal']['amazon'] as $channel => $stocks){
+            $list[] = [
+                "channel" => $channel,
+                "nowStocks" => $stocks
+            ];
+        }
+
+        return [
+            "env" => $env,
+            "data" => $list
+        ];
+    }
+
+
+
 }
 
 
@@ -156,7 +187,10 @@ switch ($data['action']) {
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->fixCeMaterials($params);
         break;
-
+    case "paFbaChannelSellerConfig":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->paFbaChannelSellerConfig($params);
+        break;
 }
 
 echo json_encode($return, JSON_UNESCAPED_UNICODE);

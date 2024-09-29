@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>提交组长审核重复品豁免配置</title>
+    <title>开发清单兼并资料字段更新</title>
     <link href="../css_js/bootstrap-5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="../css_js/script/jquery-3.7.0.min.js"></script>
     <script src="../css_js/bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
@@ -13,11 +13,20 @@
 <body>
 <div class="container text-center" id="app">
     <div style="margin-top: 20px" class="row">
-        <div class="col-5"><h3>{{message}} <br> <span style="color: red">当前环境：{{env == 'test' ? '测试环境' : '生产环境'}}</span></h3></div>
-        <div class="col-7">
+        <div class="col-5"><h3 style="color: yellow">{{message}} <br> <span style="color: red">当前环境：{{env == 'test' ? '测试环境' : '生产环境'}}</span></h3></div>
+        <div class="col-7"></div>
+
+        <div class="col-4"><h5>要修改的批次号</h5></div>
+        <div class="col-8">
+            <div class="mb-3">
+                <textarea v-model="batchNameList" class="form-control" placeholder="批次号,多个请换行" @change="batchNameCount" rows="10"/>
+                </textarea>
+                <p style="color: red">共有：{{count}} 个批次</p>
+            </div>
+
             <div class="row">
                 <div class="col-3">
-                    <button class="btn btn-primary" @click="search">查看配置</button>
+                    <button class="btn btn-primary" @click="search">查询</button>
                 </div>
             </div>
         </div>
@@ -28,6 +37,11 @@
                 <tr>
                     <th scope="col">主键</th>
                     <th scope="col">批次号</th>
+                    <th scope="col">PA运营</th>
+                    <th scope="col">品牌</th>
+                    <th scope="col">PC运营</th>
+                    <th scope="col">开发</th>
+                    <th scope="col">业务类型</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -39,28 +53,6 @@
                 </tr>
                 </tbody>
             </table>
-        </div>
-
-        <div class="col-4"><h5>需要重复品豁免的批次号</h5></div>
-        <div class="col-8">
-            <div class="mb-3">
-                <textarea v-model="batchNameList" class="form-control" placeholder="批次号,多个请换行" @change="batchNameCount" rows="10"/>
-                </textarea>
-                <p style="color: red">共有：{{count}} 个批次</p>
-            </div>
-            <div class="mb-3">
-                <select class="form-select" aria-label="请选择" v-model="status" @change="changeStatus">
-                    <option value="">请选择</option>
-                    <option value="1">全量覆盖</option>
-                    <option value="2">尾部新增</option>
-                </select>
-            </div>
-
-            <div class="row">
-                <div class="col-3">
-                    <button class="btn btn-primary" @click="update">确认</button>
-                </div>
-            </div>
         </div>
 
         <div class="col-12">
@@ -86,9 +78,8 @@
     createApp({
 
         data() {
-            this.search();
             return {
-                message: '提交组长审核重复品豁免配置',
+                message: '开发清单兼并资料字段更新',
                 batchNameList: '',
                 errorMsg: '',
                 successMsg: '',
@@ -96,7 +87,6 @@
                 loading: '',
                 count: 0,
                 status: "",
-                env:"",
             }
         },
 
@@ -130,19 +120,11 @@
                 let batchNameList = this.batchNameList.split("\n");
                 batchNameList =  [...new Set(batchNameList.filter(item => item))];
                 console.log(batchNameList)
-                const data = {
-                    action: "pageSwitchConfig",
-                    params: {
-                        batchNameList: batchNameList,
-                        status: this.status,
-                    },
-                };
-                let res = await axios.post("http://www.pa-temp-fix-system.com:89/php/controller/update.php", data,{
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 其他自定义头
-                    }
-                }).catch(function (error) {
+                const data = window.Qs.stringify({
+                    batchNameList: batchNameList,
+                    status: this.status,
+                });
+                let res = await axios.post("http://172.16.29.2/testProject/php/pageSwichConfig/update.php", data).catch(function (error) {
                     this.errorMsg = "网络错误";
                 });
                 console.log(res)
@@ -159,29 +141,24 @@
             async search() {
                 this.loading = "............请等待，正在处理数据中..........";
                 this.errorMsg = "";
-                const data = {
-                    action: "pageSwitchConfig",
-                    params: {
-
-                    },
-                };
-
-                let res = await axios.post("http://www.pa-temp-fix-system.com:89/php/controller/search.php", data,{
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 其他自定义头
-                    }
-                }).catch(function (error) {
+                const data = window.Qs.stringify({
+                });
+                // {
+                //     headers: {
+                //         "Content-Type": "application/json",
+                //         // 'Authorization': 'Bearer your-token'
+                //     }
+                // }
+                let res = await axios.post("http://172.16.29.2/testProject/php/pageSwichConfig/search.php", data).catch(function (error) {
                     this.errorMsg = "网络错误";
                 });
                 console.log(res)
                 this.loading = "";
                 if (res.status === 200) {
-                    if (res.data.data.length === 0) {
+                    if (res.data.length === 0) {
                         this.errorMsg = "没有数据";
                     } else {
-                        this.list = res.data.data;
-                        this.env = res.data.env;
+                        this.list = res.data;
                     }
                 }
 

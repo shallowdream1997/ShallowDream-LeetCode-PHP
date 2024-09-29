@@ -16,8 +16,8 @@
 <body>
 <div class="container text-center" id="app">
     <div style="margin-top: 20px" class="row">
-        <div class="col-4"><h3 style="color: darkred">{{message}}</h3></div>
-        <div class="col-8"></div>
+        <div class="col-5"><h3 style="color: yellow">{{message}}</h3></div>
+        <div class="col-7"><h6 style="color: red">当前版本：v.1.3</h6></div>
         <div class="col-12" style="margin-top: 20px">
             <table class="table table-dark table-striped align-middle" v-if="list && list.length > 0">
                 <thead>
@@ -52,29 +52,30 @@
     createApp({
 
         data() {
+            let base = "fix";
             return {
                 message: '临时数据修复系统',
                 list: [
                     {
                         title: '修改翻译状态',
-                        url:'translationManagement/fixTranslationManagements.html'
-                    },
-                    {
-                        title: '恢复CE资料呈现为已发布',
-                        url:'ceMaterial/fixCeMaterials.html'
-                    },
-                    {
-                        title: 'FBA海外仓上架前移库申请渠道仓库配置',
-                        url:'optionVal/paFbaChannelSellerConfig.html'
+                        url:`${base}/fixTranslationManagements.html`
                     },
                     {
                         title: '提交组长审核重复品豁免配置',
-                        url:'pageSwichConfig/pageSwichConfig.html'
+                        url:`${base}/pageSwichConfig.html`
                     },
                     {
-                        title: '添加开发清单品牌轮单',
-                        url:'paProductBrand/paProductBrand.html'
-                    }
+                        title: 'FBA海外仓上架前移库申请渠道仓库配置',
+                        url:`${base}/paFbaChannelSellerConfig.html`
+                    },
+                    {
+                        title: '恢复CE资料呈现为已发布',
+                        url:`${base}/fixCeMaterials.html`
+                    },
+                    // {
+                    //     title: '添加开发清单品牌轮单',
+                    //     url:`${base}/paProductBrand.html`
+                    // }
                 ],
             }
         },

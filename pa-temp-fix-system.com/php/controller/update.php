@@ -17,10 +17,11 @@ class update
     {
         $this->logger = new MyLogger("option/updateLog");
     }
+
     /**
      * 重复品豁免
      * @param $params
-     * @return array
+     * @return bool
      */
     public function pageSwitchConfig($params)
     {
@@ -30,7 +31,7 @@ class update
 
         $batchNameList = $params['batchNameList'];
         $batchNameList = array_unique($batchNameList);
-        $status = $params['status'] ?? 2;
+
         $oldList = DataUtils::getPageList($curlService->s3015()->post("pa_products/queryPagePost", [
                 "limit" => count($batchNameList),
                 "page" => 1,
@@ -48,12 +49,9 @@ class update
                 "limit" => 1
             ]));
             if ($info) {
-                if ($status == 1) {
-                    $info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds'] = $ids;
-                } elseif ($status == 2) {
-                    $info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds'] = array_merge($info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds'], $ids);
-                    $info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds'] = array_unique($info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds']);
-                }
+                $info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds'] = array_merge($info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds'], $ids);
+                $info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds'] = array_unique($info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds']);
+
                 $curlService->s3015()->put("option-val-lists/{$info['_id']}", $info);
 
                 return true;
@@ -153,6 +151,46 @@ class update
         }
 
     }
+
+
+    /**
+     * 上架前海外仓移库申请
+     * @param $params
+     * @return array|false
+     */
+    public function paFbaChannelSellerConfig($params)
+    {
+        $curlService = (new CurlService())->test();
+        $env = $curlService->environment;
+
+        if (isset($params['channel']) && $params['channel'] && isset($params['stocksList']) && $params['stocksList']) {
+            $channel = $params['channel'];
+            $stocksList = $params['stocksList'];
+
+            $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
+                "optionName" => "pa_fba_channel_seller_config",
+                "limit" => 1
+            ]));
+            if (!empty($info)) {
+
+                if (isset($info['optionVal']['amazon'][$channel]) && !empty($info['optionVal']['amazon'][$channel])) {
+                    $info['optionVal']['amazon'][$channel] = array_merge($info['optionVal']['amazon'][$channel], $stocksList);
+                } else {
+                    $info['optionVal']['amazon'][$channel] = array_merge([], $stocksList);
+                }
+                $info['optionVal']['amazon'][$channel] = array_unique($info['optionVal']['amazon'][$channel]);
+
+                $curlService->s3015()->put("option-val-lists/{$info['_id']}", $info);
+
+                return true;
+            }
+            return false;
+        } else {
+            return false;
+        }
+
+    }
+
 }
 
 
@@ -178,6 +216,10 @@ switch ($data['action']) {
     case "fixCeMaterials":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->fixCeMaterials($params);
+        break;
+    case "paFbaChannelSellerConfig":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->paFbaChannelSellerConfig($params);
         break;
 }
 
