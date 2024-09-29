@@ -7,15 +7,16 @@
     <script src="../css_js/script/jquery-3.7.0.min.js"></script>
     <script src="../css_js/bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <!--    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>-->
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
     <script src="../css_js/script/qs.min.js"></script>
-
+    <!--粒子特效-->
+    <link rel="stylesheet" href="../css_js/own/lizi.css">
 </head>
 <body>
 <div class="container text-center" id="app">
     <div style="margin-top: 20px" class="row">
-        <div class="col-4"><h3>{{ message }}</h3></div>
-        <div class="col-8">
+        <div class="col-5"><h3 style="color: yellow">{{message}} <br> <span style="color: red">当前环境：{{env == 'test' ? '测试环境' : '生产环境'}}</span></h3></div>
+        <div class="col-7">
             <div class="mb-3">
                 <input type="text" v-model="title" class="form-control" placeholder="CE单">
             </div>
@@ -56,20 +57,18 @@
         </div>
 
         <div class="col-12">
-            <h5 style="color: red">{{ loading }}</h5>
+            <h5 style="color: red">{{loading}}</h5>
         </div>
         <div class="col-12">
-            <h4 style="color: red">{{ errorMsg }}</h4>
+            <h4 style="color: red">{{errorMsg}}</h4>
         </div>
-
     </div>
 
 </div>
 
 </body>
 </html>
-
-<script src="../node_modules/axios/dist/axios.min.js"></script>
+<script src="../css_js/own/lizi.js"></script>
 
 <script>
     const {createApp, ref} = Vue
@@ -78,6 +77,7 @@
     createApp({
 
         data() {
+            this.initPage();
             return {
                 message: '恢复CE资料呈现为已发布',
                 title: '',
@@ -93,10 +93,39 @@
                     "materialComplete": "资料发布",
                     "deleted": "作废",
                 },
+                env:"",
+                url:"http://www.pa-temp-fix-system.com:89/php/controller",
+                header: {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 其他自定义头
+                    }
+                }
             }
         },
 
         methods: {
+            async initPage(){
+                const data = {
+                    action: "fixCeMaterials",
+                    params: {},
+                };
+                this.header = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 其他自定义头
+                    }
+                };
+                this.url = "http://www.pa-temp-fix-system.com:89/php/controller";
+                let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
+                    this.errorMsg = "网络错误";
+                });
+                this.loading = "";
+                if (res.status === 200) {
+                    this.env = res.data.env;
+                }
+
+            },
             async fix() {
                 console.log(this.title, this.status)
                 this.loading = "............请等待，正在处理数据中..........";
@@ -109,10 +138,15 @@
 
                 for (let item of this.list) {
                     item.isSuccess = "正在执行中.";
-                    const data = window.Qs.stringify({
-                        _id: item._id
-                    });
-                    let res = await axios.post("/CeMaterialController.php", data).catch(function (error) {
+
+                    const data = {
+                        action: "fixCeMaterials",
+                        params: {
+                            _id: item._id
+                        },
+                    };
+
+                    let res = await axios.post(`${this.url}/update.php`, data,this.header).catch(function (error) {
                         this.errorMsg = "网络错误";
                     });
                     console.log(res)
@@ -132,59 +166,26 @@
                 this.errorMsg = "";
 
                 const data = {
-                    title: this.title
+                    action: "fixCeMaterials",
+                    params: {
+                        title: this.title
+                    },
                 };
-                let res = this.requestUrl("ceMaterial/search.php", data);
-                console.log(res)
-                let returnData = this.returnData(res);
+
+                let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
+                    this.errorMsg = "网络错误";
+                });
                 this.loading = "";
-                if (this.isError(returnData)) {
-                    this.errorMsg = returnData.message;
-                } else {
-                    if (returnData.length === 0) {
+                if (res.status === 200) {
+                    if (res.data.data.length === 0) {
                         this.errorMsg = "没有数据";
                     } else {
-                        this.list = returnData;
+                        this.list = res.data.data;
+                        this.env = res.data.env;
                     }
                 }
 
-                // let res = await axios.post("http://www.pa-temp-fix-system.com:89/template/ceMaterial/CeMaterialController.php", data,{
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //         // 其他自定义头
-                //     }
-                // }).catch(function (error) {
-                //     this.errorMsg = "网络错误";
-                // });
 
-
-            },
-            async requestUrl(url, data) {
-
-                return await axios.post("http://www.pa-temp-fix-system.com:89/template/" + url, data, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 其他自定义头
-                    }
-                }).catch(function (error) {
-                    return errorCatch(error);
-                });
-            },
-            errorCatch(error, message = '网络错误~') {
-                return {
-                    code: 500,
-                    message: message,
-                    error: error
-                }
-            },
-            returnData(response) {
-                if (response.hasOwnProperty('status') && response.status === 200 && response.data) {
-                    return response.data;
-                }
-                return errorCatch();
-            },
-            isError(response) {
-                return response.hasOwnProperty('code') && response.code === 500;
             }
         }
 
