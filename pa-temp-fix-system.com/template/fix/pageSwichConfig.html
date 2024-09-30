@@ -81,6 +81,7 @@
     createApp({
 
         data() {
+            console.log(getDomainAndPort());
             this.initPage();
             return {
                 message: '提交组长审核重复品豁免配置',
@@ -91,7 +92,7 @@
                 loading: '',
                 count: 0,
                 env:"",
-                url:"http://www.pa-temp-fix-system.com:89/php/controller",
+                url:"http://172.16.29.9:90/php/controller",
                 header: {
                     headers: {
                         'Content-Type': 'application/json',
@@ -113,7 +114,7 @@
                         // 其他自定义头
                     }
                 };
-                this.url = "http://www.pa-temp-fix-system.com:89/php/controller";
+                this.url = "http://172.16.29.9:90/php/controller";
                 let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
                     this.errorMsg = "网络错误";
                 });

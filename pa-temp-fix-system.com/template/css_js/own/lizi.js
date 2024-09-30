@@ -29,3 +29,15 @@ function initParticleEffect() {
 
 // 确保DOM完全加载后再初始化粒子效果
 document.addEventListener('DOMContentLoaded', initParticleEffect);
+
+
+/**
+ * 获取当前项目的ip地址+端口
+ * @returns {string}
+ */
+function getDomainAndPort() {
+    const url = window.location;
+    const domainName = url.hostname;
+    const port = url.port; // 端口号
+    return `http://${domainName}:${port}`;
+}
