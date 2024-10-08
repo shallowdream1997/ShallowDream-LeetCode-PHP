@@ -24,7 +24,7 @@ class search
      */
     public function pageSwitchConfig($params)
     {
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
 
         $env = $curlService->environment;
 
@@ -61,7 +61,7 @@ class search
      */
     public function fixTranslationManagements($params)
     {
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
         $env = $curlService->environment;
         $list = [];
         if (isset($params['title']) && $params['title']) {
@@ -86,7 +86,7 @@ class search
     public function paProductBrand($params)
     {
 
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
 
         $env = $curlService->environment;
 
@@ -107,7 +107,7 @@ class search
      */
     public function fixCeMaterials($params)
     {
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
         $env = $curlService->environment;
         $list = [];
         if (isset($params['title']) && $params['title']) {
@@ -134,7 +134,7 @@ class search
      */
     public function paFbaChannelSellerConfig($params)
     {
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
         $env = $curlService->environment;
 
         $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [

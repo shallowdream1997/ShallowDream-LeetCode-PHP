@@ -25,7 +25,7 @@ class update
      */
     public function pageSwitchConfig($params)
     {
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
 
         $env = $curlService->environment;
 
@@ -72,7 +72,7 @@ class update
      */
     public function fixTranslationManagements($params)
     {
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
         $env = $curlService->environment;
 
         $status = $params['status'];
@@ -125,7 +125,7 @@ class update
      */
     public function fixCeMaterials($params)
     {
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
         $env = $curlService->environment;
 
         $_id = $params['_id'];
@@ -160,7 +160,7 @@ class update
      */
     public function paFbaChannelSellerConfig($params)
     {
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
         $env = $curlService->environment;
 
         if (isset($params['channel']) && $params['channel'] && isset($params['stocksList']) && $params['stocksList']) {

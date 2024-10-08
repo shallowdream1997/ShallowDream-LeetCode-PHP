@@ -92,7 +92,7 @@
                 loading: '',
                 count: 0,
                 env:"",
-                url:"http://172.16.29.9:90/php/controller",
+                url:"http://172.16.29.23:90/php/controller",
                 header: {
                     headers: {
                         'Content-Type': 'application/json',
@@ -114,7 +114,7 @@
                         // 其他自定义头
                     }
                 };
-                this.url = "http://172.16.29.9:90/php/controller";
+                this.url = "http://172.16.29.23:90/php/controller";
                 let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
                     this.errorMsg = "网络错误";
                 });
