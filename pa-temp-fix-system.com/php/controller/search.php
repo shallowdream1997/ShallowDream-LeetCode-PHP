@@ -12,10 +12,26 @@ class search
 
     public $logger;
 
+    private $module = "pa-biz-application";
+
     public function __construct()
     {
         $this->logger = new MyLogger("option/searchLog");
     }
+
+    public function getModule($modlue){
+        switch ($modlue){
+            case "wms":
+                $this->module = "platform-wms-application";
+                break;
+            case "pa":
+                $this->module = "pa-biz-application";
+                break;
+        }
+
+        return $this;
+    }
+
 
     /**
      * 重复品豁免
@@ -155,6 +171,30 @@ class search
         ];
     }
 
+    public function paSampleSku($params){
+        $curlService = (new CurlService())->pro();
+        $env = $curlService->environment;
+        $list = [];
+        if (isset($params['skuIdList']) && $params['skuIdList']) {
+            $skuIdList = $params['skuIdList'];
+
+            $curlService->gateway();
+            $this->getModule('wms');
+            $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/page", [
+                "skuIdIn" => $skuIdList,
+                "vertical" => "PA",
+                "category" => "dataTeam",
+                "pageSize" => 500,
+                "pageNum" => 1,
+            ]));
+            $list = $resp['list'];
+        }
+        return [
+            "env" => $env,
+            "data" => $list
+        ];
+
+    }
 
 
 }
@@ -190,6 +230,10 @@ switch ($data['action']) {
     case "paFbaChannelSellerConfig":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paFbaChannelSellerConfig($params);
+        break;
+    case "paSampleSku":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->paSampleSku($params);
         break;
 }
 

@@ -13,9 +13,24 @@ class update
 
     public $logger;
 
+    private $module = "pa-biz-application";
+
     public function __construct()
     {
         $this->logger = new MyLogger("option/updateLog");
+    }
+
+    public function getModule($modlue){
+        switch ($modlue){
+            case "wms":
+                $this->module = "platform-wms-application";
+                break;
+            case "pa":
+                $this->module = "pa-biz-application";
+                break;
+        }
+
+        return $this;
     }
 
     /**
@@ -191,6 +206,59 @@ class update
 
     }
 
+    public function paSampleSku($params)
+    {
+        $curlService = (new CurlService())->pro();
+        $env = $curlService->environment;
+        if (isset($params['addskuIdList']) && $params['addskuIdList']) {
+            $skuIdList = $params['addskuIdList'];
+
+            $curlService->gateway();
+            $this->getModule('wms');
+            $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/page", [
+                "skuIdIn" => $skuIdList,
+                "vertical" => "PA",
+                "category" => "dataTeam",
+                "pageSize" => 500,
+                "pageNum" => 1,
+            ]));
+            $hasSampleSkuIdList = [];
+            if (DataUtils::checkArrFilesIsExist($resp, 'list')) {
+                $hasSampleSkuIdList = array_column($resp['list'], 'skuId');
+                $this->logger->log("部分sku：" . implode(",", $hasSampleSkuIdList) . " 均已经留样，过滤....");
+            }
+            $skuIdList = array_diff($skuIdList, $hasSampleSkuIdList);
+
+            $needSampleSkuIdList = [];
+            foreach ($skuIdList as $skuId) {
+                $needSampleSkuIdList[] = [
+                    "category" => "dataTeam",
+                    "createBy" => "pa-fix-system",
+                    "remark" => "",
+                    "skuId" => $skuId,
+                    "vertical" => "PA"
+                ];
+            }
+            if (count($needSampleSkuIdList) > 0) {
+                $createResp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/batchCreate", $needSampleSkuIdList));
+                if ($createResp && $createResp['value']) {
+                    $this->logger->log("剩余sku：" . implode(',', array_column($needSampleSkuIdList, 'skuId')) . " 留样打标成功...");
+                    return true;
+                } else {
+                    $this->logger->log("留样打标失败");
+                    return false;
+                }
+            } else {
+                $this->logger->log("预计留样的数据都已存在，无需留样");
+                return true;
+            }
+        }else{
+            return false;
+        }
+
+    }
+
+
 }
 
 
@@ -220,6 +288,10 @@ switch ($data['action']) {
     case "paFbaChannelSellerConfig":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paFbaChannelSellerConfig($params);
+        break;
+    case "paSampleSku":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->paSampleSku($params);
         break;
 }
 

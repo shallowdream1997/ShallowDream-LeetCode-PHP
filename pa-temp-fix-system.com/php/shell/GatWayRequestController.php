@@ -37,12 +37,12 @@ class GatWayRequestController
     public function getReceiveSampleExpectPage()
     {
         $skuIdList = [
-            "a24080500ux3195",
+            "a24051400ux0093",
         ];
         $requestUtils = new RequestUtils("pro");
-        $batchNameData = $requestUtils->getPaProductInfoByBatchName("20240815 - 伍燕妮 - 2");
-        $list = $batchNameData['detailList'];
-        $skuIdList = array_column($list,"skuId");
+//        $batchNameData = $requestUtils->getPaProductInfoByBatchName("20240815 - 伍燕妮 - 2");
+//        $list = $batchNameData['detailList'];
+//        $skuIdList = array_column($list,"skuId");
 
         $resp = DataUtils::getNewResultData($this->getModule('wms')->curlService->getWayPost($this->module . "/receive/sample/expect/v1/page", [
             "skuIdIn" => $skuIdList,
@@ -51,6 +51,7 @@ class GatWayRequestController
             "pageSize" => 500,
             "pageNum" => 1,
         ]));
+        print_r($resp);
         $hasSampleSkuIdList = [];
         if (DataUtils::checkArrFilesIsExist($resp, 'list')) {
             $hasSampleSkuIdList = array_column($resp['list'], 'skuId');

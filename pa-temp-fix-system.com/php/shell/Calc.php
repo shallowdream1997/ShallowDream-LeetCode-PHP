@@ -36,9 +36,9 @@ class Calc
         if ($otHour <= 10){
             $meritsSalary = $otHour * 66;
         }elseif ($otHour > 10 && $otHour <= 60){
-            $meritsSalary = $otHour * 72;
+            $meritsSalary = (10 * 66) + ($otHour - 10) * 72;
         }else{
-            $meritsSalary = $otHour * 79;
+            $meritsSalary = (10 * 66) + (50 * 72) + ($otHour - 60) * 79;
         }
         $shebao = 547.24 + 422.72 + 119.92 + 4.6 + 360;
 
@@ -56,4 +56,4 @@ class Calc
 }
 
 $calc = new Calc();
-$calc->calcSalary(171.5,40.5,5);
+$calc->calcSalary(167,56.5,12);
