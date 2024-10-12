@@ -4,6 +4,7 @@
         "monolog/monolog": "1.27.1",
         "logger-one/logger-one": "^1.0",
       "ext-redis": "*",
-      "ext-json": "*"
+      "ext-json": "*",
+        "phpoffice/phpspreadsheet": "1.29.2"
     }
 }

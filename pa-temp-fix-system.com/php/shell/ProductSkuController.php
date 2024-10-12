@@ -6,12 +6,24 @@ class ProductSkuController
     private $log;
     private $requestUtils;
 
+    private $module = "platform-wms-application";
     public function __construct()
     {
         $this->log = new MyLogger("product_sku");
         $this->requestUtils = new RequestUtils("pro");
     }
+    public function getModule($modlue){
+        switch ($modlue){
+            case "wms":
+                $this->module = "platform-wms-application";
+                break;
+            case "pa":
+                $this->module = "pa-biz-application";
+                break;
+        }
 
+        return $this;
+    }
     /**
      * 日志记录
      * @param string $message 日志内容
@@ -29,6 +41,7 @@ class ProductSkuController
             case "UpdatePaProduct.xlsx":
             case "UpdateProductSku.xlsx":
             case "UpdatePaSkuInfo.xlsx":
+            case "sampleSku.xlsx":
                 break;
             default:
                 die("请选择文件!");
@@ -616,69 +629,80 @@ class ProductSkuController
         }
     }
 
-    public function ssss()
-    {
-        $a = [
-            [
-                "type" => "pmoFiledMap",
-                "fieldList" => [
-                    "skuId:custom-skuInfo-skuId",
-                    "productLineName:custom-skuInfo-outsideTitle",
-                    "productModel:product_model",
-                    "purchasePrice:cost",
-                    "quantity:min_arrival_quantity",
-                    "sellingNum:measurement",
-                    "unit:measurement_unit",
-                    "purchaseLink:purchase_link",
-                    "factoryName:custom-skuInfo-factoryName",
-                    "factoryId:custom-skuInfo-factoryId",
-                    "photoAddress:product_image[0]",
-                    "supplierName:custom-skuInfo-supplierName",
-                    "supplierSequenceId:custom-skuInfo-supplierId",
-                    "brand:custom-skuInfo-brand",
-                    "developer:custom-common-developerUserName",
-                    "traceMan:custom-common-salesUserName"
-                ],
-            ],
-            [
-                "type" => "ceFiledMap",
-                "fieldList" => [
-                    "skuId:custom-skuInfo-skuId",
-                    "tempSkuId:custom-skuInfo-tempSkuId",
-                    "productLineName:custom-skuInfo-outsideTitle",
-                    "supplierSequenceId:custom-skuInfo-supplierId",
-                    "supplierName:custom-skuInfo-supplierName",
-                    "factoryName:custom-skuInfo-factoryName",
-                    "factoryId:custom-skuInfo-factoryId",
-                    "cost:consignment_price",
-                    "quantity:min_arrival_quantity",
-                    "traceMan:custom-common-salesUserName",
-                    "brandPosition:brand_positon",
-                    "brandDetail:brand_detail",
-                    "brandType:brand_type",
-                    "oeNumber:oe_number",
-                    "productModel:product_model",
-                    "unit:measurement_unit",
-                    "purchaseLink:purchase_link",
-                    "photoAddress:product_image[0]",
-                    "brand:custom-skuInfo-brand",
-                    "developer:custom-common-developerUserName"
-                ]
-            ]
-        ];
+    public function downloadSampleSku(){
+        $data = $this->getXlsxByFile("sampleSku.xlsx");
+        $list = array_column($data,"skuid");
+        $curlService = (new CurlService())->pro();
 
-        echo json_encode($a,JSON_UNESCAPED_UNICODE);
+        if (count($list) > 0) {
+            $curlService->gateway();
+            $this->getModule('wms');
+            $sampleSkuIdList = [];
+            foreach (array_chunk($list,500) as $skuIdList){
+                $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/page", [
+                    "skuIdIn" => $skuIdList,
+                    "vertical" => "PA",
+                    "category" => "dataTeam",
+                    "pageSize" => 500,
+                    "pageNum" => 1,
+                ]));
+                $sampleSkuIdList = array_merge($sampleSkuIdList,$resp['list']);
+            }
+
+            $skuMap = [];
+            if (count($sampleSkuIdList) > 0){
+                foreach ($sampleSkuIdList as $info){
+                    $skuMap[$info['skuId']] = $info;
+                }
+            }
+            $downData = [];
+            foreach ($list as $sku){
+                if (isset($skuMap[$sku])){
+                    $downData[] = [
+                        "id" => $skuMap[$sku]['id'],
+                        "skuId" => $skuMap[$sku]['skuId'],
+                        "isSample" => "有留样",
+                        "createBy" => $skuMap[$sku]['createBy'],
+                        "createTime" => $skuMap[$sku]['createTime'],
+                    ];
+                }else{
+                    $downData[] = [
+                        "id" => "",
+                        "skuId" => $sku,
+                        "isSample" => "未留样",
+                        "createBy" => "",
+                        "createTime" => "",
+                    ];
+                }
+            }
+            if (count($downData) > 0){
+                $this->log("导出文件");
+                $excelUtils = new ExcelUtils();
+                $excelUtils->download([
+                    "id" => "id",
+                    "skuId" => "skuId",
+                    "isSample" => "是否预计留样",
+                    "createBy" => "创建人",
+                    "createTime" => "创建日期",
+                ],$downData,"检测是否预计留样_" . date('YmdHis') . ".xlsx");
+            }else{
+                $this->log("没有文件可以导出");
+            }
+
+
+        }
+
+
     }
-
 }
 
 $s = new ProductSkuController();
 //$s->updateProductSku();
-$s->updatePaProductAndDetail();
+//$s->updatePaProductAndDetail();
+$s->downloadSampleSku();
 //$s->syncProSkuSPInfoToTest();
 //$s->buildScuSkuProductMap();
 //$s->combineKeyword();
 //$s->savePaPmo();
 //$s->getQms();
 //$s->updatePaSkuInfoReplenishManBySkuIds();
-//$s->ssss();
