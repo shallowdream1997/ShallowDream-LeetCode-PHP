@@ -6,7 +6,7 @@ require_once(dirname(__FILE__) . "/../../extends/PHPExcel-1.8/Classes/PHPExcel.p
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriteXlsx;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
-
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 /**
  * 导入导出文件工具类
@@ -156,34 +156,21 @@ class ExcelUtils
 
 
     public function _readXlsFileV2($fileName){
-        // 创建一个读取器实例
-        $reader = new ReaderXlsx();
-        // 载入文件
-        $spreadsheet = $reader->load($fileName);
-        // 获取工作表的集合
-        $sheets = $spreadsheet->getSheetNames();
-        // 遍历所有工作表
-        foreach ($sheets as $sheetName) {
-            // 获取当前工作表
-            $sheet = $spreadsheet->getSheetByName($sheetName);
-            // 遍历行
-            foreach ($sheet->getRowIterator() as $row) {
-                // 遍历列
-                $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(false); // 遍历所有列，包括空的
+        // 载入 Excel 文件
+        $spreadsheet = IOFactory::load($fileName);
+        $worksheet = $spreadsheet->getActiveSheet();
 
-                $cells = [];
-                foreach ($cellIterator as $cell) {
-                    $cells[] = $cell->getValue();
-                }
-
-                // 输出当前行的数据
-                print_r($cells);
-            }
+        if (count($worksheet->toArray()) == 0){
+            return [];
         }
 
+        $headerArray = $worksheet->toArray()[0];
+        $list = [];
+        if (count($worksheet->toArray()) >= 1){
+            for ($index = 1;$index < count($worksheet->toArray());$index++){
+                $list[] = array_combine($headerArray,$worksheet->toArray()[$index]);
+            }
+        }
+        return $list;
     }
 }
-
-$p = new ExcelUtils();
-$p->_readXlsFileV2("../export/sampleSku.xlsx");
