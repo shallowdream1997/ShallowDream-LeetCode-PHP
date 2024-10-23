@@ -7,10 +7,10 @@ class ProductSkuController
     private $requestUtils;
 
     private $module = "platform-wms-application";
-    public function __construct()
+    public function __construct($port = 'test')
     {
         $this->log = new MyLogger("product_sku");
-        $this->requestUtils = new RequestUtils("test");
+        $this->requestUtils = new RequestUtils($port);
     }
     public function getModule($modlue){
         switch ($modlue){
@@ -770,7 +770,7 @@ class ProductSkuController
 
 }
 
-$s = new ProductSkuController();
+$s = new ProductSkuController("test");
 //$s->updateProductSku();
 $s->updatePaProductAndDetail();
 //$s->downloadSampleSku();
