@@ -33,7 +33,7 @@ class ProductSkuController
         $this->log->log2($message);
     }
 
-    public function getXlsxByFile($file = ""): array
+    public function getXlsxByFile($file = "")
     {
         $excelUtils = new ExcelUtils();
         $fileName = "../export/";
@@ -702,9 +702,9 @@ class ProductSkuController
 }
 
 $s = new ProductSkuController();
-//$s->updateProductSku();
+$s->updateProductSku();
 //$s->updatePaProductAndDetail();
-$s->downloadSampleSku();
+//$s->downloadSampleSku();
 //$s->syncProSkuSPInfoToTest();
 //$s->buildScuSkuProductMap();
 //$s->combineKeyword();

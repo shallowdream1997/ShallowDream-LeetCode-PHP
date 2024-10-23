@@ -16,22 +16,22 @@ class RequestUtils
     }
     // ===================================== pa_product 表的增删改查 基本接口 start =====================================
 
-    public function getPaProductPageList($params): array
+    public function getPaProductPageList($params)
     {
         return DataUtils::getPageList($this->curlService->s3015()->get("pa_products/queryPage", $params));
     }
 
-    public function readPaProductInfo(string $id): array
+    public function readPaProductInfo(string $id)
     {
         return DataUtils::getQueryList($this->curlService->s3015()->get("pa_products/{$id}"));
     }
 
-    public function updatePaProductInfo($params): array
+    public function updatePaProductInfo($params)
     {
         return DataUtils::getResultData($this->curlService->s3015()->put("pa_products/{$params['_id']}",$params));
     }
 
-    public function deletePaProduct($id): array
+    public function deletePaProduct($id)
     {
         return DataUtils::getResultData($this->curlService->s3015()->delete("pa_products/{$id}"));
     }
@@ -41,7 +41,7 @@ class RequestUtils
      * @param $batchName
      * @return array
      */
-    public function getPaProductInfoByBatchName($batchName): array
+    public function getPaProductInfoByBatchName($batchName)
     {
         $paProductIdInfo = DataUtils::getArrHeadData($this->getPaProductPageList(["batchName"=>$batchName]));
         $detailList = [];
@@ -56,7 +56,7 @@ class RequestUtils
      * @param $batchNameList
      * @return array
      */
-    public function getPaProductInfoByBatchNameList($batchNameList): array
+    public function getPaProductInfoByBatchNameList($batchNameList)
     {
         //拿pa_product主表
         $paProductIdInfoList = [];
@@ -107,30 +107,30 @@ class RequestUtils
     // ===================================== pa_product 表的增删改查 基本接口 end =====================================
 
     // ===================================== pa_product_detail 表的增删改查 基本接口 start =====================================
-    public function getPaProductDetailPageList($params): array
+    public function getPaProductDetailPageList($params)
     {
         return DataUtils::getPageList($this->curlService->s3015()->get("pa_product_details/queryPage", $params));
     }
-    public function readPaProductDetailInfo(string $id): array
+    public function readPaProductDetailInfo(string $id)
     {
         return DataUtils::getQueryList($this->curlService->s3015()->get("pa_product_details/{$id}"));
     }
 
-    public function updatePaProductDetailInfo($params): array
+    public function updatePaProductDetailInfo($params)
     {
         return DataUtils::getResultData($this->curlService->s3015()->put("pa_product_details/{$params['_id']}",$params));
     }
 
-    public function deletePaProductDetail($id): array
+    public function deletePaProductDetail($id)
     {
         return DataUtils::getResultData($this->curlService->s3015()->delete("pa_product_details/{$id}"));
     }
-    public function createPaProductDetail($params): array
+    public function createPaProductDetail($params)
     {
         return DataUtils::getResultData($this->curlService->s3015()->post("pa_product_details",$params));
     }
 
-    public function updateBrandByPaProduct($paProductDetailList, $salesBrand, $reason): array
+    public function updateBrandByPaProduct($paProductDetailList, $salesBrand, $reason)
     {
         return DataUtils::getResultData($res = $this->curlService->s3044()->post("pa_product_brand_score_bases/updateBrandByPaProduct", [
             "paProductDetailList" => $paProductDetailList,
@@ -142,7 +142,7 @@ class RequestUtils
     // ===================================== pa_product_detail 表的增删改查 基本接口 end =====================================
 
     // ===================================== option_val_list 表的 基本接口 start =====================================
-    public function getOptionValListByName($optionName): array
+    public function getOptionValListByName($optionName)
     {
         if (empty($optionName)){
             return [];
@@ -154,16 +154,16 @@ class RequestUtils
     }
 
 
-    public function updateOptionValListInfo($params): array
+    public function updateOptionValListInfo($params)
     {
         return DataUtils::getResultData($this->curlService->s3015()->put("option-val-lists/{$params['_id']}",$params));
     }
 
-    public function deleteOptionValListInfo($params): array
+    public function deleteOptionValListInfo($params)
     {
         return DataUtils::getResultData($this->curlService->s3015()->delete("option-val-lists/{$params['_id']}"));
     }
-    public function createOptionValListInfo($params): array
+    public function createOptionValListInfo($params)
     {
         return DataUtils::getResultData($this->curlService->s3015()->post("option-val-lists",$params));
     }
@@ -178,7 +178,7 @@ class RequestUtils
      * @param $userName
      * @return array
      */
-    public function getUserSheetByUserName($userName): array
+    public function getUserSheetByUserName($userName)
     {
         $redisService = new RedisService();
         $get = $redisService->hGet(REDIS_USER_NAME_KEY, $userName);
@@ -231,7 +231,7 @@ class RequestUtils
         return $this;
     }
 
-    public function returnEmployeeByCompanySequenceId(): array
+    public function returnEmployeeByCompanySequenceId()
     {
 
         $redisService = new RedisService();
@@ -251,7 +251,7 @@ class RequestUtils
     // ===================================== system-manages 接口 end =====================================
 
 
-    public function getProductSkuList(array $skuIdList): array
+    public function getProductSkuList(array $skuIdList)
     {
         $skuIdListInfoArray = [];
         if (!is_array($skuIdList)){
@@ -266,12 +266,12 @@ class RequestUtils
         return $skuIdListInfoArray;
     }
 
-    public function updateProductSku($info): array
+    public function updateProductSku($info)
     {
         return DataUtils::getResultData($this->curlService->s3015()->put("product-skus/{$info['_id']}",$info));
     }
 
-    public function deleteProductSku($id): array
+    public function deleteProductSku($id)
     {
         return DataUtils::getResultData($this->curlService->s3015()->delete("product-skus/{$id}"));
     }
@@ -282,7 +282,7 @@ class RequestUtils
     }
     //
 
-    public function getProductBaseInfoList(array $skuIdList): array
+    public function getProductBaseInfoList(array $skuIdList)
     {
         $skuIdListInfoArray = [];
         if (!is_array($skuIdList)){
@@ -296,12 +296,12 @@ class RequestUtils
         }
         return $skuIdListInfoArray;
     }
-    public function updateProductBaseInfo($info): array
+    public function updateProductBaseInfo($info)
     {
         return DataUtils::getResultData($this->curlService->s3015()->put("product_base_infos/{$info['_id']}",$info));
     }
 
-    public function deleteProductBaseInfo($id): array
+    public function deleteProductBaseInfo($id)
     {
         return DataUtils::getResultData($this->curlService->s3015()->delete("product_base_infos/{$id}"));
     }
@@ -317,7 +317,7 @@ class RequestUtils
      * @param int $categoryId 末级分类Id
      * @return array
      */
-    public function getCategoryIdInfoV1(int $categoryId): array
+    public function getCategoryIdInfoV1(int $categoryId)
     {
         return DataUtils::getArrHeadData(DataUtils::getResultData($this->curlService->s3009()->get("development-directions/getAllCategory",["id"=>$categoryId])));
     }
@@ -327,7 +327,7 @@ class RequestUtils
      * @param int $categoryId 末级分类Id
      * @return array
      */
-    public function getCategoryIdInfoV2(int $categoryId): array
+    public function getCategoryIdInfoV2(int $categoryId)
     {
         $redisService = new RedisService();
         $get = $redisService->hGet(REDIS_CATEGORY_ID_KEY, $categoryId);
@@ -357,7 +357,7 @@ class RequestUtils
 
     //
 
-    public function getPaCeMaterialByCeBillNoList($ceBillNoList): array
+    public function getPaCeMaterialByCeBillNoList($ceBillNoList)
     {
         $list = [];
         foreach (array_chunk($ceBillNoList, 100) as $chunk) {
@@ -366,61 +366,61 @@ class RequestUtils
         return $list;
     }
 
-    public function updatePaCeMaterial($id, $params): array
+    public function updatePaCeMaterial($id, $params)
     {
         return DataUtils::getResultData($this->curlService->s3044()->put("pa_ce_materials/{$id}", $params));
     }
 
-    public function getTranslationMain($params): array
+    public function getTranslationMain($params)
     {
         return DataUtils::getPageList($this->curlService->s3015()->get("translation_managements/queryPage",$params));
     }
 
-    public function updateTranslationMain($info): array
+    public function updateTranslationMain($info)
     {
         return DataUtils::getResultData($this->curlService->s3015()->put("translation_managements/{$info['_id']}",$info));
     }
 
-    public function getTranslationSku($params): array
+    public function getTranslationSku($params)
     {
         return DataUtils::getPageList($this->curlService->s3015()->get("translation_management_skus/queryPage",$params));
     }
 
-    public function updateTranslationSku($info): array
+    public function updateTranslationSku($info)
     {
         return DataUtils::getResultData($this->curlService->s3015()->put("translation_management_skus/{$info['_id']}",$info));
     }
 
-    public function getAllPaProductBrandBillNoRules(): array
+    public function getAllPaProductBrandBillNoRules()
     {
         return DataUtils::getPageList($this->curlService->s3044()->get("pa_product_brand_bilino_rules/queryPage",["limit"=>10000,"status"=>10]));
     }
 
-    public function updatePaProductBrandBillNoRules($info): array
+    public function updatePaProductBrandBillNoRules($info)
     {
         return DataUtils::getResultData($this->curlService->s3044()->get("pa_product_brand_bilino_rules/{$info['_id']}",$info));
     }
 
-    public function getAllPaProductBrandScoreBase(): array
+    public function getAllPaProductBrandScoreBase()
     {
         return DataUtils::getPageList($this->curlService->s3044()->get("pa_product_brand_score_bases/queryPage",["limit"=>10000,"status"=>10]));
     }
 
-    public function updatePaProductBrandScoreBase($info): array
+    public function updatePaProductBrandScoreBase($info)
     {
         return DataUtils::getResultData($this->curlService->s3044()->get("pa_product_brand_score_bases/{$info['_id']}",$info));
     }
 
-    public function getPaSkuAttributePageList($params): array
+    public function getPaSkuAttributePageList($params)
     {
         return DataUtils::getPageList($this->curlService->s3015()->get("pa_sku_attributes/queryPage", $params));
     }
-    public function updatePaSkuAttribute($info): array
+    public function updatePaSkuAttribute($info)
     {
         return DataUtils::getResultData($this->curlService->s3015()->put("pa_sku_attributes/{$info['_id']}",$info));
     }
 
-    public function deletePaSkuAttribute($id): array
+    public function deletePaSkuAttribute($id)
     {
         return DataUtils::getResultData($this->curlService->s3015()->delete("pa_sku_attributes/{$id}"));
     }

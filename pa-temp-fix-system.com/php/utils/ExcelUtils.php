@@ -3,10 +3,10 @@ require dirname(__FILE__) . '/../../vendor/autoload.php';
 
 require_once(dirname(__FILE__) . "/../../extends/PHPExcel-1.8/Classes/PHPExcel.php");
 
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriteXlsx;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+//use PhpOffice\PhpSpreadsheet\Spreadsheet;
+//use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriteXlsx;
+//use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
+//use PhpOffice\PhpSpreadsheet\IOFactory;
 
 /**
  * 导入导出文件工具类
@@ -85,7 +85,7 @@ class ExcelUtils
      * @return array
      * @throws Exception
      */
-    private function _readXlsFile($fileName): array
+    private function _readXlsFile($fileName)
     {
         $returnArray = array();
         $objPHPExcel = PHPExcel_IOFactory::load($fileName);
@@ -129,7 +129,7 @@ class ExcelUtils
      * @return array|mixed
      * @throws Exception
      */
-    public function getXlsxData($filename, $sheet = 'Sheet1'): array
+    public function getXlsxData($filename, $sheet = 'Sheet1')
     {
         $fileContent = $this->_readXlsFile($filename);
         if (sizeof($fileContent[$sheet]) > 0) {
@@ -155,22 +155,22 @@ class ExcelUtils
     }
 
 
-    public function _readXlsFileV2($fileName){
-        // 载入 Excel 文件
-        $spreadsheet = IOFactory::load($fileName);
-        $worksheet = $spreadsheet->getActiveSheet();
-
-        if (count($worksheet->toArray()) == 0){
-            return [];
-        }
-
-        $headerArray = $worksheet->toArray()[0];
-        $list = [];
-        if (count($worksheet->toArray()) >= 1){
-            for ($index = 1;$index < count($worksheet->toArray());$index++){
-                $list[] = array_combine($headerArray,$worksheet->toArray()[$index]);
-            }
-        }
-        return $list;
-    }
+//    public function _readXlsFileV2($fileName){
+//        // 载入 Excel 文件
+//        $spreadsheet = IOFactory::load($fileName);
+//        $worksheet = $spreadsheet->getActiveSheet();
+//
+//        if (count($worksheet->toArray()) == 0){
+//            return [];
+//        }
+//
+//        $headerArray = $worksheet->toArray()[0];
+//        $list = [];
+//        if (count($worksheet->toArray()) >= 1){
+//            for ($index = 1;$index < count($worksheet->toArray());$index++){
+//                $list[] = array_combine($headerArray,$worksheet->toArray()[$index]);
+//            }
+//        }
+//        return $list;
+//    }
 }

@@ -15,7 +15,7 @@ class DataUtils
      * @param null $response
      * @return array
      */
-    public static function getResultData($response = null): array
+    public static function getResultData($response = null)
     {
         $data = [];
         if (!$response){
@@ -33,7 +33,7 @@ class DataUtils
      * @param null $response
      * @return array
      */
-    public static function getPageList($response = null): array
+    public static function getPageList($response = null)
     {
         $data = [];
         if (!$response){
@@ -51,7 +51,7 @@ class DataUtils
      * @param null $response 响应内容
      * @return array
      */
-    public static function getQueryList($response = null): array
+    public static function getQueryList($response = null)
     {
         $data = [];
         if (!$response){
@@ -69,7 +69,7 @@ class DataUtils
      * @param null $response
      * @return array
      */
-    public static function getPageDocList($response = null): array
+    public static function getPageDocList($response = null)
     {
         $data = [];
         if (!$response){
@@ -88,7 +88,7 @@ class DataUtils
      * @param null $response
      * @return array
      */
-    public static function getPageListInFirstData($response = null): array
+    public static function getPageListInFirstData($response = null)
     {
         $data = [];
         if (!$response){
@@ -106,7 +106,7 @@ class DataUtils
      * @param $data
      * @return array|mixed
      */
-    public static function getOptionVal($data): array
+    public static function getOptionVal($data)
     {
         $info = [];
         if (self::checkArrFilesIsExist($data,'optionName')){
@@ -120,7 +120,7 @@ class DataUtils
      * @param array $list 数组
      * @return array
      */
-    public static function getArrHeadData(array $list): array
+    public static function getArrHeadData(array $list)
     {
         $data = [];
         if (!empty($list) && count($list) > 0){
@@ -146,7 +146,7 @@ class DataUtils
      * @param array $conditions 查询条件
      * @return array
      */
-    public static function findIndexInArray(array $array,array $conditions): array
+    public static function findIndexInArray(array $array,array $conditions)
     {
         // 使用array_filter根据多个条件过滤数组
         return array_filter($array, function ($item) use ($conditions) {
@@ -201,7 +201,7 @@ class DataUtils
      * @param null $response
      * @return array
      */
-    public static function getNewResultData($response = null): array
+    public static function getNewResultData($response = null)
     {
         $data = [];
         if (!$response){

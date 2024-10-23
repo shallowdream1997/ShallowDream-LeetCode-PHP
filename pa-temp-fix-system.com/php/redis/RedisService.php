@@ -1,6 +1,5 @@
 <?php
-require_once("/var/www/html/testProject/php/constant/Constant.php");
-
+require_once(dirname(__FILE__) . "/../../php/constant/Constant.php");
 /**
  * redis 服务
  * Class RedisService
