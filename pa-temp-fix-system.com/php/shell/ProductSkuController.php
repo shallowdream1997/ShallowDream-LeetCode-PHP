@@ -10,7 +10,7 @@ class ProductSkuController
     public function __construct()
     {
         $this->log = new MyLogger("product_sku");
-        $this->requestUtils = new RequestUtils("pro");
+        $this->requestUtils = new RequestUtils("test");
     }
     public function getModule($modlue){
         switch ($modlue){
@@ -19,6 +19,9 @@ class ProductSkuController
                 break;
             case "pa":
                 $this->module = "pa-biz-application";
+                break;
+            case "config":
+                $this->module = "platform-config-service";
                 break;
         }
 
@@ -66,6 +69,8 @@ class ProductSkuController
         $updateSkuIdsList = array_column($list, "productid");
         $updateSkuIdInfoList = $this->requestUtils->getProductSkuList($updateSkuIdsList);
 
+        //读取品牌配置化
+        $brandMap = $this->getBrandAttributeByPaPomsSkuBrandInitConfig();
         $updateSkuIdInfoGroupByProductId = array_column($updateSkuIdInfoList, null, "productId");
         if ($updateSkuIdInfoGroupByProductId) {
             foreach ($list as $excelInfo) {
@@ -99,16 +104,20 @@ class ProductSkuController
                 $updateAttribute = [];
                 //有品牌的修改
                 if (DataUtils::checkArrFilesIsExist($excelInfo, 'salesbrand')) {
-                    $updateAttribute[] = [
-                        "channel" => "local",
-                        "label" => "salesBrand",
-                        "value" => $excelInfo['salesbrand'],
-                    ];
-                    $updateAttribute[] = [
-                        "channel" => "amazon_us",
-                        "label" => "brand",
-                        "value" => $excelInfo['salesbrand'],
-                    ];
+                    if (isset($brandMap[$excelInfo['salesbrand']])){
+                        $updateAttribute = $brandMap[$excelInfo['salesbrand']];
+                    }else{
+                        $updateAttribute[] = [
+                            "channel" => "local",
+                            "label" => "salesBrand",
+                            "value" => $excelInfo['salesbrand'],
+                        ];
+                        $updateAttribute[] = [
+                            "channel" => "amazon_us",
+                            "label" => "brand",
+                            "value" => $excelInfo['salesbrand'],
+                        ];
+                    }
                     $this->log("local salesBrand: {$excelInfo['salesbrand']}");
                 }
                 if (DataUtils::checkArrFilesIsExist($excelInfo, 'businesstype')) {
@@ -150,7 +159,8 @@ class ProductSkuController
             $this->log("批次号太多了，要爆炸啦，分批次处理");
             $chunkBatchNameList = array_chunk($batchNameList, 150);
         }
-
+        //读取品牌配置化
+        $brandMap = $this->getBrandAttributeByPaPomsSkuBrandInitConfig();
 
         foreach ($chunkBatchNameList as $chunk) {
             $paProductIdCollectorList = $this->requestUtils->getPaProductInfoByBatchNameList($chunk);
@@ -183,7 +193,7 @@ class ProductSkuController
                         }
 
                     } else {
-                        $this->updatePPDetail($batchInfo['paProductDetailList'], $updateData);
+                        $this->updatePPDetail($batchInfo['paProductDetailList'], $updateData,$brandMap);
                     }
 
                 }
@@ -218,7 +228,7 @@ class ProductSkuController
         }
     }
 
-    private function updatePPDetail($paProductDetailList, $updateData)
+    private function updatePPDetail($paProductDetailList, $updateData,$brandMap = array())
     {
         $this->log("明细 开始更新");
 
@@ -320,11 +330,20 @@ class ProductSkuController
                     }
                 }
 
-                $updateAttribute[] = [
-                    "channel" => "local",
-                    "label" => "salesBrand",
-                    "value" => $updateData['salesBrand'],
-                ];
+                if (isset($brandMap[$updateData['salesBrand']])){
+                    $updateAttribute = $brandMap[$updateData['salesBrand']];
+                }else{
+                    $updateAttribute[] = [
+                        "channel" => "local",
+                        "label" => "salesBrand",
+                        "value" => $updateData['salesBrand'],
+                    ];
+                    $updateAttribute[] = [
+                        "channel" => "amazon_us",
+                        "label" => "brand",
+                        "value" => $updateData['salesBrand'],
+                    ];
+                }
                 $this->log("品牌不一样可以修改：{$oldSaleBrand} --> {$updateData['salesBrand']}");
             } else {
                 $fixSaleBrand = false;
@@ -699,11 +718,61 @@ class ProductSkuController
 
 
     }
+
+    public function getPlatformConfigByKey($configKey){
+        $curlService = (new CurlService())->pro();
+        $curlService->gateway();
+        $this->getModule('config');
+
+        $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/business/config/v1/getConfigByKey", [
+            "configKey" => $configKey,
+        ]));
+        if (!$resp['configValue']){
+            return [];
+        }
+        return $resp['configValue'];
+    }
+
+    /**
+     * 资料初始化品牌配置化
+     * @return array
+     */
+    public function getBrandAttributeByPaPomsSkuBrandInitConfig(){
+        $configValue = $this->getPlatformConfigByKey("PA_POMS_SKU_BRAND_INIT_CONFIG");
+        $brandMap = [];
+        foreach ($configValue as $brandList){
+            if (!isset($brandList['brand'])){
+                continue;
+            }
+            $brandMap[$brandList['brand']] = [];
+            $updateAttribute = [];
+            foreach ($brandList as $key => $value){
+                if($key !== "brand" && $key !== "categoryId"){
+                    if ($key === "local"){
+                        $updateAttribute[] = [
+                            "channel" => $key,
+                            "label" => "salesBrand",
+                            "value" => $value,
+                        ];
+                    }else{
+                        $updateAttribute[] = [
+                            "channel" => $key,
+                            "label" => "brand",
+                            "value" => $value,
+                        ];
+                    }
+                }
+            }
+            $brandMap[$brandList['brand']] = $updateAttribute;
+        }
+        return $brandMap;
+    }
+
 }
 
 $s = new ProductSkuController();
-$s->updateProductSku();
-//$s->updatePaProductAndDetail();
+//$s->updateProductSku();
+$s->updatePaProductAndDetail();
 //$s->downloadSampleSku();
 //$s->syncProSkuSPInfoToTest();
 //$s->buildScuSkuProductMap();
@@ -711,3 +780,5 @@ $s->updateProductSku();
 //$s->savePaPmo();
 //$s->getQms();
 //$s->updatePaSkuInfoReplenishManBySkuIds();
+
+//$s->getBrandAttributeByPaPomsSkuBrandInitConfig();
