@@ -104,6 +104,11 @@ class ProductSkuController
                         "label" => "salesBrand",
                         "value" => $excelInfo['salesbrand'],
                     ];
+                    $updateAttribute[] = [
+                        "channel" => "amazon_us",
+                        "label" => "brand",
+                        "value" => $excelInfo['salesbrand'],
+                    ];
                     $this->log("local salesBrand: {$excelInfo['salesbrand']}");
                 }
                 if (DataUtils::checkArrFilesIsExist($excelInfo, 'businesstype')) {

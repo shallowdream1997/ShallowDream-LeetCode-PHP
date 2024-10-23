@@ -1,5 +1,5 @@
 <?php
-//require_once dirname(__FILE__) .'/../../vendor/autoload.php';
+require dirname(__FILE__) . '/../../vendor/autoload.php';
 
 require_once dirname(__FILE__) . '/../requiredfile/requiredChorm.php';
 
@@ -196,6 +196,9 @@ class search
 
     }
 
+    public function paProductList($params){
+
+    }
 
 }
 
@@ -234,6 +237,10 @@ switch ($data['action']) {
     case "paSampleSku":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paSampleSku($params);
+        break;
+    case "paProductList":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->paProductList($params);
         break;
 }
 

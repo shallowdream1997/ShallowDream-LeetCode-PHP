@@ -130,6 +130,27 @@
         },
 
         methods: {
+            async initPage(){
+                const data = {
+                    action: "paProductList",
+                    params: {},
+                };
+                this.header = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 其他自定义头
+                    }
+                };
+                this.url = "http://172.16.29.23:90/php/controller";
+                let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
+                    this.errorMsg = "网络错误";
+                });
+                this.loading = "";
+                if (res.status === 200) {
+                    this.env = res.data.env;
+                }
+
+            },
             handleFileUpload(event) {
                 this.selectedFile = event.target.files[0];
             },
