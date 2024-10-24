@@ -197,7 +197,7 @@
                         if (response && response.data.code == 200){
                             this.successMsg = response.data.message + "，文件名称：" + response.data.fileName;
                             this.fileName = response.data.fileName;
-                            this.excelList = response.data.excelList.Sheet1;
+                            this.excelList = response.data.excelList;
                         }else {
                             this.errorMsg = response.data;
                         }
@@ -219,6 +219,7 @@
                     return;
                 }
                 this.errexcelList = [];
+                let i = 1;
                 for (let excel of this.excelList){
                     const data = {
                         action: "paProductList",
@@ -230,10 +231,11 @@
                         this.errorMsg = "网络错误";
                     });
                     console.log(res)
+                    this.loading = `......第${i}个........`;
                     this.errexcelList.push({batchName:excel.batchName,errmessage:res.data.messages});
+                    i++;
                 }
-
-                this.loading = "";
+                this.loading = "结束";
             },
             async download(){
                 window.open("http://172.16.29.23:90/php/export/UpdatePaProduct.xlsx");

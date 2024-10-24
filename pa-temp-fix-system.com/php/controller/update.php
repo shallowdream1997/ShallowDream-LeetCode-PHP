@@ -1,7 +1,9 @@
 <?php
-//require_once dirname(__FILE__) .'/../../vendor/autoload.php';
+require dirname(__FILE__) . '/../../vendor/autoload.php';
 
 require_once dirname(__FILE__) . '/../requiredfile/requiredChorm.php';
+require_once dirname(__FILE__) . '/EnvironmentConfig.php';
+require_once dirname(__FILE__) . '/../shell/ProductSkuController.php';
 
 /**
  * 更新接口
@@ -300,10 +302,10 @@ class update
                 }
 
                 $updatePPDetailBoolean = $productSkuController->updatePPDetail($batchInfo['paProductDetailList'], $params['excel'],$brandMap);
-                if (!$updatePPDetailBoolean){
+                if (!$updatePPDetailBoolean || !$updatePPDetailBoolean['code']){
                     return [
                         "updateSuccess" => false,
-                        "messages" => "开发清单明细或sku资料更新失败"
+                        "messages" => "开发清单明细或sku资料更新失败：" . json_encode($updatePPDetailBoolean['messages'],JSON_UNESCAPED_UNICODE)
                     ];
                 }
 

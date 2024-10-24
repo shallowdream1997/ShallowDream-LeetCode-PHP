@@ -260,7 +260,7 @@ class ProductSkuController
                 $updateSkuIdInfoGroupByProductId = array_column($updateSkuIdInfoList, null, "productId");
             }
         }
-
+        $hasErr = [];
         foreach ($paProductDetailList as $detailInfo) {
             $this->log("{$detailInfo['productName']}");
             $fixDetail = false;
@@ -286,10 +286,10 @@ class ProductSkuController
                 $updateResp = $this->requestUtils->updatePaProductDetailInfo($detailInfo);
                 if ($updateResp) {
                     $this->log("update pa product detail success");
-                    return true;
                 } else {
                     $this->log("update pa product detail fail");
-                    return false;
+                    $hasErr[] = "{$detailInfo['productName']} 清单明细更新失败";
+                    continue;
                 }
             } else {
                 $this->log("不需要更新明细");
@@ -393,8 +393,34 @@ class ProductSkuController
             } else {
                 $fixSaleBusinessType = false;
             }
+            //修改销售
+            $fixSalesUser = true;
+            $oldSalesUser = $productInfo['salesUserName'];
+            if (DataUtils::checkArrFilesIsExist($updateData, 'traceMan')) {
+                $this->log("salesUserName: {$productInfo['salesUserName']} -> {$updateData['traceMan']}");
+                $productInfo['salesUserName'] = $updateData['traceMan'];
 
-            if (!$fixSaleBrand && !$fixSaleBusinessType && !$fixCategory) {
+                if ($oldSalesUser == $productInfo['salesUserName']){
+                    $fixSalesUser = false;
+                }else{
+                    $this->log("销售不一样可以修改：{$oldSalesUser} -> {$productInfo['salesUserName']}");
+                }
+            }
+
+            //修改开发
+            $fixDeveloper = true;
+            $oldDeveloper = $productInfo['developerUserName'];
+            if (DataUtils::checkArrFilesIsExist($updateData, 'developer')) {
+                $this->log("developerUserName: {$productInfo['developerUserName']} -> {$updateData['developer']}");
+                $productInfo['developerUserName'] = $updateData['developer'];
+
+                if ($oldDeveloper == $productInfo['developerUserName']){
+                    $fixDeveloper = false;
+                }else{
+                    $this->log("销售不一样可以修改：{$oldDeveloper} -> {$productInfo['developerUserName']}");
+                }
+            }
+            if (!$fixSaleBrand && !$fixSaleBusinessType && !$fixCategory && !$fixSalesUser && !$fixDeveloper) {
                 continue;
             }
 
@@ -408,13 +434,23 @@ class ProductSkuController
             $updateProductResp = $this->requestUtils->updateProductSkuApi($productInfo);
             if ($updateProductResp) {
                 $this->log("update sku success");
-                return true;
             } else {
                 $this->log("update sku fail");
-                return false;
+                $hasErr[] = "{$detailInfo['skuId']} sku资料更新失败";
+                continue;
             }
         }
-
+        if (count($hasErr) > 0){
+            return [
+                "code" => false,
+                "messages" => $hasErr
+            ];
+        }else{
+            return [
+                "code" => true,
+                "messages" => $hasErr
+            ];
+        }
     }
 
     /**
