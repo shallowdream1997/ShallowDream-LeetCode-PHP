@@ -40,12 +40,13 @@ class upload
             if (move_uploaded_file($file['tmp_name'], $target_file)) {
 
                 $excel = new ExcelUtils();
-                $excelList = $excel->_readXlsFileV2("../export/uploads/{$unique_name}");
+                $excelList = $excel->_readXlsFile("../export/uploads/{$unique_name}");
+                $list = reset($excelList);
                 return [
                     "code" => 200,
                     "message" => "上传文件成功",
                     "fileName" => $unique_name,
-                    "excelList" => $excelList
+                    "excelList" => $list
                 ];
             } else {
                 return [

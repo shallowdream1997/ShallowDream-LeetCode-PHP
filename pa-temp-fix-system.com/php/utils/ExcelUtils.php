@@ -85,7 +85,7 @@ class ExcelUtils
      * @return array
      * @throws Exception
      */
-    private function _readXlsFile($fileName)
+    public function _readXlsFile($fileName)
     {
         $returnArray = array();
         $objPHPExcel = PHPExcel_IOFactory::load($fileName);

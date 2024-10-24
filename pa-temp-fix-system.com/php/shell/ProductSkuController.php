@@ -405,7 +405,7 @@ class ProductSkuController
                 }
             }
 
-            $updateProductResp = $this->requestUtils->updateProductSku($productInfo);
+            $updateProductResp = $this->requestUtils->updateProductSkuApi($productInfo);
             if ($updateProductResp) {
                 $this->log("update sku success");
                 return true;
@@ -802,16 +802,3 @@ class ProductSkuController
     }
 
 }
-
-$s = new ProductSkuController("test");
-//$s->updateProductSku();
-//$s->updatePaProductAndDetail("UpdatePaProduct.xlsx");
-//$s->downloadSampleSku();
-//$s->syncProSkuSPInfoToTest();
-//$s->buildScuSkuProductMap();
-//$s->combineKeyword();
-//$s->savePaPmo();
-//$s->getQms();
-//$s->updatePaSkuInfoReplenishManBySkuIds();
-
-$s->getBrandAttributeByPaPomsSkuBrandInitConfig();

@@ -197,7 +197,7 @@
                         if (response && response.data.code == 200){
                             this.successMsg = response.data.message + "，文件名称：" + response.data.fileName;
                             this.fileName = response.data.fileName;
-                            this.excelList = response.data.excelList;
+                            this.excelList = response.data.excelList.Sheet1;
                         }else {
                             this.errorMsg = response.data;
                         }

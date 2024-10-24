@@ -270,6 +270,12 @@ class RequestUtils
     {
         return DataUtils::getResultData($this->curlService->s3015()->put("product-skus/{$info['_id']}",$info));
     }
+    public function updateProductSkuApi($info)
+    {
+        $info['userName'] = "pa-temp-sys";
+        $info['action'] = "运维修改资料";
+        return DataUtils::getResultData($this->curlService->s3015()->post("product-skus/updateProductSku?_id={$info['_id']}",$info));
+    }
 
     public function deleteProductSku($id)
     {
