@@ -22,7 +22,8 @@
             </div>
 
             <div class="mb-3">
-                <button class="btn btn-primary" @click="uploadFile">确认上传</button>
+                <button class="btn btn-primary" @click="download">下载模板</button>
+                <button class="btn btn-primary" style="margin-left: 10px" @click="uploadFile">确认上传</button>
             </div>
 
             <div class="row">
@@ -87,6 +88,27 @@
         </div>
 
         <div class="col-12" style="margin-top: 20px">
+            <table class="table table-dark table-striped align-middle" v-if="errexcelList && errexcelList.length > 0">
+                <thead>
+                <tr>
+                    <th scope="col">batchName</th>
+                    <th scope="col">errmessage</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="info in errexcelList" :key="errexcelList.batchName">
+                    <td>
+                        {{info.batchName}}
+                    </td>
+                    <td>
+                        {{info.errmessage}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-12" style="margin-top: 20px">
             <div class="row">
                 <h5 style="color: red">{{loading}}</h5>
                 <h4 style="color: red">{{errorMsg}}</h4>
@@ -110,12 +132,15 @@
     createApp({
 
         data() {
+            console.log(getDomainAndPort());
+            this.initPage();
             return {
                 message: '开发清单兼并sku资料修改',
                 errorMsg: '',
                 successMsg: '',
                 selectedFile: null,
                 excelList: [],
+                errexcelList: [],
                 fileName:"",
                 loading: '',
                 env:"",
@@ -188,31 +213,30 @@
                 this.loading = "............请等待，正在处理数据中..........";
                 this.errorMsg = "";
 
-                if (!this.fileName) {
-                    this.errorMsg = "请先修改上传文件";
+                if (!this.excelList) {
+                    this.errorMsg = "请先确保上文文件内容是否正确";
                     this.loading = "............报错..........";
                     return;
                 }
-
-                console.log(this.fileName)
-                const data = {
-                    action: "paProductList",
-                    params: {
-                        fileName: this.fileName
-                    },
-                };
-                let res = await axios.post(`${this.url}/update.php`, data,this.header).catch(function (error) {
-                    this.errorMsg = "网络错误";
-                });
-                console.log(res)
-                if (res.status === 200 && res.data === true) {
-                    this.loading = "............修改成功..........";
-                    this.search();
-                } else {
-                    this.errorMsg = "............报错：你输入的批次号里面可能不存在..........";
+                this.errexcelList = [];
+                for (let excel of this.excelList){
+                    const data = {
+                        action: "paProductList",
+                        params: {
+                            excel: excel
+                        },
+                    };
+                    let res = await axios.post(`${this.url}/update.php`, data,this.header).catch(function (error) {
+                        this.errorMsg = "网络错误";
+                    });
+                    console.log(res)
+                    this.errexcelList.push({batchName:excel.batchName,errmessage:res.data.messages});
                 }
 
                 this.loading = "";
+            },
+            async download(){
+                window.open("http://172.16.29.23:90/php/export/UpdatePaProduct.xlsx");
             }
         },
 

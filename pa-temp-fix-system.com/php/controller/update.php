@@ -15,6 +15,10 @@ class update
 
     private $module = "pa-biz-application";
 
+    /**
+     * @var CurlService
+     */
+    public $envService;
     public function __construct()
     {
         $this->logger = new MyLogger("option/updateLog");
@@ -40,7 +44,7 @@ class update
      */
     public function pageSwitchConfig($params)
     {
-        $curlService = (new CurlService())->pro();
+        $curlService = $this->envService;
 
         $env = $curlService->environment;
 
@@ -87,7 +91,7 @@ class update
      */
     public function fixTranslationManagements($params)
     {
-        $curlService = (new CurlService())->pro();
+        $curlService = $this->envService;
         $env = $curlService->environment;
 
         $status = $params['status'];
@@ -140,7 +144,7 @@ class update
      */
     public function fixCeMaterials($params)
     {
-        $curlService = (new CurlService())->pro();
+        $curlService = $this->envService;
         $env = $curlService->environment;
 
         $_id = $params['_id'];
@@ -175,7 +179,7 @@ class update
      */
     public function paFbaChannelSellerConfig($params)
     {
-        $curlService = (new CurlService())->pro();
+        $curlService = $this->envService;
         $env = $curlService->environment;
 
         if (isset($params['channel']) && $params['channel'] && isset($params['stocksList']) && $params['stocksList']) {
@@ -208,7 +212,7 @@ class update
 
     public function paSampleSku($params)
     {
-        $curlService = (new CurlService())->pro();
+        $curlService = $this->envService;
         $env = $curlService->environment;
         if (isset($params['addskuIdList']) && $params['addskuIdList']) {
             $skuIdList = $params['addskuIdList'];
@@ -258,7 +262,65 @@ class update
 
     }
 
+    public function paProductList($params){
+        $curlService = $this->envService;
 
+        if (isset($params['excel']) && $params['excel']) {
+            $env = $curlService->environment;
+            $requestUtils = new RequestUtils($env);
+            $productSkuController = new ProductSkuController($env);
+
+            //获取批次号
+            if (!$params['excel']['batchName']){
+                return [
+                    "updateSuccess" => false,
+                    "messages" => "批次号不存在"
+                ];
+            }
+            //读取品牌配置化
+            $brandMap = $productSkuController->getBrandAttributeByPaPomsSkuBrandInitConfig();
+
+            $paProductIdCollectorList = $requestUtils->getPaProductInfoByBatchNameList([$params['excel']['batchName']]);
+            if (count($paProductIdCollectorList) > 0) {
+
+                if (!DataUtils::checkArrFilesIsExist($paProductIdCollectorList, $params['excel']['batchName'])) {
+                    $this->logger->log("{$params['excel']['batchName']} 不存在清单列表");
+                    return [
+                        "updateSuccess" => false,
+                        "messages" => "{$params['excel']['batchName']} 不存在清单列表"
+                    ];
+                }
+                $batchInfo = $paProductIdCollectorList[$params['excel']['batchName']];
+                $updatePPMainBoolean = $productSkuController->updatePPMain($batchInfo['paProductInfo'], $params['excel'],false);
+                if (!$updatePPMainBoolean){
+                    return [
+                        "updateSuccess" => false,
+                        "messages" => "开发清单主表更新失败"
+                    ];
+                }
+
+                $updatePPDetailBoolean = $productSkuController->updatePPDetail($batchInfo['paProductDetailList'], $params['excel'],$brandMap);
+                if (!$updatePPDetailBoolean){
+                    return [
+                        "updateSuccess" => false,
+                        "messages" => "开发清单明细或sku资料更新失败"
+                    ];
+                }
+
+            }
+
+            return [
+                "updateSuccess" => true,
+                "messages" => "{$params['excel']['batchName']} 修改成功"
+            ];
+
+        }else{
+            return [
+                "updateSuccess" => false,
+                "messages" => "{$params['excel']['batchName']} 修改失败"
+            ];
+        }
+    }
 }
 
 
@@ -271,6 +333,7 @@ if (!isset($data['action']) || empty($data['action'])) {
 
 $class = new update();
 $return = [];
+$class->envService = (new EnvironmentConfig($data['action']))->getCurlService();
 
 switch ($data['action']) {
     case "pageSwitchConfig":
@@ -292,6 +355,10 @@ switch ($data['action']) {
     case "paSampleSku":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paSampleSku($params);
+        break;
+    case "paProductList":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->paProductList($params);
         break;
 }
 

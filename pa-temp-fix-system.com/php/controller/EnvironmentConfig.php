@@ -6,6 +6,9 @@ require_once dirname(__FILE__) . '/../requiredfile/requiredChorm.php';
 
 class EnvironmentConfig
 {
+    /**
+     * @var CurlService
+     */
     public $curlService;
 
     public function __construct($pageName = '')
@@ -39,5 +42,9 @@ class EnvironmentConfig
                 break;
         }
         return $this;
+    }
+
+    public function getCurlService(){
+        return $this->curlService;
     }
 }

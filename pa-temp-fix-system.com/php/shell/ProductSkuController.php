@@ -147,12 +147,25 @@ class ProductSkuController
 
     /**
      * 修改开发清单和明细表
+     * @param string $file
      * @param false $score
      * @param string $updateBrandRemark
+     * @return array|mixed
      */
-    public function updatePaProductAndDetail($score = false, $updateBrandRemark = "指定修改品牌")
+    public function updatePaProductAndDetail($file, $score = false, $updateBrandRemark = "指定修改品牌")
     {
-        $list = $this->getXlsxByFile("UpdatePaProduct.xlsx");
+        //$list = $this->getXlsxByFile($file);
+        if (!$file){
+            die("请选择文件");
+        }
+        $excelUtils = new ExcelUtils();
+        $fileName = "../export/";
+        try {
+            $list = $excelUtils->getXlsxData($fileName . $file);
+        } catch (Exception $e) {
+            die("获取数据失败");
+        }
+
         $batchNameList = array_column($list, 'batchName');
         $chunkBatchNameList = [$batchNameList];
         if (count($batchNameList) > 500) {
@@ -203,7 +216,7 @@ class ProductSkuController
         $this->log("结束");
     }
 
-    private function updatePPMain($paProductInfo, $updateData, $score)
+    public function updatePPMain($paProductInfo, $updateData, $score)
     {
         $this->log("{$updateData['batchName']} 开始更新");
         foreach (['developer', 'platform', 'productlineId', 'salesBrand', 'tag', 'tag2', 'traceMan', 'ebayTraceMan','categoryId'] as $field) {
@@ -223,12 +236,14 @@ class ProductSkuController
         $updateResp = $this->requestUtils->updatePaProductInfo($paProductInfo);
         if ($updateResp) {
             $this->log("success");
+            return true;
         } else {
             $this->log("fail");
+            return false;
         }
     }
 
-    private function updatePPDetail($paProductDetailList, $updateData,$brandMap = array())
+    public function updatePPDetail($paProductDetailList, $updateData, $brandMap = array())
     {
         $this->log("明细 开始更新");
 
@@ -271,8 +286,10 @@ class ProductSkuController
                 $updateResp = $this->requestUtils->updatePaProductDetailInfo($detailInfo);
                 if ($updateResp) {
                     $this->log("update pa product detail success");
+                    return true;
                 } else {
                     $this->log("update pa product detail fail");
+                    return false;
                 }
             } else {
                 $this->log("不需要更新明细");
@@ -391,8 +408,10 @@ class ProductSkuController
             $updateProductResp = $this->requestUtils->updateProductSku($productInfo);
             if ($updateProductResp) {
                 $this->log("update sku success");
+                return true;
             } else {
                 $this->log("update sku fail");
+                return false;
             }
         }
 
@@ -719,6 +738,11 @@ class ProductSkuController
 
     }
 
+    /**
+     * 读取配置中心数据
+     * @param $configKey
+     * @return array|mixed
+     */
     public function getPlatformConfigByKey($configKey){
         $curlService = (new CurlService())->pro();
         $curlService->gateway();
@@ -738,7 +762,15 @@ class ProductSkuController
      * @return array
      */
     public function getBrandAttributeByPaPomsSkuBrandInitConfig(){
-        $configValue = $this->getPlatformConfigByKey("PA_POMS_SKU_BRAND_INIT_CONFIG");
+        $redisService = new RedisService();
+        $get = $redisService->hGet(REDIS_SKU_INIT_BRAND_ID_KEY, REDIS_SKU_INIT_BRAND_KEY);
+        if (empty($get)) {
+            $configValue = $this->getPlatformConfigByKey("PA_POMS_SKU_BRAND_INIT_CONFIG");
+            $redisService->hSet(REDIS_SKU_INIT_BRAND_ID_KEY, REDIS_SKU_INIT_BRAND_KEY, json_encode($configValue, JSON_UNESCAPED_UNICODE), 60 * 60 * 12);
+        }else {
+            $configValue = json_decode($get, true);
+        }
+
         $brandMap = [];
         foreach ($configValue as $brandList){
             if (!isset($brandList['brand'])){
@@ -765,6 +797,7 @@ class ProductSkuController
             }
             $brandMap[$brandList['brand']] = $updateAttribute;
         }
+        $this->log("品牌配置化读取：" . json_encode($brandMap,JSON_UNESCAPED_UNICODE));
         return $brandMap;
     }
 
@@ -772,7 +805,7 @@ class ProductSkuController
 
 $s = new ProductSkuController("test");
 //$s->updateProductSku();
-$s->updatePaProductAndDetail();
+//$s->updatePaProductAndDetail("UpdatePaProduct.xlsx");
 //$s->downloadSampleSku();
 //$s->syncProSkuSPInfoToTest();
 //$s->buildScuSkuProductMap();
@@ -781,4 +814,4 @@ $s->updatePaProductAndDetail();
 //$s->getQms();
 //$s->updatePaSkuInfoReplenishManBySkuIds();
 
-//$s->getBrandAttributeByPaPomsSkuBrandInitConfig();
+$s->getBrandAttributeByPaPomsSkuBrandInitConfig();

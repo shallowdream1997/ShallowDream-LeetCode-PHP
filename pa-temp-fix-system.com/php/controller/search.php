@@ -2,6 +2,7 @@
 require dirname(__FILE__) . '/../../vendor/autoload.php';
 
 require_once dirname(__FILE__) . '/../requiredfile/requiredChorm.php';
+require_once dirname(__FILE__) . '/EnvironmentConfig.php';
 
 /**
  * 查询接口
@@ -13,6 +14,11 @@ class search
     public $logger;
 
     private $module = "pa-biz-application";
+
+    /**
+     * @var CurlService
+     */
+    public $envService;
 
     public function __construct()
     {
@@ -40,7 +46,7 @@ class search
      */
     public function pageSwitchConfig($params)
     {
-        $curlService = (new CurlService())->pro();
+        $curlService = $this->envService;
 
         $env = $curlService->environment;
 
@@ -77,7 +83,7 @@ class search
      */
     public function fixTranslationManagements($params)
     {
-        $curlService = (new CurlService())->pro();
+        $curlService = $this->envService;
         $env = $curlService->environment;
         $list = [];
         if (isset($params['title']) && $params['title']) {
@@ -102,7 +108,7 @@ class search
     public function paProductBrand($params)
     {
 
-        $curlService = (new CurlService())->pro();
+        $curlService = $this->envService;
 
         $env = $curlService->environment;
 
@@ -123,7 +129,7 @@ class search
      */
     public function fixCeMaterials($params)
     {
-        $curlService = (new CurlService())->pro();
+        $curlService = $this->envService;
         $env = $curlService->environment;
         $list = [];
         if (isset($params['title']) && $params['title']) {
@@ -150,7 +156,7 @@ class search
      */
     public function paFbaChannelSellerConfig($params)
     {
-        $curlService = (new CurlService())->pro();
+        $curlService = $this->envService;
         $env = $curlService->environment;
 
         $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
@@ -172,7 +178,7 @@ class search
     }
 
     public function paSampleSku($params){
-        $curlService = (new CurlService())->pro();
+        $curlService = $this->envService;
         $env = $curlService->environment;
         $list = [];
         if (isset($params['skuIdList']) && $params['skuIdList']) {
@@ -197,7 +203,16 @@ class search
     }
 
     public function paProductList($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+        $list = [];
+        if (isset($params['skuIdList']) && $params['skuIdList']) {
 
+        }
+        return [
+            "env" => $env,
+            "data" => $list
+        ];
     }
 
 }
@@ -212,6 +227,7 @@ if (!isset($data['action']) || empty($data['action'])) {
 
 $class = new search();
 $return = [];
+$class->envService = (new EnvironmentConfig($data['action']))->getCurlService();
 
 switch ($data['action']) {
     case "paProductBrandSearch":
