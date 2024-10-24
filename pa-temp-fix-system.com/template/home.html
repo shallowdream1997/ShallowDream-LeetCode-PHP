@@ -28,7 +28,9 @@
                 </thead>
                 <tbody>
                 <tr v-for="info in list" :key="info._id">
-                    <td>{{info.title}}</td>
+                    <td>
+                        <b v-if="info.level == 2" style="color:red;">(☆新增功能☆)</b>{{info.title}}
+                    </td>
                     <td>
                         <button @click="openNewTab(info.url)" class="coll-btn">进入</button>
                     </td>
@@ -58,28 +60,34 @@
                 list: [
                     {
                         title: '修改翻译状态',
+                        level: 1,
                         url:`${base}/fixTranslationManagements.html`
                     },
                     {
                         title: '提交组长审核重复品豁免配置',
+                        level: 1,
                         url:`${base}/pageSwichConfig.html`
                     },
                     {
                         title: 'FBA海外仓上架前移库申请渠道仓库配置',
+                        level: 1,
                         url:`${base}/paFbaChannelSellerConfig.html`
                     },
                     {
                         title: '恢复CE资料呈现为已发布',
+                        level: 1,
                         url:`${base}/fixCeMaterials.html`
                     },
                     {
                         title: 'sku预计留样标识查询或新增',
+                        level: 1,
                         url:`${base}/paSampleSku.html`
                     },
-                    // {
-                    //     title: '添加开发清单品牌轮单',
-                    //     url:`${base}/paProductBrand.html`
-                    // }
+                    {
+                        title: '开发清单联动sku资料修改',
+                        level: 2,
+                        url:`${base}/paProductList.html`
+                    }
                 ],
             }
         },
