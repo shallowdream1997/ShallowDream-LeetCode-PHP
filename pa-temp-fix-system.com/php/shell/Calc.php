@@ -1,6 +1,6 @@
 <?php
-
-
+require_once(dirname(__FILE__) ."/../../php/requiredfile/requiredChorm.php");
+require_once(dirname(__FILE__) . "/../../php/constant/Constant.php");
 class Calc
 {
     public function calcSalary($actualHour, $otHour,$otOut8Count)
@@ -53,7 +53,18 @@ class Calc
         echo "税后工资：".$shuiHou."\n";
 
     }
+
+    public function calcProgress(){
+        $redis = new RedisService();
+
+        $r = new Redis();
+        $r->connect(REDIS_HOST,REDIS_PORT);
+        $r->incr(111);
+
+
+    }
 }
 
 $calc = new Calc();
-$calc->calcSalary(167,56.5,12);
+//$calc->calcSalary(167,56.5,12);
+$calc->calcProgress();

@@ -45,6 +45,7 @@ class ProductSkuController
             case "UpdateProductSku.xlsx":
             case "UpdatePaSkuInfo.xlsx":
             case "sampleSku.xlsx":
+            case "fcu_sku_map.xlsx":
                 break;
             default:
                 die("请选择文件!");
@@ -837,4 +838,33 @@ class ProductSkuController
         return $brandMap;
     }
 
+    /**
+     * 修复fcuid
+     */
+    public function fixFcuSkuMapRepeatChannel(){
+        $requestService = (new CurlService())->test();
+        $list = $this->getXlsxByFile("fcu_sku_map.xlsx");
+        $lists = array_column($list,"fcuid");
+        $fcuList = [];
+        foreach (array_chunk($lists, 150) as $skuIdList) {
+            $resp = DataUtils::getPageDocList($requestService->s3044()->get("fcu_sku_maps/queryPage", [
+                "limit" => 1000,
+                "fcuId_in" => implode(",", $skuIdList)
+            ]));
+            $fcuList = array_merge($fcuList,$resp);
+        }
+
+        if (count($fcuList) > 0){
+            foreach ($fcuList as &$info){
+                if (count($info['channelList']) > 0 && DataUtils::hasDuplicates($info['channelList'])){
+                    $info['channelList'] = DataUtils::clearRepeatData($info['channelList']);
+                    $info['modifiedBy'] = "pa-temp-system(zhouangang)";
+                    $updateRecord = DataUtils::getResultData($requestService->s3044()->put("fcu_sku_maps/{$info['_id']}",$info));
+                    $this->log("修改后内容" . json_encode($updateRecord,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $this->log("{$info['fcuId']} 没有重复渠道：" . json_encode($info['channelList'],JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }
+    }
 }

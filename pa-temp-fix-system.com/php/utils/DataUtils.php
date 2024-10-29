@@ -218,6 +218,47 @@ class DataUtils
     {
         echo json_encode($list,$option);
     }
+
+    /**
+     * 去重数组对象重复数据
+     * @param $array
+     * @return array|mixed
+     */
+    public static function clearRepeatData($array){
+        // 使用array_reduce和array_column去重
+        $uniqueArray = array_reduce($array, function ($carry, $item) {
+            // 创建一个用于比较的唯一键
+            $key = md5(serialize($item));
+            if (!isset($carry[$key])) {
+                $carry[$key] = $item;
+            }
+            return $carry;
+        }, []);
+        // 将结果转换为数组
+        $uniqueArray = array_values($uniqueArray);
+        return $uniqueArray;
+    }
+
+    /**
+     * 判断数组对象是否有重复，有重复就true，没有就false
+     * @param $array
+     * @return bool
+     */
+    public static function hasDuplicates($array) {
+        $seen = [];
+        foreach ($array as $item) {
+            // 将对象转换为字符串，作为唯一标识
+            $serializedItem = serialize($item);
+            if (isset($seen[$serializedItem])) {
+                // 如果已存在，则返回true
+                return true;
+            }
+            // 将当前元素的序列化版本作为键存储，值为任意值
+            $seen[$serializedItem] = true;
+        }
+        // 如果没有发现重复，则返回false
+        return false;
+    }
 }
 
 
