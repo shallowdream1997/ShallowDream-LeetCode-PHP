@@ -259,6 +259,24 @@ class DataUtils
         // 如果没有发现重复，则返回false
         return false;
     }
+
+    /**
+     * (记住！是数组对象，不是纯数组)从原数组对象 提取部分字段 拆解组合出 新的数组对象 并返回
+     * @param $originArray
+     * @param $fieldsToExtract
+     * @return array|array[]
+     */
+    public static function arrayExtractSomeFilesCombineNewArray($originArray, $fieldsToExtract)
+    {
+        // 只获取这几个字段
+        if (empty($fieldsToExtract)){
+            return [];
+        }
+        // 使用 array_map 来创建一个新的数组对象，只包含特定的字段
+        return array_map(function ($item) use ($fieldsToExtract) {
+            return array_intersect_key($item, array_flip($fieldsToExtract));
+        }, $originArray);
+    }
 }
 
 
