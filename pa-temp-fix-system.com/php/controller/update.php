@@ -97,7 +97,8 @@ class update
         $env = $curlService->environment;
 
         $status = $params['status'];
-
+        $applyName = $params['applyName'];
+        $applyTime = $params['applyTime'];
         if (DataUtils::checkArrFilesIsExist($params, "title")) {
             $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_managements/queryPage", [
                 "limit" => 100,
