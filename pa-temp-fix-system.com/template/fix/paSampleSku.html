@@ -34,6 +34,7 @@
                     <th scope="col">id</th>
                     <th scope="col">sku</th>
                     <th scope="col">是否预计留样</th>
+                    <th scope="col">状态</th>
                     <th scope="col">创建人<br>创建日期</th>
                 </tr>
                 </thead>
@@ -55,6 +56,9 @@
                         <template v-if="info.isSample == '有留样'">
                             {{info.isSample}}
                         </template>
+                    </td>
+                    <td>
+                        {{info.status}}
                     </td>
                     <td>{{info.createBy}}<br>{{info.createTime}}</td>
                 </tr>
@@ -223,6 +227,7 @@
                                 id:null,
                                 skuId:sku,
                                 category:"",
+                                status:"",
                                 isSample:"未留样",
                                 createBy:"",
                                 createTime:"",
