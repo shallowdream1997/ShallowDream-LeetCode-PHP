@@ -16,11 +16,13 @@ class Sync
         $this->log->log2($string);
     }
 
+
+
     /**
      * 同步生产环境option-val-list -> sit环境
      * @return $this
      */
-    public function syncOptionValListInfoToTest(): static
+    public function syncOptionValListInfoToTest()
     {
         $optionNameList = [
             "campaign_salesman_index"
@@ -50,7 +52,7 @@ class Sync
      * 同步pa_product_brand_bilino_rule表 到test环境 (开发清单分配规则)
      * @return $this
      */
-    public function syncPaProductBrandBiliNoRules(): static
+    public function syncPaProductBrandBiliNoRules()
     {
         $proCurlService = new CurlService();
         $pro = $proCurlService->pro();
@@ -67,4 +69,7 @@ class Sync
         }
         return $this;
     }
+
+
+
 }

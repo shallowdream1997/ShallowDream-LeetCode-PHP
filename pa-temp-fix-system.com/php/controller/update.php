@@ -225,7 +225,7 @@ class update
             $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/page", [
                 "skuIdIn" => $skuIdList,
                 "vertical" => "PA",
-                "status" => 10,
+                "state" => 10,
                 "category" => "dataTeam",
                 "pageSize" => 500,
                 "pageNum" => 1,
@@ -245,7 +245,7 @@ class update
                     "remark" => "",
                     "skuId" => $skuId,
                     "vertical" => "PA",
-                    "status" => 10
+                    "state" => 10
                 ];
             }
             if (count($needSampleSkuIdList) > 0) {
