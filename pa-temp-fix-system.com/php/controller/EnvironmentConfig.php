@@ -38,7 +38,7 @@ class EnvironmentConfig
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "paProductList":
-                $this->curlService = (new CurlService())->test();
+                $this->curlService = (new CurlService())->pro();
                 break;
         }
         return $this;

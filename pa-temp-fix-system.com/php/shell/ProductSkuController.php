@@ -824,11 +824,19 @@ class ProductSkuController
                             "value" => $value,
                         ];
                     }else{
-                        $updateAttribute[] = [
-                            "channel" => $key,
-                            "label" => "brand",
-                            "value" => $value,
-                        ];
+                        if (strpos($key,"ebay") === 0){
+                            $updateAttribute[] = [
+                                "channel" => $key,
+                                "label" => "Brand",
+                                "value" => $value,
+                            ];
+                        }else{
+                            $updateAttribute[] = [
+                                "channel" => $key,
+                                "label" => "brand",
+                                "value" => $value,
+                            ];
+                        }
                     }
                 }
             }
