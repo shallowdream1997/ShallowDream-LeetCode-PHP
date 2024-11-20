@@ -463,6 +463,36 @@ class RequestUtils
             "type" => $type,
         ]));
     }
+
+    /**
+     * 钉钉通知
+     * @param string $title
+     * @param array $msg
+     * @return $this
+     */
+    public function dingTalk($title = "",$msg = array()){
+        $ali = $this->curlService->test()->phpali();
+
+        $datetime = date("Y-m-d H:i:s",time());
+
+        $msgArray = [
+            [
+                "key" => "通知日期",
+                "value" => "{$datetime}"
+            ]
+        ];
+        if (!empty($msg)){
+            $msgArray = array_merge($msgArray,$msg);
+        }
+        $postData = array(
+            'userType' => 'userName',
+            'userIdList' => "zhouangang",
+            'title' => $title,
+            'msg' => $msgArray
+        );
+        $ali->post("dingding/sendOaNotice",$postData);
+        return $this;
+    }
 }
 
 //$request = new RequestUtils("test");

@@ -2,6 +2,7 @@
 require_once(dirname(__FILE__) . "/../../php/class/Logger.php");
 require_once(dirname(__FILE__) . "/../../php/utils/DataUtils.php");
 require_once(dirname(__FILE__) . "/../../php/curl/CurlService.php");
+require_once(dirname(__FILE__) . "/../../php/utils/RequestUtils.php");
 
 /**
  * 仅限用于同步生产数据到测试环境数据mongo的增删改查，其中delete和create只有test环境有，而find查询是pro和test有
@@ -32,10 +33,10 @@ class SyncCurlController
         $this->log->log2($message);
     }
 
-    public function commonDelete($port, $model, $id)
+    public function commonDelete($port, $model, $id,$env = "test")
     {
         $curlService = new CurlService();
-        $resp = DataUtils::getResultData($curlService->test()->$port()->delete($model, $id));
+        $resp = DataUtils::getResultData($curlService->$env()->$port()->delete($model, $id));
         $this->log("删除{$model}，{$id}返回结果：" . json_encode($resp, JSON_UNESCAPED_UNICODE));
     }
 
@@ -50,7 +51,7 @@ class SyncCurlController
 
     public function commonFindOneByParams($port, $model, $params, $env = 'test')
     {
-        if (isset($params['limit'])) {
+        if (!isset($params['limit'])) {
             $params['limit'] = 1;
         }
         $curlService = new CurlService();
@@ -67,7 +68,7 @@ class SyncCurlController
 
     public function commonFindByParams($port, $model, $params, $env = 'test')
     {
-        if (isset($params['limit'])) {
+        if (!isset($params['limit'])) {
             $params['limit'] = 999;
         }
         $curlService = new CurlService();
@@ -88,6 +89,37 @@ class SyncCurlController
         $resp = DataUtils::getResultData($curlService->test()->post("{$model}", $params));
         $this->log("创建{$model}，" . json_encode($params, JSON_UNESCAPED_UNICODE) . "返回结果：" . json_encode($resp, JSON_UNESCAPED_UNICODE));
         return $resp;
+    }
+
+    /**
+     * 删除campaign广告
+     */
+    public function deleteCampaign(){
+        $list = $this->commonFindByParams("s3023","amazon_sp_campaigns",[
+            "status" => "3",
+            "company" => "CR201706060001",
+            "state" => "enabled",
+            "limit" => 2000
+        ],"pro");
+        $needDeleteList = [];
+        if (count($list) > 0){
+            foreach ($list as $item){
+                if (empty($item['campaignId'])){
+                    $this->log("campaignId 为空,删除");
+                    $needDeleteList[] = $item['_id'];
+                    //$this->commonDelete("s3023","amazon_sp_campaigns",$item['_id'],"pro");
+                }
+            }
+        }
+        if (count($needDeleteList) > 0){
+            foreach ($needDeleteList as $_id){
+                $this->commonDelete("s3023","amazon_sp_campaigns",$_id,"pro");
+            }
+            (new RequestUtils("test"))->dingTalk("删除重复创建campaign结束");
+        }else{
+            (new RequestUtils("test"))->dingTalk("没有重复创建campaign可删除");
+        }
+
     }
 
 
@@ -136,5 +168,6 @@ class SyncCurlController
     }
 }
 
-$curlController = new SyncCurlController();
-$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
+//$curlController = new SyncCurlController();
+//$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
+//$curlController->deleteCampaign();
