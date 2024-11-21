@@ -40,6 +40,9 @@ class EnvironmentConfig
             case "paProductList":
                 $this->curlService = (new CurlService())->pro();
                 break;
+            case "paFixProductLine":
+                $this->curlService = (new CurlService())->pro();
+                break;
         }
         return $this;
     }

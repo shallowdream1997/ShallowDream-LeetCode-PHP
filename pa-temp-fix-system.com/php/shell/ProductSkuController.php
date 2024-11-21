@@ -875,4 +875,108 @@ class ProductSkuController
             }
         }
     }
+
+    public function createProductLineOperation(){
+        $curlService = (new CurlService())->pro();
+        $list = [
+            "a24103000ux0230",
+            "a24103000ux0227",
+            "a24103000ux0229",
+            "a24103000ux0228",
+            "a24103000ux0232",
+            "a24103000ux0231",
+        ];
+        $productLineName = "开口抽芯铆钉";
+        if (count($list) > 0){
+
+//            $curlService1 = (new CurlService())->pro();
+//            $curlService1->gateway();
+//            $this->getModule('pa');
+//            $resp1 = $curlService1->getWayPost($this->module . "/ppms/product_dev/sku/v1/page", [
+//                "filterList" => [
+//                    [
+//                        "name" => "custom-skuInfo-skuId",
+//                        "valueList" => $list
+//                    ],
+//                ],
+//                "pageNum" => 1,
+//                "pageSize" => 1000
+//            ]);
+//            if ($resp1 && $resp1['result']['data']['list']){
+//
+//
+//            }
+
+            $resp = $curlService->s3009()->get("product-operation-lines/getProductOperatorMainInfoByProductLineName",[
+                "productLineName" => $productLineName
+            ]);
+            if (empty($resp['result'])){
+                //没有产品线，创建产品线
+                $createProductMainResp = $curlService->s3009()->post("product-operation-lines/createProductOperatorMainInfo", [
+                    "modifiedBy" => "pa_fix_system",
+                    "createdBy" => "pa_fix_system",
+                    "traceMan" => "",
+                    "developer" => "",
+                    "product_line_id" => "PA_NEW",
+                    "productLineName" => $productLineName,
+                    "companySequenceId" => "CR201706060001",
+                ]);
+                if ($createProductMainResp){
+
+                    foreach ($list as $skuId){
+                        $mainInfo = $createProductMainResp['result'];
+                        $curlService->s3009()->post("product-operation-lines", [
+                            "companySequenceId" => $mainInfo['companySequenceId'],
+                            "productLineName" => $mainInfo['productLineName'],
+                            "product_line_id" => "",
+                            "sign" => "NP",
+                            "developer" => "",
+                            "traceMan" => "",
+                            "createdBy" => "pa_fix_system",
+                            "modifiedBy" => "pa_fix_system",
+                            "createdOn" => date("Y-m-d H:i:s",time())."Z",
+                            "verticalName" => "PA",
+                            "operatorName" => "",
+                            "skuId" => $skuId,
+                            "userName" => "pa_fix_system",
+                            "product_operator_mainInfo_id" => $mainInfo['_id'],
+                            "batch" => "",
+                            "factoryId" => "",
+                            "supplyType" => null,
+                            "styleId" => ""
+                        ]);
+                    }
+                }
+
+            }else{
+                foreach ($list as $skuId){
+                    $mainInfo = $resp['result'][0];
+                    $curlService->s3009()->post("product-operation-lines", [
+                        "companySequenceId" => $mainInfo['companySequenceId'],
+                        "productLineName" => $mainInfo['productLineName'],
+                        "product_line_id" => "",
+                        "sign" => "NP",
+                        "developer" => "",
+                        "traceMan" => "",
+                        "createdBy" => "pa_fix_system",
+                        "modifiedBy" => "pa_fix_system",
+                        "createdOn" => date("Y-m-d H:i:s",time())."Z",
+                        "verticalName" => "PA",
+                        "operatorName" => "",
+                        "skuId" => $skuId,
+                        "userName" => "pa_fix_system",
+                        "product_operator_mainInfo_id" => $mainInfo['_id'],
+                        "batch" => "",
+                        "factoryId" => "",
+                        "supplyType" => null,
+                        "styleId" => ""
+                    ]);
+                }
+            }
+
+
+
+        }
+
+    }
 }

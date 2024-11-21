@@ -326,6 +326,125 @@ class update
             ];
         }
     }
+
+    public function paFixProductLine($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+
+        $productLineName = "";
+        if (isset($params['productLineName']) && $params['productLineName']) {
+            $productLineName = $params['productLineName'];
+        }else{
+            return [
+                "updateSuccess" => false,
+                "messages" => "要投入的sku产品线不能为空"
+            ];
+        }
+
+
+        if (isset($params['skuIdList']) && $params['skuIdList']) {
+            $list = [];
+            $skuIdList = $params['skuIdList'];
+            foreach (array_chunk($skuIdList,200) as $chunk){
+                $getProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryUserBySkuId", [
+                    "skuId" => implode(",",$chunk)
+                ]));
+                if ($getProductMainResp){
+                    $list = array_merge($list,$getProductMainResp);
+                }
+            }
+
+            $skuIdProductLineMap = [];
+            if (count($list) > 0){
+                $skuIdProductLineMap = array_column($list,null,"skuId");
+            }
+
+            $resp = $curlService->s3009()->get("product-operation-lines/getProductOperatorMainInfoByProductLineName",[
+                "productLineName" => $productLineName
+            ]);
+            if (empty($resp['result'])){
+                //没有产品线，创建产品线
+                $createProductMainResp = $curlService->s3009()->post("product-operation-lines/createProductOperatorMainInfo", [
+                    "modifiedBy" => "pa_fix_system",
+                    "createdBy" => "pa_fix_system",
+                    "traceMan" => "",
+                    "developer" => "",
+                    "product_line_id" => "PA_NEW" . date("YmdHis",time()),
+                    "productLineName" => $productLineName,
+                    "companySequenceId" => "CR201706060001",
+                ]);
+                if ($createProductMainResp){
+
+                    foreach ($skuIdList as $skuId){
+                        if (!isset($skuIdProductLineMap[$skuId])){
+                            $mainInfo = $createProductMainResp['result'];
+                            $curlService->s3009()->post("product-operation-lines", [
+                                "companySequenceId" => $mainInfo['companySequenceId'],
+                                "productLineName" => $mainInfo['productLineName'],
+                                "product_line_id" => "",
+                                "sign" => "NP",
+                                "developer" => "",
+                                "traceMan" => "",
+                                "createdBy" => "pa_fix_system",
+                                "modifiedBy" => "pa_fix_system",
+                                "createdOn" => date("Y-m-d H:i:s",time())."Z",
+                                "verticalName" => "PA",
+                                "operatorName" => "",
+                                "skuId" => $skuId,
+                                "userName" => "pa_fix_system",
+                                "product_operator_mainInfo_id" => $mainInfo['_id'],
+                                "batch" => "",
+                                "factoryId" => "",
+                                "supplyType" => null,
+                                "styleId" => ""
+                            ]);
+                        }
+                    }
+                }
+
+            }else{
+                foreach ($skuIdList as $skuId){
+                    if (!isset($skuIdProductLineMap[$skuId])){
+                        $mainInfo = $resp['result'][0];
+                        $curlService->s3009()->post("product-operation-lines", [
+                            "companySequenceId" => $mainInfo['companySequenceId'],
+                            "productLineName" => $mainInfo['productLineName'],
+                            "product_line_id" => "",
+                            "sign" => "NP",
+                            "developer" => "",
+                            "traceMan" => "",
+                            "createdBy" => "pa_fix_system",
+                            "modifiedBy" => "pa_fix_system",
+                            "createdOn" => date("Y-m-d H:i:s",time())."Z",
+                            "verticalName" => "PA",
+                            "operatorName" => "",
+                            "skuId" => $skuId,
+                            "userName" => "pa_fix_system",
+                            "product_operator_mainInfo_id" => $mainInfo['_id'],
+                            "batch" => "",
+                            "factoryId" => "",
+                            "supplyType" => null,
+                            "styleId" => ""
+                        ]);
+                    }
+                }
+            }
+
+        }else{
+            return [
+                "updateSuccess" => false,
+                "messages" => "要投入产品线的sku不能为空"
+            ];
+        }
+
+        return [
+            "updateSuccess" => true,
+            "messages" => "sku和产品线已添加成功"
+        ];
+    }
+
+
+
 }
 
 
@@ -364,6 +483,10 @@ switch ($data['action']) {
     case "paProductList":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paProductList($params);
+        break;
+    case "paFixProductLine":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->paFixProductLine($params);
         break;
 }
 

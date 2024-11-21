@@ -215,6 +215,29 @@ class search
         ];
     }
 
+
+    public function paFixProductLine($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+        $list = [];
+        if (isset($params['skuIdList']) && $params['skuIdList']) {
+            $skuIdList = $params['skuIdList'];
+            foreach (array_chunk($skuIdList,200) as $chunk){
+                $createProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryUserBySkuId", [
+                    "skuId" => implode(",",$chunk)
+                ]));
+                if ($createProductMainResp){
+                    $list = array_merge($list,$createProductMainResp);
+                }
+            }
+        }
+
+        return [
+            "env" => $env,
+            "data" => $list
+        ];
+    }
+
 }
 
 
@@ -257,6 +280,10 @@ switch ($data['action']) {
     case "paProductList":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paProductList($params);
+        break;
+    case "paFixProductLine":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->paFixProductLine($params);
         break;
 }
 
