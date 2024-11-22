@@ -30,9 +30,10 @@
                 <tr v-for="info in list" :key="info._id">
                     <td>
                         <b v-if="info.level == 2" style="color:red;">(☆新增功能☆)</b>{{info.title}}
+                        <b v-if="info.level == 3" style="color:yellow;">(☆待做功能☆)</b>
                     </td>
                     <td>
-                        <button @click="openNewTab(info.url)" class="coll-btn">进入</button>
+                        <button v-if="info.level != 3"  @click="openNewTab(info.url)" class="coll-btn">进入</button>
                     </td>
                 </tr>
                 </tbody>
@@ -92,6 +93,31 @@
                         title: 'sku产品线查询和新增',
                         level: 2,
                         url:`${base}/paFixProductLine.html`
+                    },
+                    {
+                        title: 'temu回滚',
+                        level: 3,
+                        url:`${base}`
+                    },
+                    {
+                        title: '资料禁词配置加for功能',
+                        level: 3,
+                        url:`${base}`
+                    },
+                    {
+                        title: 'PC白名单添加',
+                        level: 3,
+                        url:`${base}`
+                    },
+                    {
+                        title: 'CMO单内CBR单CE单采购价错误修复',
+                        level: 3,
+                        url:`${base}`
+                    },
+                    {
+                        title: '2.0CE初始化',
+                        level: 3,
+                        url:`${base}`
                     }
                 ],
             }
