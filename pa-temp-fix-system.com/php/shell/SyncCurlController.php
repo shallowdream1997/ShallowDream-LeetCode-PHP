@@ -86,11 +86,17 @@ class SyncCurlController
     public function commonCreate($port, $model, $params)
     {
         $curlService = new CurlService();
-        $resp = DataUtils::getResultData($curlService->test()->post("{$model}", $params));
+        $resp = DataUtils::getResultData($curlService->test()->$port()->post("{$model}", $params));
         $this->log("创建{$model}，" . json_encode($params, JSON_UNESCAPED_UNICODE) . "返回结果：" . json_encode($resp, JSON_UNESCAPED_UNICODE));
         return $resp;
     }
-
+    public function commonUpdate($port, $model, $params,$env = "test")
+    {
+        $curlService = new CurlService();
+        $resp = DataUtils::getResultData($curlService->$env()->$port()->put("{$model}/{$params['_id']}", $params));
+        $this->log("更新{$model}，" . json_encode($params, JSON_UNESCAPED_UNICODE) . "返回结果：" . json_encode($resp, JSON_UNESCAPED_UNICODE));
+        return $resp;
+    }
     /**
      * 删除campaign广告
      */
@@ -165,6 +171,24 @@ class SyncCurlController
             //同步scu_sku_map
 
         }
+    }
+
+    public function getPaSkuMaterial(){
+        $dpmoList = $this->commonFindByParams("s3044","pa_sku_materials",[
+            "limit" => 1000,
+            "createdBy" => "P3-CreateCeSkuMaterialJob"
+        ],"pro");
+        $_idList = [];
+        if (count($dpmoList)){
+            foreach ($dpmoList as &$item){
+                if ($item['parentSkuId'] === null){
+                    $item['parentSkuId'] = "";
+                    $this->commonUpdate("s3044","pa_sku_materials",$item,"pro");
+                }
+            }
+
+        }
+
     }
 }
 
