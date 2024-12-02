@@ -190,8 +190,69 @@ class SyncCurlController
         }
 
     }
+
+    public function addOptionValListData(){
+        $price_base_fields = [
+            [
+                "feeType" => "ads",
+                "feeValue" => "0.05",
+                "currency" => "",
+                "remark" => "广告费率",
+                "categoryId" => "",
+                "addCondition" => [
+                    [
+                        "label" => "publishDate",
+                        "value" => "2024-09-01",
+                        "unit" => "",
+                        "expressions" => ">"
+                    ]
+                ]
+            ],
+            [
+                "feeType" => "ads",
+                "feeValue" => "0.05",
+                "currency" => "",
+                "remark" => "广告费率",
+                "categoryId" => "",
+                "addCondition" => [
+                    [
+                        "label" => "publishDate",
+                        "value" => "2024-09-01",
+                        "unit" => "",
+                        "expressions" => ">"
+                    ]
+                ]
+            ],
+        ];
+        $unsalable_base_fields = [
+            [
+                //绑定策略id
+                "strategy_main_id" => "1747933604497825793",
+                //绑定价格挡位设置id
+                "margin_position_main_id" => "1747942777125593089",
+                //滞销类型,1-海外仓滞销;2-中国仓滞销
+                "dull_sale_type" => 1
+            ]
+        ];
+        echo json_encode($price_base_fields,JSON_UNESCAPED_UNICODE)."\n";
+        echo json_encode($unsalable_base_fields,JSON_UNESCAPED_UNICODE)."\n";
+
+    }
+
+
+    public function fixPaSkuPhotoGress(){
+        $list = $this->commonFindByParams("s3015","sku_photography_progresss",[
+            "ceBillNo_in" => "CE202410180103"
+        ],"pro");
+        foreach ($list as &$item){
+            $item['createCeBillNoOn'] = "2024-10-18 15:11:02Z";
+            $this->commonUpdate("s3015","sku_photography_progresss",$item,"pro");
+        }
+
+    }
 }
 
-//$curlController = new SyncCurlController();
+$curlController = new SyncCurlController();
+$curlController->fixPaSkuPhotoGress();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();
