@@ -333,10 +333,116 @@ class SyncCurlController
     }
 
 
+    public function updateTempSkuId20()
+    {
+        $excelUtils = new ExcelUtils();
+        $fileName = "../export/";
+        try {
+            $list = $excelUtils->getXlsxData($fileName . "重复T号.xlsx");
+        } catch (Exception $e) {
+            die("获取数据失败");
+        }
+        if (count($list) > 0){
+            $mainRealList = [];
+            $cancelMainList = [];
+            $paProductIds = array_unique(array_column($list, "paProductId"));
+            $rq1 = new RequestUtils("pro");
+            foreach (array_chunk($paProductIds, 200) as $chunk) {
+                $mainList = $rq1->getPaProductPageList([
+                    "limit" => 200,
+                    "_id_in" => implode(",", $chunk)
+                ]);
+                if (count($mainList) > 0) {
+                    foreach ($mainList as $info) {
+                        if ($info['status'] == "cancel") {
+                            $cancelMainList[$info['_id']] = $info['batchName'];
+                        } else {
+                            $mainRealList[$info['_id']] = $info['batchName'];
+                        }
+                    }
+                }
+            }
+
+            foreach ($list as $info) {
+                if (isset($cancelMainList[$info['paProductId']])) {
+                    //已经作废的
+                    $this->log("已经作废了：{$cancelMainList[$info['paProductId']]}");
+                }else{
+                    //没有作废的
+
+
+                }
+            }
+
+        }
+
+
+
+    }
+
+    public function getCompanyByCompanyId($userName = 'zhouangang'){
+
+
+        $curlService = new CurlService();
+        $resp = $curlService->pro()->s3009()->get("system-manages/getCompany", ["companyId" => "CR201706060001"]);
+        $data = DataUtils::getResultData($resp);
+
+        $channelParams = array();
+        $channelArray = array();
+        if ($data){
+            $info = $data[0];
+            $channelDetailParams = array();
+            foreach ($info['regional'] as $item){
+                $channelArr = explode("_",$item);
+                $channelDetailParams[] = array(
+                    "platform" => $channelArr[0],
+                    "channel" => $item,
+                    "saleStatus" => "A",
+                    "type" => "",
+                    "url" => "",
+                    "remark" => "",
+                    "isCaught" => "0"
+                );
+                $channelArray[] = $item;
+            }
+
+            $channelParams = array(
+                "status" => "A",
+                "createdBy" => $userName,
+                "modifiedBy" => $userName,
+                "channelSales" => $channelDetailParams,
+                "origin" => "2009",
+            );
+
+        }
+
+        $productList = $this->commonFindByParams("s3015","pa_product_details",[
+            "ceBillNo_in" => "CE202412100077"
+        ],"pro");
+        $this->log(json_encode(array_column($productList,"skuId"),JSON_UNESCAPED_UNICODE));
+        foreach ($productList as $info){
+            if ($info['skuId']){
+                $skuSaleStatusList = $this->commonFindOneByParams("s3015","sku-sale-statuses",["skuId" => $info['skuId']],"pro");
+                if (count($skuSaleStatusList) == 0){
+                    $channelParams['skuId'] = $info['skuId'];
+                    $result = $curlService->pro()->s3015()->post("sku-sale-statuses/createSkuSaleStatusesEx", $channelParams);
+                    $this->log(json_encode($result,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $this->log("已有可售表");
+                }
+
+            }
+        }
+
+
+
+    }
+
 
 }
 
 $curlController = new SyncCurlController();
-$curlController->updateCeMaterialPlatform();
+//$curlController->updateCeMaterialPlatform();
+$curlController->getCompanyByCompanyId();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();
