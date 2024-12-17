@@ -15,7 +15,7 @@ class SyncCurlController
      */
     public CurlService $curl;
     private MyLogger $log;
-
+    private $module = "platform-wms-application";
     public function __construct()
     {
         $this->log = new MyLogger("common-curl/curl");
@@ -23,7 +23,21 @@ class SyncCurlController
         $curlService = new CurlService();
         $this->curl = $curlService;
     }
+    public function getModule($modlue){
+        switch ($modlue){
+            case "wms":
+                $this->module = "platform-wms-application";
+                break;
+            case "pa":
+                $this->module = "pa-biz-application";
+                break;
+            case "config":
+                $this->module = "platform-config-service";
+                break;
+        }
 
+        return $this;
+    }
     /**
      * 日志记录
      * @param string $message 日志内容
@@ -250,9 +264,79 @@ class SyncCurlController
         }
 
     }
+
+    public function deleteCeMaterial()
+    {
+        foreach ([
+                     "QD202411190013",
+                     "QD202412030020",
+                     "QD202412030021"
+                 ] as $batchName) {
+            $mainInfo = $this->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => $batchName], "pro");
+            if ($mainInfo) {
+                $list = $this->commonFindByParams("s3044", "pa_sku_materials", ["ceBillNo" => $batchName], "pro");
+                if ($list) {
+                    foreach ($list as $detail) {
+                        $this->commonDelete("s3044", "pa_sku_materials", $detail['_id'], "pro");
+                        $this->log("删除" . $detail['skuId']);
+                    }
+                }
+                $this->commonDelete("s3044", "pa_ce_materials", $mainInfo['_id'], "pro");
+                $this->log("删除" . $mainInfo['batchName'] . "完毕");
+            }
+        }
+
+    }
+
+    public function updateCeMaterialPlatform()
+    {
+        $curlService = (new CurlService())->pro();
+        $curlService->gateway();
+        $this->getModule('pa');
+        $list = $this->commonFindByParams("s3044", "pa_ce_materials", ["createdBy"=>"P3-CreateCeSkuMaterialJob"], "pro");
+        $batchNameList = [];
+        if ($list){
+            $batchNameList = array_column($list,"batchName");
+        }
+        if (count($batchNameList) > 0){
+            $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/info/material/v1/findPrePurchaseBillWithSkuForSkuMaterialInfo", $batchNameList));
+            $platformMap = [];
+            if ($resp){
+                foreach ($resp as $item){
+                    $platformMap[$item['prePurchaseBillNo']] = $item;
+                }
+            }
+            foreach (array_chunk($batchNameList,150) as $chunkList){
+                $mainInfoList = $this->commonFindByParams("s3044", "pa_ce_materials", ["batchName_in" => implode(",",$chunkList)], "pro");
+                if (count($mainInfoList) > 0) {
+                    foreach ($mainInfoList as $mainInfo){
+                        $canUpdate = false;
+                        if (!$mainInfo['platform'] && isset($platformMap[$mainInfo['batchName']]) && isset($platformMap[$mainInfo['batchName']]['platform'])){
+                            $mainInfo['platform'] = $platformMap[$mainInfo['batchName']]['platform'];
+                            $canUpdate = true;
+                        }
+                        if (!$mainInfo['ebayTraceMan'] && isset($platformMap[$mainInfo['batchName']]) && isset($platformMap[$mainInfo['batchName']]['minorSalesUserName'])){
+                            $mainInfo['ebayTraceMan'] = $platformMap[$mainInfo['batchName']]['minorSalesUserName'];
+                            $canUpdate = true;
+                        }
+                        if ($canUpdate){
+                            $this->commonUpdate("s3044", "pa_ce_materials", $mainInfo, "pro");
+                            $this->log("更新批次的平台数据：{$mainInfo['batchName']} - {$mainInfo['platform']} - {$mainInfo['ebayTraceMan']}");
+                        }
+
+                    }
+                }
+            }
+        }
+
+
+    }
+
+
+
 }
 
 $curlController = new SyncCurlController();
-$curlController->fixPaSkuPhotoGress();
+$curlController->updateCeMaterialPlatform();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();

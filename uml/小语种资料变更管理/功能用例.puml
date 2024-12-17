@@ -1,0 +1,56 @@
+@startuml
+
+'actor A
+'actor B
+actor 资料编辑操作人 as editMaterialOperator
+actor 资料变更Rocket as rocket1
+actor 更新资料Rocket as rocket2
+actor job as job
+actor 单据审核人 as apply
+
+
+editMaterialOperator --> (点击保存资料)
+(点击保存资料) .down.>(保存修改属性更新)
+(点击保存资料) .down.>(保存修改侵权禁词)
+
+(保存修改属性更新) --> rocket1
+(保存修改侵权禁词) --> rocket1
+
+rocket1 --> (处理资料变更)
+(处理资料变更) -down-> (创建新单据)
+(处理资料变更) .down.> (忽略旧单据)
+(忽略旧单据) .right.> (创建新单据)
+
+(创建新单据) =right=> (自动翻译变更属性)
+(自动翻译变更属性) .down.> (检查禁词&车型)
+(自动翻译变更属性) .down.> (检查品牌+for)
+(自动翻译变更属性) .down.> (检查字段长度)
+
+
+(自动翻译变更属性) =up=> (回写翻译&检查结果到单据)
+
+job --> (处理资料变更)
+
+apply -down-> (查询单据)
+apply -left-> (批量审核记录)
+(批量审核记录) -left-> (下载源文件&结果明细)
+
+(查询单据) -down-> (忽略单据)
+(查询单据) -down-> (导出查询结果)
+(查询单据) -down-> (查看日志)
+(查询单据) .down.> (导入批量审核更新)
+
+
+(导入批量审核更新) .left.> (更新单据)
+(查询单据) -down-> (更新单据)
+(更新单据) =down=> rocket2
+
+rocket2 --> (处理资料更新)
+(处理资料更新) -down-> (检查禁词&车型)
+(处理资料更新) -down-> (检查品牌+for)
+(处理资料更新) -down-> (检查字段长度)
+
+(处理资料更新) --> (更新资料&回写检查结果到单据)
+
+
+@enduml

@@ -25,7 +25,7 @@ class Sync
     public function syncOptionValListInfoToTest()
     {
         $optionNameList = [
-            "campaign_salesman_index"
+            "pa_fba_channel_seller_config"
         ];
 
         $proRequestUtils = new RequestUtils("pro");
@@ -73,3 +73,6 @@ class Sync
 
 
 }
+//
+//$s = new Sync();
+//$s->syncOptionValListInfoToTest();

@@ -224,6 +224,7 @@ class RequestUtils
                     "companySequenceId" => $info['companySequenceId'],
                     "verticalSequenceId" => $info['verticalSequenceId'],
                     "dingUserId" => $info['dingUserId'],
+                    "mobilePhone" => $info['mobilePhone'],
                 ];
                 $redisService->hSet(REDIS_USER_NAME_KEY, $info['userName'], json_encode($userInfo, JSON_UNESCAPED_UNICODE), 60 * 60 * 72);
             }
