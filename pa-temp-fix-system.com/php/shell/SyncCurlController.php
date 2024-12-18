@@ -16,12 +16,16 @@ class SyncCurlController
     public CurlService $curl;
     private MyLogger $log;
     private $module = "platform-wms-application";
+
+    private RedisService $redis;
     public function __construct()
     {
         $this->log = new MyLogger("common-curl/curl");
 
         $curlService = new CurlService();
         $this->curl = $curlService;
+
+        $this->redis = new RedisService();
     }
     public function getModule($modlue){
         switch ($modlue){
@@ -333,53 +337,6 @@ class SyncCurlController
     }
 
 
-    public function updateTempSkuId20()
-    {
-        $excelUtils = new ExcelUtils();
-        $fileName = "../export/";
-        try {
-            $list = $excelUtils->getXlsxData($fileName . "重复T号.xlsx");
-        } catch (Exception $e) {
-            die("获取数据失败");
-        }
-        if (count($list) > 0){
-            $mainRealList = [];
-            $cancelMainList = [];
-            $paProductIds = array_unique(array_column($list, "paProductId"));
-            $rq1 = new RequestUtils("pro");
-            foreach (array_chunk($paProductIds, 200) as $chunk) {
-                $mainList = $rq1->getPaProductPageList([
-                    "limit" => 200,
-                    "_id_in" => implode(",", $chunk)
-                ]);
-                if (count($mainList) > 0) {
-                    foreach ($mainList as $info) {
-                        if ($info['status'] == "cancel") {
-                            $cancelMainList[$info['_id']] = $info['batchName'];
-                        } else {
-                            $mainRealList[$info['_id']] = $info['batchName'];
-                        }
-                    }
-                }
-            }
-
-            foreach ($list as $info) {
-                if (isset($cancelMainList[$info['paProductId']])) {
-                    //已经作废的
-                    $this->log("已经作废了：{$cancelMainList[$info['paProductId']]}");
-                }else{
-                    //没有作废的
-
-
-                }
-            }
-
-        }
-
-
-
-    }
-
     public function getCompanyByCompanyId($userName = 'zhouangang'){
 
 
@@ -439,10 +396,169 @@ class SyncCurlController
     }
 
 
+    //重新生成tempSkuId编号 - 重复T号问题处理
+    public function updatePaProductTempSkuIdNew()
+    {
+        //切换环境，test - 测试。pro - 生产
+        $env = "test";
+
+        //todo 先修复空T号 以及 T号为数字，字母等无正确正则匹配的T号，重新生成T号
+//        $page = 1;
+//        do{
+//            $teRes = $this->commonFindByParams("s3015", "pa_product_details", array(
+//                "limit" => 1000,
+//                "page" => $page
+//            ), $env);
+//            if(count($teRes) > 0){
+//                foreach ($teRes as &$info){
+//                    if (!isset($info['tempSkuId']) || (isset($info['tempSkuId']) && empty($info['tempSkuId'])) || (strpos($info['tempSkuId'], 'T') !== 0)){
+//                        $newTempSkuId = $this->getTempSkuIdByRedis();
+//                        $info['tempSkuId'] = $newTempSkuId;
+//                        $info['modifiedBy'] = "T号修复(zhouangang)";
+//
+//                        $up = $this->commonUpdate("s3015","pa_product_details",$info,$env);
+//                        if ($up) {
+//                            $this->log("没有T号，生成新T号：{$newTempSkuId}");
+//                        }
+//                    }else{
+//                        $this->log("有T号：{$info['tempSkuId']}");
+//                    }
+//                }
+//                $page++;
+//                $this->log("第 {$page} 页");
+//            }else{
+//                break;
+//            }
+//        }while(true);
+
+
+        //todo 再使用mongo语句，去arc-sql 那里: https://sre-sql.ux168.cn/sqlquery/
+        // 用以下查询条件，查询重复T号的数据，导出来，转xslx，放在export目录下,修改里面的内容（可能totalCount左边的列都得删除，不然会读空），修改sheet名称为Sheet1
+        /*
+         *
+          db.pa_product_detail.aggregate([
+              {
+                $group: {
+                  _id: {tempSkuId:"$tempSkuId"},
+                  count: { $sum: 1 }
+                }
+              },
+              {
+                $match:{count:{$gt:1}}
+            },
+              {
+                $project: {
+                  _id: 0,
+                  tempSkuId:"$_id.tempSkuId",
+                  totalCount: "$count"
+                }
+              }
+            ])
+         */
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/重复T号test.xlsx");
+        if (sizeof($fileContent) > 0) {
+            foreach ($fileContent as $info){
+                $oldTMapNewT = array();
+                $this->log("旧T号：{$info['tempSkuId']}");
+                $teRes = $this->commonFindByParams("s3015", "pa_product_details", array(
+                    "orderBy" => "-_id",
+                    "tempSkuId" => $info['tempSkuId'],
+                    "limit" => 1000
+                ), $env);
+                //
+                if (count($teRes) > 0) {
+                    //暴力一点吧全部重写
+                    foreach ($teRes as $tinfo){
+                        $dteRes = $this->commonFindByParams("s3015", "pa_product_details", array(
+                            "orderBy" => "_id",
+                            "productName" => $tinfo['productName'],
+                            "limit" => 5
+                        ), $env);
+                        
+                        //用productName来找到以前的T号
+                        $oldTempSkuId = "";
+                        if (count($dteRes) > 0) {
+                            foreach ($dteRes as $dteInfo){
+                                if ($dteInfo['tempSkuId'] != $info['tempSkuId']){
+                                    $oldTempSkuId = $dteInfo['tempSkuId'];
+                                    break;
+                                }
+                            }
+                        }
+                        //如果有旧T号
+                        if (!empty($oldTempSkuId)){
+                            //用旧T号查到技术维度
+                            $paSkuAttributeInfo = $this->commonFindOneByParams("s3015", "pa_sku_attributes", array(
+                                "tmepSkuId" => $oldTempSkuId,
+                            ), $env);
+                            
+                            if ($paSkuAttributeInfo) {
+                                //新的T号
+                                $uniqueId = $this->getTempSkuIdByRedis();
+                                //替换成新的
+                                $paSkuAttributeInfo['tempSkuId'] = $uniqueId;
+                                //$paSkuAttributeInfo['skuId'] = $uniqueId;
+                                $rs = $this->commonUpdate("s3015","pa_sku_attributes",$paSkuAttributeInfo,$env);
+                                if($rs){
+                                    $this->log("存在技术维度：{$oldTempSkuId}，已更改为：{$uniqueId}");
+                                    $tinfo['tempSkuId'] = $uniqueId;
+                                    $rss = $this->commonUpdate("s3015","pa_product_details",$tinfo,$env);
+                                }
+                            }else{
+                                $this->log("没有技术维度：{$oldTempSkuId}，直接更新T号");
+                                //没有技术维度直接
+                                //新的T号
+                                $uniqueId = $this->getTempSkuIdByRedis();
+                                $tinfo['tempSkuId'] = $uniqueId;
+                                $rss = $this->commonUpdate("s3015","pa_product_details",$tinfo,$env);
+
+                            }
+
+                        }else{
+                            $this->log("{$tinfo['tempSkuId']} 查不到旧名称：{$tinfo['productName']}");
+                            //新的T号
+                            $uniqueId = $this->getTempSkuIdByRedis();
+                            $tinfo['tempSkuId'] = $uniqueId;
+                            $rss = $this->commonUpdate("s3015","pa_product_details",$tinfo,$env);
+                        }
+
+                    }
+
+                }
+
+            }
+
+
+        }
+
+
+    }
+
+    //生成T号
+    public function getTempSkuIdByRedis(){
+        // 获取当前年月日
+        $currentDate = date('ymd');
+        // 构建编号的前缀
+        $prefix = "T{$currentDate}ux";
+        // 初始化计数器，如果不存在则设置为0
+        $counterKey = "counter_{$currentDate}";
+        $counter = $this->redis->incr($counterKey);
+        // 如果计数器为0，说明是第一次使用，设置过期时间为1天
+        if ($counter == 1) {
+            $this->redis->expire($counterKey, 86400); // 86400秒 = 1天
+        }
+        // 格式化计数器为5位数
+        $counterFormatted = str_pad($counter, 5, '0', STR_PAD_LEFT);
+        // 生成唯一编号
+        $uniqueId = $prefix . $counterFormatted;
+        return $uniqueId;
+    }
+
+
 }
 
 $curlController = new SyncCurlController();
 //$curlController->updateCeMaterialPlatform();
-$curlController->getCompanyByCompanyId();
+$curlController->updatePaProductTempSkuIdNew();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();

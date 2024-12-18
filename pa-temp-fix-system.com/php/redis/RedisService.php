@@ -63,4 +63,14 @@ class RedisService
         return $this->redis->del($key1, ...$otherKeys);
     }
 
+
+    public function incr($key): int
+    {
+        return $this->redis->incr($key);
+    }
+
+    public function expire($key,$time): bool
+    {
+        return $this->redis->expire($key,$time);
+    }
 }
