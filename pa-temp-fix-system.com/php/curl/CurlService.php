@@ -274,6 +274,23 @@ class CurlService
     }
 
     /**
+     * 新架构get请求
+     * @param string $module 模块
+     * @param array $params 参数
+     * @return array|null
+     */
+    public function getWayGet($module,$params = array()): ?array
+    {
+        $resp = null;
+        if ($this->port != null){
+            if (!empty($params)){
+                $module = "{$module}?".http_build_query($params);
+            }
+            $resp = $this->curlRequestMethod($this->port,$module,$params,"GET",true);
+        }
+        return $resp;
+    }
+    /**
      * put请求
      * @param string $module 模块
      * @param array $params 参数

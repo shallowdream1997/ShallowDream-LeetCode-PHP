@@ -33,6 +33,7 @@
                 <tr>
                     <th scope="col">sku</th>
                     <th scope="col">垂直</th>
+                    <th scope="col">垂直ID</th>
                     <th scope="col">产品线名称</th>
                     <th scope="col">创建人<br>创建日期</th>
                 </tr>
@@ -43,6 +44,7 @@
                     <td>
                         <b style="color: red">{{info.verticalName}}</b>
                     </td>
+                    <td>{{info.companySequenceId}}</td>
                     <td>
                         <b style="color: red">{{info.productLineName}}</b>
                     </td>
@@ -60,7 +62,7 @@
                 <textarea v-model="addSkuIdString" class="form-control" placeholder="skuId,多个请换行" rows="5"/></textarea>
             </div>
             <div class="mb-3">
-                <input type="text" v-model="productLineName" class="form-control" placeholder="请输入productLineName">
+                <textarea v-model="prePurchaseBillNoListString" class="form-control" placeholder="预计采购清单编号,多个请换行" rows="5"/></textarea>
             </div>
             <div class="row">
                 <div class="col-3">
@@ -97,6 +99,7 @@
                 message: 'PA sku产品线查询和新增',
                 skuIdString: '',
                 addSkuIdString: '',
+                prePurchaseBillNoListString:'',
                 productLineName: '',
                 errorMsg: '',
                 successMsg: '',
@@ -153,16 +156,17 @@
                     return;
                 }
 
-                let productLineName = this.productLineName;
-                if (!productLineName){
-                    this.errorMsg = "请确定产品线";
+                let prePurchaseBillNoList = this.prePurchaseBillNoListString.split("\n");
+                prePurchaseBillNoList =  [...new Set(prePurchaseBillNoList.filter(item => item))];
+                if (prePurchaseBillNoList.length > 500){
+                    this.errorMsg = "预计采购清单编号过多，请不要超过10个";
                     this.loading = "............报错..........";
                     return;
                 }
                 const data = {
                     action: "paFixProductLine",
                     params: {
-                        productLineName: productLineName,
+                        prePurchaseBillNoList: prePurchaseBillNoList,
                         skuIdList: addskuIdList,
                     },
                 };

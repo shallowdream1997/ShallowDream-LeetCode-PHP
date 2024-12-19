@@ -277,6 +277,12 @@ class DataUtils
             return array_intersect_key($item, array_flip($fieldsToExtract));
         }, $originArray);
     }
+
+    public static function buildGenerateUuidLike() {
+        return bin2hex(random_bytes(16));
+    }
+
+
 }
 
 
