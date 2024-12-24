@@ -238,6 +238,23 @@ class search
         ];
     }
 
+    public function addBrandFor($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+
+        $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
+            "optionName" => "pa_amazon_attribute_forbidden",
+            "limit" => 1
+        ]));
+        $list = array_keys($info['optionVal']);
+
+        return [
+            "env" => $env,
+            "data" => [
+                "canSearchChannelList" => $list
+            ]
+        ];
+    }
 }
 
 
@@ -284,6 +301,10 @@ switch ($data['action']) {
     case "paFixProductLine":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paFixProductLine($params);
+        break;
+    case "addBrandFor":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->addBrandFor($params);
         break;
 }
 

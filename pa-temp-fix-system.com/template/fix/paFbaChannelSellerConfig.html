@@ -15,7 +15,7 @@
 <body>
 <div class="container text-center" id="app">
     <div style="margin-top: 20px" class="row">
-        <div class="col-5"><h3 style="color: yellow">{{message}} <br>申请渠道仓库配置<br> <span style="color: red">当前环境：{{env == 'test' ? '测试环境' : '生产环境'}}</span></h3></div>
+        <div class="col-5"><h3 style="color: yellow">{{message}} <br>申请渠道仓库配置<br> <span style="color: red">当前环境：{{env == 'test' ? '测试环境' :  (env == 'local' ?  '开发环境' : '生产环境')}}</span></h3></div>
         <div class="col-7">
             <div class="row">
                 <div class="col-3">

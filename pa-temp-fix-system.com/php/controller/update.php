@@ -493,6 +493,68 @@ class update
     }
 
 
+    public function addBrandFor($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+        $params['channelList'] = [
+            "amazon_us",
+            "amazon_uk",
+            "amazon_au",
+            "amazon_ca",
+            "amazon_es",
+            "amazon_it",
+            "amazon_fr",
+            "amazon_de",
+            "amazon_jp",
+            "ebay_de",
+            "ebay_fr",
+            "ebay_es",
+            "ebay_it",
+            "ebay_us",
+            "ebay_ca",
+            "ebay_uk",
+            "ebay_au",
+            "walmart_us",
+            "walmart_ca",
+            "walmart_dsv",
+            "wish_us",
+            "aliexpress_us",
+            "ebay_hk"
+        ];
+        if (isset($params['fieldsList']) && $params['fieldsList']) {
+            $channelList = $params['channelList'];
+            $fieldsList = $params['fieldsList'];
+
+            $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
+                "optionName" => "pa_amazon_attribute_forbidden",
+                "limit" => 1
+            ]));
+            if (!empty($info)) {
+                $this->logger->log2("原本内容：" .json_encode($info,JSON_UNESCAPED_UNICODE));
+                if(count($info['optionVal']) > 0){
+                    foreach ($info['optionVal'] as $channel => &$channelInfo){
+                        if (in_array($channel,$channelList)){
+                            foreach($channelInfo['make'] as &$makeInfo){
+                                if ($makeInfo['type'] == "2"){
+                                    foreach ($fieldsList as $field){
+                                        if (!in_array($field,$makeInfo['words'])){
+                                            array_unshift($makeInfo['words'],$field);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $curlService->s3015()->put("option-val-lists/{$info['_id']}", $info);
+                    $this->logger->log2("修改后内容：".json_encode($info,JSON_UNESCAPED_UNICODE));
+                }
+                return true;
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
 
 }
 
@@ -536,6 +598,10 @@ switch ($data['action']) {
     case "paFixProductLine":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paFixProductLine($params);
+        break;
+    case "addBrandFor":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->addBrandFor($params);
         break;
 }
 

@@ -355,33 +355,33 @@ class CurlService
     {
         switch ($this->port) {
             case "s3015":
-                $this->s3015 = "http://172.16.29.2:3015";
+                $this->s3015 = "http://172.16.29.23:3015";
                 break;
             case "s3047":
-                $this->s3047 = "http://172.16.29.2:3047";
+                $this->s3047 = "http://172.16.29.23:3047";
                 break;
             case "s3044":
-                $this->s3044 = "http://172.16.29.2:3044";
+                $this->s3044 = "http://172.16.29.23:3044";
                 break;
             case "s3009":
-                $this->s3009 = "http://172.16.29.2:3009";
+                $this->s3009 = "http://172.16.29.23:3009";
                 break;
             case "s3023":
-                $this->s3023 = "http://172.16.29.2:3023";
+                $this->s3023 = "http://172.16.29.23:3023";
                 break;
             case "phphk":
             case "phpali":
-                $this->phpali = "http://172.16.29.2:8000";
-                $this->phphk = "http://172.16.29.2:8000";
+                $this->phpali = "http://172.16.29.23:8000";
+                $this->phphk = "http://172.16.29.23:8000";
                 break;
             case "ux168":
-                $this->ux168 = "http://172.16.29.2:3013";
+                $this->ux168 = "http://172.16.29.23:3013";
                 break;
             case "s3010":
-                $this->s3010 = "http://172.16.29.2:3010";
+                $this->s3010 = "http://172.16.29.23:3010";
                 break;
             case "s3016":
-                $this->s3016 = "http://172.16.29.2:3016";
+                $this->s3016 = "http://172.16.29.23:3016";
                 break;
             case "gateway":
                 $this->gateway = "https://gateway-test.ux168.cn";

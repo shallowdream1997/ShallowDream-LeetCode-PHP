@@ -555,6 +555,10 @@ class SyncCurlController
     }
 
 
+
+    public function buildSql(){
+
+    }
 }
 
 $curlController = new SyncCurlController();

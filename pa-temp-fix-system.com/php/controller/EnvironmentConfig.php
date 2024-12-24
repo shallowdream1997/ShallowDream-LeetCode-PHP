@@ -43,6 +43,9 @@ class EnvironmentConfig
             case "paFixProductLine":
                 $this->curlService = (new CurlService())->pro();
                 break;
+            case "addBrandFor":
+                $this->curlService = (new CurlService())->local();
+                break;
         }
         return $this;
     }
