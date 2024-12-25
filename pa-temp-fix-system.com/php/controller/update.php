@@ -37,6 +37,9 @@ class update
             case "pomsgoods":
                 $this->module = "platform-pomsgoods-service";
                 break;
+            case "config":
+                $this->module = "platform-config-mgmt-application";
+                break;
         }
 
         return $this;
@@ -493,7 +496,13 @@ class update
     }
 
 
-    public function addBrandFor($params){
+    /**
+     * 品牌前面增加for
+     * @param $params
+     * @return bool
+     */
+    public function addBrandFor($params)
+    {
         $curlService = $this->envService;
         $env = $curlService->environment;
         $params['channelList'] = [
@@ -530,15 +539,15 @@ class update
                 "limit" => 1
             ]));
             if (!empty($info)) {
-                $this->logger->log2("原本内容：" .json_encode($info,JSON_UNESCAPED_UNICODE));
-                if(count($info['optionVal']) > 0){
-                    foreach ($info['optionVal'] as $channel => &$channelInfo){
-                        if (in_array($channel,$channelList)){
-                            foreach($channelInfo['make'] as &$makeInfo){
-                                if ($makeInfo['type'] == "2"){
-                                    foreach ($fieldsList as $field){
-                                        if (!in_array($field,$makeInfo['words'])){
-                                            array_unshift($makeInfo['words'],$field);
+                $this->logger->log2("原本内容：" . json_encode($info, JSON_UNESCAPED_UNICODE));
+                if (count($info['optionVal']) > 0) {
+                    foreach ($info['optionVal'] as $channel => &$channelInfo) {
+                        if (in_array($channel, $channelList)) {
+                            foreach ($channelInfo['make'] as &$makeInfo) {
+                                if ($makeInfo['type'] == "2") {
+                                    foreach ($fieldsList as $field) {
+                                        if (!in_array($field, $makeInfo['words'])) {
+                                            array_unshift($makeInfo['words'], $field);
                                         }
                                     }
                                 }
@@ -546,7 +555,7 @@ class update
                         }
                     }
                     $curlService->s3015()->put("option-val-lists/{$info['_id']}", $info);
-                    $this->logger->log2("修改后内容：".json_encode($info,JSON_UNESCAPED_UNICODE));
+                    $this->logger->log2("修改后内容：" . json_encode($info, JSON_UNESCAPED_UNICODE));
                 }
                 return true;
             }
@@ -555,6 +564,82 @@ class update
             return false;
         }
     }
+
+
+    /**
+     * 上传oss
+     * @param $params
+     * @return array
+     */
+    public function uploadOss($params)
+    {
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+        if (isset($params['fileName']) && $params['fileName']) {
+            $target_dir = __DIR__ . "/../export/uploads/oss/{$params['fileName']}";
+            if (!file_exists($target_dir)) {
+                return [
+                    "uploadSuccess" => false,
+                    "messages" => "请重新传输文件上传",
+                    "link" => null,
+                ];
+            }
+
+            $resp = DataUtils::getNewResultData($curlService->gateway()->getModule('config')->getWayPost($curlService->module . "/message/template/v1/getUploadFileSignature", []));
+            if ($resp) {
+                $curlService1 = $this->envService;
+                $curlService1->setHeader(array(
+                    'request-trace-id: product_operation_client_' . date("Ymd_His") . '_' . rand(100000, 999999),
+                    'request-trace-level: 1',
+                    'Content-Type: multipart/form-data',
+                ), false);
+                $cfile = new CURLFile($target_dir, "", $target_dir);
+
+                $key = "pa/oss_test/{$params['fileName']}";
+                $uploadOssResp = $curlService1->upload($resp['url'], "", [
+                    "OSSAccessKeyId" => $resp['ossAccessKeyId'],
+                    "policy" => $resp['policy'],
+                    "Signature" => $resp['signature'],
+                    "expiresTime" => $resp['expiresTime'],
+                    "key" => $key,
+                    "success_action_status" => 200,
+                    "file" => $cfile
+                ]);
+                if ($uploadOssResp && $uploadOssResp['httpCode'] === 200) {
+                    $this->logger->log2("上传文件到oss成功");
+                    $getKeyResp = DataUtils::getNewResultData($curlService->gateway()->getModule("config")->getWayGet($curlService->module . "/message/template/v1/getOssUrlByKey", [
+                        "key" => $key
+                    ]));
+                    $this->logger->log2("返回oss文件链接：{$getKeyResp['value']}");
+                    if ($getKeyResp) {
+                        $redisService = new RedisService();
+                        $redisService->hSet(REDIS_OSS_FILE_NAME_KEY . "_{$env}", $key,$getKeyResp['value']);
+                        unlink($target_dir);
+
+                        return [
+                            "uploadSuccess" => true,
+                            "messages" => "上传oss成功",
+                            "link" => $getKeyResp['value'],
+                        ];
+                    }
+                }
+            }
+
+        } else {
+            return [
+                "uploadSuccess" => false,
+                "messages" => "请重新传输文件上传",
+                "link" => null,
+            ];
+        }
+
+        return [
+            "uploadSuccess" => false,
+            "messages" => "请重新传输文件上传",
+            "link" => null,
+        ];
+    }
+
 
 }
 
@@ -602,6 +687,10 @@ switch ($data['action']) {
     case "addBrandFor":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->addBrandFor($params);
+        break;
+    case "uploadOss":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->uploadOss($params);
         break;
 }
 

@@ -21,6 +21,8 @@ class CurlService
     private $s3016 = null;
     private $gateway = null;
 
+    public $module = "pa-biz-application";
+
     private $log;
 
     public function __construct() {
@@ -29,12 +31,32 @@ class CurlService
 
     }
 
+    public function getModule($modlue){
+        switch ($modlue){
+            case "wms":
+                $this->module = "platform-wms-application";
+                break;
+            case "pa":
+                $this->module = "pa-biz-application";
+                break;
+            case "pomsgoods":
+                $this->module = "platform-pomsgoods-service";
+                break;
+            case "config":
+                $this->module = "platform-config-mgmt-application";
+                break;
+        }
+
+        return $this;
+    }
+
     /**
      * 头请求设置 - 默认
      * @param array $header
+     * @param bool $isMerge
      * @return $this
      */
-    public function setHeader($header = array()): CurlService
+    public function setHeader($header = array(),$isMerge = true): CurlService
     {
 
         $initHeader = array(
@@ -44,7 +66,11 @@ class CurlService
             'Expect:',
         );
         if (count($header) > 0) {
-            $initHeader = array_merge($initHeader, $header);
+            if ($isMerge){
+                $initHeader = array_merge($initHeader, $header);
+            }else{
+                $initHeader = $header;
+            }
         }
         $this->header = $initHeader;
         return $this;
@@ -255,6 +281,18 @@ class CurlService
         if ($this->port != null){
             $resp = $this->curlRequestMethod($this->port,$module,$params,"POST");
         }
+        return $resp;
+    }
+
+    /**
+     * upload请求
+     * @param string $module 模块
+     * @param array $params 参数
+     * @return array|null
+     */
+    public function upload($url,$module,$params = array()): ?array
+    {
+        $resp = $this->curlUploadMethod($url,$module,$params);
         return $resp;
     }
 
@@ -579,6 +617,10 @@ class CurlService
                         curl_setopt($connection, CURLOPT_CUSTOMREQUEST, "DELETE");
                         curl_setopt($connection, CURLOPT_POSTFIELDS, json_encode($params,JSON_UNESCAPED_UNICODE));
                         break;
+                    case "UPLOAD":
+                        curl_setopt($connection, CURLOPT_CUSTOMREQUEST, "POST");
+                        curl_setopt($connection, CURLOPT_POSTFIELDS, $params);
+                        break;
                 }
                 $this->log->log("请求: {$method}：{$url}");
                 $this->log->log("参数：".json_encode($params,JSON_UNESCAPED_UNICODE));
@@ -607,6 +649,76 @@ class CurlService
             "result" => $body,
         );
     }
+
+    /**
+     * curl请求接口
+     * @param $port 端口
+     * @param $module 模块
+     * @param array $params 参数
+     * @param int $timeout 请求重试时长
+     * @param int $tryTimes 失败重试次数
+     * @return array
+     */
+    private function curlUploadMethod($port, $module, $params = array(), $timeout = 30, $tryTimes = 1): array
+    {
+        if (stripos($module, "/") !== 0 && !empty($module)) {
+            $module = "/" . $module;
+        }
+        $url = $port . $module;
+
+
+        $result = $httpCode = $headerResponse = $body = "";
+        $t = 1;
+        do{
+            try{
+                $connection = curl_init();
+                curl_setopt($connection, CURLOPT_URL, $url);
+                curl_setopt($connection,CURLOPT_HTTPHEADER, $this->header);//头请求
+                curl_setopt($connection,CURLOPT_HEADER, true);//响应头请求
+                curl_setopt($connection, CURLOPT_SSL_VERIFYPEER, false);//跳过证书的验证
+                curl_setopt($connection, CURLOPT_SSL_VERIFYHOST, false);//跳过证书的验证
+                curl_setopt($connection, CURLOPT_RETURNTRANSFER, true);//把curl_exec()结果转化为字串，而不是直接输出
+                curl_setopt($connection, CURLOPT_TIMEOUT, $timeout);
+                // 设置自定义Referer
+                curl_setopt($connection, CURLOPT_REFERER, 'https://poms-ssl.ux168.cn/');
+                // 设置自定义User-Agent
+                curl_setopt($connection, CURLOPT_USERAGENT, 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36');
+                // 设置服务器代理
+//                curl_setopt($connection, CURLOPT_HTTPHEADER, array(
+//                    'X-Forwarded-For: 172.16.29.3' // 伪造的IP地址
+//                ));
+                $method = strtoupper($method);
+
+                curl_setopt($connection, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($connection, CURLOPT_POSTFIELDS, $params);
+                $this->log->log("请求: {$method}：{$url}");
+                $this->log->log("参数：".json_encode($params,JSON_UNESCAPED_UNICODE));
+
+                $result = curl_exec($connection);
+
+                //头信息
+                $httpCode = intval(curl_getinfo($connection, CURLINFO_HTTP_CODE));
+                $headerSize = curl_getinfo($connection, CURLINFO_HEADER_SIZE);
+                $headerResponse = substr($result, 0, $headerSize);
+                $body = json_decode(substr($result, $headerSize),true);
+
+                if(!in_array($httpCode, array(401,404,429,)) && ($httpCode<200 || 300<$httpCode)){
+                    throw new \Exception("http {$httpCode}");
+                }else{
+                    break;
+                }
+            }catch (\Exception $e){
+                if($t<$tryTimes){ sleep(3); }
+            }
+        }while($t++<$tryTimes);
+        curl_close($connection);
+        return array(
+            "httpCode" => $httpCode,
+            "header" => $headerResponse,
+            "result" => $body,
+        );
+    }
+
 }
 
 

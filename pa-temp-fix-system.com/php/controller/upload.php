@@ -58,13 +58,64 @@ class upload
             }
         }
     }
+
+
+    public function uploadOss($params){
+        if (!file_exists($this->target_dir)) {
+            mkdir($this->target_dir, 0777, true);
+        }
+        if ($params) {
+            if ($params['error'] > 0) {
+                return [
+                    "code" => 400,
+                    "message" => "错误: " . $params['error'],
+                    "fileName" => null,
+                    "excelList" => []
+                ];
+            } else {
+                // 获取文件名
+                $file_name = basename($params['name']);
+                $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+
+                // 生成唯一的文件名
+                $fileName = DataUtils::buildGenerateUuidLike() . ".{$ext}";
+                $target_file = $this->target_dir . $fileName;
+
+                // 移动文件到指定目录
+                if (move_uploaded_file($params['tmp_name'], $target_file)) {
+                    return [
+                        "code" => 200,
+                        "message" => "上传文件成功",
+                        "fileName" => $fileName,
+                        "fullPath" => $target_file,
+                    ];
+                } else {
+                    return [
+                        "code" => 400,
+                        "message" => "上传文件出错",
+                        "fileName" => null,
+                        "excelList" => []
+                    ];
+                }
+            }
+        }
+
+        return true;
+    }
+
+
 }
 
 // 使用示例
-$target_dir = __DIR__ . "/../export/uploads/";
-$fileUploader = new upload($target_dir);
-
 if (isset($_FILES['fileToUpload'])) {
+    $target_dir = __DIR__ . "/../export/uploads/";
+    $fileUploader = new upload($target_dir);
+
     $upload_result = $fileUploader->upload($_FILES['fileToUpload']);
     echo json_encode($upload_result,JSON_UNESCAPED_UNICODE);
+}else if (isset($_FILES['fileToUploadOss'])){
+    $target_dir = __DIR__ . "/../export/uploads/oss/";
+    $fileUploader = new upload($target_dir);
+    $return = $fileUploader->uploadOss($_FILES['fileToUploadOss']);
+    echo json_encode($return,JSON_UNESCAPED_UNICODE);
 }

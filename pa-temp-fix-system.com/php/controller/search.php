@@ -255,6 +255,16 @@ class search
             ]
         ];
     }
+
+    public function uploadOss($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+
+        return [
+            "env" => $env,
+            "data" => []
+        ];
+    }
 }
 
 
@@ -305,6 +315,10 @@ switch ($data['action']) {
     case "addBrandFor":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->addBrandFor($params);
+        break;
+    case "uploadOss":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->uploadOss($params);
         break;
 }
 
