@@ -575,56 +575,70 @@ class update
     {
         $curlService = $this->envService;
         $env = $curlService->environment;
-        if (isset($params['fileName']) && $params['fileName']) {
-            $target_dir = __DIR__ . "/../export/uploads/oss/{$params['fileName']}";
-            if (!file_exists($target_dir)) {
-                return [
-                    "uploadSuccess" => false,
-                    "messages" => "请重新传输文件上传",
-                    "link" => null,
-                ];
-            }
+        if (isset($params['fileCollect']) && $params['fileCollect']) {
+            $successUploadOss = [];
+            foreach ($params['fileCollect'] as $dataInfo){
 
-            $resp = DataUtils::getNewResultData($curlService->gateway()->getModule('config')->getWayPost($curlService->module . "/message/template/v1/getUploadFileSignature", []));
-            if ($resp) {
-                $curlService1 = $this->envService;
-                $curlService1->setHeader(array(
-                    'request-trace-id: product_operation_client_' . date("Ymd_His") . '_' . rand(100000, 999999),
-                    'request-trace-level: 1',
-                    'Content-Type: multipart/form-data',
-                ), false);
-                $cfile = new CURLFile($target_dir, "", $target_dir);
+                $target_dir = __DIR__ . "/../export/uploads/oss/{$dataInfo['fileName']}";
+                if (!file_exists($target_dir)) {
+                    return [
+                        "uploadSuccess" => false,
+                        "messages" => "请重新传输文件上传,有文件丢失：{$dataInfo['actualFileName']}",
+                        "link" => null,
+                    ];
+                }
 
-                $key = "pa/oss_test/{$params['fileName']}";
-                $uploadOssResp = $curlService1->upload($resp['url'], "", [
-                    "OSSAccessKeyId" => $resp['ossAccessKeyId'],
-                    "policy" => $resp['policy'],
-                    "Signature" => $resp['signature'],
-                    "expiresTime" => $resp['expiresTime'],
-                    "key" => $key,
-                    "success_action_status" => 200,
-                    "file" => $cfile
-                ]);
-                if ($uploadOssResp && $uploadOssResp['httpCode'] === 200) {
-                    $this->logger->log2("上传文件到oss成功");
-                    $getKeyResp = DataUtils::getNewResultData($curlService->gateway()->getModule("config")->getWayGet($curlService->module . "/message/template/v1/getOssUrlByKey", [
-                        "key" => $key
-                    ]));
-                    $this->logger->log2("返回oss文件链接：{$getKeyResp['value']}");
-                    if ($getKeyResp) {
-                        $redisService = new RedisService();
-                        $redisService->hSet(REDIS_OSS_FILE_NAME_KEY . "_{$env}", $key,$getKeyResp['value']);
-                        unlink($target_dir);
+                $resp = DataUtils::getNewResultData($curlService->gateway()->getModule('config')->getWayPost($curlService->module . "/message/template/v1/getUploadFileSignature", []));
+                if ($resp) {
+                    $curlService1 = $this->envService;
+                    $curlService1->setHeader(array(
+                        'request-trace-id: product_operation_client_' . date("Ymd_His") . '_' . rand(100000, 999999),
+                        'request-trace-level: 1',
+                        'Content-Type: multipart/form-data',
+                    ), false);
+                    $cfile = new CURLFile($target_dir, "", $target_dir);
 
-                        return [
-                            "uploadSuccess" => true,
-                            "messages" => "上传oss成功",
-                            "link" => $getKeyResp['value'],
-                        ];
+                    $key = "pa/oss_test/{$dataInfo['fileName']}";
+                    $uploadOssResp = $curlService1->upload($resp['url'], "", [
+                        "OSSAccessKeyId" => $resp['ossAccessKeyId'],
+                        "policy" => $resp['policy'],
+                        "Signature" => $resp['signature'],
+                        "expiresTime" => $resp['expiresTime'],
+                        "key" => $key,
+                        "success_action_status" => 200,
+                        "file" => $cfile
+                    ]);
+                    if ($uploadOssResp && $uploadOssResp['httpCode'] === 200) {
+                        $this->logger->log2("上传文件到oss成功");
+                        $getKeyResp = DataUtils::getNewResultData($curlService->gateway()->getModule("config")->getWayGet($curlService->module . "/message/template/v1/getOssUrlByKey", [
+                            "key" => $key
+                        ]));
+                        $this->logger->log2("返回oss文件链接：{$getKeyResp['value']}");
+                        if ($getKeyResp) {
+                            $redisService = new RedisService();
+
+                            $dbData = [
+                                "actualFileName" => $dataInfo['actualFileName'],
+                                "key" => $key,
+                                "link" => $getKeyResp['value'],
+                            ];
+
+                            $redisService->hSet(REDIS_OSS_FILE_NAME_KEY . "_{$env}", $key,json_encode($dbData,JSON_UNESCAPED_UNICODE));
+                            unlink($target_dir);
+
+                            $successUploadOss[] = $dbData;
+                        }
                     }
                 }
             }
 
+            if (count($successUploadOss) > 0){
+                return [
+                    "uploadSuccess" => true,
+                    "messages" => "上传oss成功",
+                    "linkList" => $successUploadOss,
+                ];
+            }
         } else {
             return [
                 "uploadSuccess" => false,

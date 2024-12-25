@@ -259,6 +259,22 @@ class search
     public function uploadOss($params){
         $curlService = $this->envService;
         $env = $curlService->environment;
+        if (isset($params['searchData']) && $params['searchData']){
+            $redisService = new RedisService();
+            $dbData = $redisService->hGetAll(REDIS_OSS_FILE_NAME_KEY . "_{$env}");
+            $dbDataList = [];
+            if ($dbData){
+                foreach ($dbData as $key => $keyInfo){
+                    $dbDataList[] = json_decode($keyInfo,true);
+                }
+            }
+            return [
+                "env" => $env,
+                "uploadSuccess" => true,
+                "messages" => "扫描成功",
+                "linkList" => $dbDataList,
+            ];
+        }
 
         return [
             "env" => $env,

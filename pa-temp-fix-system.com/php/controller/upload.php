@@ -65,39 +65,56 @@ class upload
             mkdir($this->target_dir, 0777, true);
         }
         if ($params) {
-            if ($params['error'] > 0) {
-                return [
-                    "code" => 400,
-                    "message" => "错误: " . $params['error'],
-                    "fileName" => null,
-                    "excelList" => []
-                ];
-            } else {
-                // 获取文件名
-                $file_name = basename($params['name']);
-                $ext = pathinfo($file_name, PATHINFO_EXTENSION);
 
-                // 生成唯一的文件名
-                $fileName = DataUtils::buildGenerateUuidLike() . ".{$ext}";
-                $target_file = $this->target_dir . $fileName;
+            $resultList = [];
+            if (count($params['name']) > 0){
+                for ($i = 0;$i < count($params['name']);$i++){
 
-                // 移动文件到指定目录
-                if (move_uploaded_file($params['tmp_name'], $target_file)) {
-                    return [
-                        "code" => 200,
-                        "message" => "上传文件成功",
-                        "fileName" => $fileName,
-                        "fullPath" => $target_file,
-                    ];
-                } else {
-                    return [
-                        "code" => 400,
-                        "message" => "上传文件出错",
-                        "fileName" => null,
-                        "excelList" => []
-                    ];
+                    if ($params['error'][$i] > 0) {
+                        return [
+                            "code" => 400,
+                            "message" => "错误: {$params['name'][$i]} " . $params['error'][$i],
+                            "fileName" => null,
+                            "excelList" => []
+                        ];
+                    } else {
+                        // 获取文件名
+                        $file_name = basename($params['name'][$i]);
+                        $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+
+                        // 生成唯一的文件名
+                        $fileName = DataUtils::buildGenerateUuidLike() . ".{$ext}";
+                        $target_file = $this->target_dir . $fileName;
+
+                        // 移动文件到指定目录
+                        if (move_uploaded_file($params['tmp_name'][$i], $target_file)) {
+                            $resultList[] = [
+                                "actualFileName" => $file_name,
+                                "fileName" => $fileName,
+                                "fullPath" => $target_file,
+                            ];
+                        } else {
+                            return [
+                                "code" => 400,
+                                "message" => "加载文件出错",
+                                "fileName" => null,
+                                "excelList" => []
+                            ];
+                        }
+                    }
+
                 }
+
             }
+
+            if (count($resultList) > 0){
+                return [
+                    "code" => 200,
+                    "message" => "加载文件成功",
+                    "fileCollect" => $resultList
+                ];
+            }
+
         }
 
         return true;

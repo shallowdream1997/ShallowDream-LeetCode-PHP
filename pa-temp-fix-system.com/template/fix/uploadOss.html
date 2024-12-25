@@ -13,27 +13,94 @@
     <link rel="stylesheet" href="../css_js/own/lizi.css">
 </head>
 <body>
-<div class="container text-center" id="app">
+<div class="container" id="app">
     <div style="margin-top: 20px" class="row">
         <div class="col-5"><h3 style="color: yellow">{{message}} <br>查询或新增<br> <span style="color: red">当前环境：{{env == 'test' ? '测试环境' :  (env == 'local' ?  '开发环境' : '生产环境')}}</span></h3></div>
         <div class="col-7">
             <div class="mb-3">
-                <input class="btn btn-primary" type="file" @change="handleFileUpload" />
+                <input class="btn btn-primary" type="file" multiple @change="handleFileUpload" />
             </div>
 
             <div class="mb-3">
                 <button class="btn btn-primary" style="margin-left: 10px" @click="uploadFile">导入文件</button>
             </div>
 
-            <div class="mb-3" v-if="this.fileName">
+            <div class="ui-g-5">
+                <button class="btn btn-warning" style="margin-left: 10px" @click="search">扫描已上传的文件</button>
+            </div>
+            <div class="mb-3" v-if="this.fileCollect && this.fileCollect.length > 0">
                 <button class="btn btn-danger" @click="update">确认上传到OSS</button>
             </div>
 
         </div>
-        <div class="col-2"></div>
-        <div class="col-10" style="margin-top: 20px;color: white" v-if="this.ossLink">
-            点击下载oss文件：<a @click="downloadOssLink(this.ossLink)" class="coll-btn">{{this.ossLink}}</a>
+        <div class="col-12">
+            <table class="table table-dark table-striped align-middle" v-if="fileCollect && fileCollect.length > 0">
+                <thead>
+                <tr>
+                    <th scope="col">文件原名</th>
+                    <th scope="col">加密名</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="info in fileCollect" :key="fileCollect.fileName">
+                    <td>
+                        {{info.actualFileName}}
+                    </td>
+                    <td>
+                        {{info.fileName}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
+
+
+        <div class="col-12" style="color: white;height: 580px;overflow-y: auto;">
+            <div v-for="info in linkList">
+                <div class="mb-3">
+                    文件原名: {{info.actualFileName}}
+                </div>
+                <div class="mb-3">
+                    Oss Key名: {{info.key}}
+                </div>
+                <div class="mb-3">
+                    OSS链接: <a v-if="info.link" @click="downloadOssLink(info.link)" class="coll-btn">{{info.link}}</a>
+                </div>
+                <hr>
+            </div>
+
+<!--            <table class="table table-bordered table-dark table-striped align-middle"  style="white-space: normal" v-if="linkList && linkList.length > 0">-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th scope="col">文件原名</th>-->
+<!--                    <th scope="col">Oss Key名</th>-->
+<!--                    <th scope="col">OSS链接</th>-->
+<!--                    <th scope="col">点击下载</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr v-for="info in linkList" :key="linkList.key">-->
+<!--                    <td>-->
+<!--                        {{info.actualFileName}}-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        {{info.key}}-->
+<!--                    </td>-->
+<!--                    <td style="white-space: normal">-->
+<!--                        {{info.link}}-->
+<!--                    </td>-->
+<!--                    <td><a v-if="info.link" @click="downloadOssLink(info.link)" class="coll-btn">下载</a></td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+
+        </div>
+
+
+<!--        <div class="col-2"></div>-->
+<!--        <div class="col-10" style="margin-top: 20px;color: white" v-if="this.ossLink">-->
+<!--            点击下载oss文件：<a @click="downloadOssLink(this.ossLink)" class="coll-btn">{{this.ossLink}}</a>-->
+<!--        </div>-->
 
         <div class="col-12" style="margin-top: 20px">
             <div class="row">
@@ -68,7 +135,8 @@
                 selectedFile: null,
                 fileName:"",
                 fullPath:"",
-                ossLink:"",
+                fileCollect:[],
+                linkList:[],
                 loading: '',
                 env:"",
                 url:"http://172.16.29.23:90/php/controller",
@@ -104,13 +172,14 @@
 
             },
             handleFileUpload(event) {
-                this.selectedFile = event.target.files[0];
+                this.selectedFile = event.target.files;
             },
             async uploadFile() {
                 if (this.selectedFile) {
                     const formData = new FormData();
-                    formData.append('fileToUploadOss', this.selectedFile);
-
+                    for (let i = 0; i < this.selectedFile.length; i++) {
+                        formData.append('fileToUploadOss[]', this.selectedFile[i]);
+                    }
                     try {
                         const response = await axios.post(`${this.url}/upload.php`, formData, {
                             headers: {
@@ -123,10 +192,11 @@
                         this.fileName = "";
                         if (response && response.data.code == 200){
                             this.successMsg = response.data.message + "，文件名称：" + response.data.fileName;
-                            this.fileName = response.data.fileName;
-                            this.fullPath = response.data.fullPath;
+                            // this.fileName = response.data.fileName;
+                            // this.fullPath = response.data.fullPath;
+                            this.fileCollect = response.data.fileCollect;
                         }else {
-                            this.errorMsg = response.data;
+                            this.errorMsg = response.data.message;
                         }
 
                     } catch (error) {
@@ -140,7 +210,7 @@
                 this.loading = "............请等待，正在处理数据中..........";
                 this.errorMsg = "";
 
-                if (!this.fileName) {
+                if (this.fileCollect.length == 0) {
                     this.errorMsg = "请先确保上文文件内容是否正确";
                     this.loading = "............报错..........";
                     return;
@@ -149,8 +219,9 @@
                 const data = {
                     action: "uploadOss",
                     params: {
-                        fileName: this.fileName,
-                        fullPath: this.fullPath
+                        // fileName: this.fileName,
+                        // fullPath: this.fullPath
+                        fileCollect: this.fileCollect
                     },
                 };
                 let res = await axios.post(`${this.url}/update.php`, data,this.header).catch(function (error) {
@@ -160,7 +231,8 @@
                 this.successMsg = "";
                 this.errorMsg = "";
                 if (res && res.data && res.data.uploadSuccess){
-                    this.ossLink = res.data.link;
+                    // this.ossLink = res.data.link;
+                    this.linkList = res.data.linkList;
                     this.successMsg = res.data.messages;
                 }else {
                     this.errorMsg = res.data.messages;
@@ -170,7 +242,36 @@
             },
             async downloadOssLink(link){
                 window.open(link);
-            }
+            },
+            async search(){
+                const data = {
+                    action: "uploadOss",
+                    params: {
+                        "searchData": true
+                    },
+                };
+                this.header = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 其他自定义头
+                    }
+                };
+                this.url = "http://172.16.29.23:90/php/controller";
+                let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
+                    this.errorMsg = "网络错误";
+                });
+                this.loading = "";
+                this.successMsg = "";
+                this.errorMsg = "";
+                if (res && res.data && res.data.uploadSuccess){
+                    // this.ossLink = res.data.link;
+                    this.linkList = res.data.linkList;
+                    this.successMsg = res.data.messages;
+                }else {
+                    this.errorMsg = res.data.messages;
+                }
+
+            },
         },
 
 
