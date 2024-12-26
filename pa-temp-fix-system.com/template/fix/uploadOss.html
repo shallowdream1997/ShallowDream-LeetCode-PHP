@@ -198,28 +198,33 @@
             },
             async uploadFile() {
                 if (this.selectedFile) {
-                    const formData = new FormData();
-                    for (let i = 0; i < this.selectedFile.length; i++) {
-                        formData.append('fileToUploadOss[]', this.selectedFile[i]);
-                    }
                     try {
-                        const response = await axios.post(`${this.url}/upload.php`, formData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data'
-                            }
-                        });
                         this.successMsg = "";
                         this.errorMsg = "";
                         this.fullPath = "";
                         this.fileName = "";
-                        if (response && response.data.code == 200){
-                            this.successMsg = response.data.message + "，文件名称：" + response.data.fileName;
-                            // this.fileName = response.data.fileName;
-                            // this.fullPath = response.data.fullPath;
-                            this.fileCollect = response.data.fileCollect;
-                        }else {
-                            this.errorMsg = response.data.message;
+                        let fileCollect = [];
+                        for (let i = 0; i < this.selectedFile.length; i++) {
+                            const formData = new FormData();
+                            formData.append('fileToUploadOss[]', this.selectedFile[i]);
+
+                            let response = await axios.post(`${this.url}/upload.php`, formData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            });
+                            if (response && response.data.code == 200){
+                                this.successMsg += response.data.message + "<br>";
+                                console.log(response.data.fileCollect);
+                                //this.fileCollect = [...this.fileCollect,...response.data.fileCollect];
+
+                                fileCollect.push(response.data.fileCollect[0])
+                            }else {
+                                this.errorMsg = response.data.message + "<br>";
+                            }
                         }
+                        this.fileCollect = fileCollect;
+                        console.log(this.fileCollect);
 
                     } catch (error) {
                         this.errorMsg = '加载文件失败';

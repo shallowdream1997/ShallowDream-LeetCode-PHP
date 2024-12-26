@@ -97,7 +97,7 @@ class upload
                             return [
                                 "code" => 400,
                                 "message" => "加载文件出错",
-                                "fileName" => null,
+                                "fileName" => $file_name,
                                 "excelList" => []
                             ];
                         }
