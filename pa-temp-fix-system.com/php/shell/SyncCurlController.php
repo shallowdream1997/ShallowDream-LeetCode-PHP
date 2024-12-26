@@ -573,11 +573,55 @@ class SyncCurlController
 //        $filePath = $excelUtils->downloadXlsxV2($list,"oss文件");
         $this->log($filePath);
     }
+
+    public function writeProductBaseFba(){
+        $env = "pro";
+        $rs = $this->commonFindByParams("s3015", "product_fba_bases", [
+            "sequenceId" => "CR201706060001",
+            "productLineGroup" => "PA",
+            "status_in" => "Y",
+            "channel_in" => "ebay_us",
+            "limit" => 2500
+        ], $env);
+        if($rs){
+            foreach ($rs as $info){
+
+                $curlSsl = (new CurlService())->pro();
+                $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/ce_bill_no/v1/getCeDetailBySkuIdList", [
+                    "skuIdList" => [$info['skuId']],
+                    "orderBy" => "id asc",
+                    "pageNumber" => 1,
+                    "entriesPerPage" => 1
+                ]));
+                if ($getKeyResp && count($getKeyResp) > 0){
+                    $ceInfo = $getKeyResp[0];
+                    $batchName = "";
+                    if ($ceInfo && isset($ceInfo['ceBillNo']) && $ceInfo['ceBillNo']){
+                        $batchName = $ceInfo['ceBillNo'];
+
+                        $respssss = (new CurlService())->pro()->s3044()->post("ebay_bilino_add_rounds/setSellerIdAndAddCountByBatchName", [
+                            "batchName" => $batchName,
+                            "skuId" => $info['skuId'],
+                            "userName" => "pa-fix-sys",
+                            "source"=>"海外仓轮单"
+                        ]);
+                        $this->log("{$batchName} - {$info['skuId']} - 进入轮单：" . json_encode($respssss,JSON_UNESCAPED_UNICODE));
+                    }
+                }
+
+            }
+        }
+
+        //https://master-angular-nodejs-poms-list-manage.ux168.cn/api/product_fba_bases/queryPage?&page=1&limit=10&sequenceId=CR201706060001&productLineGroup=PA&channel_in=ebay_us&api_key=
+
+
+    }
+
 }
 
 $curlController = new SyncCurlController();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
-$curlController->buildSql();
+$curlController->writeProductBaseFba();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();
