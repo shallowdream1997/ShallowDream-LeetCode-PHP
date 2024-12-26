@@ -41,8 +41,6 @@
 
         <div class="col-5">
             <button class="btn btn-warning" style="margin-left: 10px" @click="downloadOss">导出所有文件</button>
-
-
         </div>
 
         <div class="col-4">
@@ -55,6 +53,14 @@
             <button class="btn btn-warning" style="margin-left: 10px" @click="search">扫描已上传的文件</button>
         </div>
 
+        <div class="col-5">
+            <span style="color: green">{{this.loading}}</span>
+        </div>
+        <div class="col-7"><span style="color: white">已上传oss数量：</span><b style="color: red">{{this.filenumber}}</b><b style="color: #00DDEB">/{{this.fileCollect.length}}</b></div>
+
+        <div class="col-12">
+            <span style="color: red">{{errorMsg}} - {{successMsg}}</span>
+        </div>
         <div class="col-12">
             <table class="table table-dark table-striped align-middle" v-if="fileCollect && fileCollect.length > 0">
                 <thead>
@@ -124,13 +130,13 @@
 <!--            点击下载oss文件：<a @click="downloadOssLink(this.ossLink)" class="coll-btn">{{this.ossLink}}</a>-->
 <!--        </div>-->
 
-        <div class="col-12" style="margin-top: 20px">
-            <div class="row">
-                <h5 style="color: red">{{loading}}</h5>
-                <h4 style="color: red">{{errorMsg}}</h4>
-                <h4 style="color: green">{{successMsg}}</h4>
-            </div>
-        </div>
+<!--        <div class="col-12" style="margin-top: 20px">-->
+<!--            <div class="row">-->
+<!--                <h5 style="color: red">{{loading}}</h5>-->
+<!--                <h4 style="color: red">{{errorMsg}}</h4>-->
+<!--                <h4 style="color: green">{{successMsg}}</h4>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 
 </div>
@@ -159,6 +165,7 @@
                 fullPath:"",
                 fileCollect:[],
                 linkList:[],
+                filenumber:0,
                 loading: '',
                 env:"",
                 url:"http://172.16.29.23:90/php/controller",
@@ -217,13 +224,14 @@
                                 this.successMsg += response.data.message + "<br>";
                                 console.log(response.data.fileCollect);
                                 //this.fileCollect = [...this.fileCollect,...response.data.fileCollect];
-
-                                fileCollect.push(response.data.fileCollect[0])
+                                this.loading = "文件加载中....已经加载：" + (i+1) + "/" + this.selectedFile.length;
+                                //fileCollect.push(response.data.fileCollect[0])
+                                this.fileCollect = [...this.fileCollect,...response.data.fileCollect];
                             }else {
                                 this.errorMsg = response.data.message + "<br>";
                             }
                         }
-                        this.fileCollect = fileCollect;
+                        //this.fileCollect = fileCollect;
                         console.log(this.fileCollect);
 
                     } catch (error) {
@@ -242,27 +250,32 @@
                     this.loading = "............报错..........";
                     return;
                 }
-
-                const data = {
-                    action: "uploadOss",
-                    params: {
-                        // fileName: this.fileName,
-                        // fullPath: this.fullPath
-                        fileCollect: this.fileCollect
-                    },
-                };
-                let res = await axios.post(`${this.url}/update.php`, data,this.header).catch(function (error) {
-                    this.errorMsg = "网络错误";
-                });
-                console.log(res)
                 this.successMsg = "";
                 this.errorMsg = "";
-                if (res && res.data && res.data.uploadSuccess){
-                    // this.ossLink = res.data.link;
-                    this.linkList = res.data.linkList;
-                    this.successMsg = res.data.messages;
-                }else {
-                    this.errorMsg = res.data.messages;
+                this.linkList = [];
+                this.filenumber = 0;
+                for(let chunk of this.fileCollect){
+                    const data = {
+                        action: "uploadOss",
+                        params: {
+                            // fileName: this.fileName,
+                            // fullPath: this.fullPath
+                            fileCollect: [chunk]
+                        },
+                    };
+                    let res = await axios.post(`${this.url}/update.php`, data,this.header).catch(function (error) {
+                        this.errorMsg = "网络错误";
+                    });
+                    console.log(res)
+                    if (res && res.data && res.data.uploadSuccess){
+                        // this.ossLink = res.data.link;
+                        //this.linkList = [...this.linkList,...res.data.linkList];
+                        this.loading = "上传中...";
+                        this.filenumber++;
+                        this.successMsg = res.data.messages;
+                    }else {
+                        this.errorMsg = res.data.messages;
+                    }
                 }
 
                 this.loading = "结束";

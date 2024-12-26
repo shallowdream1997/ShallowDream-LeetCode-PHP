@@ -44,10 +44,10 @@ class EnvironmentConfig
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "addBrandFor":
-                $this->curlService = (new CurlService())->test();
+                $this->curlService = (new CurlService())->pro();
                 break;
             case "uploadOss":
-                $this->curlService = (new CurlService())->pro();
+                $this->curlService = (new CurlService())->test();
                 break;
         }
         return $this;
