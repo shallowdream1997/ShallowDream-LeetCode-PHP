@@ -21,18 +21,40 @@
                 <input class="btn btn-primary" type="file" multiple @change="handleFileUpload" />
             </div>
 
-            <div class="mb-3">
-                <button class="btn btn-primary" style="margin-left: 10px" @click="uploadFile">导入文件</button>
-            </div>
+<!--            <div class="mb-3">-->
+<!--                <button class="btn btn-primary" style="margin-left: 10px" @click="uploadFile">导入文件</button>-->
+<!--            </div>-->
+
+<!--            <div class="ui-g-5">-->
+<!--                <button class="btn btn-warning" style="margin-left: 10px" @click="search">扫描已上传的文件</button>-->
+<!--            </div>-->
 
             <div class="ui-g-5">
-                <button class="btn btn-warning" style="margin-left: 10px" @click="search">扫描已上传的文件</button>
+                <button class="btn btn-primary" style="margin-left: 10px" @click="uploadFile">预加载文件</button>
             </div>
+
+<!--            <div class="mb-3" v-if="this.fileCollect && this.fileCollect.length > 0">-->
+<!--                <button class="btn btn-danger" @click="update">确认上传到OSS</button>-->
+<!--            </div>-->
+
+        </div>
+
+        <div class="col-5">
+            <button class="btn btn-warning" style="margin-left: 10px" @click="downloadOss">导出所有文件</button>
+
+
+        </div>
+
+        <div class="col-4">
             <div class="mb-3" v-if="this.fileCollect && this.fileCollect.length > 0">
                 <button class="btn btn-danger" @click="update">确认上传到OSS</button>
             </div>
-
         </div>
+
+        <div class="col-3">
+            <button class="btn btn-warning" style="margin-left: 10px" @click="search">扫描已上传的文件</button>
+        </div>
+
         <div class="col-12">
             <table class="table table-dark table-striped align-middle" v-if="fileCollect && fileCollect.length > 0">
                 <thead>
@@ -272,6 +294,37 @@
                 }
 
             },
+            async downloadOss(){
+                const data = {
+                    action: "uploadOss",
+                    params: {
+                        "searchData": true,
+                        "isExport":true
+                    },
+                };
+                this.header = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 其他自定义头
+                    }
+                };
+                this.url = "http://172.16.29.23:90/php/controller";
+                let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
+                    this.errorMsg = "网络错误";
+                });
+                this.loading = "";
+                this.successMsg = "";
+                this.errorMsg = "";
+                if (res && res.data && res.data.uploadSuccess){
+                    // this.ossLink = res.data.link;
+                    this.linkList = res.data.linkList;
+                    window.open("/php/" + res.data.downloadOssPathUrl);
+                    this.successMsg = res.data.messages;
+                }else {
+                    this.errorMsg = res.data.messages;
+                }
+
+            }
         },
 
 

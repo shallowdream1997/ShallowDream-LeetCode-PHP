@@ -268,11 +268,21 @@ class search
                     $dbDataList[] = json_decode($keyInfo,true);
                 }
             }
+
+            if (isset($params['isExport']) && $params['isExport']){
+                $excelUtils = new ExcelUtils();
+                $downloadOssLink = "上传oss文件_" . date("YmdHis") . ".xlsx";
+                $downloadOssPath = $excelUtils->downloadXlsx(["文件原名", "Oss Key名", "OSS链接",],$dbDataList,$downloadOssLink);
+
+            }
+           // /export/uploads/default/上传oss文件_20241226082547.xlsx
             return [
                 "env" => $env,
                 "uploadSuccess" => true,
                 "messages" => "扫描成功",
                 "linkList" => $dbDataList,
+                "downloadOssPath" => $downloadOssPath,
+                "downloadOssPathUrl" => "/export/uploads/default/" . $downloadOssLink,
             ];
         }
 

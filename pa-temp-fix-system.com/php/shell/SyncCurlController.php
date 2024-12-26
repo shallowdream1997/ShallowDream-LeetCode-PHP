@@ -557,12 +557,27 @@ class SyncCurlController
 
 
     public function buildSql(){
+        $excelUtils = new ExcelUtils();
+        $list = [
+            [
+                "actualFileName" => "sasdasd",
+                "key" => "121412",
+                "link" => "eafggggg"
+            ]
+        ];
 
+//        $list = [
+//            ["sasdasd",121412,"eafggggg"]
+//        ];
+        $filePath = $excelUtils->downloadXlsx(["文件原名","Oss Key名","OSS链接"],$list,"oss文件");
+//        $filePath = $excelUtils->downloadXlsxV2($list,"oss文件");
+        $this->log($filePath);
     }
 }
 
 $curlController = new SyncCurlController();
 //$curlController->updateCeMaterialPlatform();
-$curlController->updatePaProductTempSkuIdNew();
+//$curlController->updatePaProductTempSkuIdNew();
+$curlController->buildSql();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();

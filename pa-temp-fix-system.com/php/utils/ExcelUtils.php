@@ -14,12 +14,12 @@ require_once(dirname(__FILE__) . "/../../extends/PHPExcel-1.8/Classes/PHPExcel.p
  */
 class ExcelUtils
 {
-    private $downPath;
+    public $downPath;
 
     public function __construct($downPath = "")
     {
-        $downDefaultFile = "/var/www/html/testProject/php/download/default/";
-        $this->downPath = !empty($downPath) ? "/var/www/html/testProject/php/download/" . $downPath . "/" : $downDefaultFile;
+        $downDefaultFile = __DIR__ . "/../export/uploads/";
+        $this->downPath = !empty($downPath) ? $downDefaultFile . $downPath : $downDefaultFile . "default/";
     }
 
     /**
@@ -78,6 +78,63 @@ class ExcelUtils
 
         }
     }
+
+    /**
+     * 导出xlsx文件
+     * @param $customHeaders
+     * @param $list
+     * @param string $fileName
+     * @return false|string
+     * @throws PHPExcel_Exception
+     * @throws PHPExcel_Reader_Exception
+     * @throws PHPExcel_Writer_Exception
+     */
+    public function downloadXlsx($customHeaders,$list,$fileName = "")
+    {
+        if (empty($fileName)){
+            $fileName  = "默认导出文件_".date("YmdHis").".xlsx";
+        }
+        // 创建一个新的 PHPExcel 对象
+        $objPHPExcel = new PHPExcel();
+
+        // 设置当前活动的工作表
+        $objPHPExcel->setActiveSheetIndex(0);
+        $sheet = $objPHPExcel->getActiveSheet();
+
+        // 设置表头
+        $columnIndex = 0;
+
+        foreach ($customHeaders as $header) {
+            // 设置自定义表头
+            $sheet->setCellValueByColumnAndRow($columnIndex, 1, $header);
+            $columnIndex++;
+        }
+
+        // 填充数据
+        $rowIndex = 2; // 从第二行开始填充数据
+        foreach ($list as $row) {
+            $columnIndex = 0;
+            foreach ($row as $cellValue) {
+                $sheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $cellValue);
+                $columnIndex++;
+            }
+            $rowIndex++;
+        }
+
+        // 设置文件格式和保存路径
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+
+        // 保存文件到指定路径
+        $filePath = $this->downPath ."{$fileName}";
+        $objWriter->save($filePath);
+
+        return $filePath;
+
+        //// 保存文件
+        //$objWriter->save($this->downPath ."{$fileName}_".date("YmdHis").".xlsx");
+
+    }
+
 
     /**
      * 读取 xls 文件
