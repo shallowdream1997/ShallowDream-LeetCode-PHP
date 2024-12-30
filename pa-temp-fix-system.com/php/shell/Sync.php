@@ -74,5 +74,5 @@ class Sync
 
 }
 //
-//$s = new Sync();
-//$s->syncOptionValListInfoToTest();
+$s = new Sync();
+$s->syncOptionValListInfoToTest();

@@ -617,11 +617,113 @@ class SyncCurlController
 
     }
 
+    public function writeScmsPurchaseBillNo(){
+        $curlSsl = (new CurlService())->pro();
+
+//        $fileContent = (new ExcelUtils())->getXlsxData("../export/修复PMO单.xlsx");
+//        if (sizeof($fileContent) > 0) {
+//            $preSkuList = [];
+//            foreach ($fileContent as $info){
+//                $resp = DataUtils::getResultData($curlSsl->s3009()->post("po-composite-services/getSampleSkuInfoByConditions",[
+//                    "conditionsJsonEncode" => ["titleCn" => $info['tempSkuId']],
+//                    "orderBy" => "",
+//                    "page" => 1,
+//                    "limit" => 2
+//                ]));
+//                if ($resp && count($resp) > 0 && $resp[0]['sampleSkuInfoResponse'] && $resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'] && count($resp[0]['sampleSkuInfoResponse']['sampleSkuInfos']) > 0){
+//                   $skuData = $resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'][0];
+//                    $preSkuList[] = [
+//                        "devSkuPkId" => $info['id'],
+//                        "skuId" => $skuData['skuId']
+//                    ];
+//                }
+//            }
+//
+//            $writeData = [
+//                "prePurchaseBillNo" => "DPMO241220010",
+//                "supplierId" => null,
+//                "ceBillNo" => null,
+//                "qdBillNo" => null,
+//                "pmoBillNo" => "PMO2024122300012",
+//                "purchaseHandleStatus" => 70,
+//                "skuList" => $preSkuList,
+//                "operatorName" => "lixiaomin"
+//            ];
+//
+//            $this->log(json_encode($writeData,JSON_UNESCAPED_UNICODE));
+//            $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $writeData));
+//            if ($getKeyResp){
+//                $this->log(json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
+//            }
+//        }
+
+
+//        $ss=$curlSsl->s3009()->post("market-analysis-reports/deleteSkuIdInfoBatchForCombine",[
+//           "skuIdInfoIdList" => ["6768bf5522461d4bae82b8cc"]
+//        ]);
+//        if ($ss){
+//
+//        }
+
+        $data = DataUtils::getResultData($curlSsl->s3009()->get("market-analysis-reports/getMainSkuIdInfo",[
+            "batch" => "DPMO241220010",
+//            "batch" => "bmw grille -1",
+        ]));
+        if ($data){
+            $mainInfo = $data[0];
+            $mainInfo['skuIdNumber'] = 82;
+            $ss=$curlSsl->s3009()->put("market-analysis-reports/updateMainSkuIdInfoV2/{$mainInfo['_id']}",$mainInfo);
+            if ($ss){
+
+            }
+        }
+
+
+
+
+
+
+    }
+
+    public function saveReceiveIpCheck(){
+        $curlSsl = (new CurlService())->pro();
+        $info = DataUtils::getPageListInFirstData($curlSsl->s3010()->get("problem-product-infos/queryPage",[
+            "skuId" => "a24080100ux0303",
+            "type" => "tort",
+        ]));
+        if ($info){
+            $info['remark'] = "Product IP Issue";
+            $result = DataUtils::getPageListInFirstData($curlSsl->s3010()->put("problem-product-infos/{$info['_id']}",$info));
+            $this->log(json_encode($result,JSON_UNESCAPED_UNICODE));
+            //再查
+//            $infoAft = DataUtils::getPageListInFirstData($curlSsl->s3010()->get("problem-product-infos/queryPage",[
+//                "skuId" => "a24080100ux0303",
+//                "type" => "tort",
+//            ]));
+//
+//            $data = [
+//                "id" => $infoAft['_id'],
+//                "lastModifiedOn" => $infoAft['modifiedOn'],
+//                "remark" => "Product IP Issue",
+//                "newBrandName" => "unbranded",
+//                "url" => "/",
+//                "description" => "/",
+//                "userName" => "fangxiaojuan"
+//            ];
+//            $resp = DataUtils::getResultData($curlSsl->s3010()->post("problem-product-infos/saveReceiveIpCheck",$data));
+//            if ($resp){
+//                $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+//            }
+        }
+    }
+
 }
 
 $curlController = new SyncCurlController();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
-$curlController->writeProductBaseFba();
+//$curlController->writeProductBaseFba();
+//$curlController->writeScmsPurchaseBillNo();
+$curlController->saveReceiveIpCheck();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();
