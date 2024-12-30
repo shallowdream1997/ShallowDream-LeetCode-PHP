@@ -692,7 +692,10 @@ class SyncCurlController
             "type" => "tort",
         ]));
         if ($info){
-            $info['remark'] = "Product IP Issue";
+//            $info['remark'] = "Product IP Issue";
+//            $info['newBrandName'] = "K LOGO";
+//            $info['url'] = "https://branddb.wipo.int/en/advancedsearch/brand/US502015086736339";
+            $info['status'] = 'new';
             $result = DataUtils::getPageListInFirstData($curlSsl->s3010()->put("problem-product-infos/{$info['_id']}",$info));
             $this->log(json_encode($result,JSON_UNESCAPED_UNICODE));
             //再查
