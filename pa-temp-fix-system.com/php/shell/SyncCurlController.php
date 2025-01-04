@@ -400,7 +400,7 @@ class SyncCurlController
     public function updatePaProductTempSkuIdNew()
     {
         //切换环境，test - 测试。pro - 生产
-        $env = "test";
+        $env = "pro";
 
         //todo 先修复空T号 以及 T号为数字，字母等无正确正则匹配的T号，重新生成T号
 //        $page = 1;
@@ -455,7 +455,13 @@ class SyncCurlController
               }
             ])
          */
-        $fileContent = (new ExcelUtils())->getXlsxData("../export/重复T号test.xlsx");
+        //$fileContent = (new ExcelUtils())->getXlsxData("../export/重复T号test.xlsx");
+
+        $fileContent = [
+            [
+                "tempSkuId" => "T241223605620ux001"
+            ]
+        ];
         if (sizeof($fileContent) > 0) {
             foreach ($fileContent as $info){
                 $oldTMapNewT = array();
@@ -727,6 +733,6 @@ $curlController = new SyncCurlController();
 //$curlController->updatePaProductTempSkuIdNew();
 //$curlController->writeProductBaseFba();
 //$curlController->writeScmsPurchaseBillNo();
-$curlController->saveReceiveIpCheck();
+//$curlController->saveReceiveIpCheck();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();
