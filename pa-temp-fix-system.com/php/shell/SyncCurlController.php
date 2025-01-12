@@ -726,9 +726,53 @@ class SyncCurlController
         }
     }
 
+
+    public function updateSampleSku(){
+
+
+
+        $env = "pro";
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/留样CP.xlsx");
+
+        if (sizeof($fileContent) > 0) {
+            $skuIdList = array_column($fileContent,"sku_id");
+
+            $skuCPList = [];
+            foreach (array_chunk($skuIdList,200) as $chunk){
+                $curlService = new CurlService();
+                $resp = $curlService->$env()->s3009()->get("market-analysis-reports/getSkuIdInfoByCpBillNoList", [
+                    "cpBillNoListJsonEncode" => json_encode($chunk,JSON_UNESCAPED_UNICODE)
+                ]);
+                $list = DataUtils::getQueryList($resp);
+
+                if (count($list) > 0){
+                    foreach ($list as $info){
+                        $skuCPList[] = [
+                            "sequenceId" => $info['sequenceId'],
+                            "skuId" => $info['skuId'],
+                            "ceBillNo" => $info['ceBillNo']
+                        ];
+                    }
+                }
+            }
+
+
+
+            $excelUtils = new ExcelUtils();
+            $downloadOssLink = "sku和Cp号对应关系_" . date("YmdHis") . ".xlsx";
+            $downloadOssPath = $excelUtils->downloadXlsx(["CP号", "skuId", "CE单"],$skuCPList,$downloadOssLink);
+
+
+
+        }
+
+
+    }
+
 }
 
 $curlController = new SyncCurlController();
+$curlController->updateSampleSku();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
 //$curlController->writeProductBaseFba();

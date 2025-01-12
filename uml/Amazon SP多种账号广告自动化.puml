@@ -5,7 +5,6 @@ autonumber
 actor "customer" as customer
 
 box "product_operation_php_restful" #lightBlue
-
 participant "UploadProcessAliyunController" as uploadPrecess
 participant "PA自动化下架广告接口" as paAutoAmazonSP
 end box

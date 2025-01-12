@@ -157,11 +157,11 @@
                 //做转义
                 let addskuIdList = this.addSkuIdString.split("\n");
                 addskuIdList =  [...new Set(addskuIdList.filter(item => item))];
-                if (addskuIdList.length > 500){
-                    this.errorMsg = "sku添加过多，请不要超过500个";
-                    this.loading = "............报错..........";
-                    return;
-                }
+                // if (addskuIdList.length > 500){
+                //     this.errorMsg = "sku添加过多，请不要超过500个";
+                //     this.loading = "............报错..........";
+                //     return;
+                // }
                 const data = {
                     action: "paSampleSku",
                     params: {

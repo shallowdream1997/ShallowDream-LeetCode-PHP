@@ -148,7 +148,7 @@ class ExcelUtils
         $objPHPExcel = PHPExcel_IOFactory::load($fileName);
         $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
         $cacheSettings = array(
-            'memoryCacheSize' => '512MB'
+            'memoryCacheSize' => '1024MB'
         );
         PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
         $sheetNames = $objPHPExcel->getSheetNames();
