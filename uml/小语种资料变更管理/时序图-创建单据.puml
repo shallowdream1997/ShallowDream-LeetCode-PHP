@@ -1,77 +1,114 @@
 @startuml
-autonumber
 title 资料变更单据创建
+autonumber
 
-actor customer as Customer
+actor customer
 
-box "应用项目"
-    participant "product_operation_js_angular5"
-    participant "pa-biz-application"
-    participant "pa-biz-service"
-    participant "product_operation_listing_management_nodejs_app"
-    participant "translation_nodejs_app"
-    participant "platform-config-service"
-    participant "platform-message-service"
-    participant "RocketMQ"
-    participant "ux168-log-service"
-    participant "mysql"
-    participant "mongo"
+box "product_operation_js_angular5" #LightBlue
+    participant page1 as "资料编辑-保存-修改属性更新"
+    participant page2 as "资料编辑-保存-修改侵权禁词"
+    participant page3 as "批量资料编辑"
 end box
 
-note left of customer
-    customer进入page1或page2或者page3,
-    保存资料后出都会进入到node1调用资料更新的接口
-end note
+box "pa-biz-application" #LightGreen
+    participant app1 as "处理资料变更单据服务"
+end box
 
-customer -> "product_operation_js_angular5" : 进入page1或page2或page3
-"product_operation_js_angular5" -> "product_operation_listing_management_nodejs_app" : 保存资料后进入node1调用资料更新接口，传递param1（旧数据）
-"product_operation_listing_management_nodejs_app" -> "mongo" : 数据入库mongo1，获取param2（新数据）
-"product_operation_listing_management_nodejs_app" -> "product_operation_listing_management_nodejs_app" : 对比param1和param2获取diff1
-"product_operation_listing_management_nodejs_app" -> "pa-biz-application" : 以diff1和skuid作为入参进入app1
+box "pa-biz-service" #LightYellow
+    participant service1 as "初始化创建资料变更单据"
+    participant service2 as "更新资料变更单据"
+    participant service3 as "资料翻译+禁词检查+长度校验服务"
+end box
 
-"pa-biz-application" -> "platform-config-service" : 调用config1获取配置参数
-"pa-biz-application" -> "pa-biz-application" : 根据配置筛选数据，生成batch_no等构建object对象，设置apply_status = 10(新建)
-"pa-biz-application" -> "pa-biz-service" : 调用service1，存储数据到sql1
-"pa-biz-service" -> "pa-biz-service" : 返回主键id给service1
-"pa-biz-service" -> "RocketMQ" : 调用mq1，初始化process_status = 10(等待翻译)
+box "product_operation_listing_management_nodejs_app" #LightCoral
+    participant node1 as "updateProductSku接口更新资料服务"
+    participant node2 as "资料变更前后差异比对服务"
+    participant node3 as "禁词检查"
+end box
 
-"RocketMQ" -> "pa-biz-service" : mq1接收主键id，进入service3的autoTranslationReferenceAttribute方法
-"pa-biz-service" -> "pa-biz-service" : 更新process_status = 20(翻译中)
-"pa-biz-service" -> "translation_nodejs_app" : 调用translation
-alt 翻译失败（无值或调用失败）
-    "translation_nodejs_app" -> "pa-biz-service" : 返回结果
-    "pa-biz-service" -> "pa-biz-service" : 更新process_status = 40(翻译失败)
-    "pa-biz-service" -> "RocketMQ" : 中止mq1
-else
-    "translation_nodejs_app" -> "pa-biz-service" : 返回结果
-    "pa-biz-service" -> "pa-biz-service" : 更新process_status = 30(翻译完成)
-    "pa-biz-service" -> "pa-biz-service" : 根据翻译后值等调service3的autoCheckTranslationReferenceAttributeForbidden
-    "pa-biz-service" -> "pa-biz-service" : 更新process_status = 60(禁词检查中)
-    "pa-biz-service" -> "product_operation_listing_management_nodejs_app" : 调用node3
-    alt node3调用失败（超时等）
-        "product_operation_listing_management_nodejs_app" -> "pa-biz-service" : 返回结果
-        "pa-biz-service" -> "pa-biz-service" : 更新process_status = 80(禁词检查失败)
-        "pa-biz-service" -> "RocketMQ" : 中止mq1
-    else
-        "product_operation_listing_management_nodejs_app" -> "pa-biz-service" : 返回forbidden_result
-        "pa-biz-service" -> "pa-biz-service" : 遍历forbidden_result，记录禁词内容forbidden_value_list
-        "pa-biz-service" -> "pa-biz-service" : 更新process_status = 70(禁词检查完成)
-        "pa-biz-service" -> "pa-biz-service" : 调用service3的autoCheckAttributeLength
-        "pa-biz-service" -> "pa-biz-service" : 更新process_status = 90(长度检查中)
-        "pa-biz-service" -> "platform-config-service" : 从config1获取不同平台渠道的属性的长度条件配置
-        alt 配置获取失败
-            "platform-config-service" -> "pa-biz-service" : 返回结果
-            "pa-biz-service" -> "pa-biz-service" : 更新process_status = 110(长度检查失败)
-            "pa-biz-service" -> "RocketMQ" : 中止mq1
-        else
-            "platform-config-service" -> "pa-biz-service" : 返回长度配置
-            "pa-biz-service" -> "pa-biz-service" : 比较长度得到attribute_value_length_result，更新process_status = 100(长度检查成功)
-        end
-    end
+box "translation_nodejs_app" #LightCyan
+    participant translation as "翻译"
+end box
+
+box "platform-config-service" #LightGoldenRodYellow
+    participant config1 as "配置"
+end box
+
+box "platform-message-service" #LightGray
+    participant msg1 as "钉钉通知"
+end box
+
+box "RocketMQ" #LightPink
+    participant mq1 as "资料翻译+禁词检查MQ"
+end box
+
+box "mysql" #LightSalmon
+    participant sql1 as "sms_material_changed_notice_doc"
+    participant sql2 as "sms_material_changed_batch_export_apply"
+end box
+
+box "mongo" #LightGreenYellow
+    participant mongo1 as "product-sku"
+    participant mongo2 as "product-sku-log"
+end box
+
+customer -> page1 : 进入资料编辑页面
+customer -> page1 : 保存资料
+page1 -> node1 : 调用更新资料接口
+node1 -> mongo1 : 更新旧数据
+node1 -> mongo1 : 新数据入库
+node1 -> node2 : 对比旧数据与新数据
+node2 -> node2 : 获取数据变更差异
+node2 --> customer : 返回diff1
+
+customer -> app1 : 调用处理资料变更单据服务(diff1)
+app1 -> config1 : 获取配置参数
+config1 --> app1 : 返回平台、渠道、属性
+
+app1 -> app1 : 遍历diff1生成单据
+app1 -> service1 : 存储单据到sql1
+service1 --> app1 : 返回主键id
+
+app1 -> mq1 : 初始化process_status = 10(等待翻译)
+mq1 -> service3 : autoTranslationReferenceAttribute
+service3 -> translation : 调用翻译
+translation --> service3 : 返回翻译结果
+
+alt 翻译成功
+    service3 -> mq1 : 更新process_status = 30(翻译完成)
+else 翻译失败
+    service3 -> mq1 : 更新process_status = 40(翻译失败)
+    
 end
 
-"pa-biz-service" -> "pa-biz-service" : 整理翻译内容、禁词内容、长度校验结果等，更新process_status = 120(全部检查完毕)，apply_status = 20(待审核)
-"pa-biz-service" -> "pa-biz-service" : 调用service2的更新资料变更接口update，存储到sql1对应主键id的单据下
-"pa-biz-service" -> "RocketMQ" : 中止mq1
+mq1 -> service3 : autoCheckTranslationReferenceAttributeForbidden
+service3 -> node3 : 调用禁词检查
+node3 --> service3 : 返回禁词结果
+
+alt 禁词检查成功
+    service3 -> mq1 : 更新process_status = 70(禁词检查完成)
+else 禁词检查失败
+    service3 -> mq1 : 更新process_status = 80(禁词检查失败)
+    
+end
+
+mq1 -> service3 : autoCheckAttributeLength
+service3 -> config1 : 获取属性长度条件配置
+config1 --> service3 : 返回长度条件
+
+alt 长度检查成功
+    service3 -> mq1 : 更新process_status = 100(长度检查成功)
+else 长度检查失败
+    service3 -> mq1 : 更新process_status = 110(长度检查失败)
+    
+end
+
+mq1 -> service2 : 更新资料变更的接口
+service2 -> sql1 : 存储到sql1
+sql1 --> service2 : 返回主键id
+
+mq1 -> mq1 : 更新process_status = 120(全部检查完毕)
+mq1 -> mq1 : 更新apply_status = 20(待审核)
+
 
 @enduml
