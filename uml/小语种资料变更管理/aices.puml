@@ -1,0 +1,91 @@
+@startuml
+title 资料变更单据创建
+autonumber
+
+actor customer
+
+box "product_operation_js_angular5" #LightBlue
+    participant page1
+    participant page2
+    participant page3
+end box
+
+box "pa-biz-application" #LightGreen
+    participant app1
+end box
+
+box "pa-biz-service" #LightYellow
+    participant service1
+    participant service2
+    participant service3
+end box
+
+box "product_operation_listing_management_nodejs_app" #LightCoral
+    participant node1
+    participant node2
+    participant node3
+end box
+
+box "translation_nodejs_app" #LightGoldenRodYellow
+    participant translation
+end box
+
+box "platform-config-service" #LightCyan
+    participant config1
+end box
+
+box "platform-message-service" #LightPink
+    participant msg1
+end box
+
+box "RocketMQ" #LightGray
+    participant mq1
+end box
+
+box "mysql" #LightSalmon
+    participant sql1
+    participant sql2
+end box
+
+box "mongo" #LightSlateGray
+    participant mongo1
+    participant mongo2
+end box
+
+customer -> page1: 进入资料编辑-保存-修改属性更新
+page1 -> node1: 调用更新资料接口\nparam1 = 旧数据
+node1 -> mongo1: 更新新数据
+node1 -> node2: 比对旧新数据\n获取diff1
+
+diff1 -> app1: 调用处理资料变更单据服务
+
+app1 -> config1: 获取配置参数
+config1 -> app1: 返回平台、渠道、属性等
+
+app1 -> service1: 存储资料变更单据
+service1 -> sql1: 存储数据
+sql1 -> service1: 返回主键id
+
+service1 -> mq1: 初始化process_status = 10
+mq1 -> service3: autoTranslationReferenceAttribute
+service3 -> translation: 调用翻译
+translation -> service3: 返回翻译结果
+
+service3 -> mq1: 更新process_status
+alt 翻译失败
+    mq1 -> msg1: 更新process_status=40
+else 翻译成功
+    service3 -> node3: 调用禁词检查
+    node3 -> service3: 返回禁词结果
+    service3 -> mq1: 更新process_status
+end
+
+mq1 -> service3: autoCheckAttributeLength
+service3 -> mq1: 更新process_status
+
+alt 校验完成
+    mq1 -> service2: 更新资料变更的接口
+    service2 -> sql1: 存储数据
+end
+
+@enduml

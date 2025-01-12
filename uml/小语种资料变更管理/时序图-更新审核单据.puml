@@ -1,32 +1,29 @@
 @startuml
-title 资料变更单据创建
+title 资料变更单据审核更新
 autonumber
 
 actor customer
 
-box "product_operation_js_angular5" #LightBlue
-    participant page1 as "资料编辑-保存"
-    participant page3 as "批量资料编辑"
+box "pa-biz-web" #LightBlue
+    participant page1 as "更新"
+    participant page2 as "忽略"
+    participant page3 as "批量审核更新"
 end box
 
 box "pa-biz-application" #LightGreen
-    participant app1 as "处理资料变更单据服务"
+    participant app1 as "处理资料变更单据应用"
+    participant app2 as "解析文件，导入审核记录"
 end box
 
 box "pa-biz-service" #LightYellow
-    participant service1 as "初始化创建资料变更单据"
     participant service2 as "更新资料变更单据"
     participant service3 as "资料翻译+禁词检查+长度校验服务"
+    participant service4 as "导入审核记录"
 end box
 
 box "product_operation_listing_management_nodejs_app" #LightCoral
     participant node1 as "updateProductSku接口更新资料服务"
-    participant node2 as "资料变更前后差异比对服务"
     participant node3 as "禁词检查"
-end box
-
-box "translation_nodejs_app" #LightCyan
-    participant translation as "翻译"
 end box
 
 box "platform-config-service" #LightGoldenRodYellow
@@ -51,50 +48,34 @@ box "mongo" #LightYellow
     participant mongo2 as "product-sku-log"
 end box
 
-customer -> page1 : 进入资料编辑页面,保存资料
+customer -> page1 : 进入资料变更通知页面
 
-page1 -> node1 : 调用更新资料接口
-node1 -> mongo1 : 更新旧数据
-mongo1 --> node1 : 返回新数据
-note over node1#yellow: 处理product-sku的变更数据，一直到product-sku-log创建，获取新数据newProductSkuInfo
-alt 保存的类型为UpdateAttribute或者UpdateForbiddenWord
-
-node1 -> node2 :
-note over node1#yellow: 旧数据oldProductSkuInfo和新数据newProductSkuInfo做差异对比
-node2 --> node1 : 返回差异 diffProductSkuInfo
+alt 单据的apply_status != 20(待审核)
+note over page1#red: 提示报错
 end
 
-note over node1:把diffProductSkuInfo和skuId传参
-node1 -> app1 : 调用处理资料变更单据服务
-app1 -> config1 : 获取配置参数
-config1 --> app1 : 返回可以创建资料变更单据的配置参数
+page3 -> page3 : 前端导入文件，上传到oss
 
-loop diff of diffProductSkuInfo
-note over app1:diff，每个属性都和允许资料变更的配置参数做判断
-alt diff的渠道和attribute_name属性名称 和 config相等
+note over page3#yellow: 处理文件到oss之后，获取oss链接
 
-app1 -> service1 : 创建apply_status = 10(新建)且process_status=0(新建)的单据
-service1 -> sql1 : 存储数据库
-sql1 --> service1 : 返回主键id
-service1 -> mq1 : 发送mq，开始自动翻译
-note over service1#yellow:更新资料变更单据process_status = 10(等待翻译)
+page3 -> app2 : 解析OSS文件，导入审核记录
 
-mq1 -> service3 : 接收mq
-note over service3#yellow:autoCheckTranslationReferenceAttributeForbidden自动翻译和检查禁词等
 
-group 自动翻译
-note over service3#yellow:autoTranslationReferenceAttribute
+app2 -> service4 : 调用处理资料变更单据服务
 
-service3 -> translation : 调用翻译
-translation --> service3 : 返回翻译结果
+service4 -> service2 : 根据skuId分组，每个skuId几个属性，开始进行更新资料单据
 
-alt 翻译成功
-    service3 -> service3 : 更新process_status = 30(翻译完成)
-else 翻译失败
-    service3 -> mq1 : 更新process_status = 40(翻译失败)
-    note over service3#red:中止流程
-end
-end
+service2 -> mq1 : 发起更新处理资料单据的MQ
+service2 -> sql1 : 更新apply_status=30(资料更新中)+process_status=50(等待禁词检查)
+
+note over service3#yellow:按照skuId维度，整理每个skuId 的变更属性 = materialChangedAttrBySkuList
+
+loop info of materialChangedAttrBySkuList
+mq1 -> service3 : 消费mq，开始进行禁词检查
+
+
+note over service3#yellow:autoCheckTranslationReferenceAttributeForbidden检查禁词等
+
 
 group 自动禁词检查
 note over service3#yellow:autoCheckReferenceAttributeForbidden
@@ -135,28 +116,39 @@ end
 end
 
 note over service3#yellow: 平台，渠道，skuId，属性值，属性内容，翻译结果，禁词结果，超长长度等整理
+
+alt 存在禁词 或者 存在超长长度
+
 service3 -> service2 : 更新资料变更的接口
-service2 -> service2 : 更新apply_status=20(待审核)+更新process_status=120(全部检查完毕)
+service2 -> service2 : 更新apply_status=40(检查不通过)+更新process_status=120(全部检查完毕)
 service2 -> sql1 : 存储到sql1
 sql1 --> service2 : 返回结果
 
+note over service2#red:中止流程
 
-note over service2#red:流程结束
+else 条件都符合通过
 
+service3 -> service2 : 更新资料变更的接口
+service2 -> service2 : 更新apply_status=50(检查通过)+更新process_status=120(全部检查完毕)
+service2 -> sql1 : 存储到sql1
+sql1 --> service2 : 返回结果
 
+note over service2#yellow: 完成检查后，里面就开始执行资料更新了(同一个sku的不同属性)
+service2 -> service2 : 更新apply_status=60(正在更新中)
 
+service2 -> node1 : 更新资料
+node1 -> service2 : 返回更新结果
 
-
-
-
-
-
-
-
-
-
+alt 有更新错误
+service2 -> service2 : 更新apply_status=80(更新失败)
+service2 -> sql1 : 存储到sql1
+note over service2#red:中止流程
+end 更新成功
+service2 -> service2 : 更新apply_status=70(已更新)
+service2 -> sql1 : 存储到sql1
+note over service2#red:中止流程
 end
 end
-
+service2 -> msg1 : 发送钉钉通知
 
 @enduml

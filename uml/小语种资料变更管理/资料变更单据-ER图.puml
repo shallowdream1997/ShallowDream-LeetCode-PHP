@@ -1,0 +1,45 @@
+@startuml
+
+entity "sms_sku_material_changed_doc" as sms_sku_material_changed_doc {
+    id : LONG INT
+    doc_number : VARCHAR
+    platform : VARCHAR
+    channel : VARCHAR
+    seller_id : VARCHAR
+    sku_id : VARCHAR
+    company_id : VARCHAR
+    attribute_name : VARCHAR
+    before_changed_attribute_value : VARCHAR
+    after_changed_attribute_value : VARCHAR
+    before_changed_translation_attribute_value : VARCHAR
+    after_changed_translation_attribute_value : VARCHAR
+    is_over_str_length : BOOLEAN
+    over_str_length_reason : VARCHAR
+    exist_forbidden_word_reason : VARCHAR
+    update_reason : VARCHAR
+    apply_status : TINYINT
+    process_status : TINYINT
+    remark : TEXT
+    apply_user : VARCHAR
+    batch_apply_id : INT
+}
+
+entity "sms_sku_batch_import_material_changed_file" as sms_sku_batch_import_material_changed_file {
+    id : LONG INT
+    doc_total_count : INT
+    operator : VARCHAR
+    platform : VARCHAR
+    import_file_link : VARCHAR
+    import_file_result : VARCHAR
+}
+
+entity "sms_sku_material_doc_and_import_relation" as sms_sku_material_doc_and_import_relation {
+    id : LONG INT
+    doc_id : LONG INT
+    import_id : LONG INT
+}
+
+sms_sku_material_changed_doc ||--o{ sms_sku_material_doc_and_import_relation : "batch_apply_id"
+sms_sku_batch_import_material_changed_file }o--|| sms_sku_material_doc_and_import_relation : "id"
+
+@enduml

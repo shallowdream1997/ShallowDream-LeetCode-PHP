@@ -83,3 +83,36 @@ mq1 接收主键id，mq1 进入 service3 下的一个方法autoTranslationRefere
 然后开始调用service3下的一个方法autoCheckAttributeLength，开始自动检查属性长度，更新process_status = 90(长度检查中), 从config1获取不同平台渠道的属性的长度条件配置, 用这个配置里面的长度值，和属性的长度size比较大小得知长度结果attribute_value_length_result，超过配置长度，就更新process_status=100(长度检查成功)，如果配置获取失败就process_status=110(长度检查失败),并且中止mq1,
 在三个校验方法全部完成后，将翻译内容 changed_after_reference_attribute_translation_value，禁词内容forbidden_value_list，长度校验结果attribute_value_length_result等数据，process_status=120(全部检查完毕),apply_status=20(待审核),通过调用service2 的更新资料变更的接口 update, 再存储进入sql1，都存到对应主键id的单据下。
 至此，路程A结束，中止mq1.
+
+
+
+
+
+帮我设计一个ER图，有三张表，
+表1是sql表：资料变更单据表 sms_sku_material_changed_doc,
+表2是sql表：资料变更批量导入更新表 sms_sku_batch_import_material_changed,
+表3是Mongo表：product_sku。
+
+表1 有以下几个字段，单据号doc_number、平台platform、渠道channel、账号seller_id、sku_id、company_id所属商家、attribute_name属性名、before_changed_attribute_value变更前属性值、after_changed_attribute_value变更后属性值
+before_changed_translation_attribute_value变更前翻译属性值、after_changed_translation_attribute_value变更后翻译属性值、is_over_str_length长度是否超长、over_str_length_reason字符长度超长原因、
+exist_forbidden_word_reason禁词检查结果、update_reason更新原因、apply_status审批状态、process_status流程状态、remark备注、apply_user审核人
+
+表2 有以下字段，平台 platform、
+
+
+
+帮我设计一个ER图，有三张表，
+表1是sql表：资料变更单据表 sms_sku_material_changed_doc,
+表2是sql表：资料变更批量导入更新文件表 sms_sku_batch_import_material_changed_file,
+表3是sql表：变更单据和导入更新关系表 sms_sku_material_doc_and_import_relation
+
+
+表1 有以下几个字段，主键id、单据号doc_number、平台platform、渠道channel、账号seller_id、sku_id、company_id所属商家、attribute_name属性名、before_changed_attribute_value变更前属性值、after_changed_attribute_value变更后属性值
+before_changed_translation_attribute_value变更前翻译属性值、after_changed_translation_attribute_value变更后翻译属性值、is_over_str_length长度是否超长、over_str_length_reason字符长度超长原因、
+exist_forbidden_word_reason禁词检查结果、update_reason更新原因、apply_status审批状态、process_status流程状态、remark备注、apply_user审核人、batch_apply_id 批量审核id
+
+表2 有：主键id、doc_total_count单据总数、operator操作人、平台platform、import_file_link 导入文件链接、import_file_result 导入结果明细文件链接
+
+表3 有：主键id、单据id：doc_id、导入id：import_id
+
+其中表1 的batch_apply_id 和 表2 的主键id 是可能存在多对多关联关联
