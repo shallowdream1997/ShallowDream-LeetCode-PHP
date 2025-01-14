@@ -3,6 +3,7 @@ require dirname(__FILE__) . '/../../vendor/autoload.php';
 
 require_once dirname(__FILE__) . '/../requiredfile/requiredChorm.php';
 require_once dirname(__FILE__) . '/EnvironmentConfig.php';
+require_once dirname(__FILE__) . '/../shell/ProductSkuController.php';
 
 /**
  * 查询接口
@@ -291,6 +292,41 @@ class search
             "data" => []
         ];
     }
+
+    /**
+     * 查询采购清单对应开发
+     * @param $params
+     * @return array
+     */
+    public function getPmoData($params)
+    {
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+        if (isset($params['batchList']) && $params['batchList']) {
+
+            $productSkuController = new ProductSkuController();
+            $downloadOssLink = "PMO开发人员_" . date("YmdHis") . ".xlsx";
+            $link = $productSkuController->getPmoData($downloadOssLink,$params['batchList'], $env);
+
+            if ($link){
+                return [
+                    "env" => $env,
+                    "messages" => "下载成功",
+                    "data" => [
+                        "downLink" => "/export/uploads/default/" . $downloadOssLink
+                    ]
+                ];
+            }
+
+        }
+
+        return [
+            "env" => $env,
+            "data" => []
+        ];
+    }
+
+
 }
 
 
@@ -345,6 +381,10 @@ switch ($data['action']) {
     case "uploadOss":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->uploadOss($params);
+        break;
+    case "getPmoData":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->getPmoData($params);
         break;
 }
 

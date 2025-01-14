@@ -979,4 +979,63 @@ class ProductSkuController
         }
 
     }
+
+
+    public function getPmoData($downloadOssLink,$list = [],$env = "test"){
+        if (count($list) == 0){
+            $fileContent = (new ExcelUtils())->getXlsxData("../export/PMO.xlsx");
+            if (sizeof($fileContent) > 0) {
+                $list = array_column($fileContent,"批次号");
+            }
+        }
+
+        if (count($list) == 0){
+            return null;
+        }
+        $pmoList = [];
+        foreach (array_chunk($list,200) as $chunk){
+            $curlService = new CurlService();
+            $prePurchaseList = DataUtils::getNewResultData($curlService->$env()->gateway()->getModule('pa')->getWayPost($curlService->module . "/sms/sku/info/material/v1/findPrePurchaseBillWithSkuForSkuMaterialInfo", $chunk));
+
+            if (count($prePurchaseList) > 0) {
+                foreach ($prePurchaseList as $mainList) {
+                    $pmoList[$mainList['prePurchaseBillNo']] = $mainList;
+                }
+            }
+        }
+
+        if (count($pmoList) > 0){
+            $exportList = [];
+            foreach ($list as $batch){
+                if (isset($pmoList[$batch])){
+                    $d = $pmoList[$batch];
+                    $salesUserNameInfo = (new RequestUtils($env))->getUserSheetByUserName($d['salesUserName']);
+                    $developerUserNameInfo = (new RequestUtils($env))->getUserSheetByUserName($d['developerUserName']);
+                    $sourceDeveloperUserNameInfo = (new RequestUtils($env))->getUserSheetByUserName($d['sourceDeveloperUserName']);
+
+                    $exportData = [];
+                    $exportData['batchName'] = $batch;
+                    $exportData['pmoBillNo'] = $d['pmoBillNo'];
+                    $exportData['salesUserName'] = $salesUserNameInfo['cName'];
+                    $exportData['developerUserName'] = $developerUserNameInfo['cName'];
+                    $exportData['sourceDeveloperUserName'] = $sourceDeveloperUserNameInfo['cName'];
+                    $exportList[] = $exportData;
+                }else{
+                    $exportData = [];
+                    $exportData['batchName'] = $batch;
+                    $exportData['pmoBillNo'] = "3.0清单没有这个批次";
+                    $exportData['salesUserName'] = "3.0清单没有这个批次";
+                    $exportData['developerUserName'] = "3.0清单没有这个批次";
+                    $exportData['sourceDeveloperUserName'] = "3.0清单没有这个批次";
+                    $exportList[] = $exportData;
+                }
+            }
+
+            $excelUtils = new ExcelUtils();
+            $downloadOssPath = $excelUtils->downloadXlsx(["批次号", "PMO", "选品运营","选品开发","货源开发"],$exportList,$downloadOssLink);
+
+        }
+        return $downloadOssPath;
+    }
+
 }
