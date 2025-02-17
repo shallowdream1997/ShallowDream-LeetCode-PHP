@@ -657,6 +657,39 @@ class update
         ];
     }
 
+    /**
+     * 登记个人IP
+     * @param $params
+     * @return array
+     */
+    public function registerIp($params)
+    {
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+
+
+        $redisService = new RedisService();
+
+        $ip = $_SERVER['REMOTE_ADDR'];;
+        $dbData = [
+            "name" => $params['userName'],
+            "ip" => $ip
+        ];
+        $redisService->hSet(REDIS_USERNAME_IP_KEY . "_{$env}", $ip,json_encode($dbData,JSON_UNESCAPED_UNICODE));
+
+        $list = [];
+        $dbDataList = $redisService->hGetAll(REDIS_USERNAME_IP_KEY . "_{$env}");
+        if (count($dbDataList) > 0){
+            foreach ($dbDataList as $key => $keyInfo){
+                $list[] = json_decode($keyInfo,true);
+            }
+        }
+
+        return [
+            "env" => $env,
+            "data" => $list
+        ];
+    }
 
 }
 
@@ -708,6 +741,10 @@ switch ($data['action']) {
     case "uploadOss":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->uploadOss($params);
+        break;
+    case "registerIp":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->registerIp($params);
         break;
 }
 

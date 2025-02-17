@@ -52,6 +52,9 @@ class EnvironmentConfig
             case "getPmoData":
                 $this->curlService = (new CurlService())->pro();
                 break;
+            case "registerIp":
+                $this->curlService = (new CurlService())->test();
+                break;
         }
         return $this;
     }

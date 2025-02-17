@@ -326,6 +326,50 @@ class search
         ];
     }
 
+    /**
+     * 登记个人IP
+     * @param $params
+     * @return array
+     */
+    public function registerIp($params)
+    {
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+
+        $redisService = new RedisService();
+
+        $ipMap = [];
+        $dbDataList = $redisService->hGetAll(REDIS_USERNAME_IP_KEY . "_{$env}");
+        if (count($dbDataList) > 0){
+            foreach ($dbDataList as $key => $keyInfo){
+                $old = json_decode($keyInfo,true);
+                $ipMap[$old['ip']] = $ipMap['name'] ?: "";
+            }
+        }
+
+        $ip = $_SERVER['REMOTE_ADDR'];
+        if (!isset($ipMap[$ip])){
+            $dbData = [
+                "name" => "新用户",
+                "ip" => $ip
+            ];
+            $redisService->hSet(REDIS_USERNAME_IP_KEY . "_{$env}", $ip,json_encode($dbData,JSON_UNESCAPED_UNICODE));
+        }
+
+        $list = [];
+        $dbDataList = $redisService->hGetAll(REDIS_USERNAME_IP_KEY . "_{$env}");
+        if (count($dbDataList) > 0){
+            foreach ($dbDataList as $key => $keyInfo){
+                $list[] = json_decode($keyInfo,true);
+            }
+        }
+
+        return [
+            "env" => $env,
+            "data" => $list
+        ];
+    }
+
 
 }
 
@@ -385,6 +429,10 @@ switch ($data['action']) {
     case "getPmoData":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->getPmoData($params);
+        break;
+    case "registerIp":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->registerIp($params);
         break;
 }
 
