@@ -905,6 +905,31 @@ class SyncCurlController
 
         }
 
+        $page = $pages = 1;
+        $allList = [];
+        do{
+            $resp = $curlService->pro()->s3047()->get("pa_vertical_daily_saless/queryPage",[
+                "limit" => 1000,
+                "year" => "2025",
+                "page" => $page
+            ]);
+            $list = DataUtils::getPageList($resp);
+            if (count($list['data']) > 0){
+                $allList = array_merge($allList,$list['data']);
+                $pages = $list['pages'];
+            }else{
+                break;
+            }
+            $page++;
+        }while($page <= $pages);
+
+        if (count($allList) > 0){
+            foreach ($allList as $info){
+                $res = $curlService->test()->s3047()->post("pa_vertical_daily_saless",$info);
+                $this->log("添加：".json_encode($res,JSON_UNESCAPED_UNICODE));
+            }
+        }
+
     }
 
 }
