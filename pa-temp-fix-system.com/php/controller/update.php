@@ -377,11 +377,11 @@ class update
                                 $list = [];
 
                                 foreach (array_chunk($skuIdList,200) as $chunk){
-                                    $getProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryUserBySkuId", [
+                                    $getProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryPage", [
                                         "skuId" => implode(",",$chunk)
                                     ]));
-                                    if ($getProductMainResp){
-                                        $list = array_merge($list,$getProductMainResp);
+                                    if ($getProductMainResp && count($getProductMainResp['data']) > 0){
+                                        $list = array_merge($list,$getProductMainResp['data']);
                                     }
                                 }
 
@@ -413,14 +413,64 @@ class update
 
                                             if (isset($skuIdProductLineMap[$skuId])){
                                                 //先删除
-                                                $delResp = $curlService->s3009()->post("product-operation-lines/removeSkuIdBySkuId", [
-                                                    "skuIdArray" => $skuId
+//                                                $delResp = $curlService->s3009()->post("product-operation-lines/removeSkuIdBySkuId", [
+//                                                    "skuIdArray" => $skuId
+//                                                ]);
+//                                                $this->logger->log2("已删除：".json_encode($delResp,JSON_UNESCAPED_UNICODE));
+
+                                                //更新
+                                                $skuData = $skuIdProductLineMap[$skuId];
+                                                $skuData['developer'] = $developName;
+                                                $skuData['traceMan'] = $salesUserName;
+                                                $skuData['operatorName'] = $salesUserName;
+                                                $skuData['userName'] = $salesUserName;
+                                                $curlService->s3009()->put("product-operation-lines/{$skuData['_id']}",$skuData);
+                                                continue;
+                                            }else{
+                                                $mainInfo = $createProductMainResp['result'];
+                                                $curlService->s3009()->post("product-operation-lines", [
+                                                    "companySequenceId" => $mainInfo['companySequenceId'],
+                                                    "productLineName" => $mainInfo['productLineName'],
+                                                    "product_line_id" => $mainInfo['product_line_id'],
+                                                    "sign" => "NP",
+                                                    "developer" => $developName,
+                                                    "traceMan" => $salesUserName,
+                                                    "createdBy" => $developName,
+                                                    "modifiedBy" => $developName,
+                                                    "createdOn" => date("Y-m-d H:i:s",time())."Z",
+                                                    "verticalName" => "PA",
+                                                    "operatorName" => $salesUserName,
+                                                    "skuId" => $skuId,
+                                                    "userName" => $salesUserName,
+                                                    "product_operator_mainInfo_id" => $mainInfo['_id'],
+                                                    "batch" => "",
+                                                    "factoryId" => "",
+                                                    "supplyType" => null,
+                                                    "styleId" => ""
                                                 ]);
-                                                $this->logger->log2("已删除：".json_encode($delResp,JSON_UNESCAPED_UNICODE));
                                             }
 
-                                            $mainInfo = $createProductMainResp['result'];
-                                            $curlService->s3009()->post("product-operation-lines", [
+                                        }
+                                    }
+
+                                }else{
+                                    $mainInfo = $resp['result'][0];
+                                    foreach ($skuIdList as $skuId){
+
+                                        if (isset($skuIdProductLineMap[$skuId])){
+                                            //先删除
+//                                            $delResp = $curlService->s3009()->post("product-operation-lines/removeSkuIdBySkuId", [
+//                                                "skuIdArray" => $skuId
+//                                            ]);
+//                                            $this->logger->log2("已删除：".json_encode($delResp,JSON_UNESCAPED_UNICODE));
+                                            $skuData = $skuIdProductLineMap[$skuId];
+                                            $skuData['developer'] = $developName;
+                                            $skuData['traceMan'] = $salesUserName;
+                                            $skuData['operatorName'] = $salesUserName;
+                                            $skuData['userName'] = $salesUserName;
+                                            $curlService->s3009()->put("product-operation-lines/{$skuData['_id']}",$skuData);
+                                        }else{
+                                            $skuData = [
                                                 "companySequenceId" => $mainInfo['companySequenceId'],
                                                 "productLineName" => $mainInfo['productLineName'],
                                                 "product_line_id" => $mainInfo['product_line_id'],
@@ -439,43 +489,10 @@ class update
                                                 "factoryId" => "",
                                                 "supplyType" => null,
                                                 "styleId" => ""
-                                            ]);
+                                            ];
 
+                                            $curlService->s3009()->post("product-operation-lines", $skuData);
                                         }
-                                    }
-
-                                }else{
-                                    foreach ($skuIdList as $skuId){
-                                        if (isset($skuIdProductLineMap[$skuId])){
-                                            //先删除
-                                            //$_id = $skuIdProductLineMap[$skuId]['product_line_id'];
-                                            $delResp = $curlService->s3009()->post("product-operation-lines/removeSkuIdBySkuId", [
-                                                "skuIdArray" => $skuId
-                                            ]);
-                                            $this->logger->log2("已删除：".json_encode($delResp,JSON_UNESCAPED_UNICODE));
-                                        }
-
-                                        $mainInfo = $resp['result'][0];
-                                        $curlService->s3009()->post("product-operation-lines", [
-                                            "companySequenceId" => $mainInfo['companySequenceId'],
-                                            "productLineName" => $mainInfo['productLineName'],
-                                            "product_line_id" => $mainInfo['product_line_id'],
-                                            "sign" => "NP",
-                                            "developer" => $developName,
-                                            "traceMan" => $salesUserName,
-                                            "createdBy" => $developName,
-                                            "modifiedBy" => $developName,
-                                            "createdOn" => date("Y-m-d H:i:s",time())."Z",
-                                            "verticalName" => "PA",
-                                            "operatorName" => $salesUserName,
-                                            "skuId" => $skuId,
-                                            "userName" => $salesUserName,
-                                            "product_operator_mainInfo_id" => $mainInfo['_id'],
-                                            "batch" => "",
-                                            "factoryId" => "",
-                                            "supplyType" => null,
-                                            "styleId" => ""
-                                        ]);
 
                                     }
                                 }
