@@ -101,10 +101,10 @@ class SyncCurlController
         return $data;
     }
 
-    public function commonCreate($port, $model, $params)
+    public function commonCreate($port, $model, $params,$env = "test")
     {
         $curlService = new CurlService();
-        $resp = DataUtils::getResultData($curlService->test()->$port()->post("{$model}", $params));
+        $resp = DataUtils::getResultData($curlService->$env()->$port()->post("{$model}", $params));
         $this->log("创建{$model}，" . json_encode($params, JSON_UNESCAPED_UNICODE) . "返回结果：" . json_encode($resp, JSON_UNESCAPED_UNICODE));
         return $resp;
     }
@@ -192,18 +192,124 @@ class SyncCurlController
     }
 
     public function getPaSkuMaterial(){
+
+
+
+        $ceBillNo = "CE202502130077";
+        $parentSku = "a25010800ux1806";
+//        $dpmoList = $this->commonFindByParams("s3044","pa_sku_materials",[
+//            "limit" => 1000,
+//            "ceBillNo" => $ceBillNo,
+//            "parentSkuId" => $parentSku
+//        ],"pro");
+//        if (count($dpmoList) >0){
+//            foreach ($dpmoList as $itm){
+//                if ($itm['parentSkuId'] == ""){
+//                    continue;
+//                }
+//                $this->commonDelete("s3044","pa_sku_materials",$itm['_id'],"pro");
+//            }
+//        }
+//        die("111");
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/fitment.xlsx");
+        $fitmentSkuMap = [];
+        if (sizeof($fileFitContent) > 0) {
+            foreach ($fileFitContent as $info){
+                $fitmentSkuMap[$info['skuId']][] = [
+                    "make" => $info['make'],
+                    "model" => $info['model']
+                ];
+            }
+        }
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/cpasin.xlsx");
+        $cpSkuMap = [];
+        if (sizeof($fileFitContent) > 0) {
+            foreach ($fileFitContent as $info){
+                $cpSkuMap[$info['skuId']][] = $info['asin'];
+            }
+        }
         $dpmoList = $this->commonFindByParams("s3044","pa_sku_materials",[
             "limit" => 1000,
-            "createdBy" => "P3-CreateCeSkuMaterialJob"
+            "ceBillNo" => $ceBillNo,
+//            "skuId" => $parentSku
         ],"pro");
         $_idList = [];
-        if (count($dpmoList)){
-            foreach ($dpmoList as &$item){
-                if ($item['parentSkuId'] === null){
-                    $item['parentSkuId'] = "";
-                    $this->commonUpdate("s3044","pa_sku_materials",$item,"pro");
+        if (count($dpmoList) > 0){
+            foreach ($dpmoList as $info){
+                $keywords = [
+                    "Gear Shift Knob Cover",
+                    "Gear Shift Knob Sticker",
+                    "Gear Shift Knob Decal",
+                    "Gear Shift Head Cover",
+                    "Gear Shift Head Cap",
+                ];
+                $fitment = [];
+                $cpAsin = [];
+                if(isset($fitmentSkuMap[$info['skuId']])){
+                    $fitment = $fitmentSkuMap[$info['skuId']];
                 }
+                if(isset($cpSkuMap[$info['skuId']])){
+                    $cpAsin = $cpSkuMap[$info['skuId']];
+                }
+
+
+//                $info['keywords'] = $keywords;
+                $info['cpAsin'] = $cpAsin;
+                $info['fitment'] = $fitment;
+                $info['modifiedBy'] = "zhouangang";
+                $this->commonUpdate("s3044","pa_sku_materials",$info,"pro");
+
             }
+
+
+
+
+
+
+//            $parentSkuInfo = $dpmoList[0];
+//            $main = $this->commonFindOneByParams("s3044","pa_ce_materials",[
+//                "limit" => 1,
+//                "ceBillNo" => $ceBillNo
+//            ],'pro');
+//            if (count($main['skuIdList']) > 0){
+//                $keywords = [
+//                    "Gear Shift Knob Cover",
+//                    "Gear Shift Knob Sticker",
+//                    "Gear Shift Knob Decal",
+//                    "Gear Shift Head Cover",
+//                    "Gear Shift Head Cap",
+//                ];
+//                $fitment = [];
+//                $cpAsin = [];
+//
+//                foreach ($main['skuIdList'] as $info){
+//                    if(isset($fitmentSkuMap[$info])){
+//                        $fitment = $fitmentSkuMap[$info];
+//                    }
+//                    if(isset($cpSkuMap[$info])){
+//                        $cpAsin = $cpSkuMap[$info];
+//                    }
+//                    if ($info == $parentSku){
+//                        $parentSkuInfo['keywords'] = $keywords;
+//                        $parentSkuInfo['cpAsin'] = $cpAsin;
+//                        $parentSkuInfo['fitment'] = $fitment;
+//                        $parentSkuInfo['modifiedBy'] = "zhouangang";
+//                        $this->commonUpdate("s3044","pa_sku_materials",$parentSkuInfo,"pro");
+//                        continue;
+//                    }
+//
+//                    $cloneInfo = $parentSkuInfo;
+//                    $cloneInfo['skuId'] = $info;
+//                    $cloneInfo['parentSkuId'] = $parentSkuInfo['skuId'];
+//                    $cloneInfo['keywords'] = $keywords;
+//                    $cloneInfo['cpAsin'] = $cpAsin;
+//                    $cloneInfo['fitment'] = $fitment;
+//                    unset($cloneInfo['_id']);
+//                    $this->commonCreate("s3044","pa_sku_materials",$cloneInfo,"pro");
+//                }
+//            }
 
         }
 
@@ -876,7 +982,7 @@ class SyncCurlController
         }while($page <= $pages);
 
         if (count($allList) > 0){
-            $res = $curlService->test()->s3044()->post("pa_all_vertical_monthly_targets/createBatch",$allList);
+            $res = $curlService->uat()->s3044()->post("pa_all_vertical_monthly_targets/createBatch",$allList);
             $this->log("添加：".json_encode($res,JSON_UNESCAPED_UNICODE));
         }
 
@@ -899,7 +1005,7 @@ class SyncCurlController
 
         if (count($allList) > 0){
             foreach ($allList as $info){
-                $res = $curlService->test()->s3047()->post("pa_all_vertical_monthly_saless",$info);
+                $res = $curlService->uat()->s3047()->post("pa_all_vertical_monthly_saless",$info);
                 $this->log("添加：".json_encode($res,JSON_UNESCAPED_UNICODE));
             }
 
@@ -925,7 +1031,7 @@ class SyncCurlController
 
         if (count($allList) > 0){
             foreach ($allList as $info){
-                $res = $curlService->test()->s3047()->post("pa_vertical_daily_saless",$info);
+                $res = $curlService->uat()->s3047()->post("pa_vertical_daily_saless",$info);
                 $this->log("添加：".json_encode($res,JSON_UNESCAPED_UNICODE));
             }
         }
@@ -935,7 +1041,8 @@ class SyncCurlController
 }
 
 $curlController = new SyncCurlController();
-$curlController->syncAllVerticalMonthlTargets();
+$curlController->getPaSkuMaterial();
+//$curlController->syncAllVerticalMonthlTargets();
 //$curlController->ceWrite();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
