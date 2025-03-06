@@ -1038,10 +1038,86 @@ class SyncCurlController
 
     }
 
+    public function updateFcuProductLine(){
+        //todo 同步前请清空表pa_all_vertical_monthly_target 和pa_all_vertical_monthly_sales
+
+        $env = "pro";
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/skufcu.xlsx");
+
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        if (sizeof($fileContent) > 0) {
+            $skuIdList = array_column($fileContent, "skuId");
+            $fcuIdList = array_column($fileContent, "fcuId");
+
+            $list = [];
+            foreach (array_chunk($skuIdList,200) as $chunk){
+                $getProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryPage", [
+                    "skuId" => implode(",",$chunk),
+                    "limit" => 200
+                ]));
+                if ($getProductMainResp && count($getProductMainResp['data']) > 0){
+                    $list = array_merge($list,$getProductMainResp['data']);
+                }
+            }
+
+            $skuIdProductLineMap = [];
+            if (count($list) > 0){
+                $skuIdProductLineMap = array_column($list,null,"skuId");
+            }
+
+
+            $fculist = [];
+            foreach (array_chunk($fcuIdList,200) as $chunk){
+                $fcuResult = DataUtils::getPageDocList($curlService->s3044()->get("fcu_sku_maps/queryPage", [
+                    "fcuId_in" => implode(",",$chunk),
+                    "limit" => 200
+                ]));
+                if ($fcuResult && count($fcuResult) > 0){
+                    foreach ($fcuResult as $info){
+                        $fculist[$info['fcuId']] = $info;
+                    }
+                }
+            }
+
+
+            foreach ($fileContent as $item){
+                $skuId = $item['skuId'];
+                if (isset($skuIdProductLineMap[$skuId])){
+                    $product_operator_mainInfo_id = $skuIdProductLineMap[$skuId]['product_operator_mainInfo_id'];
+
+                    if (isset($fculist[$item['fcuId']])){
+                        $fcuInfo = $fculist[$item['fcuId']];
+                        if ($fcuInfo['productLineId']){
+                            continue;
+                        }
+                        $fcuInfo['productLineId'] = $product_operator_mainInfo_id;
+                        $fcuInfo['modifiedBy'] = "zhouangang";
+
+                        $sss = $curlService->s3044()->put("fcu_sku_maps/{$fcuInfo['_id']}", $fcuInfo);
+                        $this->log("更新产品线id成功" . json_encode($sss,JSON_UNESCAPED_UNICODE));
+                    }else{
+                        $this->log("找不到fcu：{$fcuInfo['fcuId']}");
+                    }
+
+                }else{
+                    $this->log("找不到产品线：{$skuId} - {$item['fcuId']}");
+                }
+
+                //https://master-nodejs-poms-list-nest.ux168.cn/api/fcu_sku_maps/queryPage
+
+            }
+
+        }
+
+
+    }
 }
 
 $curlController = new SyncCurlController();
-$curlController->getPaSkuMaterial();
+$curlController->updateFcuProductLine();
+//$curlController->getPaSkuMaterial();
 //$curlController->syncAllVerticalMonthlTargets();
 //$curlController->ceWrite();
 //$curlController->updateCeMaterialPlatform();

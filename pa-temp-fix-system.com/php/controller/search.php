@@ -370,6 +370,67 @@ class search
         ];
     }
 
+    /**
+     * 查询fcu产品线
+     * @param $params
+     * @return array
+     */
+    public function fixFcuProductLine($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+
+        $returnMsg = [];
+        if (isset($params['fcuIdList']) && $params['fcuIdList']){
+            $fculist = [];
+            $skulist = [];
+            foreach (array_chunk($params['fcuIdList'],200) as $chunk){
+                $fcuResult = DataUtils::getPageDocList($curlService->s3044()->get("fcu_sku_maps/queryPage", [
+                    "fcuId_in" => implode(",",$chunk),
+                    "limit" => 200
+                ]));
+                if ($fcuResult && count($fcuResult) > 0){
+                    foreach ($fcuResult as $info){
+                        $firstSkuId = current($info['skuId']);
+                        $skulist[] = $firstSkuId;
+                        $fculist[$info['fcuId']] = $info;
+                    }
+                }
+            }
+
+            foreach ($params['fcuIdList'] as $fcuId){
+                if (isset($fculist[$fcuId])){
+                    $fcuInfo = $fculist[$fcuId];
+                    $skuId = current($fcuInfo['skuId']);
+                    if ($fcuInfo['productLineId']){
+                        $returnMsg[] = [
+                            "messages" => "已存在，无需补充",
+                            "fcuId" => $fcuId,
+                            "skuId" => $skuId,
+                            "productLine" => $fcuInfo['productLineId'],
+                        ];
+                        continue;
+                    }
+                    $returnMsg[] = [
+                        "messages" => "找不到产品线",
+                        "fcuId" => $fcuId,
+                        "skuId" => $skuId,
+                        "productLine" => "",
+                    ];
+
+                }else{
+                    $this->logger->log2("找不到fcu：{$fcuId}");
+                    $returnMsg[] = [
+                        "messages" => "找不到fcu",
+                        "fcuId" => $fcuId,
+                        "skuId" => "",
+                        "productLine" => "",
+                    ];
+                }
+            }
+        }
+
+        return ["env" => $env, "data" => $returnMsg];
+    }
 
 }
 
@@ -433,6 +494,10 @@ switch ($data['action']) {
     case "registerIp":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->registerIp($params);
+        break;
+    case "fixFcuProductLine":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->fixFcuProductLine($params);
         break;
 }
 
