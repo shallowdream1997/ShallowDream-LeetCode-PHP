@@ -1214,10 +1214,110 @@ class SyncCurlController
 
     }
 
+    public function updateProductListNo(){
+        $env = "pro";
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/productListNo.xlsx");
+
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        if (sizeof($fileContent) > 0) {
+            $batchList = array_unique(array_column($fileContent,"productList"));
+//            foreach (array_chunk($batchList,200) as $chunk){
+//                $list = DataUtils::getPageList($curlService->ux168()->get("product_development_lists/queryPage",[
+//                    "productListNo_in" => implode(",",$chunk),
+//                    "verticalDepartment" => "PA",
+//                    "limit" => 200,
+//                ]));
+//                if (!empty($list)){
+//                    foreach ($list as $v){
+//                        $v['cancelDate'] = null;
+//                        $v['assignedDate'] = "2025-03-06T14:00:02.000Z";
+//                        $v['draftNum'] = 1;
+//                        $v['supplierId'] = [4397];
+//                        $res = DataUtils::getResultData($curlService->ux168()->put("product_development_lists/{$v['_id']}",$v));
+//                        $this->log("更新：".json_encode($res,JSON_UNESCAPED_UNICODE));
+//                    }
+//                }
+//            }
+
+//            foreach (array_chunk($batchList,200) as $chunk) {
+//                $list1 = DataUtils::getPageList($curlService->ux168()->get("consignment_applys/queryPage", [
+//                    "productListNo_in" => implode(",", $chunk),
+//                    "limit" => 200,
+//                ]));
+//                if (!empty($list1)){
+//                    foreach ($list1 as $v){
+//                        $v['status'] = 2;
+//                        $res = DataUtils::getResultData($curlService->ux168()->put("consignment_applys/{$v['_id']}",$v));
+//                        $this->log("更新：".json_encode($res,JSON_UNESCAPED_UNICODE));
+//                    }
+//                }
+//            }
+
+
+//            foreach ($batchList as $productListNo) {
+//                $list = DataUtils::getPageList($curlService->ux168()->get("product_development_lists/queryPage", [
+//                    "productListNo" => $productListNo,
+//                    "limit" => 200,
+//                ]));
+//                if (!empty($list)) {
+//                    foreach ($list as $v) {
+//                        $v['status'] = "6";
+//                        $v['supplierId'] = "4397";
+//                        $res = DataUtils::getResultData($curlService->ux168()->put("product_development_lists/{$v['_id']}", $v));
+//                        $this->log("更新：" . json_encode($res, JSON_UNESCAPED_UNICODE));
+//                    }
+//                }
+//            }
+
+
+//            $res = DataUtils::getResultData($curlService->ux168()->get("product_development_logs/67cfe27d7601c30ae7aaee9f",[]));
+//
+//            if ($res){
+//                //$res['supplierId'] = "[4397]";
+//                $res['remark'] = "{\"draftBeginDate\":\"2025-03-06 14:00:00\",\"draftOverDate\":\"2025-03-06 21:00:00\",\"applyDate\":\"2025-03-06 14:00:02\",\"reason\":\"\"}";
+//                DataUtils::getResultData($curlService->ux168()->put("product_development_logs/{$res['_id']}",$res));
+//            }
+            $list = DataUtils::getPageList($curlService->ux168()->get("product_development_lists/queryPage",[
+                "productListNo" => "QD202503040025",
+                "limit" => 1,
+            ]));
+            if (!empty($list)) {
+                foreach ($list as $res) {
+                    $res['cancelDate'] = null;
+                    $res['assignedDate'] = "2025-03-06T14:00:02.000Z";
+                    $res['draftNum'] = 1;
+//                    $res['supplierId'] = [4397];
+                    $ss = DataUtils::getResultData($curlService->ux168()->put("product_development_lists/{$res['_id']}",$res));
+                    if ($ss){
+
+                    }
+                }
+            }
+
+
+//            $app = [
+//                "productListNo" => "QD202503040025",
+//                "createdBy" => "poms_limin",
+//                "modifiedBy" => "poms_limin",
+//                "status" => "finish",
+//                "remark" => "{\"draftBeginDate\":\"2025-03-06 14:00:00\",\"draftOverDate\":\"2025-03-06 21:00:00\",\"reason\":\"\"}}",
+//                "type" => "寄卖",
+//                "supplierId" => "4397",
+//                "draftNum" => 1,
+//                "url" => "",
+//            ];
+//            DataUtils::getResultData($curlService->ux168()->post("product_development_logs",$app));
+        }
+
+    }
+
 }
 
 $curlController = new SyncCurlController();
-$curlController->deleteFC();
+$curlController->updateProductListNo();
+//$curlController->deleteFC();
 //$curlController->combineFC();
 //$curlController->updateProductFba();
 //$curlController->updateFcuProductLine();
