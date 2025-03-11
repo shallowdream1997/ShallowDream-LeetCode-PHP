@@ -1113,10 +1113,114 @@ class SyncCurlController
 
 
     }
+
+
+    public function updateProductFba(){
+        //todo 同步前请清空表pa_all_vertical_monthly_target 和pa_all_vertical_monthly_sales
+
+        $env = "pro";
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/fba.xlsx");
+
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        if (sizeof($fileContent) > 0) {
+            foreach ($fileContent as $info){
+                $fbaInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("product_fba_bases/queryPage",[
+                    "skuId" => $info['sku'],
+                    "channel" => $info['上架渠道'],
+                    "dcId" => $info['仓库'],
+                    "limit" => 1,
+                ]));
+                if (!empty($fbaInfo)){
+                    $fbaInfo['status'] = "Y";
+                    $res = DataUtils::getResultData($curlService->s3015()->put("product_fba_bases/{$fbaInfo['_id']}",$fbaInfo));
+                    $this->log("更新成功".json_encode($res,JSON_UNESCAPED_UNICODE));
+
+                }
+            }
+
+
+        }
+
+
+    }
+
+    public function deleteFC(){
+        $chunk = [
+            "FC2025031003310",
+        ];
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+        $list = DataUtils::getPageDocList($curlService->s3044()->get("fcu_applys/queryPage",[
+            "batch_in" => implode(",",$chunk),
+            "company" => "CR201706060001",
+            "status" => "0",
+            "limit" => 200,
+        ]));
+        if (!empty($list)){
+            foreach ($list as $v){
+                $del = DataUtils::getResultData($curlService->s3044()->delete("fcu_applys",$v['_id']));
+                $this->log("删除：".json_encode($del,JSON_UNESCAPED_UNICODE));
+            }
+        }
+    }
+
+    public function combineFC(){
+        $env = "pro";
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/FCU.xlsx");
+
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        if (sizeof($fileContent) > 0) {
+            $batchList = array_unique(array_column($fileContent,"FCU"));
+            $mainFCUBatch = [];
+            $allFCMap = [];
+            foreach (array_chunk($batchList,200) as $chunk){
+                $list = DataUtils::getPageDocList($curlService->s3044()->get("fcu_applys/queryPage",[
+                    "batch_in" => implode(",",$chunk),
+                    "company" => "CR201706060001",
+                    "status" => "0",
+                    "limit" => 200,
+                ]));
+                if (!empty($list)){
+                    $mainFCUBatch = $list[0];
+                    foreach ($list as $v){
+                        $allFCMap[$v['_id']] = $v['batch'];
+                    }
+                }
+            }
+
+            foreach ($allFCMap as $_id => $batch) {
+                if ($_id != $mainFCUBatch['_id']){
+                    $fcuSkuMapList = DataUtils::getPageDocList($curlService->s3044()->get("fcu_sku_maps/queryPage", [
+                        "main_id" => $_id,
+                        "limit" => 10000,
+                    ]));
+                    if (count($fcuSkuMapList) > 0) {
+                        foreach ($fcuSkuMapList as &$fcuSkuMapInfo) {
+                            if ($fcuSkuMapInfo['main_id'] != $mainFCUBatch['_id']){
+                                $fcuSkuMapInfo['main_id'] = $mainFCUBatch['_id'];
+                                $res = DataUtils::getResultData($curlService->s3044()->put("fcu_sku_maps/{$fcuSkuMapInfo['_id']}",$fcuSkuMapInfo));
+                                $this->log("更新：".json_encode($res,JSON_UNESCAPED_UNICODE));
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+    }
+
 }
 
 $curlController = new SyncCurlController();
-$curlController->updateFcuProductLine();
+$curlController->deleteFC();
+//$curlController->combineFC();
+//$curlController->updateProductFba();
+//$curlController->updateFcuProductLine();
 //$curlController->getPaSkuMaterial();
 //$curlController->syncAllVerticalMonthlTargets();
 //$curlController->ceWrite();
