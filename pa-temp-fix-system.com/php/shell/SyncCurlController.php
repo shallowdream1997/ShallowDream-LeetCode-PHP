@@ -586,7 +586,7 @@ class SyncCurlController
                             "productName" => $tinfo['productName'],
                             "limit" => 5
                         ), $env);
-                        
+
                         //用productName来找到以前的T号
                         $oldTempSkuId = "";
                         if (count($dteRes) > 0) {
@@ -603,7 +603,7 @@ class SyncCurlController
                             $paSkuAttributeInfo = $this->commonFindOneByParams("s3015", "pa_sku_attributes", array(
                                 "tmepSkuId" => $oldTempSkuId,
                             ), $env);
-                            
+
                             if ($paSkuAttributeInfo) {
                                 //新的T号
                                 $uniqueId = $this->getTempSkuIdByRedis();
@@ -1313,10 +1313,173 @@ class SyncCurlController
 
     }
 
+    public function fixSkuPhotoProcess(){
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        $ceBillNo = "CE202502180037";
+
+//        $curlService->s3015()->delete("sku_photography_progresss","67d0f8fe4e0359ccd8168459");
+//        $curlService->s3015()->delete("sku_photography_progresss","67d0f8fe4e0359ccd8168514");
+//        $curlService->s3015()->delete("sku_photography_progresss","67d0f8fe4e0359ccd816855d");
+//
+//        die("1111");
+        $res = DataUtils::getResultData($curlService->s3015()->get("soaps/ux168/getCeDetailByCeBillNo",[
+           "ceBillNo" => $ceBillNo
+        ]));
+        $skuIdList = array_column($res,"skuId");
+
+        $ceMasterCreatedOn = "2025-02-18T03:40:46.000Z";
+        $skuMap = [];
+        foreach (array_chunk($skuIdList,200) as $chunk){
+            $list = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+                "limit" => 200,
+                "productId" => implode(",",$chunk)
+            ]));
+            foreach ($list as $info){
+                if ($info['status'] == "completed"){
+                    $secondVeroDateTime = "";
+                    foreach ($info['reviewingList'] as $val){
+                        if ($val['reviewingName'] == "secondVero"){
+                            $secondVeroDateTime = $val['createdOn'];
+                            break;
+                        }
+                    }
+                    $skuMap[$info['productId']] = $secondVeroDateTime;
+                }
+
+            }
+        }
+
+        $batch = [];
+        foreach ($skuMap as $skuId => $dateTime){
+            $ss = DataUtils::getPageListInFirstData($curlService->s3015()->get("sku_photography_progresss/queryPage",[
+                "skuId" => $skuId,
+                "ceBillNo_in" => $ceBillNo,
+                "limit" => 1,
+            ]));
+            if ($ss){
+                continue;
+            }
+            $data = [
+                "skuId" => $skuId,
+                "batchName" => "",
+                "ceBillNo" => $ceBillNo,
+                "createdBy" => "zhouangang",
+                "status" => "待拍摄",
+                "createCeBillNoOn" => $ceMasterCreatedOn,
+                "tempSkuId" => "",
+                "salesType" => "寄卖",
+                "infoCompletedOn" => $dateTime,
+                "isInfoDrafted" => ""
+            ];
+            $batch[] = $data;
+        }
+
+        if (count($batch) > 0){
+            $this->log(count($batch) . "个新增");
+            $curlService->s3015()->post("sku_photography_progresss/createBatch",$batch);
+        }
+    }
+
+    public function fixProductOpt(){
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/资料图片工单.xlsx");
+
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        if (sizeof($fileContent) > 0) {
+
+
+
+            foreach ($fileContent as $info){
+                $dataInfo = DataUtils::getPageListInFirstDataV2($curlService->s3044()->get("pa_product_optimizations/queryPage",[
+                    "limit" => 1,
+                    "skuId" => $info['skuId'],
+                    "applyReasons" => $info['修改来源']
+                ]));
+
+                if (empty($dataInfo)){
+                    continue;
+                }
+
+                $option = "";
+                $status = 0;
+                $operator = "";
+
+                if ($info['状态'] == "作废"){
+                    continue;
+                    $option = '执行已作废';
+                    $status = 102;
+                    $operator = '执行';
+
+                    $dataInfo['statusArrays'][] = [
+                        "option" => $option,
+                        "status" => $status,
+                        "optionBy" => $info['执行人'],
+                        "optionTime" => date("Y-m-d H:i:s",time())."Z",
+                    ];
+                    $dataInfo['remarkArrays'][] = [
+                        "option" => $option,
+                        "optionBy" => $info['执行人'],
+                        "optionTime" => date("Y-m-d H:i:s",time())."Z",
+                        "remark" => "运营要求取消执行",
+                    ];
+
+                    $updateData = [
+                        "executor" => explode(",",$info['执行人']),
+                        "modifiedBy" => $info['执行人'],
+                        "modifiedOn" => $dataInfo['modifiedOn'],
+                        "status" => $status,
+                        "deleteBy" => $info['执行人'],
+                        "deleteDate" => date("Y-m-d H:i:s", time()) . "Z",
+                        "deleteRemarks" => "运营要求取消执行",
+                        "statusArrays" => $dataInfo['statusArrays'],
+                        "remarkArrays" => $dataInfo['remarkArrays'],
+                    ];
+
+                    $curlService->s3044()->put("pa_product_optimizations/{$dataInfo['_id']}",$updateData);
+
+
+
+                }else if($info['状态'] == "已完成"){
+                    $exectorList = explode(",",$info['执行人']);
+
+                    $updateData = [
+                        "executor" => $exectorList,
+                        "modifiedBy" => $exectorList[0],
+                        "modifiedOn" => $dataInfo['modifiedOn'],
+                        "status" => 3,
+                        "completedBy" => $exectorList[0],
+                        "completedDate" => date("Y-m-d H:i:s", time()) . "Z",
+                    ];
+
+                    $curlService->s3044()->put("pa_product_optimizations/{$dataInfo['_id']}",$updateData);
+
+                }
+
+
+
+            }
+
+
+
+        }
+
+
+
+
+
+
+    }
+
+
 }
 
 $curlController = new SyncCurlController();
-$curlController->updateProductListNo();
+$curlController->fixProductOpt();
+//$curlController->fixSkuPhotoProcess();
+//$curlController->updateProductListNo();
 //$curlController->deleteFC();
 //$curlController->combineFC();
 //$curlController->updateProductFba();

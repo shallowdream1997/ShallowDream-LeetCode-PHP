@@ -100,7 +100,23 @@ class DataUtils
         }
         return $data;
     }
-
+    /**
+     * 接收响应数据，返回分页下的列表，返回列表里面的第一个数据
+     * @param null $response
+     * @return array
+     */
+    public static function getPageListInFirstDataV2($response = null)
+    {
+        $data = [];
+        if (!$response){
+            return $data;
+        }
+        if ($response && isset($response['httpCode']) &&
+            $response['httpCode'] === 200 && isset($response['result']) && !empty($response['result']) && isset($response['result']['data']) && count($response['result']['data']['data']) > 0){
+            $data = $response['result']['data']['data'][0];
+        }
+        return $data;
+    }
     /**
      * 取值
      * @param $data
