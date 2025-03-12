@@ -1285,10 +1285,10 @@ class SyncCurlController
             ]));
             if (!empty($list)) {
                 foreach ($list as $res) {
-                    $res['cancelDate'] = null;
-                    $res['assignedDate'] = "2025-03-06T14:00:02.000Z";
-                    $res['draftNum'] = 1;
-//                    $res['supplierId'] = [4397];
+//                    $res['cancelDate'] = null;
+//                    $res['assignedDate'] = "2025-03-06T14:00:02.000Z";
+//                    $res['draftNum'] = 1;
+                    $res['draftInfos']['supplierId'] = [4397];
                     $ss = DataUtils::getResultData($curlService->ux168()->put("product_development_lists/{$res['_id']}",$res));
                     if ($ss){
 
