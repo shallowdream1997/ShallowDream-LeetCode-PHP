@@ -238,36 +238,59 @@ class update
                     "pageNum" => 1,
                 ]));
                 $hasSampleSkuIdList = [];
+                $updateSampleSkuIdList = [];
                 if (DataUtils::checkArrFilesIsExist($resp, 'list')) {
-                    $hasSampleSkuIdList = array_column($resp['list'], 'skuId');
+                    foreach ($resp['list'] as $item){
+                        if ($item['state'] == 10){
+                            $hasSampleSkuIdList[] = $item['skuId'];
+                        }else{
+                            $updateSampleSkuIdList[] = $item;
+                        }
+                    }
+                    //$hasSampleSkuIdList = array_column($resp['list'], 'skuId');
                     $this->logger->log("部分sku：" . implode(",", $hasSampleSkuIdList) . " 均已经留样，过滤....");
                 }
-                $skuIdList = array_diff($skuIdList, $hasSampleSkuIdList);
-
-                $needSampleSkuIdList = [];
-                foreach ($skuIdList as $skuId) {
-                    $needSampleSkuIdList[] = [
-                        "category" => "dataTeam",
-                        "createBy" => "pa-fix-system",
-                        "remark" => "",
-                        "skuId" => $skuId,
-                        "vertical" => "PA",
-                        "state" => 10
-                    ];
-                }
-                if (count($needSampleSkuIdList) > 0) {
-                    $createResp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/batchCreate", $needSampleSkuIdList));
-                    if ($createResp && $createResp['value']) {
-                        $this->logger->log("剩余sku：" . implode(',', array_column($needSampleSkuIdList, 'skuId')) . " 留样打标成功...");
-//                        return true;
-                    } else {
-                        $this->logger->log("留样打标失败");
-//                        return false;
+                $skuIdList = array_diff($skuIdList, array_column($updateSampleSkuIdList,"skuId"));
+                $skuIdList = array_diff($skuIdList,$hasSampleSkuIdList);
+                if (count($updateSampleSkuIdList) > 0){
+                    foreach ($updateSampleSkuIdList as $info){
+                        $info['state'] = 10;
+                        $info['updateBy'] = "pa-fix-system";
+                        $createResp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/update", $info));
+                        if ($createResp && $createResp['value']) {
+                            $this->logger->log("留样打标更新成功...");
+                        } else {
+                            $this->logger->log("留样打标失败");
+                        }
                     }
-                } else {
-                    $this->logger->log("预计留样的数据都已存在，无需留样");
-//                    return true;
                 }
+                if (count($skuIdList) > 0){
+                    $needSampleSkuIdList = [];
+                    foreach ($skuIdList as $skuId) {
+                        $needSampleSkuIdList[] = [
+                            "category" => "dataTeam",
+                            "createBy" => "pa-fix-system",
+                            "remark" => "",
+                            "skuId" => $skuId,
+                            "vertical" => "PA",
+                            "state" => 10
+                        ];
+                    }
+                    if (count($needSampleSkuIdList) > 0) {
+                        $createResp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/batchCreate", $needSampleSkuIdList));
+                        if ($createResp && $createResp['value']) {
+                            $this->logger->log("剩余sku：" . implode(',', array_column($needSampleSkuIdList, 'skuId')) . " 留样打标成功...");
+//                        return true;
+                        } else {
+                            $this->logger->log("留样打标失败");
+//                        return false;
+                        }
+                    } else {
+                        $this->logger->log("预计留样的数据都已存在，无需留样");
+//                    return true;
+                    }
+                }
+
             }
             return true;
         }else{

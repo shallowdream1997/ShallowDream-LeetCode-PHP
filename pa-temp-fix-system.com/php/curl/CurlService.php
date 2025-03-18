@@ -422,7 +422,7 @@ class CurlService
                 $this->s3016 = "http://172.16.29.23:3016";
                 break;
             case "gateway":
-                $this->gateway = "https://gateway-test.ux168.cn";
+                $this->gateway = "http://localhost:9022";
                 break;
         }
         return $this;

@@ -1388,6 +1388,9 @@ class SyncCurlController
         $curlService = new CurlService();
         $curlService = $curlService->pro();
 
+//        $curlService->s3044()->delete("pa_product_optimizations","65d8477cac548325e88fd2c4");
+//        die(1);
+
         if (sizeof($fileContent) > 0) {
 
 
@@ -1474,10 +1477,29 @@ class SyncCurlController
     }
 
 
+    public function skuMaterialDocCreate(){
+        $curlService = new CurlService();
+        $curlService->local()->gateway()->getModule('pa');
+
+        $info = [
+            "createBy" => "zhouangang",
+            "skuId" => "a23051500ux0518",
+            "updateType" => "UpdateAttribute",
+        ];
+
+
+        $resp3 = DataUtils::getNewResultData($curlService->getWayPost("/sms/sku/material/changed_doc/v1/initSkuMaterialChangedDoc", $info));
+        if ($resp3){
+            $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
+        }
+
+    }
+
 }
 
 $curlController = new SyncCurlController();
-$curlController->fixProductOpt();
+$curlController->skuMaterialDocCreate();
+//$curlController->fixProductOpt();
 //$curlController->fixSkuPhotoProcess();
 //$curlController->updateProductListNo();
 //$curlController->deleteFC();
