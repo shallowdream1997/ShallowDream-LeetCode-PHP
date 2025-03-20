@@ -68,6 +68,12 @@
                     </select>
                 </div>
 
+                <template v-if="status == '0'">
+                    <div class="mb-3">
+                        <textarea v-model="skuIdString" class="form-control" placeholder="skuId,多个请换行" rows="5"/></textarea>
+                    </div>
+                </template>
+
                 <template v-if="status == '4'">
                     <div class="mb-3">
                         <div class="col-4" style="color: deeppink">提示：审核人请填写英文，日期示例如：2024-07-04 12:35:00Z</div>
@@ -121,6 +127,7 @@
                 errorMsg: '',
                 successMsg: '',
                 list: [],
+                skuIdString: '',
                 loading: '',
                 statusMap: {
                     "0": "已选品",
@@ -179,6 +186,13 @@
                     this.applyName = "";
                     this.applyTime = "";
                 }
+                let skuIdList = [];
+                if (this.skuIdString){
+                    skuIdList = this.skuIdString.split("\n");
+                    skuIdList =  [...new Set(skuIdList.filter(item => item))];
+                }
+
+
                 for (let item of this.list) {
                     item.isSuccess = "正在执行中.";
                     if(item.status == '5'){
@@ -193,6 +207,7 @@
                             status: this.status,
                             applyName:this.applyName,
                             applyTime:this.applyTime,
+                            skuIdList:skuIdList
                         },
                     };
 

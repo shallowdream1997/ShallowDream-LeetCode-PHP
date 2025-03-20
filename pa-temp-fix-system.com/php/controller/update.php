@@ -105,38 +105,90 @@ class update
         $status = $params['status'];
         $applyName = $params['applyName'];
         $applyTime = $params['applyTime'];
+        $skuIdList = isset($params['skuIdList']) && !empty($params['skuIdList']) ? $params['skuIdList'] : [];
         if (DataUtils::checkArrFilesIsExist($params, "title")) {
-            $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_managements/queryPage", [
-                "limit" => 100,
-                "page" => 1,
-                "title_in" => $params['title'],
-            ]));
-            if ($mainInfo['status'] != "5") {
-                $mainInfo['status'] = $status;
-                foreach ($mainInfo['skuIdList'] as &$detailInfo) {
-                    $detailInfo['status'] = $status;
-                }
-                if ($status == '4' && !empty($applyName) && !empty($applyTime)) {
-                    //翻译完成的需要审核人
-                    $mainInfo['applyUserName'] = $applyName;
-                    $mainInfo['applyTime'] = $applyTime;
-                }
-                $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
-                $this->logger->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
 
-                $detailList = DataUtils::getPageList($curlService->s3015()->get("translation_management_skus/queryPage", [
-                    "limit" => 1000,
-                    "translationMainId" => $mainInfo['_id']
+            if (!empty($skuIdList)) {
+                $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_managements/queryPage", [
+                    "limit" => 100,
+                    "page" => 1,
+                    "title_in" => $params['title'],
                 ]));
-                if ($detailList) {
-                    foreach ($detailList as $detail) {
-                        if ($detail['status'] != "5") {
-                            $detail['status'] = $status;
+                if ($mainInfo['status'] != "5") {
+                    foreach (array_chunk($skuIdList, 200) as $chunk) {
+                        $detailList = DataUtils::getPageList($curlService->s3015()->get("translation_management_skus/queryPage", [
+                            "limit" => 1000,
+                            "skuId_in" => implode(",", $chunk),
+                            "translationMainId" => $mainInfo['_id']
+                        ]));
+                        if ($detailList) {
+                            foreach ($detailList as $detail) {
+                                if ($detail['status'] != "5") {
+                                    $detail['status'] = $status;
 
-                            DataUtils::getResultData($curlService->s3015()->put("translation_management_skus/{$detail['_id']}", $detail));
+                                    DataUtils::getResultData($curlService->s3015()->put("translation_management_skus/{$detail['_id']}", $detail));
+                                }
+                            }
                         }
                     }
+
+
+                    foreach ($mainInfo['skuIdList'] as &$detailInfo) {
+                        if (in_array($detailInfo['skuId'],$skuIdList)){
+                            $detailInfo['status'] = $status;
+                        }
+                    }
+
+                    $mainInfo['status'] = $status;
+                    if ($status == '4' && !empty($applyName) && !empty($applyTime)) {
+                        //翻译完成的需要审核人
+                        $mainInfo['applyUserName'] = $applyName;
+                        $mainInfo['applyTime'] = $applyTime;
+                    }
+
+                    $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
+                    $this->logger->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
+
+
                 }
+
+            } else {
+                //全sku的逻辑
+
+                $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_managements/queryPage", [
+                    "limit" => 100,
+                    "page" => 1,
+                    "title_in" => $params['title'],
+                ]));
+                if ($mainInfo['status'] != "5") {
+                    $mainInfo['status'] = $status;
+                    foreach ($mainInfo['skuIdList'] as &$detailInfo) {
+                        $detailInfo['status'] = $status;
+                    }
+                    if ($status == '4' && !empty($applyName) && !empty($applyTime)) {
+                        //翻译完成的需要审核人
+                        $mainInfo['applyUserName'] = $applyName;
+                        $mainInfo['applyTime'] = $applyTime;
+                    }
+                    $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
+                    $this->logger->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
+
+                    $detailList = DataUtils::getPageList($curlService->s3015()->get("translation_management_skus/queryPage", [
+                        "limit" => 1000,
+                        "translationMainId" => $mainInfo['_id']
+                    ]));
+                    if ($detailList) {
+                        foreach ($detailList as $detail) {
+                            if ($detail['status'] != "5") {
+                                $detail['status'] = $status;
+
+                                DataUtils::getResultData($curlService->s3015()->put("translation_management_skus/{$detail['_id']}", $detail));
+                            }
+                        }
+                    }
+
+                }
+
 
                 return true;
             }
