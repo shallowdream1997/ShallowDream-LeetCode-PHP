@@ -9,7 +9,7 @@ class Sync
     public function __construct()
     {
         $this->log = new MyLogger("sync");
-        $this->requestUtils = new RequestUtils("test");
+        $this->requestUtils = new RequestUtils("uat");
     }
     private function log(string $string = "")
     {
@@ -25,7 +25,7 @@ class Sync
     public function syncOptionValListInfoToTest()
     {
         $optionNameList = [
-            "pa_fba_channel_seller_config"
+            "campaign_salesman_index"
         ];
 
         $proRequestUtils = new RequestUtils("pro");
@@ -74,5 +74,7 @@ class Sync
 
 }
 //
-$s = new Sync();
-$s->syncOptionValListInfoToTest();
+//$s = new Sync();
+//$s->syncOptionValListInfoToTest();
+
+echo date("Y-m-d H:i:s",time());
