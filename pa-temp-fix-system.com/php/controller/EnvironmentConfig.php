@@ -58,6 +58,9 @@ class EnvironmentConfig
             case "fixFcuProductLine":
                 $this->curlService = (new CurlService())->pro();
                 break;
+            case "textDiff":
+                $this->curlService = (new CurlService())->local();
+                break;
         }
         return $this;
     }

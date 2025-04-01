@@ -432,6 +432,16 @@ class search
         return ["env" => $env, "data" => $returnMsg];
     }
 
+    public function textDiff($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+        $curlService->gateway();
+        $this->getModule('pa');
+        $resp = DataUtils::getNewResultData($curlService->getWayPost( "/sms/sku/material/changed_doc/v1/textDiff", $params));
+
+
+        return ["env" => $env, "data" => $resp['value']];
+    }
 }
 
 
@@ -498,6 +508,10 @@ switch ($data['action']) {
     case "fixFcuProductLine":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->fixFcuProductLine($params);
+        break;
+    case "textDiff":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->textDiff($params);
         break;
 }
 

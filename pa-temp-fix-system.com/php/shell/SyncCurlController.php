@@ -1478,20 +1478,67 @@ class SyncCurlController
 
 
     public function skuMaterialDocCreate(){
-        $curlService = new CurlService();
-        $curlService->local()->gateway()->getModule('pa');
+//        $curlService = new CurlService();
+//        $curlService->local()->gateway()->getModule('pa');
+//
+//        $info = [
+//            "createBy" => "zhouangang",
+//            "skuId" => "a23051500ux0518",
+//            "updateType" => "UpdateAttribute",
+//        ];
+//
+//
+//        $resp3 = DataUtils::getNewResultData($curlService->getWayPost("/sms/sku/material/changed_doc/v1/initSkuMaterialChangedDoc", $info));
+//        if ($resp3){
+//            $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
+//        }
 
-        $info = [
-            "createBy" => "zhouangang",
-            "skuId" => "a23051500ux0518",
-            "updateType" => "UpdateAttribute",
+        $goalChannel = [];
+        $goalChannel['inputType'] = "select";
+        $goalChannel['label'] = "销售渠道";
+        $goalChannel['name'] = "goalChannel";
+        $goalChannel['optionList'] = [];
+        foreach (["amazon_jp", "amazon_fr",
+                     "amazon_de",
+                     "amazon_es",
+                     "amazon_it",
+                     "amazon_nl", "ebay_fr",
+                     "ebay_de",
+                     "ebay_es",
+                     "ebay_it"] as $channel) {
+            $goalChannel['optionList'][] = [
+                "label" => $channel,
+                "value" => $channel,
+            ];
+        }
+
+        $seller = [];
+        $seller['inputType'] = "select";
+        $seller['label'] = "账号";
+        $seller['name'] = "sellerId";
+        $seller['optionList'] = [];
+        foreach (["amazon_jp"] as $sellerId) {
+            $seller['optionList'][] = [
+                "label" => $sellerId,
+                "value" => $sellerId,
+            ];
+        }
+
+        $lengthResult = [
+            "inputType" => "select",
+            "label" => "长度检查结果",
+            "name" => "isOverStrLength",
+            "optionList" => [
+                [
+                    "label" => "超长",
+                    "value" => 1
+                ]
+            ]
         ];
 
 
-        $resp3 = DataUtils::getNewResultData($curlService->getWayPost("/sms/sku/material/changed_doc/v1/initSkuMaterialChangedDoc", $info));
-        if ($resp3){
-            $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
-        }
+
+        echo json_encode($goalChannel,JSON_UNESCAPED_UNICODE);
 
     }
 
