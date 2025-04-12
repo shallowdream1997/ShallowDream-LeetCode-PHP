@@ -1317,19 +1317,21 @@ class SyncCurlController
         $curlService = new CurlService();
         $curlService = $curlService->pro();
 
-        $ceBillNo = "CE202502180037";
+        $ceBillNo = "CE202503260168";
 
 //        $curlService->s3015()->delete("sku_photography_progresss","67d0f8fe4e0359ccd8168459");
 //        $curlService->s3015()->delete("sku_photography_progresss","67d0f8fe4e0359ccd8168514");
 //        $curlService->s3015()->delete("sku_photography_progresss","67d0f8fe4e0359ccd816855d");
 //
 //        die("1111");
-        $res = DataUtils::getResultData($curlService->s3015()->get("soaps/ux168/getCeDetailByCeBillNo",[
-           "ceBillNo" => $ceBillNo
-        ]));
-        $skuIdList = array_column($res,"skuId");
+//        $res = DataUtils::getResultData($curlService->s3015()->get("soaps/ux168/getCeDetailByCeBillNo",[
+//           "ceBillNo" => $ceBillNo
+//        ]));
+//        $skuIdList = array_column($res,"skuId");
 
-        $ceMasterCreatedOn = "2025-02-18T03:40:46.000Z";
+        $skuIdList = ["a25032600ux2646"];
+
+        $ceMasterCreatedOn = "2025-03-26T15:54:35.000Z";
         $skuMap = [];
         foreach (array_chunk($skuIdList,200) as $chunk){
             $list = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
@@ -1493,61 +1495,33 @@ class SyncCurlController
 //            $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
 //        }
 
-        $goalChannel = [];
-        $goalChannel['inputType'] = "select";
-        $goalChannel['label'] = "销售渠道";
-        $goalChannel['name'] = "goalChannel";
-        $goalChannel['optionList'] = [];
-        foreach (["amazon_jp", "amazon_fr",
-                     "amazon_de",
-                     "amazon_es",
-                     "amazon_it",
-                     "amazon_nl", "ebay_fr",
-                     "ebay_de",
-                     "ebay_es",
-                     "ebay_it"] as $channel) {
-            $goalChannel['optionList'][] = [
-                "label" => $channel,
-                "value" => $channel,
-            ];
+        $curlService = (new CurlService())->local();
+        $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
+            "productId" => "a23011300ux0041"
+        ]));
+        if ($info){
+            $info['title'] = "中文标题测试小语种通知";
+            foreach ($info['attribute'] as &$item){
+                if ($item['channel'] == "amazon_us" && $item['label'] == "title"){
+                    $item['value'] = "test amazon us title";
+                }
+            }
+            $info['userName'] = "zhouangang";
+
+            $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$info['_id']}",$info);
+            if ($resp){
+
+            }
         }
-
-        $seller = [];
-        $seller['inputType'] = "select";
-        $seller['label'] = "账号";
-        $seller['name'] = "sellerId";
-        $seller['optionList'] = [];
-        foreach (["amazon_jp"] as $sellerId) {
-            $seller['optionList'][] = [
-                "label" => $sellerId,
-                "value" => $sellerId,
-            ];
-        }
-
-        $lengthResult = [
-            "inputType" => "select",
-            "label" => "长度检查结果",
-            "name" => "isOverStrLength",
-            "optionList" => [
-                [
-                    "label" => "超长",
-                    "value" => 1
-                ]
-            ]
-        ];
-
-
-
-        echo json_encode($goalChannel,JSON_UNESCAPED_UNICODE);
 
     }
 
 }
 
 $curlController = new SyncCurlController();
-$curlController->skuMaterialDocCreate();
+//$curlController->skuMaterialDocCreate();
 //$curlController->fixProductOpt();
-//$curlController->fixSkuPhotoProcess();
+$curlController->fixSkuPhotoProcess();
 //$curlController->updateProductListNo();
 //$curlController->deleteFC();
 //$curlController->combineFC();
