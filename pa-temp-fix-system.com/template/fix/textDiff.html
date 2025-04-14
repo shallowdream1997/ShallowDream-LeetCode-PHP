@@ -14,30 +14,42 @@
 </head>
 <body>
 <div class="container text-center" id="app">
-    <div style="margin-top: 20px" class="row">
-        <div class="col-5"><h3 style="color: yellow">{{message}} <br>查询<br> <span style="color: red">当前环境：{{env == 'test' ? '测试环境' :  (env == 'local' ?  '开发环境' : '生产环境')}}</span></h3></div>
-        <div class="col-7">
-            <div class="mb-3">
-                <textarea v-model="original" class="form-control" placeholder="原始文本" rows="5"/></textarea>
-            </div>
-            <div class="mb-3">
-                <textarea v-model="revised" class="form-control" placeholder="修改后文本" rows="5"/></textarea>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    <button class="btn btn-primary" @click="search">差异对比</button>
+           <div class="container">
+            <div class="left">
+                <div class="input-area">
+                    <el-input
+                        v-model="original"
+                        type="textarea"
+                        placeholder="请输入左侧文本1"
+                        resize="none"
+                    ></el-input>
                 </div>
+                <div class="preview-area" v-html="originalHtml"></div>
+            </div>
+
+            <div class="axis">
+                <div class="axis-line"></div>
+                <el-button 
+                    type="primary" 
+                    class="process-btn"
+                    @click="processText"
+                    :loading="loading"
+                >处理</el-button>
+                <div class="axis-line"></div>
+            </div>
+
+            <div class="right">
+                <div class="input-area">
+                    <el-input
+                        v-model="revised"
+                        type="textarea"
+                        placeholder="请输入右侧文本"
+                        resize="none"
+                    ></el-input>
+                </div>
+                <div class="preview-area" v-html="revisedHtml"></div>
             </div>
         </div>
-
-    </div>
-
-    <div class="col-12" style="background-color: white">
-        <p v-html="originalHtml"></p>
-    </div>
-    <div class="col-12" style="background-color: white">
-        <p v-html="revisedHtml"></p>
-    </div>
 
 
 </div>

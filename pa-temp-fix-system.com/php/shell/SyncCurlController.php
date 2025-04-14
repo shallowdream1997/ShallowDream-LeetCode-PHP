@@ -1516,12 +1516,144 @@ class SyncCurlController
 
     }
 
+    public function getAmazonSpKeyword(){
+        $curlService = new CurlService();
+        $list = [];
+        for ($page = 1; $page < 25; $page++) {
+            $this->log("{$page}");
+            $resp = DataUtils::getPageDocList($curlService->pro()->s3044()->get("pa_sku_materials/queryPage", [
+                "limit" => 5000,
+                "createdOn_gt" => "2024-06-01",
+                "page" => $page
+            ]));
+            if ($resp) {
+                foreach ($resp as $info) {
+                    if (isset($info['fitment']) && !empty($info['fitment'])) {
+                        foreach ($info['fitment'] as $keyword) {
+                            $list[] = [
+                                "skuId" => $info['skuId'],
+                                "model" => $keyword['model']
+                            ];
+                        }
+                    }
+                }
+            } else {
+                break;
+            }
+        }
+
+        if (count($list) > 0){
+//            $this->log(count($models));
+//            foreach ($models as $info){
+//
+//            }
+//
+//            $curlService->pro()->s3023()->get("amazon_sp_keywords/queryPage",[
+//                "keywordText_in" => implode(",",$models)
+//            ]);
+            $excelUtils = new ExcelUtils();
+            $filePath = $excelUtils->downloadXlsx(["skuId","model"],$list,"sku资料呈现热销词.xlsx");
+            $this->log($filePath);
+        }
+
+
+    }
+    public function updateSkuMaterial(){
+        $curlService = new CurlService();
+        $list = [];
+
+        $ceMap = [
+            [
+                "ceBillNo" => "CE202503280130",
+                "skuIdList" => [
+                    "a25032500ux3108",
+                    "a25032500ux3109",
+                    "a25032500ux3110",
+                    "a25032500ux3111",
+                    "a25032500ux3112",
+                    "a25032500ux3113",
+                    "a25032500ux3114",
+                    "a25032500ux3115",
+                    "a25032500ux3116",
+                    "a25032500ux3117",
+                    "a25032500ux3118",
+                    "a25032500ux3119",
+                    "a25032500ux3120",
+                    "a25032500ux3121",
+                    "a25032500ux3123",
+                    "a25032500ux3127",
+                    "a25032500ux3128",
+                    "a25032500ux3130",
+                    "a25032500ux3137",
+                    "a25032500ux3138",
+                    "a25032500ux3139",
+                    "a25032500ux3140",
+                    "a25032500ux3141",
+                    "a25032500ux3142",
+                    "a25032500ux3143",
+                    "a25032500ux3144",
+                    "a25032500ux3145",
+                    "a25032500ux3146",
+                    "a25032500ux3147",
+                    "a25032500ux3148",
+                    "a25032500ux3149",
+                    "a25032500ux3150",
+                    "a25032500ux3151",
+                ]
+            ],
+            [
+                "ceBillNo" => "CE202504010105",
+                "skuIdList" => [
+                    "a25032500ux3152",
+                    "a25032500ux3153",
+                    "a25032500ux3154",
+                    "a25032500ux3155",
+                    "a25032500ux3156",
+                    "a25032500ux3157",
+                    "a25032500ux3158",
+                    "a25032500ux3159",
+                    "a25032500ux3160",
+                    "a25032500ux3161",
+                    "a25032500ux3162",
+                    "a25032500ux3163",
+                    "a25032500ux3164",
+                    "a25032500ux3165",
+                    "a25032500ux3166"
+                ]
+            ]
+        ];
+
+
+        foreach ($ceMap as $item => $ss){
+            $resp = DataUtils::getPageDocList($curlService->pro()->s3044()->get("pa_ce_materials/queryPage", [
+                "limit" => 1,
+                "ceBillNo" => $ss['ceBillNo'],
+            ]));
+            if (count($resp) > 0) {
+                $info = $resp[0];
+                $info['skuIdList'] = $ss['skuIdList'];
+                $curlService->pro()->s3044()->put("pa_ce_materials/{$info['_id']}",$info);
+            }else{
+
+
+            }
+
+
+
+
+        }
+
+
+
+    }
 }
 
 $curlController = new SyncCurlController();
+//$curlController->updateSkuMaterial();
+$curlController->getAmazonSpKeyword();
 //$curlController->skuMaterialDocCreate();
 //$curlController->fixProductOpt();
-$curlController->fixSkuPhotoProcess();
+//$curlController->fixSkuPhotoProcess();
 //$curlController->updateProductListNo();
 //$curlController->deleteFC();
 //$curlController->combineFC();
