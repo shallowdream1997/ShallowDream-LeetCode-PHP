@@ -366,10 +366,10 @@ class SyncCurlController
 
     public function fixPaSkuPhotoGress(){
         $list = $this->commonFindByParams("s3015","sku_photography_progresss",[
-            "ceBillNo_in" => "CE202410180103"
+            "ceBillNo_in" => "CE202503280130"
         ],"pro");
         foreach ($list as &$item){
-            $item['createCeBillNoOn'] = "2024-10-18 15:11:02Z";
+            $item['createCeBillNoOn'] = "2025-03-28T16:47:58.000Z";
             $this->commonUpdate("s3015","sku_photography_progresss",$item,"pro");
         }
 
@@ -1517,45 +1517,183 @@ class SyncCurlController
     }
 
     public function getAmazonSpKeyword(){
-        $curlService = new CurlService();
-        $list = [];
-        for ($page = 1; $page < 25; $page++) {
-            $this->log("{$page}");
-            $resp = DataUtils::getPageDocList($curlService->pro()->s3044()->get("pa_sku_materials/queryPage", [
-                "limit" => 5000,
-                "createdOn_gt" => "2024-06-01",
-                "page" => $page
-            ]));
-            if ($resp) {
-                foreach ($resp as $info) {
-                    if (isset($info['fitment']) && !empty($info['fitment'])) {
-                        foreach ($info['fitment'] as $keyword) {
-                            $list[] = [
-                                "skuId" => $info['skuId'],
-                                "model" => $keyword['model']
-                            ];
-                        }
-                    }
-                }
-            } else {
-                break;
-            }
-        }
-
-        if (count($list) > 0){
-//            $this->log(count($models));
-//            foreach ($models as $info){
-//
+//        $curlService = new CurlService();
+//        $list = [];
+//        for ($page = 1; $page < 500; $page++) {
+//            $this->log("{$page}");
+//            $resp = DataUtils::getPageDocList($curlService->pro()->s3044()->get("pa_sku_materials/queryPage", [
+//                "limit" => 5000,
+//                "createdOn_gt" => "2023-01-01",
+//                "page" => $page
+//            ]));
+//            if ($resp) {
+//                foreach ($resp as $info) {
+//                    if (isset($info['fitment']) && !empty($info['fitment'])) {
+//                        foreach ($info['fitment'] as $keyword) {
+//                            $list[] = [
+//                                "skuId" => $info['skuId'],
+//                                "model" => $keyword['model']
+//                            ];
+//                        }
+//                    }
+//                }
+//            } else {
+//                break;
 //            }
+//        }
 //
-//            $curlService->pro()->s3023()->get("amazon_sp_keywords/queryPage",[
-//                "keywordText_in" => implode(",",$models)
-//            ]);
-            $excelUtils = new ExcelUtils();
-            $filePath = $excelUtils->downloadXlsx(["skuId","model"],$list,"sku资料呈现热销词.xlsx");
-            $this->log($filePath);
+//        if (count($list) > 0){
+////            $this->log(count($models));
+////            foreach ($models as $info){
+////
+////            }
+////
+////            $curlService->pro()->s3023()->get("amazon_sp_keywords/queryPage",[
+////                "keywordText_in" => implode(",",$models)
+////            ]);
+//            $excelUtils = new ExcelUtils();
+//            $filePath = $excelUtils->downloadXlsx(["skuId","model"],$list,"sku资料呈现热销词_".date("YmdHis").".xlsx");
+//            $this->log($filePath);
+//        }
+
+        $curlService = new CurlService();
+
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/sku资料呈现热销词_20250414172848.xlsx");
+
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        if (sizeof($fileContent) > 0) {
+            $keywordTexts = [];
+            foreach ($fileContent as $info){
+                if ($info['model']){
+                    $keywordTexts[] = $info['model'];
+                }
+            }
+            $keywordInfoList = [];
+            foreach (array_chunk($keywordTexts,300) as $chunk){
+                $list = DataUtils::getPageList($curlService->pro()->s3023()->get("amazon_sp_keywords/queryPage",[
+                    "keywordText_in" => implode(",",$chunk),
+                    "columns" => "channel,keywordId,campaignId,adGroupId,state,keywordText,matchType,bid,createdOn",
+                    "createdBy" => "php_restful_commonPaNewCreateKeywordsByType",
+                    "limit" => 10000
+                ]));
+                if (count($list) > 0){
+                    foreach ($list as $info){
+                        $keywordInfoList[] = [
+                            "channel" => $info['channel'],
+                            "keywordId" => "'{$info['keywordId']}",
+                            "campaignId" => "'{$info['campaignId']}",
+                            "adGroupId" => "'{$info['adGroupId']}",
+                            "state" => $info['state'],
+                            "keywordText" => $info['keywordText'],
+                            "matchType" => $info['matchType'],
+                            "bid" => $info['bid'],
+                            "createdOn" => $info['createdOn']
+                        ];
+                    }
+
+                }
+            }
+
+
+            if (count($keywordInfoList) > 0) {
+                foreach (array_chunk($keywordInfoList,2500) as $chunk){
+                    $excelUtils = new ExcelUtils();
+                    $filePath = $excelUtils->downloadXlsx([
+                        "channel",
+                        "keywordId",
+                        "campaignId",
+                        "adGroupId",
+                        "state",
+                        "keywordText",
+                        "matchType",
+                        "bid",
+                        "createdOn",
+                    ], $chunk, "热词keyword投放_" . date("YmdHis") . ".xlsx");
+                }
+
+            }
+
+
         }
 
+
+    }
+
+    public function syncSkuSellerConfig(){
+        $curlService = new CurlService();
+//        $info = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("seller-configs/queryPage",[
+//            "sellerId" => "amazon_uk_rock",
+//        ]));
+//        if ($info){
+//            unset($info['_id']);
+//            $curlService->test()->s3015()->post("seller-configs",$info);
+//        }
+
+
+        $info1 = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("sku-seller-configs/queryPage",[
+            "sellerId" => "amazon_uk_rock",
+            "skuId" => "a25030300ux3183",
+        ]));
+        if ($info1){
+            unset($info1['_id']);
+            $curlService->test()->s3015()->post("sku-seller-configs",$info1);
+        }
+    }
+    public function updatePaGoodsSourceManage(){
+//        $curlService = new CurlService();
+//        $list = [];
+//        for ($page = 1; $page < 25; $page++) {
+//            $this->log("{$page}");
+//            $resp = DataUtils::getPageDocList($curlService->pro()->s3044()->get("pa_sku_materials/queryPage", [
+//                "limit" => 5000,
+//                "createdOn_gt" => "2024-06-01",
+//                "page" => $page
+//            ]));
+//            if ($resp) {
+//                foreach ($resp as $info) {
+//                    if (isset($info['fitment']) && !empty($info['fitment'])) {
+//                        foreach ($info['fitment'] as $keyword) {
+//                            $list[] = [
+//                                "skuId" => $info['skuId'],
+//                                "model" => $keyword['model']
+//                            ];
+//                        }
+//                    }
+//                }
+//            } else {
+//                break;
+//            }
+//        }
+//
+//        if (count($list) > 0){
+////            $this->log(count($models));
+////            foreach ($models as $info){
+////
+////            }
+////
+////            $curlService->pro()->s3023()->get("amazon_sp_keywords/queryPage",[
+////                "keywordText_in" => implode(",",$models)
+////            ]);
+//            $excelUtils = new ExcelUtils();
+//            $filePath = $excelUtils->downloadXlsx(["skuId","model"],$list,"sku资料呈现热销词.xlsx");
+//            $this->log($filePath);
+//        }
+
+        $curlService = new CurlService();
+
+        $curlService = $curlService->pro();
+
+        $list = DataUtils::getPageList($curlService->s3015()->get("pa_goods_source_manages/queryPage",[
+            "limit" => 1000,
+            "ceBillNoOrCeBillNoNew_in" => "CE202503280130",
+        ]));
+
+        foreach ($list as $info){
+            $info['ceDate'] = "2025-03-28T16:47:58.000Z";
+            $curlService->s3015()->put("pa_goods_source_manages/{$info['_id']}",$info);
+        }
 
     }
     public function updateSkuMaterial(){
@@ -1646,11 +1784,52 @@ class SyncCurlController
 
 
     }
+
+
+    public function syncSkuMaterialToAudit(){
+        $curlService = (new CurlService())->test();
+        $curlService->gateway();
+        $this->getModule('pa');
+
+        $resp1 = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/material/changed_doc/v1/page", [
+            "pageNum" => 1,
+            "pageSize" => 200,
+            "applyStatus" => 20
+        ]));
+
+        $batchNameList = [];
+        if ($resp1 && count($resp1['list']) > 0){
+            foreach ($resp1['list'] as $info){
+                if ($info['afterChangedTranslationAttributeValue'] == "<p></p>\n"){
+                    $batchNameList[] = $info['docNumber'];
+                }
+            }
+        }
+
+        if (count($batchNameList) > 0) {
+            $this->log("一共：".count($batchNameList)."个单据翻译失败，");
+            $this->log(json_encode($batchNameList,JSON_UNESCAPED_UNICODE));
+            foreach ($batchNameList as $item){
+                $postParams = [
+                    "docNumbers" => [$item],
+                    "operatorName" => "P3-fixTranslationFail"
+                ];
+                $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/material/changed_doc/v1/syncSkuMaterialToAudit", $postParams));
+
+                $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+            }
+
+        }
+    }
 }
 
 $curlController = new SyncCurlController();
+$curlController->syncSkuMaterialToAudit();
+//$curlController->fixPaSkuPhotoGress();
 //$curlController->updateSkuMaterial();
-$curlController->getAmazonSpKeyword();
+//$curlController->updatePaGoodsSourceManage();
+//$curlController->getAmazonSpKeyword();
+//$curlController->syncSkuSellerConfig();
 //$curlController->skuMaterialDocCreate();
 //$curlController->fixProductOpt();
 //$curlController->fixSkuPhotoProcess();

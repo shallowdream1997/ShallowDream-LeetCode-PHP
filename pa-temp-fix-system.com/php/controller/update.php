@@ -151,7 +151,7 @@ class update
 
 
                 }
-
+                return true;
             } else {
                 //全sku的逻辑
 
