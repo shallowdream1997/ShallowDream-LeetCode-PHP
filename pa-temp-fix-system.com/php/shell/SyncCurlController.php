@@ -1787,7 +1787,7 @@ class SyncCurlController
 
 
     public function syncSkuMaterialToAudit(){
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
         $curlService->gateway();
         $this->getModule('pa');
 
@@ -1805,7 +1805,12 @@ class SyncCurlController
                 }
             }
         }
-
+        $batchNameList = [
+            "2025042100020",
+            "2025042100019",
+            "2025042100018",
+            "2025042100017",
+        ];
         if (count($batchNameList) > 0) {
             $this->log("一共：".count($batchNameList)."个单据翻译失败，");
             $this->log(json_encode($batchNameList,JSON_UNESCAPED_UNICODE));

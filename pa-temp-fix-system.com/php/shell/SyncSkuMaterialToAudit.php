@@ -38,7 +38,7 @@ class SyncSkuMaterialToAudit
 
     public function syncSkuMaterialToAudit(){
         $this->log("start 执行syncSkuMaterialToAudit脚本");
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
         $curlService->gateway();
         $curlService->getModule('pa');
 
