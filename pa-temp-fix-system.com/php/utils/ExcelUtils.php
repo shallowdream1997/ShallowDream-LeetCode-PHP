@@ -189,10 +189,10 @@ class ExcelUtils
     public function getXlsxData($filename, $sheet = 'Sheet1')
     {
         $fileContent = $this->_readXlsFile($filename);
-        if (sizeof($fileContent[$sheet]) > 0) {
-            return $fileContent[$sheet];
-        } else {
-            return [];
+        if (sizeof($fileContent) == 1){
+            return isset($fileContent[$sheet]) ? $fileContent[$sheet] : [];
+        }else{
+            return $fileContent;
         }
     }
 

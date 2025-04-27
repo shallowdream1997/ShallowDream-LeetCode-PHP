@@ -1795,12 +1795,86 @@ class SyncCurlController
 
         }
     }
+
+    public function copyNewChannel(){
+        $curlService = (new CurlService())->pro();
+
+
+        $oldChannel = "amazon_de";
+        $newChannel = "amazon_nl";
+
+        $list = [];
+        for ($page = 1;$page < 10;$page ++){
+            $resp1 = DataUtils::getPageList($curlService->s3015()->get("channel-amazon-attributes/queryPage", [
+                "limit" => 5000,
+                "page" => $page,
+                "channel" => $oldChannel
+            ]));
+            if (count($resp1) > 0){
+                $list = array_merge($list,$resp1);
+            }else{
+                break;
+            }
+        }
+        if (count($list) > 0) {
+            //$curlService = (new CurlService())->test();
+            foreach ($list as $info){
+                unset($info['_id']);
+                $info['channel'] = $newChannel;
+                $curlService->s3015()->post("channel-amazon-attributes", $info);
+            }
+
+        }
+    }
+
+
+    public function syncPaSkuMaterial(){
+        $curlService = (new CurlService())->pro();
+
+
+        $skuIdList = ["a25031700ux0462"];
+
+        $list = [];
+
+        $resp1 = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
+            "limit" => 5000,
+            "page" => 1,
+            "skuId_in" => implode(",",$skuIdList)
+        ]));
+        if (count($resp1) > 0){
+            $list = array_merge($list,$resp1);
+        }
+
+        if (count($list) > 0) {
+            $curlService = (new CurlService())->test();
+            $testList = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage",[
+                "limit" => 5000,
+                "page" => 1,
+                "skuId_in" => implode(",",$skuIdList)
+            ]));
+            $skuIdMap = array_column($testList,null,"skuId");
+
+            foreach ($list as $info){
+                if (isset($skuIdMap[$info['skuId']])){
+                    $curlService->s3044()->delete("pa_sku_materials/{$skuIdMap[$info['skuId']]['_id']}");
+                }
+                $curlService->s3044()->post("pa_sku_materials", $info);
+            }
+
+        }
+
+    }
+
+
+
 }
 
 $curlController = new SyncCurlController();
 //$curlController->syncSkuMaterialToAudit();
 //$curlController->fixPaSkuPhotoGress();
-$curlController->updateSkuMaterial();
+//$curlController->updateSkuMaterial();
+$curlController->syncPaSkuMaterial();
+//$curlController->copyNewChannel();
 //$curlController->updatePaGoodsSourceManage();
 //$curlController->getAmazonSpKeyword();
 //$curlController->syncSkuSellerConfig();

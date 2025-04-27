@@ -20,6 +20,7 @@ class CurlService
     private $s3035 = null;
     private $s3016 = null;
     private $gateway = null;
+    private $aiCategoryApi = null;
 
     public $module = "pa-biz-application";
 
@@ -228,6 +229,11 @@ class CurlService
         return $this;
     }
 
+    public function aiCategoryApi(){
+        $this->port = "aiCategoryApi";
+        $this->setBaseComponentByEnv();
+        return $this;
+    }
 
 
     public function gateway(): CurlService
@@ -467,6 +473,8 @@ class CurlService
             case "gateway":
                 $this->gateway = "https://gateway-test.ux168.cn";
                 break;
+            case "aiCategoryApi":
+                $this->aiCategoryApi = "http://172.16.75.238:12121";
         }
         return $this;
     }
@@ -557,6 +565,8 @@ class CurlService
             case "gateway":
                 $this->gateway = "https://gateway.ux168.cn";
                 break;
+            case "aiCategoryApi":
+                $this->aiCategoryApi = "https://ai-category-recommend.ux168.cn";
         }
         return $this;
     }
