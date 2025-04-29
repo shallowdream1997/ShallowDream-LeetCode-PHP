@@ -1495,24 +1495,58 @@ class SyncCurlController
 //            $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
 //        }
 
-        $curlService = (new CurlService())->local();
-        $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
-            "productId" => "a23011300ux0041"
-        ]));
-        if ($info){
-            $info['title'] = "中文标题测试小语种通知";
-            foreach ($info['attribute'] as &$item){
-                if ($item['channel'] == "amazon_us" && $item['label'] == "title"){
-                    $item['value'] = "test amazon us title";
+        $curlService = (new CurlService())->pro();
+
+        $list = [
+            "g25042500ux8095",
+            "g25042500ux8129",
+            "g25042500ux8109",
+            "g25042500ux8108",
+            "g25042500ux8119",
+            "g25042500ux8118",
+            "g25042500ux8093",
+            "g25042500ux8094",
+            "g25042500ux8128",
+            "s25042501ux0957",
+            "s25042501ux0954",
+            "s25042501ux0958",
+            "s25042501ux0953",
+            "s25042501ux0945",
+            "s25042501ux0998",
+            "s25042501ux0991",
+            "s25042501ux0987",
+            "s25042501ux0968",
+            "s25042501ux0974",
+            "s25042501ux0969",
+            "s25042501ux0983",
+            "s25042501ux0978",
+            "s25042501ux0977",
+            "s25042501ux0944",
+            "s25042501ux0955",
+            "s25042501ux0946",
+            "s25042501ux0995",
+            "s25042501ux0986",
+        ];
+        foreach ($list as $sku){
+            $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
+                "productId" => $sku
+            ]));
+            if ($info){
+                foreach ($info['attribute'] as &$item){
+                    if ($item['channel'] == "walmart_us" && $item['label'] == "brand"){
+                        $item['value'] = "NOMADIC NOOK";
+                    }
+                }
+                $info['userName'] = "system(zhouangang)";
+
+                $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$info['_id']}",$info);
+                if ($resp){
+
                 }
             }
-            $info['userName'] = "zhouangang";
-
-            $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$info['_id']}",$info);
-            if ($resp){
-
-            }
         }
+
+
 
     }
 
@@ -1866,19 +1900,66 @@ class SyncCurlController
     }
 
 
+    public function fix(){
+        $curlService = (new CurlService())->pro();
+        $curlService->gateway();
+        $curlService->getModule('pa');
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/pmo.xlsx");
+
+        $fileFitContent1 = (new ExcelUtils())->getXlsxData("../export/DPMO250424008-黎乾海.xlsx");
+
+        $fitmentSkuMap = [];
+        $map = [];
+        if (sizeof($fileFitContent) > 0) {
+            foreach ($fileFitContent as $info){
+                $map[$info['outside_title']] = $info['id'];
+            }
+        }
+
+        $skuList = [];
+        if (sizeof($fileFitContent1) > 0){
+            foreach ($fileFitContent1 as $info){
+                if (isset($map[$info['productLineName']])){
+                    $skuList[] = [
+                        "devSkuPkId" => $map[$info['productLineName']],
+                        "skuId" => $info['skuId']
+                    ];
+                }
+                $map2[$info['productLineName']] = $info['skuId'];
+            }
+        }
+
+
+        $pmoArr = [
+            "prePurchaseBillNo" => "DPMO250424008",
+            "skuList" => $skuList,
+//            "pmoBillNo" => "PMO2025042500159",
+            "operatorName" => "zhouangang",
+            "purchaseHandleStatus" => 70
+        ];
+        $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $pmoArr));
+        if ($resp){
+
+        }
+
+
+
+    }
 
 }
 
 $curlController = new SyncCurlController();
+//$curlController->fix();
 //$curlController->syncSkuMaterialToAudit();
 //$curlController->fixPaSkuPhotoGress();
 //$curlController->updateSkuMaterial();
-$curlController->syncPaSkuMaterial();
+//$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();
 //$curlController->updatePaGoodsSourceManage();
 //$curlController->getAmazonSpKeyword();
 //$curlController->syncSkuSellerConfig();
-//$curlController->skuMaterialDocCreate();
+$curlController->skuMaterialDocCreate();
 //$curlController->fixProductOpt();
 //$curlController->fixSkuPhotoProcess();
 //$curlController->updateProductListNo();
