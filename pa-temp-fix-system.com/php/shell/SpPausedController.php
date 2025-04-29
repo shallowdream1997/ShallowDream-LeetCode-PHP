@@ -54,13 +54,19 @@ class SpUpdateAdGroupController
         $curlService = new CurlService();
         $fileName = "../export/sp/";
         try {
-            $contentList = $excelUtils->getXlsxData($fileName . "关停keyword.xlsx");
+            $contentList = $excelUtils->getXlsxData($fileName . "关停keyword_2.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
         if (count($contentList) > 0) {
-
-            $keywordIds = array_column($contentList,"keywordid");
+            $keywordIds = [];
+            foreach ($contentList as $item){
+                $keywordId = ltrim($item['keywordId'], "'");
+                if (!empty($keywordId)){
+                    $keywordIds[] = $keywordId;
+                }
+            }
+            $keywordIds = array_unique($keywordIds);
 
             //$adgroupIds = ["520064669922127"];
             foreach (array_chunk($keywordIds,200) as $chunk){
@@ -193,7 +199,8 @@ class SpUpdateAdGroupController
                             "isPassNotification" => "false",
                             "from" => "FIX_PAUSED_KEYWORD",
                             "updateParams" => [
-                                "state" => $createParams['state']
+                                "state" => $createParams['state'],
+                                "status" => "2"
                             ],
                         ]);
                         if ($resp['result'] && isset($resp['result']['keyword']) && count($resp['result']['keyword']) > 0) {
@@ -223,8 +230,148 @@ class SpUpdateAdGroupController
     }
 
 
+    public function getAmazonSpKeywordList(){
+        $excelUtils = new ExcelUtils();
+        $curlService = new CurlService();
+        $fileName = "../export/sp/";
+        try {
+            $contentList = $excelUtils->getXlsxData($fileName . "关停keyword_3.xlsx");
+        } catch (Exception $e) {
+            die($e->getLine() . " : " . $e->getMessage());
+        }
+        if (count($contentList) > 0) {
+
+            $exportList = [];
+            foreach ($contentList as $info){
+                $channel = $info['channel'];
+                $sellerId = $channel;
+                if ($channel == "amazon_us"){
+                    $sellerId = "amazon";
+                }
+                $campaignId = ltrim($info['campaignId'], "'");
+                $adGroupId = ltrim($info['adGroupId'], "'");
+
+                $resp = DataUtils::getResultData($curlService->pro()->phphk()->post("amazon/ad/keywords/getKeywordsExtended/{$sellerId}", [
+                    "campaignIdFilter" => $campaignId,
+                    "adGroupIdFilter" => $adGroupId,
+                    "stateFilter" => "enabled",
+                    "keywordTextFilter" => $info['keywordText'],
+                ]));
+                if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+                    foreach ($resp['data'] as $spInfo){
+                        if ($spInfo['keywordText'] == $info['keywordText']){
+                            $exportList[] = [
+                                "_id" => $info['_id'],
+                                "channel" => $channel,
+                                "campaignId" => "'{$spInfo['campaignId']}",
+                                "adGroupId" => "'{$spInfo['adGroupId']}",
+                                "keywordId" => "'{$spInfo['keywordId']}",
+                                "keywordText" => $spInfo['keywordText'],
+                                "matchType" => $spInfo['matchType'],
+                                "bid" => $spInfo['bid'],
+                                "state" => $spInfo['state'],
+                            ];
+                        }
+                    }
+                }
+
+            }
+
+            if (count($exportList) > 0){
+                $excelUtils = new ExcelUtils();
+                $filePath = $excelUtils->downloadXlsx([
+                    "_id",
+                    "channel",
+                    "campaignId",
+                    "adGroupId",
+                    "keywordId",
+                    "keywordText",
+                    "matchType",
+                    "bid",
+                    "state"
+                ], $exportList, "热词keyword投放_" . date("YmdHis") . ".xlsx");
+            }
+            $this->dingTalk();
+        }
+
+    }
+
+    public function pausedAmazonSpKeywordList(){
+        $excelUtils = new ExcelUtils();
+        $curlService = new CurlService();
+        $fileName = "../export/sp/";
+        try {
+            $contentList = $excelUtils->getXlsxData($fileName . "关停keyword_4.xlsx");
+        } catch (Exception $e) {
+            die($e->getLine() . " : " . $e->getMessage());
+        }
+        if (count($contentList) > 0) {
+            foreach ($contentList as $info){
+                $channel = $info['channel'];
+                $sellerId = $channel;
+                if ($channel == "amazon_us"){
+                    $sellerId = "amazon";
+                }
+                $campaignId = ltrim($info['campaignId'], "'");
+                $adGroupId = ltrim($info['adGroupId'], "'");
+                $keywordId = ltrim($info['keywordId'], "'");
+
+                $resp = DataUtils::getResultData($curlService->pro()->phphk()->post("amazon/ad/keywords/getKeywordsExtended/{$sellerId}", [
+                    "campaignIdFilter" => $campaignId,
+                    "adGroupIdFilter" => $adGroupId,
+                    "keywordIdFilter" => $keywordId,
+                    "stateFilter" => "enabled",
+//                    "keywordTextFilter" => $info['keywordText'],
+                ]));
+                if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+                    foreach ($resp['data'] as $spInfo){
+                        if ($spInfo['keywordText'] == $info['keywordText']){
+                            $uresp = DataUtils::getResultData($curlService->pro()->phphk()->put("amazon/ad/keywords/putKeywords/{$sellerId}", [[
+                                "campaignId" => $spInfo['campaignId'],
+                                "adGroupId" => $spInfo['adGroupId'],
+                                "keywordId" => $spInfo['keywordId'],
+                                "bid" => $spInfo['bid'],
+                                "state" => "paused",
+                            ]]));
+
+                        }
+                    }
+                }
+
+            }
+
+            $this->dingTalk();
+        }
+
+    }
+
+
+    public function deleteKeyword()
+    {
+        $excelUtils = new ExcelUtils();
+        $curlService = new CurlService();
+        $fileName = "../export/sp/";
+        try {
+            $contentList = $excelUtils->getXlsxData($fileName . "关停keyword_5.xlsx");
+        } catch (Exception $e) {
+            die($e->getLine() . " : " . $e->getMessage());
+        }
+        if (count($contentList) > 0) {
+            foreach ($contentList as $item) {
+                //$redisService->hSet("sp_update_adgroup_reload", $sellerId, json_encode($chunkAdgroupIds, JSON_UNESCAPED_UNICODE));
+                $list = DataUtils::getResultData($curlService->pro()->s3023()->delete("amazon_sp_keywords/{$item['_id']}"));
+                if (count($list) > 0) {
+
+                }
+            }
+            $this->dingTalk();
+        }
+    }
 }
 
 $con = new SpUpdateAdGroupController();
 //$con->pausedKeyword();
-$con->pausedKeywordNotification();
+//$con->pausedKeywordNotification();
+//$con->getAmazonSpKeywordList();
+//$con->pausedAmazonSpKeywordList();
+//$con->deleteKeyword();

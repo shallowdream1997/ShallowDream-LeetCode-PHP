@@ -1610,20 +1610,23 @@ class SyncCurlController
                     "keywordText_in" => implode(",",$chunk),
                     "columns" => "channel,keywordId,campaignId,adGroupId,state,keywordText,matchType,bid,createdOn",
                     "createdBy" => "php_restful_commonPaNewCreateKeywordsByType",
+//                    "state" => "enabled",
                     "limit" => 10000
                 ]));
                 if (count($list) > 0){
                     foreach ($list as $info){
                         $keywordInfoList[] = [
+//                            "_id" => $info['_id'],
+//                            "messages" => $info['messages'],
                             "channel" => $info['channel'],
                             "keywordId" => "'{$info['keywordId']}",
-                            "campaignId" => "'{$info['campaignId']}",
-                            "adGroupId" => "'{$info['adGroupId']}",
+//                            "campaignId" => "'{$info['campaignId']}",
+//                            "adGroupId" => "'{$info['adGroupId']}",
                             "state" => $info['state'],
                             "keywordText" => $info['keywordText'],
                             "matchType" => $info['matchType'],
                             "bid" => $info['bid'],
-                            "createdOn" => $info['createdOn']
+//                            "createdOn" => $info['createdOn']
                         ];
                     }
 
@@ -1632,18 +1635,20 @@ class SyncCurlController
 
 
             if (count($keywordInfoList) > 0) {
-                foreach (array_chunk($keywordInfoList,2500) as $chunk){
+                foreach (array_chunk($keywordInfoList,15000) as $chunk){
                     $excelUtils = new ExcelUtils();
                     $filePath = $excelUtils->downloadXlsx([
+//                        "_id",
+//                        "messages",
                         "channel",
                         "keywordId",
-                        "campaignId",
-                        "adGroupId",
+//                        "campaignId",
+//                        "adGroupId",
                         "state",
                         "keywordText",
                         "matchType",
                         "bid",
-                        "createdOn",
+//                        "createdOn",
                     ], $chunk, "热词keyword投放_" . date("YmdHis") . ".xlsx");
                 }
 
@@ -1957,9 +1962,9 @@ $curlController = new SyncCurlController();
 //$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();
 //$curlController->updatePaGoodsSourceManage();
-//$curlController->getAmazonSpKeyword();
+$curlController->getAmazonSpKeyword();
 //$curlController->syncSkuSellerConfig();
-$curlController->skuMaterialDocCreate();
+//$curlController->skuMaterialDocCreate();
 //$curlController->fixProductOpt();
 //$curlController->fixSkuPhotoProcess();
 //$curlController->updateProductListNo();
