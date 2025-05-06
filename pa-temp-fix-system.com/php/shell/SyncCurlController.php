@@ -1592,7 +1592,7 @@ class SyncCurlController
 
         $curlService = new CurlService();
 
-        $fileContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/sku资料呈现热销词_20250414172848.xlsx");
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/sku资料呈现热销词_20250429223726.xlsx");
 
         $curlService = new CurlService();
         $curlService = $curlService->pro();
@@ -1610,7 +1610,7 @@ class SyncCurlController
                     "keywordText_in" => implode(",",$chunk),
                     "columns" => "channel,keywordId,campaignId,adGroupId,state,keywordText,matchType,bid,createdOn",
                     "createdBy" => "php_restful_commonPaNewCreateKeywordsByType",
-//                    "state" => "enabled",
+                    "state" => "enabled",
                     "limit" => 10000
                 ]));
                 if (count($list) > 0){
@@ -1620,13 +1620,13 @@ class SyncCurlController
 //                            "messages" => $info['messages'],
                             "channel" => $info['channel'],
                             "keywordId" => "'{$info['keywordId']}",
-//                            "campaignId" => "'{$info['campaignId']}",
-//                            "adGroupId" => "'{$info['adGroupId']}",
+                            "campaignId" => "'{$info['campaignId']}",
+                            "adGroupId" => "'{$info['adGroupId']}",
                             "state" => $info['state'],
                             "keywordText" => $info['keywordText'],
                             "matchType" => $info['matchType'],
                             "bid" => $info['bid'],
-//                            "createdOn" => $info['createdOn']
+                            "createdOn" => $info['createdOn']
                         ];
                     }
 
@@ -1642,14 +1642,14 @@ class SyncCurlController
 //                        "messages",
                         "channel",
                         "keywordId",
-//                        "campaignId",
-//                        "adGroupId",
+                        "campaignId",
+                        "adGroupId",
                         "state",
                         "keywordText",
                         "matchType",
                         "bid",
-//                        "createdOn",
-                    ], $chunk, "热词keyword投放_" . date("YmdHis") . ".xlsx");
+                        "createdOn",
+                    ], $chunk, "新热词keyword投放_" . date("YmdHis") . ".xlsx");
                 }
 
             }
