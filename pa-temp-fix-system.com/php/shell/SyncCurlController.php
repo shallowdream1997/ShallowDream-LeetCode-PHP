@@ -732,63 +732,65 @@ class SyncCurlController
     public function writeScmsPurchaseBillNo(){
         $curlSsl = (new CurlService())->pro();
 
-//        $fileContent = (new ExcelUtils())->getXlsxData("../export/修复PMO单.xlsx");
-//        if (sizeof($fileContent) > 0) {
-//            $preSkuList = [];
-//            foreach ($fileContent as $info){
-//                $resp = DataUtils::getResultData($curlSsl->s3009()->post("po-composite-services/getSampleSkuInfoByConditions",[
-//                    "conditionsJsonEncode" => ["titleCn" => $info['tempSkuId']],
-//                    "orderBy" => "",
-//                    "page" => 1,
-//                    "limit" => 2
-//                ]));
-//                if ($resp && count($resp) > 0 && $resp[0]['sampleSkuInfoResponse'] && $resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'] && count($resp[0]['sampleSkuInfoResponse']['sampleSkuInfos']) > 0){
-//                   $skuData = $resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'][0];
-//                    $preSkuList[] = [
-//                        "devSkuPkId" => $info['id'],
-//                        "skuId" => $skuData['skuId']
-//                    ];
-//                }
-//            }
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/pmo/修复PMO单1.xlsx");
+        $pmoContent = (new ExcelUtils())->getXlsxData("../export/pmo/pmo修复.xlsx");
+        $pmoSkuMap = [];
+        if (sizeof($pmoContent) > 0){
+            $pmoSkuMap = array_column($pmoContent,null,"skuId");
+        }
+
+        if (sizeof($fileContent) > 0) {
+            $preSkuList = [];
+            foreach ($fileContent as $info){
+                $resp = DataUtils::getResultData($curlSsl->s3009()->post("po-composite-services/getSampleSkuInfoByConditions",[
+                    "conditionsJsonEncode" => ["titleCn" => $info['tempSkuId']],
+                    "orderBy" => "",
+                    "page" => 1,
+                    "limit" => 2
+                ]));
+                if ($resp && count($resp) > 0 && $resp[0]['sampleSkuInfoResponse'] && $resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'] && count($resp[0]['sampleSkuInfoResponse']['sampleSkuInfos']) > 0){
+                   foreach ($resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'] as $i){
+                       if (isset($pmoSkuMap[$i['skuId']])){
+                           $preSkuList[] = [
+                               "devSkuPkId" => $info['id'],
+                               "skuId" => $i['skuId']
+                           ];
+                           $this->log("{$info['id']} {$i['skuId']}");
+                           break;
+                       }
+                   }
+                }
+            }
 //
-//            $writeData = [
-//                "prePurchaseBillNo" => "DPMO241220010",
-//                "supplierId" => null,
-//                "ceBillNo" => null,
-//                "qdBillNo" => null,
-//                "pmoBillNo" => "PMO2024122300012",
-//                "purchaseHandleStatus" => 70,
-//                "skuList" => $preSkuList,
-//                "operatorName" => "lixiaomin"
-//            ];
-//
-//            $this->log(json_encode($writeData,JSON_UNESCAPED_UNICODE));
-//            $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $writeData));
-//            if ($getKeyResp){
-//                $this->log(json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
-//            }
-//        }
+//        $preSkuList = [];
+//        $preSkuList[] = [
+//            "devSkuPkId" => "1871732989303685122",
+//            "skuId" => "a25050700ux1944"
+//        ];
+            if (count($preSkuList) > 0){
+                $writeData = [
+                    "prePurchaseBillNo" => "DPMO250506011",
+                    "ceBillNo" => "CE202505090167",
+                    "skuList" => $preSkuList,
+                    "operatorName" => "zhouangang"
+                ];
+
+                $this->log(json_encode($writeData,JSON_UNESCAPED_UNICODE));
+                $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $writeData));
+                if ($getKeyResp){
+                    $this->log(json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
+                }
+            }
+
+        }
 
 
 //        $ss=$curlSsl->s3009()->post("market-analysis-reports/deleteSkuIdInfoBatchForCombine",[
-//           "skuIdInfoIdList" => ["6768bf5522461d4bae82b8cc"]
+//           "skuIdInfoIdList" => ["681c80d451cea82da1a9486d"]
 //        ]);
 //        if ($ss){
 //
 //        }
-
-        $data = DataUtils::getResultData($curlSsl->s3009()->get("market-analysis-reports/getMainSkuIdInfo",[
-            "batch" => "DPMO241220010",
-//            "batch" => "bmw grille -1",
-        ]));
-        if ($data){
-            $mainInfo = $data[0];
-            $mainInfo['skuIdNumber'] = 82;
-            $ss=$curlSsl->s3009()->put("market-analysis-reports/updateMainSkuIdInfoV2/{$mainInfo['_id']}",$mainInfo);
-            if ($ss){
-
-            }
-        }
 
 
 
@@ -1662,22 +1664,22 @@ class SyncCurlController
 
     public function syncSkuSellerConfig(){
         $curlService = new CurlService();
-//        $info = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("seller-configs/queryPage",[
-//            "sellerId" => "amazon_uk_rock",
-//        ]));
-//        if ($info){
-//            unset($info['_id']);
-//            $curlService->test()->s3015()->post("seller-configs",$info);
-//        }
+        $info = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("seller-configs/queryPage",[
+            "sellerId" => "amazon_ca_ifn",
+        ]));
+        if ($info){
+            unset($info['_id']);
+            $curlService->uat()->s3015()->post("seller-configs",$info);
+        }
 
 
         $info1 = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("sku-seller-configs/queryPage",[
-            "sellerId" => "amazon_uk_rock",
-            "skuId" => "a25030300ux3183",
+            "sellerId" => "amazon_ca_ifn",
+            "skuId" => "a24101800ux0691",
         ]));
         if ($info1){
             unset($info1['_id']);
-            $curlService->test()->s3015()->post("sku-seller-configs",$info1);
+            $curlService->uat()->s3015()->post("sku-seller-configs",$info1);
         }
     }
     public function updatePaGoodsSourceManage(){
@@ -1962,7 +1964,7 @@ $curlController = new SyncCurlController();
 //$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();
 //$curlController->updatePaGoodsSourceManage();
-$curlController->getAmazonSpKeyword();
+//$curlController->getAmazonSpKeyword();
 //$curlController->syncSkuSellerConfig();
 //$curlController->skuMaterialDocCreate();
 //$curlController->fixProductOpt();
@@ -1978,7 +1980,7 @@ $curlController->getAmazonSpKeyword();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
 //$curlController->writeProductBaseFba();
-//$curlController->writeScmsPurchaseBillNo();
+$curlController->writeScmsPurchaseBillNo();
 //$curlController->saveReceiveIpCheck();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();

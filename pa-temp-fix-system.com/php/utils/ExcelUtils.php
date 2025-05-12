@@ -230,4 +230,64 @@ class ExcelUtils
 //        }
 //        return $list;
 //    }
+
+
+    public function _readCSV($csvPath)
+    {
+        try {
+            $reader = new PHPExcel_Reader_CSV();
+            $reader->setInputEncoding('UTF-8');
+            $reader->setDelimiter(',');
+
+            // 指定从第2行开始读取标题（跳过首行空数据）
+            $reader->setRowIteratorStart(2);
+
+            $phpExcel = $reader->load($csvPath);
+            $sheet = $phpExcel->getActiveSheet();
+
+            // 读取真实标题行（图片中的第2行）
+            $headerRow = $sheet->getRowIterator()->current();
+            $headerKeys = [];
+            foreach ($headerRow->getCellIterator() as $cell) {
+                $headerKeys[] = $cell->getValue(); // 标题如campaign_id, adgroup_name等
+            }
+
+            // 强制指定需要文本格式的列（D/E列的adgroup_id）
+            $textColumns = ['D', 'E'];
+
+            $data = [];
+            $rowIterator = $sheet->getRowIterator();
+            $rowIterator->resetStart(3); // 数据从第3行开始
+
+            foreach ($rowIterator as $row) {
+                $rowData = [];
+                foreach ($row->getCellIterator() as $col => $cell) {
+                    $key = $headerKeys[PHPExcel_Cell::columnIndexFromString($col) - 1] ?? $col;
+
+                    // 针对D/E列强制文本格式读取
+                    if (in_array($col, $textColumns)) {
+                        $value = $cell->getFormattedValue(); // 直接获取显示值（如5.48474E+14原文）
+                        $value = (string)$value;
+                    } else {
+                        $value = $cell->getValue();
+                    }
+
+                    // 修复图片中数字粘连问题（如311196306576001411arrc250326）
+                    if (is_numeric($value) && strlen($value) > 15) {
+                        $value = (string)$value;
+                    }
+
+                    $rowData[$key] = $value;
+                }
+                $data[] = $rowData;
+            }
+
+            return $data;
+        } catch (Exception $e) {
+            die("读取CSV失败: " . $e->getMessage());
+        }
+    }
+
+
+
 }

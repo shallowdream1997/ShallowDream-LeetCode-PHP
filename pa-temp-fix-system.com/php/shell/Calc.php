@@ -66,5 +66,5 @@ class Calc
 }
 
 $calc = new Calc();
-//$calc->calcSalary(167,56.5,12);
-$calc->calcProgress();
+$calc->calcSalary(168.5,31.5,12);
+//$calc->calcProgress();
