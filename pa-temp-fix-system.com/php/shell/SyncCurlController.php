@@ -732,47 +732,50 @@ class SyncCurlController
     public function writeScmsPurchaseBillNo(){
         $curlSsl = (new CurlService())->pro();
 
-        $fileContent = (new ExcelUtils())->getXlsxData("../export/pmo/修复PMO单1.xlsx");
-        $pmoContent = (new ExcelUtils())->getXlsxData("../export/pmo/pmo修复.xlsx");
-        $pmoSkuMap = [];
-        if (sizeof($pmoContent) > 0){
-            $pmoSkuMap = array_column($pmoContent,null,"skuId");
-        }
-
-        if (sizeof($fileContent) > 0) {
-            $preSkuList = [];
-            foreach ($fileContent as $info){
-                $resp = DataUtils::getResultData($curlSsl->s3009()->post("po-composite-services/getSampleSkuInfoByConditions",[
-                    "conditionsJsonEncode" => ["titleCn" => $info['tempSkuId']],
-                    "orderBy" => "",
-                    "page" => 1,
-                    "limit" => 2
-                ]));
-                if ($resp && count($resp) > 0 && $resp[0]['sampleSkuInfoResponse'] && $resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'] && count($resp[0]['sampleSkuInfoResponse']['sampleSkuInfos']) > 0){
-                   foreach ($resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'] as $i){
-                       if (isset($pmoSkuMap[$i['skuId']])){
-                           $preSkuList[] = [
-                               "devSkuPkId" => $info['id'],
-                               "skuId" => $i['skuId']
-                           ];
-                           $this->log("{$info['id']} {$i['skuId']}");
-                           break;
-                       }
-                   }
-                }
-            }
+        $pmoBillNo = "DPMO250506011";
+//        $fileContent = (new ExcelUtils())->getXlsxData("../export/pmo/ppms_{$pmoBillNo}.xlsx");
+//        $pmoContent = (new ExcelUtils())->getXlsxData("../export/pmo/{$pmoBillNo}.xlsx");
+//        $pmoSkuMap = [];
+//        if (sizeof($pmoContent) > 0){
+//            $pmoSkuMap = array_column($pmoContent,null,"skuId");
+//        }
 //
+//        if (sizeof($fileContent) > 0) {
+//            $preSkuList = [];
+//            foreach ($fileContent as $info){
+//                $resp = DataUtils::getResultData($curlSsl->s3009()->post("po-composite-services/getSampleSkuInfoByConditions",[
+//                    "conditionsJsonEncode" => ["titleCn" => $info['tempSkuId']],
+//                    "orderBy" => "",
+//                    "page" => 1,
+//                    "limit" => 2
+//                ]));
+//                if ($resp && count($resp) > 0 && $resp[0]['sampleSkuInfoResponse'] && $resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'] && count($resp[0]['sampleSkuInfoResponse']['sampleSkuInfos']) > 0){
+//                   foreach ($resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'] as $i){
+//                       if (isset($pmoSkuMap[$i['skuId']])){
+//                           $preSkuList[] = [
+//                               "devSkuPkId" => $info['id'],
+//                               "skuId" => $i['skuId']
+//                           ];
+//                           $this->log("{$info['id']} {$i['skuId']}");
+//                           break;
+//                       }
+//                   }
+//                }
+//            }
+
 //        $preSkuList = [];
 //        $preSkuList[] = [
-//            "devSkuPkId" => "1871732989303685122",
-//            "skuId" => "a25050700ux1944"
+//            "devSkuPkId" => "1909472435430146070",
+//            "skuId" => "a25050800ux2790"
 //        ];
-            if (count($preSkuList) > 0){
+//            if (count($preSkuList) > 0){
                 $writeData = [
-                    "prePurchaseBillNo" => "DPMO250506011",
-                    "ceBillNo" => "CE202505090167",
-                    "skuList" => $preSkuList,
-                    "operatorName" => "zhouangang"
+                    "prePurchaseBillNo" => $pmoBillNo,
+                    "pmoBillNo" => "PMO2025050600011",
+//                    "ceBillNo" => "CE202505090158",
+//                    "skuList" => $preSkuList,
+                    "operatorName" => "zhouangang",
+//                    "purchaseHandleStatus" => 70
                 ];
 
                 $this->log(json_encode($writeData,JSON_UNESCAPED_UNICODE));
@@ -780,13 +783,13 @@ class SyncCurlController
                 if ($getKeyResp){
                     $this->log(json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
                 }
-            }
+//            }
 
-        }
+//        }
 
 
 //        $ss=$curlSsl->s3009()->post("market-analysis-reports/deleteSkuIdInfoBatchForCombine",[
-//           "skuIdInfoIdList" => ["681c80d451cea82da1a9486d"]
+//           "skuIdInfoIdList" => ["681c80d451cea82da1a946d4"]
 //        ]);
 //        if ($ss){
 //
