@@ -260,6 +260,7 @@ class search
     public function uploadOss($params){
         $curlService = $this->envService;
         $env = $curlService->environment;
+        $dateTime = date("Y-m-d H:i:s",time());
         if (isset($params['searchData']) && $params['searchData']){
             $redisService = new RedisService();
             $dbData = $redisService->hGetAll(REDIS_OSS_FILE_NAME_KEY . "_{$env}");
@@ -273,7 +274,7 @@ class search
             if (isset($params['isExport']) && $params['isExport']){
                 $excelUtils = new ExcelUtils();
                 $downloadOssLink = "上传oss文件_" . date("YmdHis") . ".xlsx";
-                $downloadOssPath = $excelUtils->downloadXlsx(["文件原名", "Oss Key名", "OSS链接",],$dbDataList,$downloadOssLink);
+                $downloadOssPath = $excelUtils->downloadXlsx(["文件原名", "Oss Key名", "OSS链接","上传日期"],$dbDataList,$downloadOssLink);
 
             }
            // /export/uploads/default/上传oss文件_20241226082547.xlsx

@@ -367,6 +367,105 @@ class SpUpdateAdGroupController
             $this->dingTalk();
         }
     }
+
+
+    public function updateMongoAdGroupByAmazonAdGroup(){
+        $excelUtils = new ExcelUtils();
+        $curlService = new CurlService();
+
+        $list = DataUtils::getPageList($curlService->pro()->s3023()->get("amazon_sp_adgroups/queryPage", [
+            "state" => "asmodifyBid",
+            "limit" => 1000
+        ]));
+        if (count($list) > 0){
+            foreach ($list as &$info){
+                $sellerId = $info['channel'];
+                if ($sellerId == "amazon_us"){
+                    $sellerId = "amazon";
+                }
+                $resp = DataUtils::getResultData($curlService->pro()->phphk()->get("amazon/ad/adGroups/getAdGroupsExtend/{$sellerId}", [
+                    "campaignIdFilter" => $info['campaignId'],
+                    "adGroupIdFilter" => $info['adGroupId'],
+                ]));
+                if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+                    foreach ($resp['data'] as $spInfo){
+                        if ($spInfo['adGroupId'] == $info['adGroupId']){
+                            $info['state'] = $spInfo['state'];
+                            $info['defaultBid'] = $spInfo['defaultBid'];
+                            $info['modifiedBy'] = "system(修复asmodifyBid的问题广告)";
+
+                            $resp1 = $curlService->pro()->s3023()->post("amazon_sp_adgroups/updateAdGroups", [
+                                "id" => $info['_id'],
+                                "isPassNotification" => "false",
+                                "from" => "system(修复asmodifyBid的问题广告)",
+                                "updateParams" => [
+                                    "state" => $spInfo['state'],
+                                    "defaultBid" => $spInfo['defaultBid'],
+                                    "modifiedBy" => "system(修复asmodifyBid的问题广告)",
+                                    "status" => "2"
+                                ],
+                            ]);
+                            if ($resp1['result'] && isset($resp1['result']['adgroup']) && count($resp1['result']['adgroup']) > 0) {
+                                $this->log("updateAdGroup：成功：{$resp1['result']['adgroup']['channel']} - {$resp1['result']['adgroup']['adGroupName']} - {$resp1['result']['adgroup']['state']} - {$resp1['result']['adgroup']['adGroupId']} - {$resp1['result']['adgroup']['defaultBid']}");
+                            }else{
+                                $this->log("更新node失败了");
+                            }
+
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    public function updateMongoTargetByAmazonTarget(){
+        $excelUtils = new ExcelUtils();
+        $curlService = new CurlService();
+
+        $list = DataUtils::getPageList($curlService->pro()->s3023()->get("amazon_sp_targets/queryPage", [
+            "state" => "asmodifyBid",
+            "limit" => 1000
+        ]));
+        if (count($list) > 0){
+            foreach ($list as &$info){
+                $sellerId = $info['channel'];
+                if ($sellerId == "amazon_us"){
+                    $sellerId = "amazon";
+                }
+                $resp = DataUtils::getResultData($curlService->pro()->phphk()->get("amazon/ad/productTargeting/getTargets/{$sellerId}", [
+                    "targetIdFilter" => $info['targetId']
+                ]));
+                if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+                    foreach ($resp['data'] as $spInfo){
+                        if ($spInfo['targetId'] == $info['targetId']){
+                            $resp1 = $curlService->pro()->s3023()->post("amazon_sp_targets/updateBiddableTargets", [
+                                "id" => $info['_id'],
+                                "isPassNotification" => "false",
+                                "from" => "system(修复asmodifyBid的问题广告)",
+                                "updateParams" => [
+                                    "state" => $spInfo['state'],
+                                    "bid" => $spInfo['bid'],
+                                    "modifiedBy" => "system(修复asmodifyBid的问题广告)",
+                                    "status" => "2"
+                                ],
+                            ]);
+                            if ($resp1['result'] && isset($resp1['result']['target']) && count($resp1['result']['target']) > 0) {
+                                $this->log("updateTarget：成功：{$resp1['result']['target']['channel']} - {$resp1['result']['target']['value']} - {$resp1['result']['target']['state']} - {$resp1['result']['target']['type']} - {$resp1['result']['target']['bid']}");
+                            }else{
+                                $this->log("更新node失败了");
+                            }
+
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+
+
 }
 
 $con = new SpUpdateAdGroupController();
@@ -375,3 +474,5 @@ $con = new SpUpdateAdGroupController();
 //$con->getAmazonSpKeywordList();
 //$con->pausedAmazonSpKeywordList();
 //$con->deleteKeyword();
+//$con->updateMongoAdGroupByAmazonAdGroup();
+$con->updateMongoTargetByAmazonTarget();

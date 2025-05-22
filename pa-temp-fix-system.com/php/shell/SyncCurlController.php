@@ -729,6 +729,121 @@ class SyncCurlController
 
     }
 
+    public function get30PpmsByTempskuid(){
+        $t = [
+            "T250114000359",
+            "T250114000354",
+            "T250114000352",
+            "T250114000351",
+            "T250114000350",
+            "T250114000349",
+            "T250114000348",
+            "T250114000345",
+            "T250114000344",
+            "T250114000191",
+        ];
+        $curlSsl = (new CurlService())->pro();
+        $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
+            "skuIdList" => $t,
+            "attrCodeList" => [
+                "custom-skuInfo-tempSkuId",
+                "custom-skuInfo-consignmentPrice",
+                "min_arrival_quantity",
+                "custom-common-salesUserName",
+                "custom-skuInfo-factoryId",
+                "custom-skuInfo-supplierProductNo",
+                "custom-skuInfo-outsideTitle",
+                "custom-skuInfo-supplierId",
+            ]
+        ]));
+        if ($getKeyResp){
+            $tempIdsList = [
+                [
+                    "id" => "1879052194089963565",
+                    "temp_sku_id" => "T250114000191"
+                ], [
+                    "id" => "1879052194089963718",
+                    "temp_sku_id" => "T250114000344"
+                ], [
+                    "id" => "1879052194089963719",
+                    "temp_sku_id" => "T250114000345"
+                ], [
+                    "id" => "1879052194089963722",
+                    "temp_sku_id" => "T250114000348"
+                ], [
+                    "id" => "1879052194089963723",
+                    "temp_sku_id" => "T250114000349"
+                ], [
+                    "id" => "1879052194089963724",
+                    "temp_sku_id" => "T250114000350"
+                ], [
+                    "id" => "1879052194089963725",
+                    "temp_sku_id" => "T250114000351"
+                ], [
+                    "id" => "1879052194089963726",
+                    "temp_sku_id" => "T250114000352"
+                ], [
+                    "id" => "1879052194089963728",
+                    "temp_sku_id" => "T250114000354"
+                ], [
+                    "id" => "1879052194089963733",
+                    "temp_sku_id" => "T250114000359"
+                ]
+            ];
+            $tempIdsIdMap = [];
+            foreach ($tempIdsList as $sss){
+                $tempIdsIdMap[$sss['temp_sku_id']] = $sss['id'];
+            }
+            $this->log(json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
+            $preSkuList = [];
+//            foreach ($getKeyResp as $info){
+//                $resp = DataUtils::getResultData($curlSsl->s3009()->post("po-composite-services/getSampleSkuInfoByConditions",[
+//                    "conditionsJsonEncode" => ["titleCn" => $info['custom-skuInfo-outsideTitle']],
+//                    "orderBy" => "",
+//                    "page" => 1,
+//                    "limit" => 2
+//                ]));
+//                if ($resp && count($resp) > 0 && $resp[0]['sampleSkuInfoResponse'] && $resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'] && count($resp[0]['sampleSkuInfoResponse']['sampleSkuInfos']) > 0){
+//                    foreach ($resp[0]['sampleSkuInfoResponse']['sampleSkuInfos'] as $i){
+//                        $preSkuList[] = [
+//                            "devSkuPkId" => $tempIdsIdMap[$info['custom-skuInfo-tempSkuId']],
+//                            "skuId" => $i['skuId']
+//                        ];
+//                    }
+//                }
+//            }
+
+            $fileContent = (new ExcelUtils())->getXlsxData("../export/qd/补充的T号.xlsx");
+            $titleCnMap = [];
+            foreach ($fileContent as $info){
+                $titleCnMap[$info['titleCn']] = $info;
+            }
+            foreach ($getKeyResp as $info){
+                if (isset($titleCnMap[$info['custom-skuInfo-outsideTitle']])){
+                    $preSkuList[] = [
+                        "devSkuPkId" => $tempIdsIdMap[$info['custom-skuInfo-tempSkuId']],
+                        "skuId" => $titleCnMap[$info['custom-skuInfo-outsideTitle']]['skuId']
+                    ];
+                }
+            }
+            if ($preSkuList){
+                $writeData = [
+                    "prePurchaseBillNo" => "QD202504080024",
+                    "ceBillNo" => "CE202505050082",
+//                    "skuList" => $preSkuList,
+                    "operatorName" => "zhouangang",
+//                    "purchaseHandleStatus" => 70$tempIdsIdMap = {数组} [10]
+                ];
+
+                $this->log(json_encode($writeData,JSON_UNESCAPED_UNICODE));
+                $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $writeData));
+                if ($getKeyResp){
+                    $this->log(json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }
+
+    }
     public function writeScmsPurchaseBillNo(){
         $curlSsl = (new CurlService())->pro();
 
@@ -1957,6 +2072,254 @@ class SyncCurlController
 
     }
 
+
+    public function syncDevSkuInfoToProductSku(){
+        $curlService = (new CurlService())->pro();
+        $curlService->gateway();
+        $curlService->getModule('pa');
+        $skuIdList = [
+            "a25051800ux0237",
+            "a25051800ux0238",
+            "a25051800ux0239",
+            "a25051800ux0240",
+            "a25051800ux0242",
+            "a25051800ux0243",
+            "a25051800ux0244",
+            "a25051800ux0245",
+            "a25051800ux0246",
+            "a25051800ux0247",
+            "a25051800ux0248",
+            "a25051800ux0249",
+            "a25051800ux0250",
+            "a25051800ux0251",
+            "a25051800ux0252",
+            "a25051800ux0253",
+            "a25051800ux0254",
+            "a25051800ux0255",
+            "a25051800ux0256",
+            "a25051800ux0257",
+            "a25051800ux0258",
+            "a25051800ux0259",
+            "a25051800ux0260",
+            "a25051800ux0261",
+            "a25051800ux0262",
+            "a25051800ux0263",
+            "a25051800ux0264",
+            "a25051800ux0265",
+            "a25051800ux0266",
+            "a25051800ux0267"
+        ];
+        foreach ($skuIdList as $sku){
+            $pmoArr = [
+                "initSkuId" => $sku,
+                "operatorName" => "system(zhouangang)",
+                "prePurchaseBillNo" => "QD202505130005"
+            ];
+            $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/sms/sku/info/init/v1/syncDevSkuInfoToProductSku", $pmoArr));
+            if ($resp){
+
+            }
+        }
+
+    }
+
+
+    public function updateSalesUserNameCancel2(){
+        //清掉小语种2的
+        $env = "pro";
+        $userList = [
+            [
+                "old"=>"huangziming2",
+                "new"=>"huangziming",
+            ],
+            [
+                "old"=>"dengyanhui2",
+                "new"=>"dengyanhui",
+            ],
+            [
+                "old"=>"dengsimin2",
+                "new"=>"dengsimin",
+            ],
+            [
+                "old"=>"chenwenzhen2",
+                "new"=>"chenwenzhen",
+            ],
+            [
+                "old"=>"weishunyun2",
+                "new"=>"weishunyun",
+            ],
+            [
+                "old"=>"yangjinling2",
+                "new"=>"yangjinling",
+            ],
+            [
+                "old"=>"zhoujianheng2",
+                "new"=>"zhoujianheng",
+            ],
+            [
+                "old"=>"liangdanhua2",
+                "new"=>"liangdanhua",
+            ],
+            [
+                "old"=>"litingjie2",
+                "new"=>"litingjie",
+            ],
+            [
+                "old"=>"liuxiaoyu2",
+                "new"=>"liuxiaoyu",
+            ],
+            [
+                "old"=>"chenlishan2",
+                "new"=>"chenlishan",
+            ],
+            [
+                "old"=>"guoziying2",
+                "new"=>"guoziying",
+            ],
+            [
+                "old"=>"zhuyuqing2",
+                "new"=>"zhuyuqing",
+            ],
+            [
+                "old"=>"zhenghailing2",
+                "new"=>"zhenghailing",
+            ],
+            [
+                "old"=>"huangxiaojiong2",
+                "new"=>"huangxiaojiong",
+            ]
+        ];
+
+        $this->Mongo3009Sql($userList);
+        $this->Mongo3015Sql($userList);
+        $this->Mongo3044Sql($userList);
+
+
+
+
+
+
+    }
+
+
+    public function Mongo3009Sql($userList){
+
+        $dbList = [
+            [
+                "ku" => "product_operator_line",
+                "field" => "operatorName"
+            ],
+            [
+                "ku" => "product_operator_line",
+                "field" => "developer"
+            ],
+            [
+                "ku" => "product_operator_line",
+                "field" => "userName"
+            ],
+            [
+                "ku" => "product_operator_main_info",
+                "field" => "developer"
+            ],
+            [
+                "ku" => "product_operator_main_info",
+                "field" => "traceMan"
+            ],
+            [
+                "ku" => "skuId_info",
+                "field" => "developer"
+            ],
+            [
+                "ku" => "skuId_info",
+                "field" => "traceman"
+            ],
+            [
+                "ku" => "skuId_info_main_table",
+                "field" => "traceman"
+            ],
+        ];
+        foreach ($userList as $user){
+            foreach ($dbList as $db){
+                $sql = 'db.' . $db['ku'] .'.updateMany({' . $db['field'] . ':"' . $user['old'] . '"},{$set:{' . $db['field'] . ':"'.$user['new'].'"}});';
+                $this->log($sql);
+            }
+        }
+
+    }
+
+    public function Mongo3015Sql($userList){
+
+        $dbList = [
+            [
+                "ku" => "translation_management",
+                "field" => "submitUserName"
+            ],
+            [
+                "ku" => "translation_management",
+                "field" => "applyUserName"
+            ],
+            [
+                "ku" => "translation_management",
+                "field" => "importUserName"
+            ],
+            [
+                "ku" => "pa_sku_info",
+                "field" => "ebaySalesUser"
+            ],
+            [
+                "ku" => "pa_sku_info",
+                "field" => "developerUserName"
+            ],
+            [
+                "ku" => "pa_sku_info",
+                "field" => "amazonSalesUser"
+            ],
+            [
+                "ku" => "product_base_info",
+                "field" => "salesUserName"
+            ],
+            [
+                "ku" => "product_sku",
+                "field" => "salesUserName"
+            ],
+        ];
+        foreach ($userList as $user){
+            foreach ($dbList as $db){
+                $sql = 'db.' . $db['ku'] .'.updateMany({' . $db['field'] . ':"' . $user['old'] . '"},{$set:{' . $db['field'] . ':"'.$user['new'].'"}});';
+                $this->log($sql);
+            }
+        }
+
+    }
+
+    public function Mongo3044Sql($userList){
+
+        $dbList = [
+            [
+                "ku" => "pa_ce_material",
+                "field" => "ebayTraceMan"
+            ],
+            [
+                "ku" => "pa_ce_material",
+                "field" => "developer"
+            ],
+            [
+                "ku" => "pa_ce_material",
+                "field" => "saleName"
+            ]
+        ];
+        foreach ($userList as $user){
+            foreach ($dbList as $db){
+                $sql = 'db.' . $db['ku'] .'.updateMany({' . $db['field'] . ':"' . $user['old'] . '"},{$set:{' . $db['field'] . ':"'.$user['new'].'"}});';
+                $this->log($sql);
+            }
+        }
+
+    }
+
+
+
+
 }
 
 $curlController = new SyncCurlController();
@@ -1983,7 +2346,10 @@ $curlController = new SyncCurlController();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
 //$curlController->writeProductBaseFba();
-$curlController->writeScmsPurchaseBillNo();
+//$curlController->writeScmsPurchaseBillNo();
+//$curlController->get30PpmsByTempskuid();
+$curlController->updateSalesUserNameCancel2();
+//$curlController->syncDevSkuInfoToProductSku();
 //$curlController->saveReceiveIpCheck();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();

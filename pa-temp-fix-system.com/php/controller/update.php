@@ -685,6 +685,7 @@ class update
     {
         $curlService = $this->envService;
         $env = $curlService->environment;
+        $dateTime = date("Y-m-d H:i:s",time());
         if (isset($params['fileCollect']) && $params['fileCollect']) {
             $successUploadOss = [];
             foreach ($params['fileCollect'] as $dataInfo){
@@ -731,6 +732,7 @@ class update
                                 "actualFileName" => $dataInfo['actualFileName'],
                                 "key" => $key,
                                 "link" => $getKeyResp['value'],
+                                "dateTime" => $dateTime
                             ];
 
                             $redisService->hSet(REDIS_OSS_FILE_NAME_KEY . "_{$env}", $key,json_encode($dbData,JSON_UNESCAPED_UNICODE));
