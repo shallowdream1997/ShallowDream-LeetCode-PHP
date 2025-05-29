@@ -2190,9 +2190,9 @@ class SyncCurlController
             ]
         ];
 
-        $this->Mongo3009Sql($userList);
+//        $this->Mongo3009Sql($userList);
         $this->Mongo3015Sql($userList);
-        $this->Mongo3044Sql($userList);
+//        $this->Mongo3044Sql($userList);
 
 
 
@@ -2250,37 +2250,61 @@ class SyncCurlController
     public function Mongo3015Sql($userList){
 
         $dbList = [
+//            [
+//                "ku" => "translation_management",
+//                "field" => "submitUserName"
+//            ],
+//            [
+//                "ku" => "translation_management",
+//                "field" => "applyUserName"
+//            ],
+//            [
+//                "ku" => "translation_management",
+//                "field" => "importUserName"
+//            ],
+//            [
+//                "ku" => "pa_sku_info",
+//                "field" => "ebaySalesUser"
+//            ],
+//            [
+//                "ku" => "pa_sku_info",
+//                "field" => "developerUserName"
+//            ],
+//            [
+//                "ku" => "pa_sku_info",
+//                "field" => "amazonSalesUser"
+//            ],
+//            [
+//                "ku" => "product_base_info",
+//                "field" => "salesUserName"
+//            ],
+//            [
+//                "ku" => "product_sku",
+//                "field" => "salesUserName"
+//            ],
+//            [
+//                "ku" => "pa_product",
+//                "field" => "amazonTraceMan"
+//            ],
+//            [
+//                "ku" => "pa_product",
+//                "field" => "ebayTraceMan"
+//            ],
+//            [
+//                "ku" => "pa_product",
+//                "field" => "developer"
+//            ],
+//            [
+//                "ku" => "pa_product",
+//                "field" => "traceMan"
+//            ],
             [
-                "ku" => "translation_management",
-                "field" => "submitUserName"
-            ],
-            [
-                "ku" => "translation_management",
-                "field" => "applyUserName"
-            ],
-            [
-                "ku" => "translation_management",
-                "field" => "importUserName"
-            ],
-            [
-                "ku" => "pa_sku_info",
-                "field" => "ebaySalesUser"
-            ],
-            [
-                "ku" => "pa_sku_info",
+                "ku" => "product_base_info",
                 "field" => "developerUserName"
             ],
             [
-                "ku" => "pa_sku_info",
-                "field" => "amazonSalesUser"
-            ],
-            [
-                "ku" => "product_base_info",
-                "field" => "salesUserName"
-            ],
-            [
                 "ku" => "product_sku",
-                "field" => "salesUserName"
+                "field" => "developerUserName"
             ],
         ];
         foreach ($userList as $user){
@@ -2318,6 +2342,40 @@ class SyncCurlController
     }
 
 
+    public function createPmo(){
+        ///scms/pmo_plan/v1/createPmo
+
+        $curlService = (new CurlService())->test();
+        $curlService->gateway();
+        $curlService->getModule('pa');
+        $ids = [
+            "1927266115552874496",
+        ];
+
+        foreach ($ids as $id){
+//            $pmoArr = [
+//                "id" => $id,
+//            ];
+//            $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/scms/pmo_plan/v1/createPmo", $pmoArr));
+//            if ($resp){
+//
+//            }
+
+
+
+            $pmoArr = [
+                "id" => $id,
+            ];
+            $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/scms/pre_purchase/info/v1/createConsignmentCeBill", $pmoArr));
+            if ($resp){
+
+            }
+        }
+
+
+
+    }
+
 
 
 }
@@ -2353,3 +2411,4 @@ $curlController->updateSalesUserNameCancel2();
 //$curlController->saveReceiveIpCheck();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();
+//$curlController->createPmo();

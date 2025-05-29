@@ -244,7 +244,7 @@ class CurlService
         if ($this->environment == 'test'){
             $requestKey = "bearer 8585fe5e-c604-43b7-83f7-2360dd986c5e";
         }elseif ($this->environment == 'uat'){
-            $requestKey = "";
+            $requestKey = "bearer b96217aa-ed4f-4fcd-9d66-bbe2728f600e";
         }elseif ($this->environment == 'pro'){
             $requestKey = "bearer dd63d1ec-3b31-4a15-a05a-1ea5daa5aeb0";
         }

@@ -48,13 +48,14 @@ class SyncSkuMaterialToAudit
             $resp1 = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/sms/sku/material/changed_doc/v1/page", [
                 "pageNum" => $pageNum,
                 "pageSize" => 50,
-                "applyStatus" => 20
+                "applyStatus" => 30
             ]));
             if ($resp1 && count($resp1['list']) > 0){
                 foreach ($resp1['list'] as $info){
-                    if ($info['afterChangedTranslationAttributeValue'] == "<p></p>\n"){
-                        $batchNameList[] = $info['docNumber'];
-                    }
+//                    if ($info['afterChangedTranslationAttributeValue'] == "<p></p>\n"){
+//                        $batchNameList[] = $info['docNumber'];
+//                    }
+                    $batchNameList[] = $info['docNumber'];
                 }
             }else{
                 break;

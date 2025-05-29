@@ -186,11 +186,11 @@ class search
             $skuIdList = $params['skuIdList'];
 
             $curlService->gateway();
-            $this->getModule('wms');
-            $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/page", [
+            $curlService->getModule('wms');
+            $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/receive/sample/expect/v1/page", [
                 "skuIdIn" => $skuIdList,
                 "vertical" => "PA",
-                "category" => "dataTeam",
+//                "category" => "dataTeam",
                 "pageSize" => 500,
                 "pageNum" => 1,
             ]));

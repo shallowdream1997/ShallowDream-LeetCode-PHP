@@ -15,7 +15,7 @@
 <body>
 <div class="container text-center" id="app">
     <div style="margin-top: 20px" class="row">
-        <div class="col-5"><h3 style="color: yellow">{{message}} <br>查询或新增<br> <span style="color: red">当前环境：{{env == 'test' ? '测试环境' :  (env == 'local' ?  '开发环境' : '生产环境')}}</span></h3></div>
+        <div class="col-5"><h3 style="color: yellow">{{message}} <br>查询或新增<br> <span style="color: red">当前环境：{{envMsg}}</span></h3></div>
         <div class="col-7">
             <div class="mb-3">
                 <textarea v-model="skuIdString" class="form-control" placeholder="skuId,多个请换行" rows="5"/></textarea>
@@ -32,7 +32,7 @@
                 <thead>
                 <tr>
                     <th scope="col">id</th>
-                    <th scope="col">sku<br>是否预计留样</th>
+                    <th scope="col">sku<br>是否预计留样<br>留样类型</th>
                     <th scope="col">状态</th>
                     <th scope="col">创建人<br>创建日期</th>
                     <th scope="col">更新日期</th>
@@ -46,7 +46,8 @@
                             <b style="color: red">{{info.skuId}}</b>
                         </template>
                         <template v-if="info.isSample == '有留样'">
-                            {{info.skuId}}
+                            {{info.skuId}}<br>
+                            {{info.category}}
                         </template>
                         <br>
                         <template v-if="info.isSample == '未留样'">
@@ -123,6 +124,7 @@
                 list: [],
                 loading: '',
                 env:"",
+                envMsg:"",
                 url:"http://172.16.29.23:90/php/controller",
                 header: {
                     headers: {
@@ -152,6 +154,7 @@
                 this.loading = "";
                 if (res.status === 200) {
                     this.env = res.data.env;
+                    this.envMsg = this.env == 'test' ? 'Test环境' :  (this.env == 'local' ?  '开发环境' :  (this.env == 'uat' ?  'UAT环境' : '生产环境'));
                 }
 
             },
@@ -226,13 +229,16 @@
                     let skuMap = {};
                     for (let item of returnlist){
                         if (!skuMap.hasOwnProperty(item.skuId)){
-                            skuMap[item.skuId] = item;
+                            skuMap[item.skuId] = [];
                         }
+                        skuMap[item.skuId].push(item);
                     }
                     for (let sku of skuIdList){
                         if (skuMap.hasOwnProperty(sku)){
-                            skuMap[sku]['isSample'] = "有留样";
-                            this.list.push(skuMap[sku]);
+                            for(let i of skuMap[sku]){
+                                i['isSample'] = "有留样";
+                                this.list.push(i);
+                            }
                         }else {
                             this.list.push({
                                 id:null,

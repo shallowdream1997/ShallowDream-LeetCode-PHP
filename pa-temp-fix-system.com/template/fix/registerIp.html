@@ -15,7 +15,7 @@
 <body>
 <div class="container text-center" id="app">
     <div style="margin-top: 20px" class="row">
-        <div class="col-5"><h3 style="color: yellow">{{message}} <br> <span style="color: red">当前环境：{{env == 'test' ? '测试环境' :  (env == 'local' ?  '开发环境' : '生产环境')}}</span></h3></div>
+        <div class="col-5"><h3 style="color: yellow">{{message}} <br> <span style="color: red">当前环境：{{envMsg}}</span></h3></div>
         <div class="col-7">
             <div class="mb-3">
                 <input type="text" v-model="userName" class="form-control" placeholder="你的姓名">
@@ -78,6 +78,7 @@
                 list: [],
                 loading: '',
                 env:"",
+                envMsg:"",
                 url:"http://172.16.29.23:90/php/controller",
                 header: {
                     headers: {
@@ -113,6 +114,7 @@
                         this.list = res.data.data;
                         console.log(this.list)
                         this.env = res.data.env;
+                        this.envMsg = this.env == 'test' ? 'Test环境' :  (this.env == 'local' ?  '开发环境' :  (this.env == 'uat' ?  'UAT环境' : '生产环境'));
                     }
                 }
             },
@@ -138,6 +140,7 @@
                         this.list = res.data.data;
                         console.log(this.list)
                         this.env = res.data.env;
+                        this.envMsg = this.env == 'test' ? 'Test环境' :  (this.env == 'local' ?  '开发环境' :  (this.env == 'uat' ?  'UAT环境' : '生产环境'));
                     }
                 } else {
                     this.errorMsg = "网络错误";

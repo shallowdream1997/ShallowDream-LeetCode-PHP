@@ -294,5 +294,5 @@ class SpEnabledController
 
 $con = new SpEnabledController();
 //$con->enabled();
-//$con->enabledKeyword();
-$con->buildFixSql();
+$con->enabledKeyword();
+//$con->buildFixSql();

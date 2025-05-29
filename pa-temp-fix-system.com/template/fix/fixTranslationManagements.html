@@ -15,7 +15,7 @@
 <body>
 <div class="container text-center" id="app">
     <div style="margin-top: 20px" class="row">
-        <div class="col-5"><h3 style="color: yellow">{{message}} <br> <span style="color: red">当前环境：{{env == 'test' ? '测试环境' :  (env == 'local' ?  '开发环境' : '生产环境')}}</span></h3></div>
+        <div class="col-5"><h3 style="color: yellow">{{message}} <br> <span style="color: red">当前环境：{{envMsg}}</span></h3></div>
         <div class="col-7">
             <div class="mb-3">
                 <input type="text" v-model="title" class="form-control" placeholder="翻译标题">
@@ -140,6 +140,7 @@
                 applyName:'',
                 applyTime:'',
                 env:"",
+                envMsg:"",
                 url:"http://172.16.29.23:90/php/controller",
                 header: {
                     headers: {
@@ -168,6 +169,7 @@
                 this.loading = "";
                 if (res.status === 200) {
                     this.env = res.data.env;
+                    this.envMsg = this.env == 'test' ? 'Test环境' :  (this.env == 'local' ?  '开发环境' :  (this.env == 'uat' ?  'UAT环境' : '生产环境'));
                 }
             },
             async fixTranslationManagement() {
@@ -247,6 +249,7 @@
                     } else {
                         this.list = res.data.data;
                         this.env = res.data.env;
+                        this.envMsg = this.env == 'test' ? 'Test环境' :  (this.env == 'local' ?  '开发环境' :  (this.env == 'uat' ?  'UAT环境' : '生产环境'));
                     }
                 }
 
