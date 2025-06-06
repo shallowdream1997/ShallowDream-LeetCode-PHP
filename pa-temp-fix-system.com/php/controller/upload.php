@@ -84,7 +84,7 @@ class upload
 
                         // 生成唯一的文件名
                         $fileName = DataUtils::buildGenerateUuidLike() . ".{$ext}";
-                        $target_file = $this->target_dir . $fileName;
+                        $target_file = $this->target_dir . $file_name;
 
                         // 移动文件到指定目录
                         if (move_uploaded_file($params['tmp_name'][$i], $target_file)) {

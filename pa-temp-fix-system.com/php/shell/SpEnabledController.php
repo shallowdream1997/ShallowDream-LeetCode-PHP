@@ -8,20 +8,40 @@ require_once(dirname(__FILE__) . "/../../php/utils/RequestUtils.php");
 class SpEnabledController
 {
     private $log;
-
-    private $channel;
-    private $sellerId;
-    private $action;
-    private $phphkpro;
-    private $debug;
-    private $isAuto;
-    private $isAsin;
-    private $isCategory;
-    private $isKeyword;
+    /**
+     * @var string[]
+     */
+    private array $typeMap;
+    /**
+     * @var string[]
+     */
+    private array $campaignTypeMap;
+    /**
+     * @var string[]
+     */
+    private array $actionMap;
 
     public function __construct()
     {
         $this->log = new MyLogger("sp");
+
+        $this->typeMap = [
+            "1" => "auto",
+            "2" => "manual",
+            "3" => "manual",
+            "4" => "manual",
+        ];
+        $this->campaignTypeMap = [
+            "1"=>"auto",
+            "2"=>"keyword",
+            "3"=>"asin",
+            "4"=>"category",
+        ];
+        $this->actionMap = [
+            "1" => "系统自动化投放",
+            "2" => "补充投放",
+            "3" => "自定义投放",
+        ];
     }
 
     private function log(string $string = "")
@@ -171,37 +191,25 @@ class SpEnabledController
                     $this->log("没有action");
                     continue;
                 }
-                $typeMap = [
-                    "1" => "auto",
-                    "2" => "manual",
-                    "3" => "manual",
-                    "4" => "manual",
-                ];
-                $campaignTypeMap = [
-                  "1"=>"auto",
-                  "2"=>"keyword",
-                  "3"=>"asin",
-                  "4"=>"category",
-                ];
-                $actionMap = [
-                    "1" => "系统自动化投放",
-                    "2" => "补充投放",
-                    "3" => "自定义投放",
-                ];
-                if (!isset($typeMap[$info['type']]) || !$typeMap[$info['type']]){
+
+                if (!isset($this->typeMap[$info['type']]) || !$this->typeMap[$info['type']]){
                     $this->log("没有targetingType类型");
                     continue;
                 }
-                if (!isset($campaignTypeMap[$info['type']]) || !$campaignTypeMap[$info['type']]){
+                if (!isset($this->campaignTypeMap[$info['type']]) || !$this->campaignTypeMap[$info['type']]){
                     $this->log("没有campaignType类型");
                     continue;
+                }
+
+                if ($info['action'] == 1 && $info['type'] == 1){
+                    $this->action1type1($info,$info['action'],$info['type']);
                 }
 
                 $requestBody = [
                     "placementAction" => $info['action'],
                     "placementType" => $info['type'],
-                    "targetingType" => $typeMap[$info['type']],
-                    "campaignType" => $campaignTypeMap[$info['type']],
+                    "targetingType" => $this->typeMap[$info['type']],
+                    "campaignType" => $this->campaignTypeMap[$info['type']],
                     "channel" => $info['channel'],
                     "sellerId" => $info['seller_id'],
                     "campaignId" => null,
@@ -246,44 +254,33 @@ class SpEnabledController
 
     }
 
-    public function buildFixSql(){
-        $excelUtils = new ExcelUtils();
+    public function action1type1($info,$action,$type){
         $curlService = new CurlService();
-        $fileName = "../export/sp/";
-        try {
-            list($excelObj, $contentList) = $excelUtils->_readCSV($fileName . "mawenfengkeyword.csv");
+        $requestBody = [
+            "placementAction" => $action,
+            "placementType" => $type,
+            "targetingType" => $this->typeMap[$type] ?? null,
+            "campaignType" => $this->campaignTypeMap[$type] ?? null,
+            "channel" => $info['channel'] ?? null,
+            "sellerId" => $info['seller_id'] ?? null,
+            "campaignName" => $info['campaign_name'] ?? null,
+            "dailyBudget" => $info['budget'] ?? null,
+            "bidStrategy" => $info['bid_strategy'] ?? null,
+            "adGroupName" => $info['adgroup_name'] ?? null,
+            "defaultBid" => $info['bid'] ?? null,
+            "contentType" => $info['content_type'] ?? null,
+            "content" => $info['content'] ?? null,
+            "contentBid" => $info['content_bid'] ?? null,
+            "productName" => $info['productName'] ?? null,
+            "createdBy" => "system(zhouangang)",
+            "modifiedBy" => "system(zhouangang)",
+        ];
+        $resp = DataUtils::getResultData($curlService->pro()->phphk()->post("amazonSpApi/paPlacementAmazonSp", $requestBody));
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+            if (isset($resp['messageType']) && $resp['messageType'] == "success"){
 
-        } catch (Exception $e) {
-            die($e->getLine() . " : " . $e->getMessage());
-        }
-        if (count($contentList) > 0) {
-
-            $resultList = [];
-            foreach ($contentList as $info){
-                if (!isset($info['channel']) || !$info['channel']){
-                    $this->log("没有渠道");
-                    continue;
-                }
-                if (!isset($info['seller_id']) || !$info['seller_id']){
-                    $this->log("没有账号");
-                    continue;
-                }
-                if (!isset($info['campaign_name']) || !$info['campaign_name']){
-                    $this->log("没有campaignName");
-                    continue;
-                }
-                if (!isset($info['adgroup_name']) || !$info['adgroup_name']){
-                    $this->log("没有adgroupName");
-                    continue;
-                }
-
-
-
-            }
-
-
-            if ($resultList){
-
+            }else{
+                $this->log("{$info['campaign_name']} = 失败".json_encode($resp['data'],JSON_UNESCAPED_UNICODE));
             }
         }
 

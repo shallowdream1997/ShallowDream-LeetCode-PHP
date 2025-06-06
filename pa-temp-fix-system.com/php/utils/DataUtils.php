@@ -118,6 +118,24 @@ class DataUtils
         return $data;
     }
     /**
+     * 接收响应数据，返回query的列表，返回列表里面的第一个数据
+     * @param null $response
+     * @return array
+     */
+    public static function getQueryListInFirstDataV3($response = null)
+    {
+        $data = [];
+        if (!$response){
+            return $data;
+        }
+        if ($response && isset($response['httpCode']) &&
+            $response['httpCode'] === 200 && isset($response['result']) && !empty($response['result']) && count($response['result']) > 0){
+            $data = $response['result'][0];
+        }
+        return $data;
+    }
+
+    /**
      * 取值
      * @param $data
      * @return array|mixed

@@ -2377,10 +2377,42 @@ class SyncCurlController
     }
 
 
+    public function updateZhixiao(){
+        $curlService = (new CurlService())->pro();
+        //$curlService->gateway();
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/滞销定价sku.xlsx");
+        $fitmentSkuMap = [];
+        if (sizeof($fileFitContent) > 0) {
+            $skuIdList = array_column($fileFitContent,"销售号");
+            $fbaInfo = DataUtils::getPageList($curlService->s3015()->get("channel-price-customizes/queryPage",[
+                "productId" => implode(",",$skuIdList),
+                "priceType" => "unsale",
+                "limit" => 100,
+            ]));
 
+            foreach ($fbaInfo as $info){
+                $info['status'] = "inactive";
+                $info['endTime'] = "2025-06-04T00:00:00.000Z";
+                $res = DataUtils::getResultData($curlService->s3015()->put("channel-price-customizes/{$info['_id']}",$info));
+
+            }
+
+        }
+
+
+    }
+
+    public function test(){
+        $this->test1(1,2,3,4,5);
+    }
+
+    public function test1($a,$b,$c,$d){
+        echo "{$a} {$b} {$c} {$d}";
+    }
 }
 
 $curlController = new SyncCurlController();
+//$curlController->test();
 //$curlController->fix();
 //$curlController->syncSkuMaterialToAudit();
 //$curlController->fixPaSkuPhotoGress();
@@ -2406,9 +2438,11 @@ $curlController = new SyncCurlController();
 //$curlController->writeProductBaseFba();
 //$curlController->writeScmsPurchaseBillNo();
 //$curlController->get30PpmsByTempskuid();
-$curlController->updateSalesUserNameCancel2();
+//$curlController->updateSalesUserNameCancel2();
 //$curlController->syncDevSkuInfoToProductSku();
 //$curlController->saveReceiveIpCheck();
 //$curlController->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => "20201221 - 李锦烽 - 1"]);
 //$curlController->deleteCampaign();
 //$curlController->createPmo();
+
+//$curlController->updateZhixiao();

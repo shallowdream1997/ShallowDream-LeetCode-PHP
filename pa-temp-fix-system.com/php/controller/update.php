@@ -690,7 +690,7 @@ class update
             $successUploadOss = [];
             foreach ($params['fileCollect'] as $dataInfo){
 
-                $target_dir = __DIR__ . "/../export/uploads/oss/{$dataInfo['fileName']}";
+                $target_dir = __DIR__ . "/../export/uploads/oss/{$dataInfo['actualFileName']}";
                 if (!file_exists($target_dir)) {
                     return [
                         "uploadSuccess" => false,
@@ -709,7 +709,7 @@ class update
                     ), false);
                     $cfile = new CURLFile($target_dir, "", $target_dir);
 
-                    $key = "pa/oss_test/{$dataInfo['fileName']}";
+                    $key = "pa/oss_test/{$dataInfo['actualFileName']}";
                     $uploadOssResp = $curlService1->upload($resp['url'], "", [
                         "OSSAccessKeyId" => $resp['ossAccessKeyId'],
                         "policy" => $resp['policy'],
