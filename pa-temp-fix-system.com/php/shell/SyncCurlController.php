@@ -2380,21 +2380,35 @@ class SyncCurlController
     public function updateZhixiao(){
         $curlService = (new CurlService())->pro();
         //$curlService->gateway();
-        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/滞销定价sku.xlsx");
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/滞销定价sku_1.xlsx");
         $fitmentSkuMap = [];
         if (sizeof($fileFitContent) > 0) {
-            $skuIdList = array_column($fileFitContent,"销售号");
-            $fbaInfo = DataUtils::getPageList($curlService->s3015()->get("channel-price-customizes/queryPage",[
-                "productId" => implode(",",$skuIdList),
-                "priceType" => "unsale",
-                "limit" => 100,
-            ]));
+            $sellerIdProductIds = [];
+            foreach ($fileFitContent as $info){
+                $sellerIdProductIds[$info['账号']][] = $info['scuId'];
+            }
+            foreach ($sellerIdProductIds as $sellerId => $sellerProductIds){
 
-            foreach ($fbaInfo as $info){
-                $info['status'] = "inactive";
-                $info['endTime'] = "2025-06-04T00:00:00.000Z";
-                $res = DataUtils::getResultData($curlService->s3015()->put("channel-price-customizes/{$info['_id']}",$info));
+                foreach (array_chunk($sellerProductIds,100) as $chunk){
+                    $fbaInfo = DataUtils::getPageList($curlService->s3015()->get("channel-price-customizes/queryPage",[
+                        "productId" => implode(",",$chunk),
+                        "seller" => $sellerId,
+                        "priceType" => "unsale",
+                        "limit" => 100,
+                    ]));
 
+                    foreach ($fbaInfo as $info){
+                        if ($info['status'] == "inactive"){
+                            $this->log("{$info['productId']} 已经取消滞销，不需要再取消");
+                            continue;
+                        }
+                        $info['status'] = "inactive";
+                        $info['endTime'] = "2025-06-12T01:00:00.000Z";
+                        $info['modifiedBy'] = "system(zhouangang)";
+                        $res = DataUtils::getResultData($curlService->s3015()->put("channel-price-customizes/{$info['_id']}",$info));
+                        $this->log("取消滞销价:{$info['productId']}");
+                    }
+                }
             }
 
         }
@@ -2403,7 +2417,21 @@ class SyncCurlController
     }
 
     public function test(){
-        $this->test1(1,2,3,4,5);
+        $timeString = "2025-06-12T00:00:00.000Z";
+        // 获取当前日期和原始日期
+        $currentDate = date('Y-m-d');
+        $originalDate = date('Y-m-d', strtotime($timeString));
+        // 判断是否是今天
+        if ($currentDate === $originalDate) {
+            // 如果是今天，增加 1 小时
+            $timestamp = strtotime($timeString) + 3600; // 1 小时 = 3600 秒
+        } else {
+            // 如果不是今天，设置为昨天的 23:59:59
+            $timestamp = strtotime('yesterday') + (23 * 3600) + (59 * 60) + 59; // 昨天的 23:59:59
+        }
+        // 将时间戳格式化为可读的日期时间
+        $formattedDate = date('Y-m-d H:i:s', $timestamp);
+        echo $formattedDate;
     }
 
     public function test1($a,$b,$c,$d){
@@ -2445,4 +2473,5 @@ $curlController = new SyncCurlController();
 //$curlController->deleteCampaign();
 //$curlController->createPmo();
 
-//$curlController->updateZhixiao();
+$curlController->updateZhixiao();
+//$curlController->test();
