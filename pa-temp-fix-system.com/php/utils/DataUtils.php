@@ -317,6 +317,95 @@ class DataUtils
     }
 
 
+    /**
+     * 解释变量的标准程序
+     * @author hello
+     * @createdOn 2010-04-19
+     *
+     * 如果输入 php test.php -a v1 v2 -b v3 -t vt
+     * 可以通过公共的函数，解释为:
+     *
+     * $params = array(
+     * 		"a" => array("v1", "v2"),
+     * 		"b" => "v3",
+     * 		"t" => "vt",
+     * 	);
+     *
+     * 注意，如果输入 php test.php -a v2 -b v3 -t vt
+     * 则会变成:
+     * $params = array(
+     * 		"a" =>"v1",
+     * 		"b" => "v3",
+     * 		"t" => "vt",
+     * 	);
+     *
+     * 正确的应该是 "a"=>array("v1"),
+     * 不过由于无法预知　a　对应的是一个还是多个，所以，只能如此设定。
+     * 如果需要，请使用者自行转换一下。
+     *
+     * e.g.
+     * if (array_key_exists("a", $params) && !is_array($params["a"])){
+     * 		$value = $params["a"];
+     * 		$params["a"] = array($value);
+     * }
+     *
+     * 如果确实需要（比如需要转换的比较多），那么可以带一个参数 keyNamesWhichIsArrayValue
+     * e.g. :
+     * $re = explainArgv($argv,	array(
+     * 								"keyNamesWhichIsArrayValue" => array("a")
+     * 							)
+     * 					);
+     *
+     * $options:
+     * 		keyNamesWhichIsArrayValue : 要求数值必须是array的key列表
+     *
+     * @param array $argv
+     * @param array $options
+     * @return array
+     */
+    public static function explainArgv($argv, $options = array()){
+        $re = array();
+        $count = count($argv);
+        if ($count <= 1) return $re; // no params($argv[0]　is the execute filename, ignore it.)
+
+        // explain argv
+        $index = -1;
+        $keyName = "";
+        foreach($argv as $value){
+            $index ++;
+            if ($index == 0) continue; // $argv[0]　is the execute filename, ignore it.
+
+            $keyFlag = substr($value, 0, 1);
+            if ($keyFlag == "-"){
+                $keyName = substr($value, 1);
+                $re[$keyName] = "";
+                continue;
+            }
+            if ($keyName == "") continue;
+
+            if ($re[$keyName] == ""){ 			// not set
+                $re[$keyName] = $value;
+            }else if (is_array($re[$keyName])){	// already is array
+                array_push($re[$keyName], $value);
+            }else{
+                $arr = array($re[$keyName]);	// single value to array value
+                array_push($arr, $value);
+                $re[$keyName] = $arr;
+            }
+        }
+
+        // repair data
+        if (array_key_exists("keyNamesWhichIsArrayValue", $options)){
+            foreach ($options["keyNamesWhichIsArrayValue"] as $keyName){
+                if (array_key_exists($keyName, $re) && !is_array($re[$keyName])){
+                    $value = $re[$keyName];
+                    $re[$keyName] = array($value);
+                }
+            }
+        }
+
+        return $re;
+    }
 }
 
 
