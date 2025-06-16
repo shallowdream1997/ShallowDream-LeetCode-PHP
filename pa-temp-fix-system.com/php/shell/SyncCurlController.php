@@ -2437,6 +2437,58 @@ class SyncCurlController
     public function test1($a,$b,$c,$d){
         echo "{$a} {$b} {$c} {$d}";
     }
+
+
+    /**
+     * 修复垂直ID
+     * @throws Exception
+     */
+    public function fixSkuVerticalId(){
+        $curlService = (new CurlService())->pro();
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/修复SKU.xlsx");
+
+        if (sizeof($fileFitContent) > 0) {
+
+            $companyIdMap = [
+                "PA" => "CR201706060001",
+                "MRO" => "CR201706080001",
+                "CSA" => "CR201706260001",
+                "HG" => "CR201706060002",
+                "PLG" => "CR2024052100001",
+                "运营" => "CR201706080003",
+            ];
+            foreach ($fileFitContent as $info){
+                $productInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
+                    "productId" => $info['skuid'],
+                    "limit" => 1
+                ]));
+                if ($productInfo){
+                    if (!$productInfo['verticalId']){
+                        $productInfo['verticalId'] = $companyIdMap[$info['company']] ?? null;
+                        $productInfo['action'] = "修复商家ID";
+                        $productInfo['userName'] = "system(zhouangang)";
+
+                        $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
+                        if ($resp){
+
+                        }
+                    }else{
+                        $this->log("有商家ID，不需要修");
+                    }
+
+                }
+            }
+
+        }
+
+
+
+    }
+
+
+
+
 }
 
 $curlController = new SyncCurlController();
@@ -2473,5 +2525,6 @@ $curlController = new SyncCurlController();
 //$curlController->deleteCampaign();
 //$curlController->createPmo();
 
-$curlController->updateZhixiao();
+//$curlController->updateZhixiao();
+$curlController->fixSkuVerticalId();
 //$curlController->test();
