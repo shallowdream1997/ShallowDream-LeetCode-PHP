@@ -2488,6 +2488,122 @@ class SyncCurlController
 
 
 
+    /**
+     * 修复垂直ID
+     * @throws Exception
+     */
+    public function fixAmazonSpRuleId(){
+        $curlService = (new CurlService())->pro();
+
+        $productInfo = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_sellers/queryPage",[
+            "company_in" => "CR201706060001",
+            "limit" => 500
+        ]));
+        if ($productInfo){
+            foreach ($productInfo as &$info){
+                if (isset($info['bindRule']) && count($info['bindRule']) > 0){
+                    $update = false;
+                    foreach ($info['bindRule'] as &$bind){
+                        if ($bind['status'] == 0){
+                            $startDate = '2025-06-18';
+                            if (strpos($info['modifiedOn'], $startDate) === 0) {
+                                $this->log("{$info['sellerId']} - {$bind['spType']} - {$info['modifiedOn']}");
+                            }
+
+                            foreach ( $bind['ruleTypeAndId'] as &$sss){
+                                if ($sss['ruleType'] == 'campaignRuleBySystem' && $sss['ruleId']){
+                                    $sss['ruleId'] = "";
+                                    $update = true;
+                                }
+                            }
+                        }
+                    }
+                    if ($update){
+                        $this->log("更新");
+                        $this->log(json_encode($info,JSON_UNESCAPED_UNICODE));
+                        //$curlService->s3023()->put("amazon_sp_sellers/{$info['_id']}",$info);
+                    }
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 查询本身就是未设置的数据，但是依然投放了campaign的数据
+     * @throws Exception
+     */
+    public function findCampaign(){
+        $curlService = (new CurlService())->pro();
+
+        $productInfo = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_sellers/queryPage",[
+            "company_in" => "CR201706060001",
+            "limit" => 500
+        ]));
+        if ($productInfo){
+            $export = [];
+            $sameCampaign = [];
+            $manualAllZero = [];
+            foreach ($productInfo as &$info){
+                if (isset($info['bindRule']) && count($info['bindRule']) > 0){
+                    $update = false;
+                    foreach ($info['bindRule'] as &$bind){
+                        if ($bind['status'] == 0){
+
+                            $targetingType = $bind['spType'];
+                            if (strpos($bind['spType'],"manual") === 0){
+                                $targetingType = "manual";
+                                $this->log("{$info['sellerId']} - {$bind['spType']} - {$info['createdOn']} - {$info['modifiedOn']}");
+                                //$
+                                $manualAllZero[$info['sellerId']][$bind['spType']] = $bind['status'];
+
+                            }
+//                                $list = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_campaigns/queryPage",[
+//                                    "company" => "CR201706060001",
+//                                    "channel" => $info['sellerId'],
+//                                    "targetingType" => $targetingType,
+//                                    "createdOn_gte" => $info['createdOn'],
+//                                    "limit" => 2000
+//                                ]));
+//                                if (count($list) > 0){
+//                                    foreach ($list as $info){
+//                                        if (!isset($sameCampaign[$info['campaignName']])){
+//                                            $export[] = [
+////                                                "_id" => $info['_id'],
+//                                                "status" => $info['status'],
+//                                                "channel" => $info['channel'],
+//                                                "campaignName" => $info['campaignName'],
+//                                                "campaignId" => $info['campaignId'],
+//                                                "targetingType" => $info['targetingType'],
+//                                                "state" => $info['state'],
+//                                                "createdOn" => $info['createdOn'],
+//                                            ];
+//                                            $sameCampaign[$info['campaignName']] = 1;
+//                                            $this->log("唉有投放，错误的");
+//                                        }
+//                                    }
+//                                }
+
+
+
+                        }
+                    }
+                }
+            }
+//            if (count($export) > 0){
+//                $excelUtils = new ExcelUtils();
+//                $downloadOssLink = "未设置广告已经投放的_" . date("YmdHis") . ".xlsx";
+//                $filePath = $excelUtils->downloadXlsx(["status","channel","campaignName","campaignId","targetingType","state","createdOn"],$export,$downloadOssLink);
+//                $this->log($filePath);
+//            }
+
+            $this->log(json_encode($manualAllZero,JSON_UNESCAPED_UNICODE));
+
+
+        }
+
+    }
+
 
 }
 
@@ -2526,5 +2642,7 @@ $curlController = new SyncCurlController();
 //$curlController->createPmo();
 
 //$curlController->updateZhixiao();
-$curlController->fixSkuVerticalId();
+//$curlController->fixSkuVerticalId();
+//$curlController->fixAmazonSpRuleId();
+$curlController->findCampaign();
 //$curlController->test();
