@@ -43,8 +43,11 @@ class CurlService
             case "pomsgoods":
                 $this->module = "platform-pomsgoods-service";
                 break;
-            case "config":
+            case "configmgmt":
                 $this->module = "platform-config-mgmt-application";
+                break;
+            case "config":
+                $this->module = "platform-config-service";
                 break;
         }
 

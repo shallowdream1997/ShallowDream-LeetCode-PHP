@@ -93,6 +93,7 @@ class SyncProductSku
                     ["sgu_sku_scu_channel_maps", "skuScuId"],
                     ["sku_prices", "skuId"],
                     ["scu-sku-maps", "skuIdListName"],
+                    ["pa_sku_infos", "skuId"],
                 ]
             ];
             foreach ($skuList as $sku) {

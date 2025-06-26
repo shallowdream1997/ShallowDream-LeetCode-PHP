@@ -443,6 +443,45 @@ class search
 
         return ["env" => $env, "data" => $resp['value']];
     }
+
+
+    public function configPage($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+        $curlService->gateway();
+
+        $curlService->getModule('config');
+//        {
+//            "condition": {
+//            "configKey": "",
+//        "configValue": "",
+//        "businessCategoryList": [
+//                "PA"
+//            ],
+//        "systemNameList": []
+//    },
+//    "page": {
+//            "pageSize": 20,
+//        "pageNum": 1
+//    }
+//}
+
+        $params = [
+            "condition" => [
+                "configKey" => $params['configKey'] ?: "",
+                "configValue" => $params['configValue'] ?: "",
+                "businessCategoryList" => $params['businessCategoryList'] ?: [],
+                "systemNameList" => $params['systemNameList'] ?: []
+            ],
+            "page" => [
+                "pageSize" => 100,
+                "pageNum" => 1
+            ]
+        ];
+        $resp = DataUtils::getNewResultData($curlService->getWayPost( $curlService->module . "/business/config/v1/query", $params));
+        return ["env" => $env, "data" => $resp['list']];
+
+    }
 }
 
 
@@ -513,6 +552,10 @@ switch ($data['action']) {
     case "textDiff":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->textDiff($params);
+        break;
+    case "configPage":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->configPage($params);
         break;
 }
 

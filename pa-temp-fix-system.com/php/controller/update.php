@@ -699,7 +699,7 @@ class update
                     ];
                 }
 
-                $resp = DataUtils::getNewResultData($curlService->gateway()->getModule('config')->getWayPost($curlService->module . "/message/template/v1/getUploadFileSignature", []));
+                $resp = DataUtils::getNewResultData($curlService->gateway()->getModule('configmgmt')->getWayPost($curlService->module . "/message/template/v1/getUploadFileSignature", []));
                 if ($resp) {
                     $curlService1 = $this->envService;
                     $curlService1->setHeader(array(
@@ -721,7 +721,7 @@ class update
                     ]);
                     if ($uploadOssResp && $uploadOssResp['httpCode'] === 200) {
                         $this->logger->log2("上传文件到oss成功");
-                        $getKeyResp = DataUtils::getNewResultData($curlService->gateway()->getModule("config")->getWayGet($curlService->module . "/message/template/v1/getOssUrlByKey", [
+                        $getKeyResp = DataUtils::getNewResultData($curlService->gateway()->getModule("configmgmt")->getWayGet($curlService->module . "/message/template/v1/getOssUrlByKey", [
                             "key" => $key
                         ]));
                         $this->logger->log2("返回oss文件链接：{$getKeyResp['value']}");

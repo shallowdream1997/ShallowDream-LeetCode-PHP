@@ -2605,6 +2605,69 @@ class SyncCurlController
     }
 
 
+    public function downloadPaSkuPhotoProgress()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        $page = 1;
+        $list = [];
+        do {
+            $this->log($page);
+            $ss = DataUtils::getResultData($curlService->s3015()->get("sku_photography_progresss/queryPage", [
+                "photoOn_lte" => "2025-06-20T23:59:59Z",
+                "photoOn_gte" => "2025-05-01T00:00:00Z",
+                "limit" => 1000,
+                "page" => $page
+            ]));
+            if (count($ss['data']) == 0) {
+                break;
+            }
+            foreach ($ss['data'] as $info) {
+                $list[] = [
+                    "batchName" => $info['batchName'],
+//                    "salesType" => $info['salesType'],
+//                    "tempSkuId" => $info['tempSkuId'],
+                    "ceBillNo" => $info['ceBillNo'],
+                    "createCeBillNoOn" => $info['createCeBillNoOn'],
+                    "skuId" => $info['skuId'],
+                    "status" => $info['status'],
+                    "photoBy" => $info['photoBy'],
+                    "photoOn" => $info['photoOn'],
+                ];
+            }
+
+            $page++;
+        } while (true);
+
+        if (count($list) > 0){
+            $excelUtils = new ExcelUtils();
+            foreach (array_chunk($list, 10000) as $chunk) {
+                $filePath = $excelUtils->downloadXlsx([
+                    "批次",
+                    "CE单",
+                    "CE创建日期",
+                    "sku",
+                    "状态",
+                    "拍摄人",
+                    "拍摄完成日期",
+                ], $chunk, "图片拍摄进度导出_" . date("YmdHis") . ".xlsx");
+
+            }
+        }else{
+            $this->log("没有导出");
+        }
+
+
+    }
+
+
+    public function week(){
+        echo date("w",1750806000);
+    }
+
+
+
 }
 
 $curlController = new SyncCurlController();
@@ -2644,5 +2707,7 @@ $curlController = new SyncCurlController();
 //$curlController->updateZhixiao();
 //$curlController->fixSkuVerticalId();
 //$curlController->fixAmazonSpRuleId();
-$curlController->findCampaign();
+//$curlController->findCampaign();
+$curlController->downloadPaSkuPhotoProgress();
+//$curlController->week();
 //$curlController->test();

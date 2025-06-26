@@ -61,6 +61,9 @@ class EnvironmentConfig
             case "textDiff":
                 $this->curlService = (new CurlService())->local();
                 break;
+            case "configPage":
+                $this->curlService = (new CurlService())->test();
+                break;
         }
         return $this;
     }
