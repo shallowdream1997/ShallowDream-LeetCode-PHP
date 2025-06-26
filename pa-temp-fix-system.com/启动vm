@@ -1,0 +1,10 @@
+-Dprofiles_active=test
+-Denv.server.port=9021
+-Dnacos_username=pa
+-Dnacos_password=pzdBEreIyd5iBRJf
+-Dnacos_addr=10.43.179.228:8848
+-Dnacos_config_namespace=302fa503-340b-4103-bab3-23b6a387b2a8
+-Dnacos_discovery_namespace=302fa503-340b-4103-bab3-23b6a387b2a8
+-Dux168_secret_key=123456789012
+-Denv.event.rocketmq.enabled=true
+-Denv.rocketmq.enabled=false

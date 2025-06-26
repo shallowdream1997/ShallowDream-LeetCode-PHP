@@ -1,0 +1,115 @@
+[
+  {
+    "name": "receive_sample_expect_sku",
+    "remark": "wms sku预计留样场景逻辑判断",
+    "status": true,
+    "rules": [
+      {
+        "conditions": [
+          {
+            "parameter": "skuIsSampleDeliveryToGz",
+            "operator": "exists",
+            "value": true
+          },
+          {
+            "parameter": "skuIsSampleDeliveryToGz",
+            "operator": "=",
+            "value": "是"
+          }
+        ],
+        "action": {
+          "type": "outputString",
+          "value": "dataTeam,bg"
+        }
+      },
+      {
+        "conditions": [
+          {
+            "parameter": "skuIsSampleDeliveryToGz",
+            "operator": "exists",
+            "value": true
+          },
+          {
+            "parameter": "skuIsSampleDeliveryToGz",
+            "operator": "=",
+            "value": ""
+          }
+        ],
+        "action": {
+          "type": "outputString",
+          "value": "dataTeam,bg"
+        }
+      },
+      {
+        "conditions": [
+          {
+            "parameter": "skuIsSampleDeliveryToGz",
+            "operator": "notExists",
+            "value": true
+          }
+        ],
+        "action": {
+          "type": "outputString",
+          "value": "bg"
+        }
+      },
+      {
+        "conditions": [
+          {
+            "parameter": "skuIsSampleDeliveryToGz",
+            "operator": "exists",
+            "value": true
+          },
+          {
+            "parameter": "skuIsSampleDeliveryToGz",
+            "operator": "=",
+            "value": "否"
+          }
+        ],
+        "action": {
+          "type": "outputString",
+          "value": "bg"
+        }
+      }
+    ],
+    "defaultAction": {
+      "type": "outputString",
+      "value": ""
+    }
+  },
+  {
+    "name": "test_scene",
+    "remark": "测试场景在不同条件下判断并执行相应操作",
+    "status": true,
+    "rules": [
+      {
+        "conditions": [
+          {
+            "parameter": "A",
+            "operator": "=",
+            "value": "学生"
+          },
+          {
+            "parameter": "B",
+            "operator": "<",
+            "value": 30
+          }
+        ],
+        "action": {
+          "type": "combine",
+          "parameters": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "delimiter": " "
+        }
+      }
+    ],
+    "defaultAction": {
+      "type": "outputString",
+      "value": ""
+    }
+  }
+]

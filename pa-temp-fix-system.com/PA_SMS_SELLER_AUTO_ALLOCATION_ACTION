@@ -1,0 +1,172 @@
+[
+  {
+    "action": "pa_fba_channel_seller_config",
+    "name": "PA_FBA上架前移库申请渠道账号配置",
+    "status": true,
+    "config": [
+      {
+        "label": "optionName",
+        "value": "pa_fba_channel_seller_config"
+      }
+    ]
+  },
+  {
+    "action": "campaign_salesman_index",
+    "name": "POMS创建campaign广告虚拟编号",
+    "status": true,
+    "config": [
+      {
+        "label": "optionName",
+        "value": "campaign_salesman_index"
+      },
+      {
+        "label": "dingNoticeUser",
+        "value": "zhouangang"
+      },
+      {
+        "label": "dingNoticeTitle",
+        "value": "【新账号广告SP规则配置提醒】"
+      },
+      {
+        "label": "dingNoticeTemplate",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "action": "PA_POMS_SKU_BRAND_INIT_CONFIG",
+    "name": "pa sku品牌初始化配置",
+    "status": true,
+    "config": [
+      {
+        "label": "businessConfigName",
+        "value": "PA_POMS_SKU_BRAND_INIT_CONFIG"
+      },
+      {
+        "label": "onlyOwnConfig",
+        "value": [
+          {
+            "categoryId": "10312",
+            "status": 1,
+            "brandSetObj": {
+              "brand": "{brand}",
+              "local": "{brand}",
+              "amazon_us": "{brand}",
+              "amazon_uk": "{brand}",
+              "amazon_ca": "{brand}",
+              "amazon_au": "X AUTOHAUX",
+              "ebay_us": "X AUTOHAUX",
+              "ebay_uk": "X AUTOHAUX",
+              "ebay_au": "X AUTOHAUX",
+              "ebay_hk": "X AUTOHAUX",
+              "walmart_us": "Unique Bargains",
+              "target_us": "Unique Bargains"
+            }
+          },
+          {
+            "categoryId": "14733",
+            "status": 1,
+            "brandSetObj": {
+              "brand": "{brand}",
+              "local": "{brand}",
+              "amazon_us": "{brand}",
+              "amazon_uk": "{brand}",
+              "amazon_ca": "{brand}",
+              "amazon_au": "X AUTOHAUX",
+              "ebay_us": "VOCOSTE",
+              "ebay_uk": "VOCOSTE",
+              "ebay_au": "VOCOSTE",
+              "ebay_hk": "VOCOSTE",
+              "walmart_us": "Unique Bargains",
+              "target_us": "Unique Bargains"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "action": "price_base_fields",
+    "name": "poms-pa价格参数设置",
+    "status": false,
+    "config": [
+      {
+        "label": "dictConfigName",
+        "value": "price_base_fields"
+      },
+      {
+        "label": "onlyOwnConfig",
+        "value": [
+          {
+            "feeType": "ads",
+            "feeValue": "0.05",
+            "currency": "",
+            "remark": "广告费率",
+            "categoryId": "",
+            "addCondition": [
+              {
+                "label": "publishDate",
+                "value": "2024-09-01",
+                "unit": "",
+                "expressions": ">"
+              }
+            ]
+          },
+          {
+            "feeType": "refundRate",
+            "feeValue": "0.06",
+            "currency": "",
+            "remark": "退款率",
+            "categoryId": "",
+            "addCondition": [
+              
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "action": "unsalable_base_fields",
+    "name": "滞销基本参数设置",
+    "status": true,
+    "config": [
+      {
+        "label": "dictConfigName",
+        "value": "unsalable_base_fields"
+      },
+      {
+        "label": "onlyOwnConfig",
+        "value": [
+          {
+            "strategy_main_id": "1747933604497825793",
+            "margin_position_main_id": "1747942777125593089",
+            "dull_sale_type": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "action": "common_allocation_system_brand_config",
+    "name": "通用分配系统设置",
+    "status": true,
+    "config": [
+      {
+        "label": "sceneId",
+        "value": 1829104764554096641
+      },
+      {
+        "label": "handleFieldConfig",
+        "value": {
+          "targetValue": "brand",
+          "targetDimensionValueOne": "{existData}",
+          "targetDimensionValueTwo": "{existData}",
+          "targetDimensionValueThree": "{existData}",
+          "targetDimensionValueFour": "{existData}",
+          "targetDimensionValueFive": "{existData}"
+        }
+      }
+    ]
+  }
+]

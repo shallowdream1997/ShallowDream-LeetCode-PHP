@@ -1,0 +1,3 @@
+docker run -d --dns 172.16.10.181 -p 8081:8081 -p 21:21 -p 3000:3000 -p 3001:3001 -p 3002:3002 -v /tmp:/tmp -v /export/www:/export/www -v /export/nginx/vhost:/usr/local/webserver/nginx/conf/vhost -v /export/nginx/logs:/usr/local/webserver/nginx/logs dockerimages-v2.ux168.cn:5000/nginx-vsftpd:latest /bin/sh -c "/etc/init.d/vsftpd start && /etc/init.d/nginx start && tail -f /usr/local/webserver/nginx/logs/nginx.pid"
+
+docker run -d --dns 172.16.10.181 -p 83:83 -v /export/www:/export/www -v /export/nginx/vhost:/usr/local/webserver/nginx/conf/vhost -v /export/nginx/logs:/usr/local/webserver/nginx/logs dockerimages-v2.ux168.cn:5000/nginx-php7:latest /bin/sh -c "/etc/init.d/nginx start && tail -f /usr/local/webserver/nginx/logs/nginx.pid"

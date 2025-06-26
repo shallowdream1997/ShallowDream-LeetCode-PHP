@@ -1,0 +1,119 @@
+    COMMON_BATCH_NO("custom-common-batchNo", "审批工单"),
+    COMMON_DEVELOPER_USER_NAME("custom-common-developerUserName","选品开发"),
+    COMMON_SOURCE_DEVELOPER_USER_NAME("custom-common-sourceDeveloperUserName","货源开发"),
+    COMMON_SALES_USER_NAME("custom-common-salesUserName","产品运营"),
+    COMMON_MINOR_SALES_USER_NAME("custom-common-minorSalesUserName","小语种运营"),
+    COMMON_LEADER_USER_NAME("custom-common-leaderUserName","组长"),
+    COMMON_PRODUCT_DEV_NODE_VALUE("custom-common-productDevNodeValue","状态"),
+    COMMON_CATEGORY_ID("custom-common-categoryId", "产品线id"),
+    COMMON_FIRST_CATEGORY_ID("custom-common-firstCategoryId", "产品线一级分类id"),
+    COMMON_FIRST_CATEGORY_NAME("custom-common-firstCategoryName", "产品线一级分类"),
+    COMMON_PLATFORM("platform", "平台"),
+    COMMON_CATEGORY_NAME("custom-common-categoryName", "产品线"),
+    COMMON_CATEGORY_FULL_ID("custom-common-categoryFullId", "产品线全路径id"),
+    COMMON_CATEGORY_FULL_PATH("custom-common-categoryFullPath", "产品线全路径"),
+    COMMON_PRODUCT_DEV_NODE_VALUE_TEXT("custom-common-productDevNodeValueText","状态"),
+    COMMON_DEV_BASE_TYPE("custom-common-devBaseType","开发来源"),
+    COMMON_DELETE_REMARK("custom-common-deleteRemark","作废原因"),
+    COMMON_REMARK("custom-common-remark","备注"),
+    COMMON_IS_DELETED("custom-common-isDeleted","作废状态"),
+    COMMON_IS_DELETED_TEXT("custom-common-isDeletedText","作废状态"),
+    COMMON_NODE_ENTRY_TIME("custom-common-nodeEntryTime", "节点进入时间"),
+    COMMON_NODE_EXIT_TIME("custom-common-nodeExitTime", "节点退出时间"),
+    COMMON_CE_BILL_NO("custom-common-ceBillNo", "CE单号"),
+    COMMON_QD_BILL_NO("custom-common-qdBillNo", "QD单号"),
+    COMMON_PMO_BILL_NO("custom-common-pmoBillNo", "PMO单号"),
+    COMMON_COMPANY_ID("custom-common-companyId", "商家"),
+    COMMON_CREATE_TIME("custom-common-createTime", "创建时间"),
+
+
+
+
+    SKU_OUTSIDE_TITLE ("custom-skuInfo-outsideTitle", "中文标题-对外"),
+    SKU_INSIDE_TITLE ("custom-skuInfo-insideTitle", "中文标题-对内"),
+    SKU_DESCRIPTION ("custom-skuInfo-description", "中文描述"),
+    SKU_SKU_ID ("custom-skuInfo-skuId", "skuId"),
+    SKU_TEMP_SKU_ID ("custom-skuInfo-tempSkuId", "产品序号"),
+    SKU_ATTR_HASH_VALUE_LIST ("custom-skuInfo-attrHashValueList", "属性hashList"),
+    SKU_IGNORE_DUPLICATE_CHECK ("custom-skuInfo-ignoreDuplicateCheck", "重复品豁免"),
+    SKU_IGNORE_DUPLICATE_CHECK_REMARK ("custom-skuInfo-ignoreDuplicateCheckRemark", "豁免原因"),
+    SKU_DUPLICATE_CHECK_STATUS ("custom-skuInfo-duplicateCheckStatus", "重复品排查"),
+    SKU_IGNORE_DUPLICATE_CHECK_TEXT ("custom-skuInfo-ignoreDuplicateCheckText", "重复品豁免"),
+    SKU_DUPLICATE_CHECK_STATUS_TEXT ("custom-skuInfo-duplicateCheckStatusText", "重复品排查"),
+    SKU_DUPLICATE_SKU("custom-skuInfo-duplicateSku", "重复品sku"),
+    SKU_DUPLICATE_SKU_LIST("custom-skuInfo-duplicateSkuList", "重复品sku"),
+    SKU_PRODUCT_DEV_NODE_STATUS_TEXT("custom-skuInfo-productDevNodeStatusText", "审核结果"),
+    SKU_PRODUCT_DEV_NODE_STATUS("custom-skuInfo-productDevNodeStatus","审核结果"),
+    SKU_PRODUCT_STATUS("custom-skuInfo-productStatus", "资料状态"),
+    SKU_SALE_STATUS("custom-skuInfo-saleStatus", "可售状态"),
+    SKU_SUPPLIER_TYPE("custom-skuInfo-supplierType", "来货方式"),
+    SKU_SUPPLIER_TYPE_TEXT("custom-skuInfo-supplierTypeText", "来货方式"),
+    SKU_PRE_PURCHASE_SUPPLIER_TYPE("custom-skuInfo-prePurchaseSupplierType", "供应商类型"),
+    SKU_BUSINESS_TYPE("custom-skuInfo-businessType", "业务类型"),
+    SKU_SUPPLIER_ID("custom-skuInfo-supplierId", "供应商id"),
+    SKU_FACTORY_ID("custom-skuInfo-factoryId", "工厂id"),
+    SKU_PA_FACTORY_ID("custom-skuInfo-paFactoryId", "(PA)工厂id"),
+    SKU_FACTORY_NAME("custom-skuInfo-factoryName", "货源公司"),
+    SKU_SUPPLIER_NAME("custom-skuInfo-supplierName", "供应商名称"),
+    SKU_PRODUCT_IMAGE("product_image", null),
+    SKU_PRODUCT_IMAGE_ORIGINAL_FILE_URL("product_image_original_file_url", "产品图片(原文件)"),
+    SKU_PACKAGE_LENGTH("package_length", null),//"长度(货源信息)"
+    SKU_PACKAGE_WIDTH("package_width", null),//宽度(货源信息)
+    SKU_PACKAGE_HEIGHT("package_height", null),//高度(货源信息)
+    SKU_LOSS_WEIGHT("loss_weight", null),//毛重
+    SKU_COST("cost", null),//毛重
+    SKU_BRAND("custom-skuInfo-brand", "品牌"),
+    SKU_LOCK_BRAND("custom-skuInfo-lockBrand", "锁定品牌"),
+    SKU_CONSIGNMENT_COEFFICIENT("consignment_coefficient", "寄卖系数"),
+    SKU_SALES_MONTH_SOLD("sales_month_sold", "运营预估每月售出"),
+    SKU_SOURCE_COMPANY_NAME("source_company_name","货源公司"),
+    SKU_DELIVERY_DAY("delivery_day", "货期"),
+    SKU_TOTAL_COST("total_cost", null),//采购价*数量
+    SKU_SUPPLIER_ASSIGNMENT_TYPE("custom-skuInfo-supplierAssignmentType", null),//竞标方式
+    SKU_MIN_ARRIVAL_QUANTITY("min_arrival_quantity", null),//最低来货数
+    SKU_CONSIGNMENT_PRICE("custom-skuInfo-consignmentPrice", null),//寄卖价
+    SKU_INCLUDE_TAX("does_it_include_tax", null),//是否含税
+    SKU_PA_FACTORY_INFO_COMPLETENESS("custom-skuInfo-paFactoryInfoCompleteness", "(PA)工厂信息完成度"),
+
+
+
+
+
+    PRE_PURCHASE_MAIN_ID("custom-prePurchase-prePurchaseMainId", "预采购清单id"),
+    PRE_PURCHASE_BILL_NO("custom-prePurchase-prePurchaseBillNo", "预采购清单号"),
+    PRE_PURCHASE_AUDIT_STATUS("custom-prePurchase-auditStatus", "预采购清单-审核状态"),
+    PRE_PURCHASE_AUDIT_STATUS_TEXT("custom-prePurchase-auditStatusText", "预采购清单-审核状态"),
+    PRE_PURCHASE_HANDLE_STATUS("custom-prePurchase-handleStatus", "预采购清单-处理状态"),
+    PRE_PURCHASE_HANDLE_STATUS_TEXT("custom-prePurchase-handleStatusText", "预采购清单-处理状态"),
+    PRE_PURCHASE_BILL_NO_HISTORY("custom-prePurchase-prePurchaseBillNoHistory", "历史预采购请单"),
+
+
+
+
+
+    SKU_ATTR_HASH_VALUE  ("custom-skuAttr-hashValue", "属性hashList"),
+
+    BATCH_SKU_NUMBER("custom-batch-skuNumber", "批次sku数"),
+    BATCH_SUCCESS_SKU_NUMBER("custom-batch-successSkuNumber", "批次sku通过数"),
+    BATCH_REJECTED_SKU_NUMBER("custom-batch-rejectedSkuNumber", "批次sku驳回数"),
+    BATCH_UNPROCESSED_SKU_NUMBER("custom-batch-unprocessedSkuNumber", "批次sku未处理数"),
+
+    IGNORE("custom-ignore-", "忽略性属性"),
+
+
+    SKU_PATENT_CREATE_BY("custom-skuPatent-createBy", "sku国内专利-创建人"),
+    SKU_PATENT_DOMESTIC_APPLICANT("custom-skuPatent-domesticApplicant", "sku国内专利-国内专利持有人"),
+    SKU_PATENT_DOMESTIC_NUMBER("custom-skuPatent-domesticNumber", "sku国内专利-国内专利号"),
+    SKU_PATENT_DOMESTIC_LINK("custom-skuPatent-domesticLink", "sku国内专利-链接"),
+    SKU_PATENT_DOMESTIC_STATUS("custom-skuPatent-domesticStatus", "sku国内专利-国内专利状态"),
+    SKU_PATENT_DOMESTIC_STATUS_TEXT("custom-skuPatent-domesticStatusText", "sku国内专利-国内专利状态"),
+    SKU_PATENT_FOREIGN_NUMBER("custom-skuPatent-foreignNumber", "sku国内专利-国外专利号"),
+    SKU_PATENT_UPDATE_TIME("custom-skuPatent-updateTime", "sku国内专利-最后复核日期"),
+    SKU_PATENT_CHECKED_DAYS("custom-skuPatent-checkedDays", "sku国内专利-已复核天数"),
+    SKU_PATENT_CHECKED_DAYS_COMPARATOR("custom-skuPatent-checkedDaysComparator", "sku国内专利-已复核天数-比较符"),
+
+
+    SKU_PRICE_SIMULATION("custom-skuPriceSimulation-", "价格试算属性"),
+
+
+    ;

@@ -1,0 +1,200 @@
+[
+    {
+        "channel": "ebay_us",
+        "label": "upc",
+        "value": "",
+        "method": "string",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "ebay_uk",
+        "label": "upc",
+        "value": "",
+        "method": "string",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "ebay_au",
+        "label": "upc",
+        "value": "",
+        "method": "string",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "amazon_us",
+        "label": "upc",
+        "value": "",
+        "method": "string",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "amazon_uk",
+        "label": "upc",
+        "value": "",
+        "method": "string",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "amazon_ca",
+        "label": "upc",
+        "value": "",
+        "method": "string",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "amazon_in",
+        "label": "upc",
+        "value": "",
+        "method": "string",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "amazon_au",
+        "label": "upc",
+        "value": "",
+        "method": "string",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "Product with package size",
+        "value": "",
+        "method": "getFunction",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "Pack Size(L*W*H)",
+        "value": "",
+        "method": "getFunction",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "Logistics size",
+        "value": "",
+        "method": "getFunction",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "Item Unit Quantity",
+        "value": "sellingNum+unit",
+        "method": "pipe",
+        "action": [
+            "init"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "Business Type",
+        "value": "businessType",
+        "method": "string",
+        "action": [
+            "init",
+            "writeBack"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "isElectrified",
+        "value": "isElectrified",
+        "method": "string",
+        "action": [
+            "init",
+            "writeBack"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "BatteryType",
+        "value": "batteryType",
+        "method": "string",
+        "action": [
+            "init",
+            "writeBack"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "BatteryModel",
+        "value": "batteryModel",
+        "method": "string",
+        "action": [
+            "init",
+            "writeBack"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "OE Number",
+        "value": "oeNumber",
+        "method": "string",
+        "action": [
+            "init",
+            "writeBack"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "来货brand位置",
+        "value": "brandPosition",
+        "method": "string",
+        "action": [
+            "init",
+            "writeBack"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "来货brand类型细节",
+        "value": "brandDetail",
+        "method": "string",
+        "action": [
+            "init",
+            "writeBack"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "来货brand类型",
+        "value": "brandType",
+        "method": "string",
+        "action": [
+            "init",
+            "writeBack"
+        ]
+    },
+    {
+        "channel": "local",
+        "label": "isTaxRefund",
+        "value": "isTaxRefund",
+        "method": "string",
+        "action": [
+            "init",
+            "writeBack"
+        ]
+    }
+]
