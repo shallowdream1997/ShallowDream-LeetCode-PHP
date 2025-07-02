@@ -27,33 +27,33 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => '1.0.0+no-version-set',
-    'version' => '1.0.0.0',
+    'pretty_version' => 'dev-master',
+    'version' => 'dev-master',
     'aliases' => 
     array (
     ),
-    'reference' => NULL,
+    'reference' => 'b4d76ab051aeeb87a4cabaedd91e5d149dbf8356',
     'name' => '__root__',
   ),
   'versions' => 
   array (
     '__root__' => 
     array (
-      'pretty_version' => '1.0.0+no-version-set',
-      'version' => '1.0.0.0',
+      'pretty_version' => 'dev-master',
+      'version' => 'dev-master',
       'aliases' => 
       array (
       ),
-      'reference' => NULL,
+      'reference' => 'b4d76ab051aeeb87a4cabaedd91e5d149dbf8356',
     ),
     'ezyang/htmlpurifier' => 
     array (
-      'pretty_version' => 'v4.16.0',
-      'version' => '4.16.0.0',
+      'pretty_version' => 'v4.18.0',
+      'version' => '4.18.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '523407fb06eb9e5f3d59889b3978d5bfe94299c8',
+      'reference' => 'cb56001e54359df7ae76dc522d08845dc741621b',
     ),
     'logger-one/logger-one' => 
     array (
@@ -102,12 +102,12 @@ private static $installed = array (
     ),
     'myclabs/php-enum' => 
     array (
-      'pretty_version' => '1.8.4',
-      'version' => '1.8.4.0',
+      'pretty_version' => '1.8.5',
+      'version' => '1.8.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a867478eae49c9f59ece437ae7f9506bfaa27483',
+      'reference' => 'e7be26966b7398204a234f8673fdad5ac6277802',
     ),
     'phpoffice/phpspreadsheet' => 
     array (
@@ -129,12 +129,12 @@ private static $installed = array (
     ),
     'psr/http-factory' => 
     array (
-      'pretty_version' => '1.0.2',
-      'version' => '1.0.2.0',
+      'pretty_version' => '1.1.0',
+      'version' => '1.1.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e616d01114759c4c489f93b099585439f795fe35',
+      'reference' => '2b4765fddfe3b508ac62f829e852b1501d3f6e8a',
     ),
     'psr/http-message' => 
     array (
@@ -172,12 +172,12 @@ private static $installed = array (
     ),
     'symfony/polyfill-mbstring' => 
     array (
-      'pretty_version' => 'v1.29.0',
-      'version' => '1.29.0.0',
+      'pretty_version' => 'v1.32.0',
+      'version' => '1.32.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '9773676c8a1bb1f8d4340a62efe641cf76eda7ec',
+      'reference' => '6d857f4d76bd4b343eac26d6b539585d2bc56493',
     ),
   ),
 );
