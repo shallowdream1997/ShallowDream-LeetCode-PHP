@@ -2417,21 +2417,8 @@ class SyncCurlController
     }
 
     public function test(){
-        $timeString = "2025-06-12T00:00:00.000Z";
-        // 获取当前日期和原始日期
-        $currentDate = date('Y-m-d');
-        $originalDate = date('Y-m-d', strtotime($timeString));
-        // 判断是否是今天
-        if ($currentDate === $originalDate) {
-            // 如果是今天，增加 1 小时
-            $timestamp = strtotime($timeString) + 3600; // 1 小时 = 3600 秒
-        } else {
-            // 如果不是今天，设置为昨天的 23:59:59
-            $timestamp = strtotime('yesterday') + (23 * 3600) + (59 * 60) + 59; // 昨天的 23:59:59
-        }
-        // 将时间戳格式化为可读的日期时间
-        $formattedDate = date('Y-m-d H:i:s', $timestamp);
-        echo $formattedDate;
+
+        $this->log("sssss");
     }
 
     public function test1($a,$b,$c,$d){
@@ -2666,11 +2653,202 @@ class SyncCurlController
         echo date("w",1750806000);
     }
 
+    public function downloadPa()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        $page = 1;
+        $list = [];
+        do {
+            $this->log($page);
+            $ss = DataUtils::getResultData($curlService->s3015()->get("sku_photography_progresss/queryPage", [
+                "photoOn_lte" => "2025-06-20T23:59:59Z",
+                "photoOn_gte" => "2025-05-01T00:00:00Z",
+                "limit" => 1000,
+                "page" => $page
+            ]));
+            if (count($ss['data']) == 0) {
+                break;
+            }
+            foreach ($ss['data'] as $info) {
+                $list[] = [
+                    "batchName" => $info['batchName'],
+//                    "salesType" => $info['salesType'],
+//                    "tempSkuId" => $info['tempSkuId'],
+                    "ceBillNo" => $info['ceBillNo'],
+                    "createCeBillNoOn" => $info['createCeBillNoOn'],
+                    "skuId" => $info['skuId'],
+                    "status" => $info['status'],
+                    "photoBy" => $info['photoBy'],
+                    "photoOn" => $info['photoOn'],
+                ];
+            }
+
+            $page++;
+        } while (true);
+
+        if (count($list) > 0){
+            $excelUtils = new ExcelUtils();
+            foreach (array_chunk($list, 10000) as $chunk) {
+                $filePath = $excelUtils->downloadXlsx([
+                    "批次",
+                    "CE单",
+                    "CE创建日期",
+                    "sku",
+                    "状态",
+                    "拍摄人",
+                    "拍摄完成日期",
+                ], $chunk, "图片拍摄进度导出_" . date("YmdHis") . ".xlsx");
+
+            }
+        }else{
+            $this->log("没有导出");
+        }
+
+
+    }
+
+
+    public function downloadPaSkuMaterialSP()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        foreach ([
+                     "CE202503",
+                     "CE202504",
+                     "CE202505",
+                     "CE202506",
+                 ] as $ceBillNoLike) {
+            $ceBillNoMap = [];
+            $this->log($ceBillNoLike);
+            $page = 1;
+            do {
+                $this->log($page);
+                $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
+                    "ceBillNo_like" => $ceBillNoLike,
+                    "limit" => 1000,
+                    "page" => $page
+                ]));
+                if (count($l) == 0) {
+                    break;
+                }
+                foreach ($l as $info) {
+                    $ceBillNoMap[$info['ceBillNo']] = [
+                        'developer' => $info['developer'],
+                        'saleName' => $info['saleName']
+                    ];
+                }
+
+                $page++;
+            } while (true);
+
+
+            if (count($ceBillNoMap) > 0){
+                $keywordsList = [];
+                $cpAsinList = [];
+                $fitmentList = [];
+                foreach ($ceBillNoMap as $ceBillNo => $info){
+                    $this->log($ceBillNo."查询资料呈现");
+                    $ll = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
+                        "ceBillNo" => $ceBillNo,
+                        "limit" => 1500,
+                        "page" => 1
+                    ]));
+                    if (count($ll) == 0) {
+                        break;
+                    }
+                    foreach ($ll as $item) {
+                        foreach ($item['keywords'] as $k){
+                            $keywordsList[] = [
+                                'ceBillNo' => $ceBillNo,
+                                'saleName' => $info['saleName'],
+                                'skuId' => $item['skuId'],
+                                'keywords' => $k
+                            ];
+                        }
+                        foreach ($item['cpAsin'] as $cp){
+                            $cpAsinList[] = [
+                                'ceBillNo' => $ceBillNo,
+                                'saleName' => $info['saleName'],
+                                'skuId' => $item['skuId'],
+                                'cpAsin' => $cp
+                            ];
+                        }
+                        foreach ($item['fitment'] as $fit){
+                            $fitmentList[] = [
+                                'ceBillNo' => $ceBillNo,
+                                'saleName' => $info['saleName'],
+                                'skuId' => $item['skuId'],
+                                'make' => $fit['make'],
+                                'model' => $fit['model'],
+                            ];
+                        }
+                    }
+                }
+
+                if (count($keywordsList) > 0){
+                    $this->redis->hSet(REDIS_MATERIAL_KEY . "_keywords", $ceBillNoLike,json_encode($keywordsList,JSON_UNESCAPED_UNICODE));
+
+                    $excelUtils = new ExcelUtils();
+                    $filePath = $excelUtils->downloadXlsx([
+                        "CE单号",
+                        "产品运营",
+                        "skuId",
+                        "核心词",
+                    ], $keywordsList, "{$ceBillNoLike}_核心词导出_" . date("YmdHis") . ".xlsx");
+                    $this->log("导出核心词");
+                }else{
+                    $this->log("没有核心词");
+                }
+
+                if (count($cpAsinList) > 0){
+                    $this->redis->hSet(REDIS_MATERIAL_KEY . "_cpasins", $ceBillNoLike,json_encode($cpAsinList,JSON_UNESCAPED_UNICODE));
+                    $excelUtils = new ExcelUtils();
+                    $filePath = $excelUtils->downloadXlsx([
+                        "CE单号",
+                        "产品运营",
+                        "skuId",
+                        "CP ASIN",
+                    ], $cpAsinList, "{$ceBillNoLike}_CP_Asin导出_" . date("YmdHis") . ".xlsx");
+                    $this->log("导出CP ASIN");
+                }else{
+                    $this->log("没有CP ASIN");
+                }
+
+                if (count($fitmentList) > 0){
+                    $this->redis->hSet(REDIS_MATERIAL_KEY . "_fitment", $ceBillNoLike,json_encode($fitmentList,JSON_UNESCAPED_UNICODE));
+                    $excelUtils = new ExcelUtils();
+                    $filePath = $excelUtils->downloadXlsx([
+                        "CE单号",
+                        "产品运营",
+                        "skuId",
+                        "make",
+                        "model",
+                    ], $fitmentList, "{$ceBillNoLike}_fitment导出_" . date("YmdHis") . ".xlsx");
+                    $this->log("导出fitment");
+                }else{
+                    $this->log("没有fitment");
+                }
+
+            }else{
+                $this->log("{$ceBillNoLike}没有数据");
+            }
+
+
+        }
+
+
+
+
+    }
 
 
 }
 
 $curlController = new SyncCurlController();
+$curlController->downloadPaSkuMaterialSP();
 //$curlController->test();
 //$curlController->fix();
 //$curlController->syncSkuMaterialToAudit();
@@ -2708,6 +2886,6 @@ $curlController = new SyncCurlController();
 //$curlController->fixSkuVerticalId();
 //$curlController->fixAmazonSpRuleId();
 //$curlController->findCampaign();
-$curlController->downloadPaSkuPhotoProgress();
+//$curlController->downloadPaSkuPhotoProgress();
 //$curlController->week();
 //$curlController->test();
