@@ -2417,7 +2417,6 @@ class SyncCurlController
     }
 
     public function test(){
-
         $this->log("sssss");
     }
 
@@ -2844,11 +2843,112 @@ class SyncCurlController
 
     }
 
+    public function updatePaSkuMaterial()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->test();
 
+
+        $list = [];
+        $page = 1;
+        do {
+            $this->log($page);
+            $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
+                "limit" => 1000,
+                "page" => $page
+            ]));
+            if (count($l) == 0) {
+                break;
+            }
+            $list = array_merge($list,$l);
+
+            $page++;
+        } while (true);
+
+        if (count($list) > 0){
+            foreach ($list as $info){
+                $info['saleNameList'] = explode(",",$info['saleName']);
+                $info['developerList'] = explode(",",$info['developer']);
+                $info['ebayTraceManList'] = explode(",",$info['ebayTraceMan']);
+                $info['platformList'] = explode(",",$info['platform']);
+                $info['productLevelList'] = explode(",",$info['saleName']);
+                $res = $curlService->s3044()->put("pa_ce_materials/{$info['_id']}", $info);
+            }
+        }
+    }
+
+    public function getCEBillNo()
+    {
+        $curlSsl = (new CurlService())->pro();
+        $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/ce_bill_no/v1/getCeDetailBySkuIdList", [
+            "skuIdList" => ["a25050500ux1594"],
+            "orderBy" => "",
+            "pageNumber" => 1,
+            "entriesPerPage" => 500
+        ]));
+        if ($getKeyResp && count($getKeyResp) > 0){
+            print_r($getKeyResp);
+        }
+
+
+    }
+
+
+    /**
+     * 更新欧洲共享仓归属优先级配置
+     * @return void
+     */
+    public function updateEuSharedWarehouseFlowTypePriority(){
+        $curlService = new CurlService();
+        $curlService = $curlService->test();
+        $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage",[
+            "optionName" => "EuSharedWarehouseFlowTypePriority"
+        ]));
+        $config = [
+            "DE",
+            "FR",
+            "ES",
+            "IT",
+            "NL",
+            "BE",
+            "PL",
+            "SE"
+        ];
+        if ($info){
+            $list = [];
+
+            $ssss = $config;
+            for ($i = 0; $i < count($config); $i++) {
+                $platform = $config[$i];
+                $list[$platform] = [];
+                // 检查 $platform 是否在 $config 中
+                // 创建一个新的数组
+                $newConfig = $config; // 复制原始数组
+                // 检查 $platform 是否在 $newConfig 中
+                if (in_array($platform, $newConfig)) {
+                    // 移除元素并将其放在数组首位
+                    $newConfig = array_diff($newConfig, [$platform]); // 移除 $platform
+                    array_unshift($newConfig, $platform); // 将 $platform 添加到首位
+                }
+                $list[$platform] = $newConfig;
+            }
+            $list["defult"] = $config;
+
+            $info['optionVal'] = $list;
+            $ssss[] = 'defult';
+            $optionValCn = $ssss;
+            $info['optionValCn'] = $optionValCn;
+            $info['modifiedBy'] = "system(zhouangang)";
+            $curlService->s3015()->put("option-val-lists/{$info['_id']}", $info);
+        }
+    }
 }
 
 $curlController = new SyncCurlController();
-$curlController->downloadPaSkuMaterialSP();
+$curlController->updateEuSharedWarehouseFlowTypePriority();
+//$curlController->getCEBillNo();
+//$curlController->updatePaSkuMaterial();
+//$curlController->downloadPaSkuMaterialSP();
 //$curlController->test();
 //$curlController->fix();
 //$curlController->syncSkuMaterialToAudit();
