@@ -63,6 +63,22 @@ class SyncProductSku
         return DataUtils::getResultData($this->toCurlService->$port()->post($module,$data));
     }
 
+
+    public function commonFromQueryDocPage($module,$port,$condition){
+        if (!isset($condition['limit'])){
+            $condition['limit'] = 999;
+        }
+        return DataUtils::getPageDocList($this->fromCurlService->$port()->get("{$module}/queryPage",$condition));
+    }
+
+    public function commonToQueryDocPage($module,$port,$condition){
+        if (!isset($condition['limit'])){
+            $condition['limit'] = 999;
+        }
+        return DataUtils::getPageDocList($this->toCurlService->$port()->get("{$module}/queryPage",$condition));
+    }
+
+
     public function main($skuList){
         $this->log("start 执行SyncProductSku脚本");
 
@@ -94,6 +110,9 @@ class SyncProductSku
                     ["sku_prices", "skuId"],
                     ["scu-sku-maps", "skuIdListName"],
                     ["pa_sku_infos", "skuId"],
+                ],
+                "s3044" => [
+                    ["fcu_sku_maps","fcuId"]
                 ]
             ];
             foreach ($skuList as $sku) {
@@ -133,6 +152,52 @@ class SyncProductSku
         $this->log("end 执行SyncProductSku脚本");
     }
 
+    public function Sync3044($skuList){
+        $this->log("start 执行SyncProductSku Sync3044脚本");
+
+        if (!empty($skuList)){
+            $skuList = explode(",",$skuList);
+            $sync = [
+                "s3044" => [
+                    ["fcu_sku_maps","fcuId"]
+                ]
+            ];
+            foreach ($skuList as $sku) {
+                foreach ($sync as $port => $m){
+                    foreach ($m as $item){
+                        $condition = [
+                            $item[1] => $sku
+                        ];
+                        $this->log("{$port} - {$item[0]}");
+                        $fromData = $this->commonFromQueryDocPage($item[0],$port,$condition);
+                        $this->log("返回结果：".json_encode($fromData,JSON_UNESCAPED_UNICODE));
+                        if (count($fromData) > 0){
+                            $toData = $this->commonToQueryDocPage($item[0],$port,$condition);
+                            if (count($toData) > 0){
+                                foreach ($toData as $toDatum){
+                                    //物理删除
+                                    $this->commonToDeleteId($item[0],$port,$toDatum['_id']);
+                                }
+                            }
+                        }
+
+                        if (count($fromData) > 0){
+                            foreach ($fromData as $fromDatum) {
+                                //直接创建
+                                $this->commonToCreate($item[0],$port,$fromDatum);
+                            }
+                        }else{
+                            $this->log("没有sku可同步");
+                        }
+                    }
+                }
+            }
+        }else{
+            $this->log("没有sku可同步");
+        }
+
+        $this->log("end 执行SyncProductSku Sync3044脚本");
+    }
 }
 
 
@@ -145,3 +210,4 @@ if (isset($params['skuIdList']) && trim($params['skuIdList'] != '')) {
 }
 $curlController = new SyncProductSku();
 $curlController->main($skuIdList);
+$curlController->Sync3044($skuIdList);
