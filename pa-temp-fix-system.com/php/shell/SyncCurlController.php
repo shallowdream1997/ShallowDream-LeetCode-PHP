@@ -2846,34 +2846,70 @@ class SyncCurlController
     public function updatePaSkuMaterial()
     {
         $curlService = new CurlService();
-        $curlService = $curlService->test();
+        $curlService = $curlService->pro();
 
-
-        $list = [];
-        $page = 1;
-        do {
-            $this->log($page);
-            $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
-                "limit" => 1000,
-                "page" => $page
-            ]));
-            if (count($l) == 0) {
-                break;
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/1.xlsx");
+        $fitmentSkuMap = [];
+        if (sizeof($fileFitContent) > 0) {
+            $batchNameList = array_unique(array_column($fileFitContent,"batchName"));
+            $batchNameCeBillNoMap = [];
+            foreach (array_chunk($batchNameList,100) as $chunkBatchNameList){
+                $curlService->gateway();
+                $curlService->getModule('pa');
+                $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/sms/sku/info/material/v1/findPrePurchaseBillWithSkuForSkuMaterialInfo", $chunkBatchNameList));
+                if ($resp){
+                    $this->log("获取数据");
+                    foreach ($resp as $item){
+                        $billNo = "";
+                        if (isset($item['qdBillNo']) && $item['qdBillNo']) {
+                            $billNo = $item['qdBillNo'];
+                        } else if (isset($item['ceBillNo']) && $item['ceBillNo']) {
+                            $billNo = $item['ceBillNo'];
+                        }
+                        $batchNameCeBillNoMap[$item['prePurchaseBillNo'] . $billNo] = [
+                            "developerUserName" => $item['developerUserName'] ?? [],
+                            "salesUserName" => $item['salesUserName'] ?? [],
+                            "minorSalesUserName" => $item['minorSalesUserName'] ?? [],
+                            "sourceDeveloperUserName" => $item['sourceDeveloperUserName'] ?? [],
+                            "productLevelList" => $item['productLevel'] ?? [],
+                            "platformList" => $item['platform'] ?? [],
+                        ];
+                    }
+                }
             }
-            $list = array_merge($list,$l);
 
-            $page++;
-        } while (true);
+            $curlService = new CurlService();
+            $curlService = $curlService->pro();
+            foreach (array_chunk($batchNameList,300) as $chunkBatchNameList){
+                $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
+                    "limit" => 1000,
+                    "page" => 1,
+                    "batchName_in" => implode(",",$chunkBatchNameList)
+                ]));
+                if (count($l) == 0){
+                    continue;
+                }
 
-        if (count($list) > 0){
-            foreach ($list as $info){
-                $info['saleNameList'] = explode(",",$info['saleName']);
-                $info['developerList'] = explode(",",$info['developer']);
-                $info['ebayTraceManList'] = explode(",",$info['ebayTraceMan']);
-                $info['platformList'] = explode(",",$info['platform']);
-                $info['productLevelList'] = explode(",",$info['saleName']);
-                $res = $curlService->s3044()->put("pa_ce_materials/{$info['_id']}", $info);
+                foreach ($l as $item){
+                    $key = $item['batchName'] . $item['ceBillNo'];
+                    if (isset($batchNameCeBillNoMap[$key])){
+                        //存在数据
+                        $this->log("有数据，更新");
+                        $item['developerList'] = $batchNameCeBillNoMap[$key]['developerUserName'];
+                        $item['saleNameList'] = $batchNameCeBillNoMap[$key]['salesUserName'];
+                        $item['ebayTraceManList'] = $batchNameCeBillNoMap[$key]['minorSalesUserName'];
+                        $item['platformList'] = $batchNameCeBillNoMap[$key]['platformList'];
+                        $item['productLevelList'] = $batchNameCeBillNoMap[$key]['productLevelList'];
+                        $res = $curlService->s3044()->put("pa_ce_materials/{$item['_id']}", $item);
+                    }else{
+
+                        $this->log("没有数据");
+                    }
+                }
+
             }
+
+
         }
     }
 
@@ -2942,12 +2978,53 @@ class SyncCurlController
             $curlService->s3015()->put("option-val-lists/{$info['_id']}", $info);
         }
     }
+
+
+
+    public function findPrePurchaseBillWithSkuForSkuMaterialInfo()
+    {
+        $curlService = (new CurlService())->pro();
+        $curlService->gateway();
+        $curlService->getModule('pa');
+
+//        $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/scms/pre_purchase/info/v1/findPrePurchaseBillWithSkuForWaitHandleSkuMaterial", [
+//            "pageSize" => 100,
+//            "pageNum" => 1
+//        ]));
+//
+//        if ($resp){
+//
+//        }
+
+        $resp = DataUtils::getNewResultData($curlService->getWayGet($curlService->module . "/sms/sku/info/material/v1/createCeSkuMaterial", [
+            "operatorName" => "zhouangang"
+        ]));
+
+        if ($resp){
+
+        }
+
+//
+//        $pmoArr = [
+//            "qdBillNo" => "QD202506260004",
+//            "operatorName" => "zhouangang",
+//            "purchaseHandleStatus" => 20,
+//            "supplierId" => 2724
+//        ];
+//        $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $pmoArr));
+//        if ($resp){
+//
+//        }
+    }
+
+
 }
 
 $curlController = new SyncCurlController();
-$curlController->updateEuSharedWarehouseFlowTypePriority();
+//$curlController->findPrePurchaseBillWithSkuForSkuMaterialInfo();
+//$curlController->updateEuSharedWarehouseFlowTypePriority();
 //$curlController->getCEBillNo();
-//$curlController->updatePaSkuMaterial();
+$curlController->updatePaSkuMaterial();
 //$curlController->downloadPaSkuMaterialSP();
 //$curlController->test();
 //$curlController->fix();
