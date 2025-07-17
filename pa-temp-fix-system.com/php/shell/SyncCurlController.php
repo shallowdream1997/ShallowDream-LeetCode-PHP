@@ -2987,22 +2987,22 @@ class SyncCurlController
         $curlService->gateway();
         $curlService->getModule('pa');
 
-//        $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/scms/pre_purchase/info/v1/findPrePurchaseBillWithSkuForWaitHandleSkuMaterial", [
-//            "pageSize" => 100,
-//            "pageNum" => 1
+        $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/scms/pre_purchase/info/v1/findPrePurchaseBillWithSkuForWaitHandleSkuMaterial", [
+            "pageSize" => 100,
+            "pageNum" => 1
+        ]));
+
+        if ($resp){
+            $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+        }
+
+//        $resp = DataUtils::getNewResultData($curlService->getWayGet($curlService->module . "/sms/sku/info/material/v1/createCeSkuMaterial", [
+//            "operatorName" => "zhouangang"
 //        ]));
 //
 //        if ($resp){
 //
 //        }
-
-        $resp = DataUtils::getNewResultData($curlService->getWayGet($curlService->module . "/sms/sku/info/material/v1/createCeSkuMaterial", [
-            "operatorName" => "zhouangang"
-        ]));
-
-        if ($resp){
-
-        }
 
 //
 //        $pmoArr = [
@@ -3021,10 +3021,10 @@ class SyncCurlController
 }
 
 $curlController = new SyncCurlController();
-//$curlController->findPrePurchaseBillWithSkuForSkuMaterialInfo();
+$curlController->findPrePurchaseBillWithSkuForSkuMaterialInfo();
 //$curlController->updateEuSharedWarehouseFlowTypePriority();
 //$curlController->getCEBillNo();
-$curlController->updatePaSkuMaterial();
+//$curlController->updatePaSkuMaterial();
 //$curlController->downloadPaSkuMaterialSP();
 //$curlController->test();
 //$curlController->fix();
