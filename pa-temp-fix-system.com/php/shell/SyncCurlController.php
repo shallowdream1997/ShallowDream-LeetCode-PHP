@@ -1859,50 +1859,58 @@ class SyncCurlController
         $curlService = new CurlService();
         $list = [];
 
-        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/CEB.xlsx");
-        $fitmentSkuMap = [];
-        if (sizeof($fileFitContent) > 0) {
-            foreach ($fileFitContent as $item){
-
-                $resp = DataUtils::getPageDocList($curlService->pro()->s3044()->get("pa_ce_materials/queryPage", [
-                    "limit" => 1,
-                    "ceBillNo" => $item['ce_bill_no'],
-                ]));
-                if (count($resp) > 0) {
-                    $this->log("{$item['ce_bill_no']}");
-                    $info = $resp[0];
-                    if (count($info['skuIdList']) > 0){
-                        $sku = $info['skuIdList'][0];
-                        $productInfo = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("product-skus/queryPage",[
-                            "productId" => $sku
-                        ]));
-
-                        if ($productInfo){
-                            $this->log("修改CE数据：原运营：{$info['saleName']} -> 新运营：{$productInfo['salesUserName']}");
-                            $info['saleName'] = $productInfo['salesUserName'];
-                            $curlService->pro()->s3044()->put("pa_ce_materials/{$info['_id']}",$info);
-                        }
-                    }
-
-                }
-
-
-            }
-        }
+//        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/CEB.xlsx");
+//        $fitmentSkuMap = [];
+//        if (sizeof($fileFitContent) > 0) {
+//            foreach ($fileFitContent as $item){
+//
+//                $resp = DataUtils::getPageDocList($curlService->pro()->s3044()->get("pa_ce_materials/queryPage", [
+//                    "limit" => 1,
+//                    "ceBillNo" => $item['ce_bill_no'],
+//                ]));
+//                if (count($resp) > 0) {
+//                    $this->log("{$item['ce_bill_no']}");
+//                    $info = $resp[0];
+//                    if (count($info['skuIdList']) > 0){
+//                        $sku = $info['skuIdList'][0];
+//                        $productInfo = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("product-skus/queryPage",[
+//                            "productId" => $sku
+//                        ]));
+//
+//                        if ($productInfo){
+//                            $this->log("修改CE数据：原运营：{$info['saleName']} -> 新运营：{$productInfo['salesUserName']}");
+//                            $info['saleName'] = $productInfo['salesUserName'];
+//                            $curlService->pro()->s3044()->put("pa_ce_materials/{$info['_id']}",$info);
+//                        }
+//                    }
+//
+//                }
+//
+//
+//            }
+//        }
 
 //        foreach ($ceMap as $item => $ss){
-//            $resp = DataUtils::getPageDocList($curlService->pro()->s3044()->get("pa_ce_materials/queryPage", [
-//                "limit" => 1,
-//                "ceBillNo" => $ss['ceBillNo'],
-//            ]));
+//            $resp = DataUtils::getPageList($curlService->pro()->s3044()->get("pa_ce_materials/680dfa081eb855713a10b8bd",[]));
 //            if (count($resp) > 0) {
-//                $info = $resp[0];
-//                $info['skuIdList'] = $ss['skuIdList'];
-//                $curlService->pro()->s3044()->put("pa_ce_materials/{$info['_id']}",$info);
+//                $resp['ceBillNo'] = "CE202504280011";
+//                $resp['ceDate'] = "2025-04-28T00:00:00.000Z";
+//
+//                $curlService->pro()->s3044()->put("pa_ce_materials/{$resp['_id']}",$resp);
 //            }else{
 //
 //
 //            }
+
+            $resp = DataUtils::getPageList($curlService->pro()->s3044()->get("pa_sku_materials/680dfa0951c9ac303c17fe33",[]));
+            if (count($resp) > 0) {
+                $resp['ceBillNo'] = "CE202504280011";
+
+                $curlService->pro()->s3044()->put("pa_sku_materials/{$resp['_id']}",$resp);
+            }else{
+
+
+            }
 //
 //
 //
@@ -2417,7 +2425,44 @@ class SyncCurlController
     }
 
     public function test(){
-        $this->log("sssss");
+
+        $lines = [
+            "导入：a25062500ux0563-车型",
+            "导入：a25062300ux1376-cpAsin",
+            "导入：a25062300ux1376-核心词",
+            "导入：a25062300ux1376-车型",
+            "更新：a25062700ux2364-车型",
+            "导入：a25062700ux2364-cpAsin",
+            "导入：a25062700ux2364-核心词",
+            "导入：a25062700ux2364-车型",
+            "保存a25062500ux1421",
+        ];
+
+        foreach ($lines as $line) {
+            // 提取 "操作类型"
+            $colonPos = strpos($line, '：');
+            if ($colonPos !== false) {
+                $action = substr($line, 0, $colonPos);
+                $remaining = substr($line, $colonPos + 3); // 跳过 "：a"
+            } else {
+                // 处理 "保存a25062700ux2136" 这种情况
+                $action = substr($line, 0, 6); // 取前6个字符（"保存"）
+                $remaining = substr($line, 6); // 剩下的部分
+            }
+
+            // 提取 "a编号" 和 "后缀"
+            $hyphenPos = strpos($remaining, '-');
+            if ($hyphenPos !== false) {
+                $aNumber = substr($remaining, 0, $hyphenPos);
+                $suffix = substr($remaining, $hyphenPos + 1);
+            } else {
+                $aNumber = $remaining;
+                $suffix = '';
+            }
+
+            echo "操作: $action, a编号: $aNumber, 后缀: $suffix\n";
+        }
+
     }
 
     public function test1($a,$b,$c,$d){
@@ -2843,15 +2888,52 @@ class SyncCurlController
 
     }
 
+    public function getQDDPMOBatchNameCeMaterialList()
+    {
+        $curlService = (new CurlService())->pro();
+        $list = [];
+
+        $page = 1;
+        do {
+            $this->log($page);
+            $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
+                "limit" => 1000,
+                "page" => $page,
+                "orderBy" => "-_id"
+            ]));
+            if (count($l) == 0) {
+                break;
+            }
+            foreach ($l as $info) {
+                if (preg_match('/^(QD|DPMO)/', $info['batchName'])){
+                    if (empty($info['saleNameList'])){
+                        $list[] = $info['batchName'];
+                    }
+                }else{
+                    $this->log("结束了");
+                    break 2;
+                }
+            }
+            $page++;
+        } while (true);
+
+        return $list;
+    }
+
     public function updatePaSkuMaterial()
     {
         $curlService = new CurlService();
         $curlService = $curlService->pro();
 
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/1.xlsx");
-        $fitmentSkuMap = [];
-        if (sizeof($fileFitContent) > 0) {
-            $batchNameList = array_unique(array_column($fileFitContent,"batchName"));
+        $batchNameList = [];
+//        if (sizeof($fileFitContent) > 0) {
+//            $batchNameList = array_unique(array_column($fileFitContent,"batchName"));
+//        }else{
+            $batchNameList = $this->getQDDPMOBatchNameCeMaterialList();
+//        }
+
+        if (count($batchNameList) > 0){
             $batchNameCeBillNoMap = [];
             foreach (array_chunk($batchNameList,100) as $chunkBatchNameList){
                 $curlService->gateway();
@@ -2863,7 +2945,8 @@ class SyncCurlController
                         $billNo = "";
                         if (isset($item['qdBillNo']) && $item['qdBillNo']) {
                             $billNo = $item['qdBillNo'];
-                        } else if (isset($item['ceBillNo']) && $item['ceBillNo']) {
+                        }
+                        if (isset($item['ceBillNo']) && $item['ceBillNo']) {
                             $billNo = $item['ceBillNo'];
                         }
                         $batchNameCeBillNoMap[$item['prePurchaseBillNo'] . $billNo] = [
@@ -2902,14 +2985,14 @@ class SyncCurlController
                         $item['productLevelList'] = $batchNameCeBillNoMap[$key]['productLevelList'];
                         $res = $curlService->s3044()->put("pa_ce_materials/{$item['_id']}", $item);
                     }else{
-
-                        $this->log("没有数据");
+                        $this->log("{$item['batchName']}没有数据");
                     }
                 }
 
             }
 
-
+        }else{
+            $this->log("没有可以修改的数据");
         }
     }
 
@@ -3018,13 +3101,284 @@ class SyncCurlController
     }
 
 
+    public function ceMaterialObjectLog()
+    {
+        $curlService = (new CurlService())->pro();
+        $curlLogService = (new CurlService())->pro();
+        $curlLogService->gateway();
+        $curlLogService->getModule('ux168log');
+
+        $list = [];
+
+        $page = 1;
+        do {
+            $this->log($page);
+            $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
+                "limit" => 1000,
+                "page" => $page,
+                "orderBy" => "-_id"
+            ]));
+            if (count($l) == 0) {
+                break;
+            }
+            foreach ($l as $info) {
+                if (preg_match('/^(QD|DPMO)/', $info['batchName'])){
+                    $logListResp = DataUtils::getNewResultData($curlLogService->getWayPost($curlLogService->module . "/log/v1/query",[
+                        "page" => [
+                            "pageNum" => 1,
+                            "pageSize" => 1000,
+                        ],
+                        "condition" => [
+                            "opId" => $info['_id'],
+                            "logSource" => "pa-sku-material",
+                            "logType" => "pa-sku-material"
+                        ]
+                    ]));
+                    if ($logListResp && isset($logListResp['list']) && $logListResp['list'] && count($logListResp['list']) > 0){
+                        foreach ($logListResp['list'] as $logInfo){
+                            $list[] = [
+                                "ceBillNo" => $info['ceBillNo'],
+                                "opType" => $logInfo['opType'],
+                                "opBeforeContent" => $logInfo['opBeforeContent'],
+                                "opAfterContent" => $logInfo['opAfterContent'],
+                                "opRemark" => $logInfo['opRemark'],
+                            ];
+                        }
+                        $this->log("有日志：{$info['_id']}");
+                    }else{
+                        $this->log("没有日志：{$info['_id']}");
+                    }
+
+                }else{
+                    $this->log("结束了");
+                    break 2;
+                }
+            }
+
+            $page++;
+        } while (true);
+
+        if (count($list) > 0){
+            $excelUtils = new ExcelUtils();
+            $downloadOssLink = "资呈_" . date("YmdHis") . ".xlsx";
+            $downloadOssPath = $excelUtils->downloadXlsx(["ceBillNo", "opType", "修改前","修改后","备注"],$list,$downloadOssLink);
+            $this->log("导出内容");
+        }
+
+    }
+
+
+    public function fixCeMaterial()
+    {
+        $curlService = (new CurlService())->pro();
+
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/资呈_20250717203220.xlsx");
+        $fitmentSkuMap = [];
+        if (sizeof($fileFitContent) > 0) {
+            $list = [];
+            foreach ($fileFitContent as $info){
+                if ($info['修改前'] == '/' && $info['修改后'] == '/'){
+                    $this->log("没有任何修改");
+                    continue;
+                }
+
+                $ceBillNo = $info['ceBillNo'];
+                $this->log("{$info['备注']}");
+
+                // 提取 "操作类型"
+                $colonPos = strpos($info['备注'], '：');
+                if ($colonPos !== false) {
+                    $action = substr( $info['备注'], 0, $colonPos);
+                    $remaining = substr( $info['备注'], $colonPos + 3); // 跳过 "：a"
+                } else {
+                    // 处理 "保存a25062700ux2136" 这种情况
+                    $action = substr( $info['备注'], 0, 6); // 取前6个字符（"保存"）
+                    $remaining = substr( $info['备注'], 6); // 剩下的部分
+                }
+
+                // 提取 "a编号" 和 "后缀"
+                $hyphenPos = strpos($remaining, '-');
+                if ($hyphenPos !== false) {
+                    $aNumber = substr($remaining, 0, $hyphenPos);
+                    $suffix = substr($remaining, $hyphenPos + 1);
+                } else {
+                    $aNumber = $remaining;
+                    $suffix = '';
+                }
+
+                $this->log("{$action}");
+                $this->log("{$aNumber}");
+                $this->log("{$suffix}");
+                if ($action == '保存'){
+                    $this->log("保存，不读");
+                    continue;
+                }
+                if (!isset($list[$aNumber])){
+                    $list[$aNumber] = [
+                        "ceBillNo" => $ceBillNo
+                    ];
+                }
+                if ($action == '导入'){
+                    $this->log("导入");
+                    if ($suffix == '车型'){
+                        $list[$aNumber]["fitment"] = $info['修改后'];
+                    }else if ($suffix == '核心词'){
+                        $list[$aNumber]["keywords"] = $info['修改后'];
+                    }else if ($suffix == 'cpAsin'){
+                        $list[$aNumber]["cpAsin"] = $info['修改后'];
+                    }
+                }
+                if ($action == '更新'){
+                    $this->log("更新");
+                    if ($suffix == '车型'){
+                        $list[$aNumber]["fitment"] = $info['修改后'];
+                    }else if ($suffix == '核心词'){
+                        $list[$aNumber]["keywords"] = $info['修改后'];
+                    }else if ($suffix == 'cpAsin'){
+                        $list[$aNumber]["cpAsin"] = $info['修改后'];
+                    }
+                }
+
+
+            }
+
+
+            $exportList = [];
+            foreach ($list as $skuId => $item){
+                $exportList[] = [
+                    "skuId" => $skuId,
+                    "ceBillNo" => $item['ceBillNo'] ?? "",
+                    "fitment" => $item['fitment'] ?? '[]',
+                    "keywords" => $item['keywords'] ?? '[]',
+                    "cpAsin" => $item['cpAsin'] ?? '[]',
+                ];
+            }
+
+            if (count($exportList) > 0){
+
+                $excelUtils = new ExcelUtils();
+                $downloadOssLink = "导出资呈数据_" . date("YmdHis") . ".xlsx";
+                $downloadOssPath = $excelUtils->downloadXlsx(["skuId", "ceBillNo", "fitment","keywords","cpAsin"],$exportList,$downloadOssLink);
+                $this->log("导出内容");
+
+
+            }
+
+        }
+
+    }
+
+    public function fixCeMaterialT()
+    {
+        $curlService = (new CurlService())->pro();
+
+        foreach ([
+            "CE202507180079"
+                 ] as $ceBillNo) {
+
+            $resp = DataUtils::getPageDocList(
+                $curlService->s3044()->get("pa_ce_materials/queryPage", [
+                    "ceBillNo" => $ceBillNo,
+                ])
+            );
+            if ($resp) {
+                $info = $resp[0];
+
+            } else {
+                $this->log("找不到数据：{$ceBillNo}");
+            }
+        }
+
+    }
+
+
+    public function fixCeMaterialS()
+    {
+        $curlService = (new CurlService())->pro();
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/导出资呈数据_20250718113804.xlsx");
+        if (sizeof($fileFitContent) > 0) {
+            $ceBillNoMap = [];
+            foreach ($fileFitContent as $info){
+                $ceBillNoMap[$info['ceBillNo']][] = [
+                    "skuId" => $info['skuId'],
+                    "fitment" => json_decode($info['fitment'],true),
+                    "keywords" => json_decode($info['keywords'],true),
+                    "cpAsin" => json_decode($info['cpAsin'],true),
+                ];
+            }
+
+            if (count($ceBillNoMap) > 0){
+
+                foreach ($ceBillNoMap as $ceBillNo => $list){
+
+                    $resp = DataUtils::getPageDocList(
+                        $curlService->s3044()->get("pa_ce_materials/queryPage", [
+                            "ceBillNo" => $ceBillNo,
+                        ])
+                    );
+                    if ($resp){
+                        $info = $resp[0];
+                        if ($info['status'] == "materialComplete"){
+                            //资料发布的需要修复数据
+                            if (count($list) > 0){
+                                $this->log("资料发布了需要修复：{$ceBillNo}");
+                                foreach ($list as $dataInfo){
+                                    $respD = DataUtils::getPageDocList(
+                                        $curlService->s3044()->get("pa_sku_materials/queryPage", [
+                                            "ceBillNo" => $ceBillNo,
+                                            "skuId" => $dataInfo['skuId'],
+                                            "limit" => 1
+                                        ])
+                                    );
+                                    if ($respD){
+                                        $detailInfo = $respD[0];
+                                        $detailInfo['fitment'] = $dataInfo['fitment'];
+                                        $detailInfo['keywords'] = $dataInfo['keywords'];
+                                        $detailInfo['cpAsin'] = $dataInfo['cpAsin'];
+                                        $detailInfo['modifiedBy'] = "system(fix-angang)";
+
+
+                                        $this->log(json_encode($detailInfo,JSON_UNESCAPED_UNICODE));
+
+
+                                        $ss = $curlService->s3044()->put("pa_sku_materials/{$detailInfo['_id']}", $detailInfo);
+                                        if ($ss){
+                                            $this->log("更新完毕");
+                                        }
+                                    }
+                                }
+
+                            }
+
+                        }else{
+                            $this->log("资料未发布，可以不用修复：{$ceBillNo}");
+                        }
+                    }else{
+                        $this->log("找不到数据：{$ceBillNo}");
+                    }
+
+                }
+
+
+            }
+
+        }
+
+    }
+
+
 }
 
 $curlController = new SyncCurlController();
-$curlController->findPrePurchaseBillWithSkuForSkuMaterialInfo();
+//$curlController->fixCeMaterialS();
+//$curlController->fixCeMaterial();
+//$curlController->ceMaterialObjectLog();
+//$curlController->findPrePurchaseBillWithSkuForSkuMaterialInfo();
 //$curlController->updateEuSharedWarehouseFlowTypePriority();
 //$curlController->getCEBillNo();
-//$curlController->updatePaSkuMaterial();
+$curlController->updatePaSkuMaterial();
 //$curlController->downloadPaSkuMaterialSP();
 //$curlController->test();
 //$curlController->fix();

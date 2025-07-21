@@ -49,6 +49,9 @@ class CurlService
             case "config":
                 $this->module = "platform-config-service";
                 break;
+            case "ux168log":
+                $this->module = "ux168-log-service";
+                break;
         }
 
         return $this;
