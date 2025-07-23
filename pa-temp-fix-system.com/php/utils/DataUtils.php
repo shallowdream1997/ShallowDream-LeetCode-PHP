@@ -406,6 +406,26 @@ class DataUtils
 
         return $re;
     }
+
+    /**
+     * node后端请求的分页接口里面，有一个特殊的返回格式，就是doc,返回第一个数据
+     * @param null $response
+     * @return array
+     */
+    public static function getPageDocListInFirstDataV1($response = null)
+    {
+        $data = [];
+        if (!$response){
+            return $data;
+        }
+        if ($response && isset($response['httpCode']) &&
+            $response['httpCode'] === 200 && isset($response['result']) && !empty($response['result']) && isset($response['result']['data'])
+            && isset($response['result']['data']['docs']) && count($response['result']['data']['docs']) > 0){
+            $data = $response['result']['data']['docs'][0];
+        }
+        return $data;
+    }
+
 }
 
 

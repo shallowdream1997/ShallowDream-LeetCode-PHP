@@ -3368,17 +3368,190 @@ class SyncCurlController
 
     }
 
+    public function ssss()
+    {
+        $curlService = (new CurlService())->pro();
+//        $curlService->gateway();
+//        $curlService->getModule('pa');
+
+        foreach ([
+                     "a25062500ux0135",
+                     "a25062500ux0137",
+                     "a25062500ux0140",
+                     "a25062500ux0142",
+                 ] as $sku) {
+            $res = DataUtils::getResultData($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
+                "skuScuId" => $sku,
+                "limit" => 1,
+            ]));
+            if ($res){
+                $info = $res[0];
+                $info['sguId'] = "g25072200ux0040";
+                $info['modifiedBy'] = "system(zhouangang)";
+                $curlService->s3015()->put("sgu-sku-scu-maps/{$info['_id']}", $info);
+            }
+        }
+//        $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/sms/sku/info/init/v1/initSkuInfo", [
+//            "initSkuId" => "a25062500ux0135",
+//            "operatorName" => "luowei3",
+//            "productType" => "SGU",
+//            "sguId" => "g25072200ux0040"
+//        ]));
+
+
+    }
+
+
+
+    public function fixPaSkuMaterialList()
+    {
+        $curlService = (new CurlService())->pro();
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/未传广告信息收集-核心词+车型+CPasin(2025.07.22).xlsx");
+        if (sizeof($fileFitContent) > 0) {
+            $ceSkuMap = [];
+            foreach ($fileFitContent as $sheet => $sheetList) {
+                if ($sheet === '核心词'){
+                    foreach ($sheetList as $info){
+                        if (!empty($info['核心词'])){
+                            $ceSkuMap[$info['CE#']][$info['skuId']]['keywords'][] = $info['核心词'];
+                        }
+                    }
+                }else if ($sheet === '热销车型'){
+                    $uniqueKeyMap = [];
+                    foreach ($sheetList as $info){
+                        $uniqueKey = "{$info['skuId']}{$info['make']}{$info['model']}";
+                        if (!isset($uniqueKeyMap[$uniqueKey])){
+                            $ceSkuMap[$info['CE#']][$info['skuId']]['fitment'][] = [
+                                "make" => $info['make'],
+                                "model" => $info['model'],
+                            ];
+                            $uniqueKeyMap[$uniqueKey] = 1;
+                        }
+                    }
+                }else if ($sheet === 'CP asin'){
+                    foreach ($sheetList as $info){
+                        if (!empty($info['asin'])){
+                            $ceSkuMap[$info['CE#']][$info['skuId']]['cpAsin'][] = $info['asin'];
+                        }
+                    }
+                }
+            }
+
+
+            if ($ceSkuMap){
+                $skuNumber = 0;
+                $ceNumber = 0;
+                foreach ($ceSkuMap as $ceBillNo => $tree1){
+                    $ceNumber++;
+                    foreach ($tree1 as $skuId => $tree2){
+                        $skuNumber++;
+                        $skuMaterialInfo = DataUtils::getPageDocListInFirstDataV1($curlService->s3044()->get("pa_sku_materials/queryPage", [
+                            "limit" => 1,
+                            "ceBillNo" => $ceBillNo,
+                            "skuId" => $skuId,
+                            "page" => 1
+                        ]));
+                        if ($skuMaterialInfo){
+                            //存在，不管之前的值是怎样的，直接覆盖
+                            $skuMaterialInfo['keywords'] = $tree2['keywords']??[];
+                            $skuMaterialInfo['cpAsin'] = $tree2['cpAsin']??[];
+                            $skuMaterialInfo['fitment'] = $tree2['fitment']??[];
+                            $skuMaterialInfo['modifiedBy'] = "system(zhouangang)";
+                            $this->log("更新sku{$ceBillNo}-{$skuId}" . json_encode($skuMaterialInfo,JSON_UNESCAPED_UNICODE));
+                            $curlService->s3044()->put("pa_sku_materials/{$skuMaterialInfo['_id']}", $skuMaterialInfo);
+                        }else{
+                            //不存在，就要创建,先查ce资呈，看看里面的sku，看看里面的sku有没有父类
+                            $this->log("{$ceBillNo}{$skuId}不存在sku资呈,等待创建");
+                            $skuMaterialList = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
+                                "limit" => 1000,
+                                "ceBillNo" => $ceBillNo,
+                                "page" => 1,
+                                "orderBy" => "-_id"
+                            ]));
+                            if ($skuMaterialList){
+                                foreach ($skuMaterialList as $item){
+                                    if (empty($item['parentSkuId'])){
+                                        $syncSkuInfo = [];
+                                        //是父类
+                                        $syncSkuInfo = $item;
+                                        $syncSkuInfo['parentSkuId'] = $item['skuId'];
+                                        $syncSkuInfo['skuId'] = $skuId;
+                                        $syncSkuInfo['ceBillNo'] = $ceBillNo;
+                                        $syncSkuInfo['createdBy'] = "system(zhouangang)";
+                                        $syncSkuInfo['keywords'] = $tree2['keywords']??[];
+                                        $syncSkuInfo['cpAsin'] = $tree2['cpAsin']??[];
+                                        $syncSkuInfo['fitment'] = $tree2['fitment']??[];
+                                        unset($syncSkuInfo['_id']);
+                                        unset($syncSkuInfo['__v']);
+                                        $this->log("同步父sku到子sku{$ceBillNo}-{$skuId}" . json_encode($syncSkuInfo,JSON_UNESCAPED_UNICODE));
+                                        $curlService->s3044()->post("pa_sku_materials", $syncSkuInfo);
+                                        break;
+                                    }
+                                }
+                            }else{
+                                //ce单一个sku都没有的，直接创建吧
+                                $syncSkuInfo = [
+                                    "skuId" => $skuId,
+                                    "ceBillNo" => $ceBillNo,
+                                    "createdBy" => "system(zhouangang)",
+                                    "keywords" => $tree2['keywords']??[],
+                                    "fitment" => $tree2['fitment']??[],
+                                    "cpAsin" => $tree2['cpAsin']??[],
+                                    "basicInfo" => "",
+                                    "categoryRelation" => "",
+                                    "description" => "",
+                                    "operationMonitor" => "",
+                                    "status" => "developerComplete",
+                                    "version" => null,
+                                    "parentSkuId" => "",
+                                    "saleBasicInfo" => "",
+                                    "developerFile" => "",
+                                    "saleFile" => "",
+                                    "developerStartOn" => date("Y-m-d H:i:s",time()) . "Z",
+                                    "developerStartBy" => "system(zhouangang)",
+                                    "saleStartOn" => null,
+                                    "saleStartBy" => "",
+                                    "oeNumber" => [],
+                                ];
+                                $this->log("初始化创建sku{$ceBillNo}-{$skuId}" . json_encode($syncSkuInfo,JSON_UNESCAPED_UNICODE));
+                                $curlService->s3044()->post("pa_sku_materials", $syncSkuInfo);
+
+                            }
+
+
+                        }
+
+                    }
+                }
+
+                $this->log("ce单数量：{$ceNumber}");
+                $this->log("sku数量：{$skuNumber}");
+
+
+
+            }
+
+        }
+
+
+
+    }
+
+
 
 }
 
 $curlController = new SyncCurlController();
+$curlController->fixPaSkuMaterialList();
+//$curlController->ssss();
 //$curlController->fixCeMaterialS();
 //$curlController->fixCeMaterial();
 //$curlController->ceMaterialObjectLog();
 //$curlController->findPrePurchaseBillWithSkuForSkuMaterialInfo();
 //$curlController->updateEuSharedWarehouseFlowTypePriority();
 //$curlController->getCEBillNo();
-$curlController->updatePaSkuMaterial();
+//$curlController->updatePaSkuMaterial();
 //$curlController->downloadPaSkuMaterialSP();
 //$curlController->test();
 //$curlController->fix();
