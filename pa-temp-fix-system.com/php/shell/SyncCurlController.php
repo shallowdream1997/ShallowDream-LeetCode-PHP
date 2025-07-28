@@ -3070,14 +3070,14 @@ class SyncCurlController
         $curlService->gateway();
         $curlService->getModule('pa');
 
-        $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/scms/pre_purchase/info/v1/findPrePurchaseBillWithSkuForWaitHandleSkuMaterial", [
-            "pageSize" => 100,
-            "pageNum" => 1
-        ]));
-
-        if ($resp){
-            $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
-        }
+//        $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/scms/pre_purchase/info/v1/findPrePurchaseBillWithSkuForWaitHandleSkuMaterial", [
+//            "pageSize" => 100,
+//            "pageNum" => 1
+//        ]));
+//
+//        if ($resp){
+//            $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+//        }
 
 //        $resp = DataUtils::getNewResultData($curlService->getWayGet($curlService->module . "/sms/sku/info/material/v1/createCeSkuMaterial", [
 //            "operatorName" => "zhouangang"
@@ -3086,18 +3086,23 @@ class SyncCurlController
 //        if ($resp){
 //
 //        }
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/补充修复630数据.xlsx");
+        if (sizeof($fileFitContent) > 0) {
 
-//
-//        $pmoArr = [
-//            "qdBillNo" => "QD202506260004",
-//            "operatorName" => "zhouangang",
-//            "purchaseHandleStatus" => 20,
-//            "supplierId" => 2724
-//        ];
-//        $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $pmoArr));
-//        if ($resp){
-//
-//        }
+            foreach ($fileFitContent as $info){
+                $pmoArr = [
+                    "qdBillNo" => $info['qdBillNo'],
+                    "operatorName" => "zhouangang",
+                    "purchaseHandleStatus" => 20,
+                    "supplierId" => $info['supplierId']
+                ];
+                $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $pmoArr));
+                if ($resp){
+
+                }
+            }
+
+        }
     }
 
 
@@ -3543,12 +3548,12 @@ class SyncCurlController
 }
 
 $curlController = new SyncCurlController();
-$curlController->fixPaSkuMaterialList();
+//$curlController->fixPaSkuMaterialList();
 //$curlController->ssss();
 //$curlController->fixCeMaterialS();
 //$curlController->fixCeMaterial();
 //$curlController->ceMaterialObjectLog();
-//$curlController->findPrePurchaseBillWithSkuForSkuMaterialInfo();
+$curlController->findPrePurchaseBillWithSkuForSkuMaterialInfo();
 //$curlController->updateEuSharedWarehouseFlowTypePriority();
 //$curlController->getCEBillNo();
 //$curlController->updatePaSkuMaterial();
