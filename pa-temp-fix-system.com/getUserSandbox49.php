@@ -2,7 +2,7 @@
 header("Access-Control-Allow-Origin: *");
 if (isset($_REQUEST['user']) && ! empty($_REQUEST['user']) || true) {
     $manualUserList = array(
-        "172.16.29.23"=>"liangpeifei",//zhou
+        "172.16.29.23"=>"liyongshan2",//zhou
         "172.16.24.64"=>"linqinxiang",//祥
         "172.16.24.44"=>"xiaoan",//老肖
     );

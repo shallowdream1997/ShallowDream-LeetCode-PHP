@@ -3544,16 +3544,48 @@ class SyncCurlController
     }
 
 
+    public function fixTranslationManagement()
+    {
+        $skuIdList = [
+            "a25070900ux0614",
+            "a25070900ux0615",
+            "a25070900ux0617",
+            "a25070900ux0618",
+        ];
+        $curlService = (new CurlService())->test();
+
+        $productSkuList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+            "productId" => implode(",",$skuIdList),
+            "limit" => count($skuIdList)
+        ]));
+        if ($productSkuList){
+            $productIdMap = array_column($productSkuList,null,"productId");
+        }
+
+        foreach ($skuIdList as $sku){
+            if (isset($productIdMap[$sku])){
+                $productInfo = $productIdMap[$sku];
+
+
+                $productInfo['userName'] = "system(zhouangang)";
+                $productInfo['action'] = "运维修改资料";
+                $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
+                $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+            }
+        }
+
+    }
 
 }
 
 $curlController = new SyncCurlController();
+//$curlController->fixTranslationManagement();
 //$curlController->fixPaSkuMaterialList();
 //$curlController->ssss();
 //$curlController->fixCeMaterialS();
 //$curlController->fixCeMaterial();
 //$curlController->ceMaterialObjectLog();
-$curlController->findPrePurchaseBillWithSkuForSkuMaterialInfo();
+//$curlController->findPrePurchaseBillWithSkuForSkuMaterialInfo();
 //$curlController->updateEuSharedWarehouseFlowTypePriority();
 //$curlController->getCEBillNo();
 //$curlController->updatePaSkuMaterial();
