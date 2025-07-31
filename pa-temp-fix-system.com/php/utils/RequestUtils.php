@@ -494,6 +494,82 @@ class RequestUtils
         $ali->post("dingding/sendOaNotice",$postData);
         return $this;
     }
+
+
+
+
+
+    public function callAliCloudSls($query)
+    {
+        $url = 'https://sls.console.aliyun.com/console/logstoreindex/getLogs.json';
+
+        // 请求参数
+        $params = [
+            'LogStoreName' => 'api_nodejs_access_log_new',
+            'ProjectName' => 'aliyun-hn1-all-log',
+            'from' => '1735660800',
+            'query' => $query,
+            'to' => '1753864059',
+            'Page' => '1',
+            'Size' => '50'
+        ];
+
+        // 请求头
+        $headers = [
+            'accept: application/json',
+            'accept-language: zh-CN,zh;q=0.9,sq;q=0.8',
+            'b3: f4072aec94ad53dd7229b6d375de51d5-1b89b783630afd49-1',
+            'bx-v: 2.5.31',
+            'content-type: application/x-www-form-urlencoded',
+            'eagleeye-pappname: gaddp9ap8q@fcf4dd25082bab4',
+            'eagleeye-sessionid: 2hmq7dLzp9kfp72IFoC6u7zsvbs3',
+            'eagleeye-traceid: 8b2258b3175386405949710582bab4',
+            'origin: https://sls.console.aliyun.com',
+            'priority: u=1, i',
+            'referer: https://sls.console.aliyun.com/lognext/project/aliyun-hn1-all-log/logsearch/api_nodejs_access_log_new?slsRegion=cn-shenzhen',
+            'sec-ch-ua: "Not)A;Brand";v="8", "Chromium";v="138", "Google Chrome";v="138"',
+            'sec-ch-ua-mobile: ?0',
+            'sec-ch-ua-platform: "Linux"',
+            'sec-fetch-dest: empty',
+            'sec-fetch-mode: cors',
+            'sec-fetch-site: same-origin',
+            'traceparent: 00-f4072aec94ad53dd7229b6d375de51d5-1b89b783630afd49-01',
+            'uber-trace-id: f4072aec94ad53dd7229b6d375de51d5:1b89b783630afd49:0:1',
+            'x-csrf-token: a5f524a0',
+            'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
+        ];
+
+        // Cookie
+        $cookie = 'cna=NaHqIBsy20oCAQ6Rk5/H14em; aliyun_lang=zh; aliyun_site=CN; currentRegionId=cn-shenzhen; partitioned_cookie_flag=doubleRemove; login_aliyunid_csrf=_csrf_tk_1690853846731161; login_aliyunid="16363354792682515 @ 1196618798442729"; login_aliyunid_ticket=3RctYK12wchS7wBJzHKJeoTE.1118adP66EaBV2wXHmLGo5HmBbeCddso2W64wecaE8uJKdsUxSPnmucnLggwNNvLc5NvT7PHDSDRzdLFGkecKPD3WByMaHMiLAL19jCEmxiDwawXtT5FsjCyWEvkuYXeHMt6k9eeCSUsFd5RZfeuirayMKw9y7MsyauQw8PCVLSKdcEsQNg.1QDta7oYmBf6NwDefpx5LayWgyVhf4HcVZB95cJmzFHqf4CpHbZKuuAcYhhmN1ES3; login_aliyunid_sc=3R5H3e3HY2c8gwLZuY5GmS7K.1113ekvjnsx5gZUThVshcSQ1yqap8hMSxkWnAPQ3CRQYXZ51rBYZWnT9sminrntEJzYT6g.2mWNaj2b9G8jZia5ELgwmREr1DE4QXi3E8WwFRagQzQnAmo2VrwAS9z7F3MYzgrh8W; login_aliyunid_pk=1196618798442729; login_current_pk=292058973591134045; tfstk=g2KmydxLXy21jOrboAjjlEvxqEg82is6bCEO6GCZz_57DGCvQ1AMZd1AXx9NjAAvnrQ9QjOMj_RPMIpthRWNadWOMFHfsO5ysGpYktLMqIOR3ZuX6AxkNQOG5x1O_1A9QEH-vDpXhGsNjXnKv7rpZsOGQs74zAWOKtkRuPssYuSZ9Xn8y87jMGR9EuNAaL55IorVgCWP49X1bt7NbYfPI9aagCSZEYXABOyV_ZPPz9CP_GSw_gPPNOjN3CSZEL55QXV8u6Kw83lMb3V6TI4QZObcTK5uxL9f3mjqALEw4nXfohyFilWJqtbcTKxntf5dKexlJEkqu9jGNKtRomEffLLHsFREwrC2-9AcrUhgg1tkUn8wFSDPxLYJJZYoglfJD__B0Mm_2GvJqwLGj0w5geTJg3S_pzsvJpK18no0O_QCIQbpoXqDTglLzy7bsl6rB3z_5ZW5E6LT0LPK-076hYDuJd_VF91KEY4_UZW5EQHoEyLduT6Ey; isg=BEREZjBp8L4NCkQeC74F4ljVFcs2XWjHxRtnHl7zwIqvibdTsGQ0V-1vySFRkaAf';
+
+        // 初始化cURL
+        $ch = curl_init();
+
+        // 设置cURL选项
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_COOKIE, $cookie);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        // 执行请求
+        $response = curl_exec($ch);
+
+        // 检查是否有错误
+        if (curl_errno($ch)) {
+            throw new Exception('cURL error: ' . curl_error($ch));
+        }
+
+        // 关闭cURL资源
+        curl_close($ch);
+        //头信息
+        $body = json_decode($response,true);
+        // 返回响应
+        return $body;
+    }
 }
 
 //$request = new RequestUtils("test");

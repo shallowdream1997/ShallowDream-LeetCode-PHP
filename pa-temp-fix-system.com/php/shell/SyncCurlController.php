@@ -3407,6 +3407,34 @@ class SyncCurlController
     }
 
 
+    public function exportCEEEEEEEEEEEEEE()
+    {
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/导出资呈数据_20250718113804.xlsx");
+        if (sizeof($fileFitContent) > 0) {
+            $ceBillNoMap = [];
+            foreach ($fileFitContent as $info){
+                $ceBillNoMap[$info['ceBillNo']][] = [
+                    "skuId" => $info['skuId'],
+                    "fitment" => json_decode($info['fitment'],true),
+                    "keywords" => json_decode($info['keywords'],true),
+                    "cpAsin" => json_decode($info['cpAsin'],true),
+                ];
+            }
+
+            if (count($ceBillNoMap) > 0){
+
+                foreach ($ceBillNoMap as $ceBillNo => $list){
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+
 
     public function fixPaSkuMaterialList()
     {
@@ -3547,12 +3575,9 @@ class SyncCurlController
     public function fixTranslationManagement()
     {
         $skuIdList = [
-            "a25070900ux0614",
-            "a25070900ux0615",
-            "a25070900ux0617",
-            "a25070900ux0618",
+            "f24090900ux1117",
         ];
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
 
         $productSkuList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
             "productId" => implode(",",$skuIdList),
@@ -3565,7 +3590,7 @@ class SyncCurlController
         foreach ($skuIdList as $sku){
             if (isset($productIdMap[$sku])){
                 $productInfo = $productIdMap[$sku];
-
+                $productInfo['salesUserName'] = "licaihong2";
 
                 $productInfo['userName'] = "system(zhouangang)";
                 $productInfo['action'] = "运维修改资料";
@@ -3576,9 +3601,471 @@ class SyncCurlController
 
     }
 
+
+
+    public function getRepeatSkuMaterial()
+    {
+        $curlService = (new CurlService())->pro();
+        $ceBillNoList = [];
+        $page = 1;
+        do {
+            $this->log($page);
+            $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
+                "limit" => 1000,
+                "page" => $page,
+                "status" => "materialComplete",
+                "modifiedOn_lte" => "2025-07-18",
+                "orderBy" => "-_id"
+            ]));
+            if (count($l) == 0) {
+                break;
+            }
+            foreach ($l as $info) {
+                if (preg_match('/^(QD|DPMO)/', $info['batchName']) && preg_match('/^(CE)/',$info['ceBillNo'])){
+                    $ceBillNoList[] = $info['ceBillNo'];
+                }else{
+                    $this->log("结束了");
+                    break 2;
+                }
+            }
+            $page++;
+        } while (true);
+
+        $exportList = [];
+        if (count($ceBillNoList) > 0){
+            $this->log(count($ceBillNoList)."个CE单");
+            $cccTime = "2025-07-18T00:00:00.000Z";
+
+            foreach (array_chunk($ceBillNoList,10) as $chunk){
+                $ll = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
+                    "limit" => 10000,
+                    "ceBillNo_in" => implode(",",$chunk),
+                    "status" => "materialComplete",
+                    "orderBy" => "-_id"
+                ]));
+                if (count($ll) == 0) {
+                    continue;
+                }
+
+                foreach ($ll as $info) {
+                    $cc = new DateTime($cccTime);
+                    $ss = new DateTime($info['publishOn']);
+                    $this->log("{$info['ceBillNo']}-{$info['skuId']}" . $info['publishOn']);
+                    if (!empty($info['publishOn']) && !empty($info['publishBy']) && ($ss < $cc)){
+
+                        if (!empty($info['keywords']) || !empty($info['cpAsin']) || !empty($info['fitment'])){
+                            $key = $info['ceBillNo'] . $info['skuId'];
+                            $data = [
+                                "ceBillNo" => $info['ceBillNo'],
+                                "skuId" => $info['skuId'],
+//                                "keywords" => $info['keywords'],
+//                                "cpAsin" => $info['cpAsin'],
+//                                "fitment" => $info['fitment'],
+                                "publishOn" => $info['publishOn'],
+                            ];
+                            $this->redis->hSet(REDIS_MATERIAL_REPT_KEY, $key,json_encode($data,JSON_UNESCAPED_UNICODE));
+
+                            $dataJ = [
+                                "ceBillNo" => $info['ceBillNo'],
+                                "skuId" => $info['skuId'],
+//                                "keywords" => json_encode($info['keywords'],JSON_UNESCAPED_UNICODE),
+//                                "cpAsin" => json_encode($info['cpAsin'],JSON_UNESCAPED_UNICODE),
+//                                "fitment" => json_encode($info['fitment'],JSON_UNESCAPED_UNICODE),
+                                "publishOn" => $info['publishOn'],
+                            ];
+                            $exportList[] = $dataJ;
+                        }
+
+                    }
+                }
+
+            }
+
+        }
+
+//        $list = $this->redis->hGetAll(REDIS_MATERIAL_REPT_KEY);
+//
+//        $ceBillNoMap = [];
+//        foreach ($list as $key => $value){
+//            $data = json_decode($value,true);
+//            $ceBillNoMap[$data['ceBillNo']][$data['skuId']]['keywords'] = $data['keywords'];
+//            $ceBillNoMap[$data['ceBillNo']][$data['skuId']]['cpAsin'] = $data['cpAsin'];
+//            $ceBillNoMap[$data['ceBillNo']][$data['skuId']]['fitment'] = $data['fitment'];
+//            $ceBillNoMap[$data['ceBillNo']][$data['skuId']]['publishOn'] = $data['publishOn'];
+//        }
+//
+//        if ($ceBillNoMap){
+//            $exportList = [];
+//            foreach ($ceBillNoMap as $ceBillNo => $skuMap){
+//                $skuNumber = count($skuMap);
+//                $sameKeywords = false;
+//                $sameCpAsin = false;
+//                $sameFitments = false;
+//                $firstKeywords = "";
+//                $firstCpAsins = "";
+//                $firstFitments = "";
+//
+//                $index = 0;
+//                $sameKeywordsNumber = 0;
+//                $sameCpAsinNumber = 0;
+//                $sameFitmentsNumber = 0;
+//
+//                $publishOn = "";
+//                foreach ($skuMap as $skuId => $info){
+//
+//                    if ($index == 0){
+//                        $publishOn = $info['publishOn'];
+//                        $firstKeywords = json_encode($info['keywords'],JSON_UNESCAPED_UNICODE);
+//                        $firstCpAsins = json_encode($info['cpAsin'],JSON_UNESCAPED_UNICODE);
+//                        $firstFitments = json_encode($info['fitment'],JSON_UNESCAPED_UNICODE);
+//                        $index++;
+//                        continue;
+//                    }
+//
+//                    if ($firstKeywords == json_encode($info['keywords'],JSON_UNESCAPED_UNICODE)){
+//                        $sameKeywordsNumber++;
+//                    }else{
+//
+//                    }
+//                    if ($firstCpAsins == json_encode($info['cpAsin'],JSON_UNESCAPED_UNICODE)){
+//                        $sameCpAsinNumber++;
+//                    }else{
+//
+//                    }
+//                    if ($firstFitments == json_encode($info['fitment'],JSON_UNESCAPED_UNICODE)){
+//                        $sameFitmentsNumber++;
+//                    }else{
+//
+//                    }
+//
+//                    $index++;
+//                }
+//                if ($skuNumber > 1){
+//                    if ($sameKeywordsNumber == ($skuNumber - 1)){
+//                        $sameKeywords = true;
+//                    }
+//                    if ($sameCpAsinNumber == ($skuNumber - 1)){
+//                        $sameCpAsin = true;
+//                    }
+//                    if ($sameFitmentsNumber == ($skuNumber - 1)){
+//                        $sameFitments = true;
+//                    }
+//                }else{
+//                    $sameKeywords = true;
+//                    $sameCpAsin = true;
+//                    $sameFitments = true;
+//                }
+//
+//                $exportList[] = [
+//                    "ceBillNo" => $ceBillNo,
+//                    "publishOn"=> $publishOn,
+//                    "skuNumber" => $skuNumber,
+//                    "sameKeywords" => $sameKeywords == true ? "全部一致" : "不一致",
+//                    "sameCpAsin" => $sameCpAsin == true ? "全部一致" : "不一致",
+//                    "sameFitments" => $sameFitments == true ? "全部一致" : "不一致",
+//                ];
+//
+//
+//            }
+//        }
+
+        if (count($exportList) > 0){
+            $excelUtils = new ExcelUtils();
+            $filePath = $excelUtils->downloadXlsx(["ceBillNo","skuId","发布日期"],$exportList,"sku资料呈现资料发布后广告信息内容_".date("YmdHis").".xlsx");
+            $this->log($filePath);
+        }else{
+            $this->log("没有数据");
+
+        }
+
+
+
+    }
+
+
+    public function getRepeatSkuMaterialByAliSls()
+    {
+        $curlService = (new CurlService())->pro();
+
+        //$list = $this->redis->hGetAll(REDIS_MATERIAL_REPT_KEY);
+
+
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/sku资料呈现资料发布后广告信息内容_20250731100344.xlsx");
+//        $fileContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/sku资料呈现资料发布后广告信息内容_test.xlsx");
+
+        $ceBillNoMap = [];
+        foreach ($fileContent as $info){
+            $ceBillNoMap[$info['ceBillNo']][] = [
+                "skuId" => $info['skuId'],
+                "publishOn" => date("Y-m-d",strtotime($info['发布日期']))
+            ];
+        }
+
+
+        $exportList = [];
+        foreach ($ceBillNoMap as $ceBillNo => $skuMap) {
+            $skuNumber = count($skuMap);
+
+            foreach ($skuMap as $skuId) {
+
+                $jixianTime = "2025-04-12T08:00:00.000Z";
+                if (strtotime($skuId['publishOn']) <= strtotime($jixianTime)){
+                    $this->log("{$skuId['skuId']} {$skuId['publishOn']} 超过4个月，无法获取阿里云数据");
+                    continue;
+                }
+                $query = "{$ceBillNo} and pa_sku_materials and RequestMethod: PUT and {$skuId['skuId']} not fix-angang";
+                $this->log("{$query}");
+                $res = (new RequestUtils("test"))->callAliCloudSls($query);
+
+                if ($res && $res['code'] == "200" && $res['data'] && $res['data']['logs'] && count($res['data']['logs']) > 0){
+                    //按时间倒序
+                    usort($res['data']['logs'], function($a, $b) {
+                        return $b['__time__'] <=> $a['__time__'];
+                    });
+                    $nextLog = $this->findNoMaterialStatusDate($res['data']['logs'],0);
+                    if ($nextLog){
+                        $key = $nextLog['ceBillNo'] . $nextLog['skuId'];
+                        $data1 = [
+                            "ceBillNo" => $nextLog['ceBillNo'],
+                            "skuId" => $nextLog['skuId'],
+                            "keywords" => $nextLog['keywords'],
+                            "cpAsin" => $nextLog['cpAsin'],
+                            "fitment" => $nextLog['fitment']
+                        ];
+                        $this->redis->hSet(REDIS_MATERIAL_REPT_CORRET_KEY, $key,json_encode($data1,JSON_UNESCAPED_UNICODE));
+
+                        $dataJ1 = [
+                            "ceBillNo" => $nextLog['ceBillNo'],
+                            "skuId" => $nextLog['skuId'],
+                            "keywords" => json_encode($nextLog['keywords'],JSON_UNESCAPED_UNICODE),
+                            "cpAsin" => json_encode($nextLog['cpAsin'],JSON_UNESCAPED_UNICODE),
+                            "fitment" => json_encode($nextLog['fitment'],JSON_UNESCAPED_UNICODE),
+                        ];
+                        $exportList[] = $dataJ1;
+                        $this->log("有日志：" .json_encode($dataJ1));
+                    }
+
+
+                }else{
+                    $this->log("没有log日志");
+                }
+
+
+            }
+
+        }
+
+        if (count($exportList) > 0){
+            $excelUtils = new ExcelUtils();
+            $filePath = $excelUtils->downloadXlsx(["ceBillNo","skuId","核心词","asin","车型"],$exportList,"sku资料呈现资料发布前广告信息内容_".date("YmdHis").".xlsx");
+            $this->log($filePath);
+        }else{
+            $this->log("没有数据");
+
+        }
+
+
+
+    }
+
+
+    public function findNoMaterialStatusDate($logsList,$index = 0){
+        if (!isset($logsList[$index])){
+            $this->log("没有日志");
+            return [];
+        }
+
+        $nowLog = json_decode($logsList[$index]['FormString'], true);
+        if (isset($nowLog['publishOn']) && $nowLog['publishOn'] && isset($nowLog['status']) && $nowLog['status'] == 'materialComplete'){
+            $this->log("是发布完成的日志更新，跳过");
+            $index++;
+            return $this->findNoMaterialStatusDate($logsList,$index);
+        }
+
+        return $nowLog;
+    }
+
+
+
+    public function exportBeforeSkuMaterial()
+    {
+        $curlService = (new CurlService())->pro();
+
+
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/sku资料呈现资料发布前广告信息内容_20250731110340.xlsx");
+
+        $exportListKeywords = [];
+        $exportListAsins = [];
+        $exportListFitments = [];
+
+        foreach ($fileContent as $info){
+
+
+            if ($info['核心词']){
+                $keywords = json_decode($info['核心词'],true);
+                foreach ($keywords as $keyword){
+
+                    $exportListKeywords[] = [
+                        "ceBillNo" => $info['ceBillNo'],
+                        "skuId" => $info['skuId'],
+                        "keyword" => $keyword,
+                    ];
+
+                }
+            }
+
+            if ($info['asin']){
+                $asins = json_decode($info['asin'],true);
+                foreach ($asins as $asin){
+                    $exportListAsins[] = [
+                        "ceBillNo" => $info['ceBillNo'],
+                        "skuId" => $info['skuId'],
+                        "asin" => $asin,
+                    ];
+                }
+            }
+
+            if ($info['车型']){
+                $fitments = json_decode($info['车型'],true);
+                foreach ($fitments as $fitment){
+                    $exportListFitments[] = [
+                        "ceBillNo" => $info['ceBillNo'],
+                        "skuId" => $info['skuId'],
+                        "make" => $fitment['make'],
+                        "model" => $fitment['model'],
+                    ];
+                }
+            }
+
+        }
+
+
+
+
+        if (count($exportListKeywords) > 0){
+            $excelUtils = new ExcelUtils();
+            $filePath = $excelUtils->downloadXlsx(["ceBillNo","skuId","核心词"],$exportListKeywords,"sku资料呈现资料发布前广告信息核心词_".date("YmdHis").".xlsx");
+            $this->log($filePath);
+        }else{
+            $this->log("没有数据");
+
+        }
+        if (count($exportListAsins) > 0){
+            $excelUtils = new ExcelUtils();
+            $filePath = $excelUtils->downloadXlsx(["ceBillNo","skuId","asin"],$exportListAsins,"sku资料呈现资料发布前广告信息CP_Asin_".date("YmdHis").".xlsx");
+            $this->log($filePath);
+        }else{
+            $this->log("没有数据");
+
+        }
+        if (count($exportListFitments) > 0){
+            $excelUtils = new ExcelUtils();
+            $filePath = $excelUtils->downloadXlsx(["ceBillNo","skuId","make","model"],$exportListFitments,"sku资料呈现资料发布前广告信息车型_".date("YmdHis").".xlsx");
+            $this->log($filePath);
+        }else{
+            $this->log("没有数据");
+
+        }
+
+
+
+    }
+
+
+
+
+    public function fixCeMaterialSSSS()
+    {
+        $curlService = (new CurlService())->pro();
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/uploads/20250731修复资呈数据.xlsx");
+        if (sizeof($fileFitContent) > 0) {
+            $ceBillNoSkuIdMap = [];
+
+            if (isset($fileFitContent['核心词'])){
+                foreach ($fileFitContent['核心词'] as $info){
+                    $ceBillNoSkuIdMap[$info['ceBillNo']][$info['skuId']]["keywords"][] = $info['核心词'];
+                }
+            }
+
+            if (isset($fileFitContent['asin'])){
+                foreach ($fileFitContent['asin'] as $info){
+                    $ceBillNoSkuIdMap[$info['ceBillNo']][$info['skuId']]["cpAsin"][] = $info['asin'];
+                }
+            }
+
+            if (isset($fileFitContent['车型'])){
+                $uniqFitmentMap = [];
+                foreach ($fileFitContent['车型'] as $info){
+
+                    $uniqFitment = md5($info['ceBillNo'] . $info['skuId'] . $info['make'] . $info['model']);
+                    if (!isset($uniqFitmentMap[$uniqFitment])){
+                        $ceBillNoSkuIdMap[$info['ceBillNo']][$info['skuId']]["fitment"][] = [
+                            "make" => $info['make'],
+                            "model" => $info['model']
+                        ];
+
+                        $uniqFitmentMap[$uniqFitment] = 1;
+                    }
+
+                }
+            }
+
+            if (count($ceBillNoSkuIdMap) > 0){
+
+                foreach ($ceBillNoSkuIdMap as $ceBillNo => $list){
+
+                    //资料发布的需要修复数据
+                    if (count($list) > 0){
+                        $this->log("资料发布了需要修复：{$ceBillNo}");
+
+                        foreach ($list as $skuId => $dataInfo){
+                            $detailInfo = DataUtils::getPageDocListInFirstDataV1(
+                                $curlService->s3044()->get("pa_sku_materials/queryPage", [
+                                    "ceBillNo" => $ceBillNo,
+                                    "skuId" => $skuId,
+                                    "limit" => 1
+                                ])
+                            );
+                            if ($detailInfo){
+                                $detailInfo['fitment'] = $dataInfo['fitment'] ?? [];
+                                $detailInfo['keywords'] = array_unique($dataInfo['keywords'] ?? []);
+                                $detailInfo['cpAsin'] = array_unique($dataInfo['cpAsin'] ?? []);
+                                $detailInfo['modifiedBy'] = "system(sp-fix-angang)";
+
+
+                                $this->log(json_encode($detailInfo,JSON_UNESCAPED_UNICODE));
+
+
+                                $ss = $curlService->s3044()->put("pa_sku_materials/{$detailInfo['_id']}", $detailInfo);
+                                if ($ss){
+                                    $this->log("更新完毕");
+                                }
+                            }
+                        }
+
+                    }
+
+
+                }
+
+
+            }
+
+        }
+
+    }
+
+
+
+
 }
 
 $curlController = new SyncCurlController();
+$curlController->fixCeMaterialSSSS();
+//$curlController->exportBeforeSkuMaterial();
+//$curlController->getRepeatSkuMaterialByAliSls();
+//$curlController->getRepeatSkuMaterial();
 //$curlController->fixTranslationManagement();
 //$curlController->fixPaSkuMaterialList();
 //$curlController->ssss();

@@ -25,10 +25,10 @@ class Sync
     public function syncOptionValListInfoToTest()
     {
         $optionNameList = [
-            "campaign_salesman_index"
+            "page_switch_config"
         ];
 
-        $proRequestUtils = new RequestUtils("pro");
+        $proRequestUtils = new RequestUtils("test");
         foreach ($optionNameList as $optionName){
             $proInfo = $proRequestUtils->getOptionValListByName($optionName);
             if (!empty($proInfo)){
@@ -74,7 +74,7 @@ class Sync
 
 }
 //
-//$s = new Sync();
-//$s->syncOptionValListInfoToTest();
+$s = new Sync();
+$s->syncOptionValListInfoToTest();
 
-echo date("Y-m-d H:i:s",time());
+//echo date("Y-m-d H:i:s",time());
