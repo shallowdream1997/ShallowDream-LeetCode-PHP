@@ -79,7 +79,7 @@ class SyncProductSku
     }
 
 
-    public function main($skuList){
+    public function Sync3015($skuList){
         $this->log("start 执行SyncProductSku脚本");
 
 //        $skuList = [
@@ -92,28 +92,26 @@ class SyncProductSku
             $skuList = explode(",",$skuList);
             $sync = [
                 "s3015" => [
-                    ["amazon_asins", "skuId"],
-                    ["amazon-active-listings", "skuId"],
-                    ["walmart-active-listing-news", "skuId"],
-                    ["ebay-active-listings", "skuId"],
-                    ["channel_sku_images", "skuId"],
-                    ["channel-prices", "productId"],
-                    ["product-skus", "productId"],
-                    ["product_base_infos", "productId"],
-                    ["pid-scu-maps", "productId"],
-                    ["sku-images", "skuId"],
-                    ["sku-sale-statuses", "skuId"],
-                    ["sku-seller-configs", "skuId"],
-                    ["sgu-sku-scu-maps", "skuScuId"],
-                    ["sgu-sku-scu-maps", "sguId"],
-                    ["sgu_sku_scu_channel_maps", "skuScuId"],
-                    ["sku_prices", "skuId"],
-                    ["scu-sku-maps", "skuIdListName"],
-                    ["pa_sku_infos", "skuId"],
+//                    ["amazon_asins", "skuId"],
+//                    ["amazon-active-listings", "skuId"],
+//                    ["walmart-active-listing-news", "skuId"],
+//                    ["ebay-active-listings", "skuId"],
+//                    ["channel_sku_images", "skuId"],
+//                    ["channel-prices", "productId"],
+//                    ["product-skus", "productId"],
+//                    ["product_base_infos", "productId"],
+//                    ["pid-scu-maps", "productId"],
+//                    ["sku-images", "skuId"],
+//                    ["sku-sale-statuses", "skuId"],
+//                    ["sku-seller-configs", "skuId"],
+//                    ["sgu-sku-scu-maps", "skuScuId"],
+//                    ["sgu-sku-scu-maps", "sguId"],
+//                    ["sgu_sku_scu_channel_maps", "skuScuId"],
+//                    ["sku_prices", "skuId"],
+//                    ["scu-sku-maps", "skuIdListName"],
+//                    ["pa_sku_infos", "skuId"],
+                    ["product_fba_bases", "skuId"],
                 ],
-                "s3044" => [
-                    ["fcu_sku_maps","fcuId"]
-                ]
             ];
             foreach ($skuList as $sku) {
                 foreach ($sync as $port => $m){
@@ -159,7 +157,9 @@ class SyncProductSku
             $skuList = explode(",",$skuList);
             $sync = [
                 "s3044" => [
-                    ["fcu_sku_maps","fcuId"]
+//                    ["fcu_sku_maps","fcuId"],
+                    ["pa_ce_materials","skuIdList"],
+                    ["pa_sku_materials","skuId"],
                 ]
             ];
             foreach ($skuList as $sku) {
@@ -209,5 +209,5 @@ if (isset($params['skuIdList']) && trim($params['skuIdList'] != '')) {
     $skuIdList = $params['skuIdList'];
 }
 $curlController = new SyncProductSku();
-$curlController->main($skuIdList);
-$curlController->Sync3044($skuIdList);
+$curlController->Sync3015($skuIdList);
+//$curlController->Sync3044($skuIdList);

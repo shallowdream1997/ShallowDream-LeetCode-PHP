@@ -1927,25 +1927,22 @@ class SyncCurlController
         $curlService->gateway();
         $this->getModule('pa');
 
-        $resp1 = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/material/changed_doc/v1/page", [
-            "pageNum" => 1,
-            "pageSize" => 200,
-            "applyStatus" => 20
-        ]));
-
-        $batchNameList = [];
-        if ($resp1 && count($resp1['list']) > 0){
-            foreach ($resp1['list'] as $info){
-                if ($info['afterChangedTranslationAttributeValue'] == "<p></p>\n"){
-                    $batchNameList[] = $info['docNumber'];
-                }
-            }
-        }
+//        $resp1 = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/material/changed_doc/v1/page", [
+//            "pageNum" => 1,
+//            "pageSize" => 200,
+//            "applyStatus" => 20
+//        ]));
+//
+//        $batchNameList = [];
+//        if ($resp1 && count($resp1['list']) > 0){
+//            foreach ($resp1['list'] as $info){
+//                if ($info['afterChangedTranslationAttributeValue'] == "<p></p>\n"){
+//                    $batchNameList[] = $info['docNumber'];
+//                }
+//            }
+//        }
         $batchNameList = [
-            "2025042100020",
-            "2025042100019",
-            "2025042100018",
-            "2025042100017",
+            "2025080700056",
         ];
         if (count($batchNameList) > 0) {
             $this->log("一共：".count($batchNameList)."个单据翻译失败，");
@@ -4057,17 +4054,55 @@ class SyncCurlController
     }
 
 
+    public function mergeSkuMaterialXlsx()
+    {
+        $curlService = (new CurlService())->pro();
+
+        $keywords = [];
+        $cpasin = [];
+        $fitments = [];
+        for($page = 7;$page <= 7;$page++){
+            $fileFitContent = (new ExcelUtils())->getXlsxDataV2("../export/skuMaterial/zicheng/{$page}.xlsx");
+            if (sizeof($fileFitContent) > 0) {
+                foreach ($fileFitContent as $sheet => $sheetList) {
+                    if ($sheet === '核心词'){
+                        $keywords = array_merge($keywords,$sheetList);
+                    }else if ($sheet === '热销车型'){
+                        $fitments = array_merge($fitments,$sheetList);
+                    }else if ($sheet === 'CP asin'){
+                        $cpasin = array_merge($cpasin,$sheetList);
+                    }
+                }
+            }
+        }
+
+        if (count($keywords) > 0){
+            $excelUtils = new ExcelUtils("skuMaterial/");
+            $filePath = $excelUtils->downloadXlsx(["运营人员","CE#","skuId","核心词"],$keywords,"sku资料呈现核心词_".date("YmdHis").".xlsx");
+        }
+        if (count($cpasin) > 0){
+            $excelUtils = new ExcelUtils("skuMaterial/");
+            $filePath = $excelUtils->downloadXlsx(["运营人员","CE#","skuId","asin"],$cpasin,"sku资料呈现CP_Asin_".date("YmdHis").".xlsx");
+        }
+        if (count($fitments) > 0){
+            $excelUtils = new ExcelUtils("skuMaterial/");
+            $filePath = $excelUtils->downloadXlsx(["运营人员","CE#","skuId","make","model"],$fitments,"sku资料呈现热销车型_".date("YmdHis").".xlsx");
+        }
+
+    }
+
 
 
 }
 
 $curlController = new SyncCurlController();
-$curlController->fixCeMaterialSSSS();
+//$curlController->mergeSkuMaterialXlsx();
+//$curlController->fixCeMaterialSSSS();
 //$curlController->exportBeforeSkuMaterial();
 //$curlController->getRepeatSkuMaterialByAliSls();
 //$curlController->getRepeatSkuMaterial();
 //$curlController->fixTranslationManagement();
-//$curlController->fixPaSkuMaterialList();
+$curlController->fixPaSkuMaterialList();
 //$curlController->ssss();
 //$curlController->fixCeMaterialS();
 //$curlController->fixCeMaterial();

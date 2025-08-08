@@ -196,6 +196,16 @@ class ExcelUtils
         }
     }
 
+    public function getXlsxDataV2($filename, $sheet = 'Sheet1')
+    {
+        $fileContent = $this->_readXlsFileV2($filename);
+        if (sizeof($fileContent) == 1){
+            return isset($fileContent[$sheet]) ? $fileContent[$sheet] : [];
+        }else{
+            return $fileContent;
+        }
+    }
+
     /**
      * 读取json文件数据
      * @param $filename
@@ -286,6 +296,90 @@ class ExcelUtils
         } catch (Exception $e) {
             die("读取CSV失败: " . $e->getMessage());
         }
+    }
+
+
+
+    public function _readXlsFileV2($fileName)
+    {
+        $returnArray = array();
+
+        // 设置缓存以提高大文件处理性能
+        $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
+        $cacheSettings = array('memoryCacheSize' => '1024MB');
+        PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
+
+        // 加载文件
+        $objPHPExcel = PHPExcel_IOFactory::load($fileName);
+
+        // 获取所有工作表名称
+        $sheetNames = $objPHPExcel->getSheetNames();
+
+        foreach ($sheetNames as $sheetId => $sheetName) {
+            $sheetData = array();
+            $sheet = $objPHPExcel->getSheet($sheetId);
+
+            // 获取列数和行数
+            $highestColumn = $sheet->getHighestColumn();
+            $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+            $rowCount = $sheet->getHighestRow();
+
+            // 读取列标题（第一行）
+            $columnArray = array();
+            for ($excelColumnIndex = 0; $excelColumnIndex < $highestColumnIndex; $excelColumnIndex++) {
+                $cell = $sheet->getCellByColumnAndRow($excelColumnIndex, 1);
+                $columnArray[] = $this->_getCellValue($cell);
+            }
+
+            // 读取数据行（从第二行开始）
+            for ($j = 2; $j <= $rowCount; $j++) {
+                $data = array();
+                foreach ($columnArray as $key => $columnName) {
+                    $cell = $sheet->getCellByColumnAndRow($key, $j);
+                    $data[$columnName] = $this->_getCellValue($cell);
+                }
+                $sheetData[] = $data;
+            }
+
+            $returnArray[$sheetName] = $sheetData;
+        }
+
+        return $returnArray;
+    }
+
+    /**
+     * 获取单元格值，处理长数字不转为科学计数法
+     * @param PHPExcel_Cell $cell 单元格对象
+     * @return mixed 处理后的值
+     */
+    protected function _getCellValue(PHPExcel_Cell $cell)
+    {
+        $value = $cell->getValue();
+
+        // 处理富文本
+        if ($value instanceof PHPExcel_RichText) {
+            $value = $value->getPlainText();
+        }
+
+        // 处理长数字
+        if (is_numeric($value)) {
+            // 获取单元格格式
+            $format = $cell->getStyle()->getNumberFormat()->getFormatCode();
+
+            // 如果是常规格式且数字长度超过10位，转为字符串保持原样
+            if ($format == PHPExcel_Style_NumberFormat::FORMAT_GENERAL &&
+                strlen((string)$value) > 10) {
+                return (string)$value;
+            }
+
+            // 如果是文本格式，直接返回字符串形式
+            if ($format == PHPExcel_Style_NumberFormat::FORMAT_TEXT) {
+                return (string)$value;
+            }
+        }
+
+        // 去除前后空格
+        return is_string($value) ? trim($value) : $value;
     }
 
 

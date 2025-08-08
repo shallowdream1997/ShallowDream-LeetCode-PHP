@@ -15,3 +15,9 @@ define('REDIS_USERNAME_IP_KEY', "username_ip");
 define('REDIS_MATERIAL_KEY', "material");
 define('REDIS_MATERIAL_REPT_KEY', "materialRept");
 define('REDIS_MATERIAL_REPT_CORRET_KEY', "materialReptCorret");
+
+
+define("CR201706060001","CR201706060001");
+define("CR201706080001","CR201706080001");
+define("CR201706260001","CR201706260001");
+define("CR201706080003","CR201706080003");
