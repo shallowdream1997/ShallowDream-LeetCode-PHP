@@ -3437,14 +3437,21 @@ class SyncCurlController
     {
         $curlService = (new CurlService())->pro();
 
-        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/未传广告信息收集-核心词+车型+CPasin(2025.07.22).xlsx");
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/skuMaterial/zicheng/资呈广告异常修复(2025.08.07)-运营确认.xlsx");
         if (sizeof($fileFitContent) > 0) {
             $ceSkuMap = [];
             foreach ($fileFitContent as $sheet => $sheetList) {
                 if ($sheet === '核心词'){
+                    $uniqueKeyMap = [];
                     foreach ($sheetList as $info){
                         if (!empty($info['核心词'])){
-                            $ceSkuMap[$info['CE#']][$info['skuId']]['keywords'][] = $info['核心词'];
+                            $uniqueKey = "{$info['skuId']}{$info['核心词']}";
+                            if (!isset($uniqueKeyMap[$uniqueKey])) {
+
+                                $ceSkuMap[$info['CE#']][$info['skuId']]['keywords'][] = $info['核心词'];
+
+                                $uniqueKeyMap[$uniqueKey] = 1;
+                            }
                         }
                     }
                 }else if ($sheet === '热销车型'){
@@ -3460,10 +3467,18 @@ class SyncCurlController
                         }
                     }
                 }else if ($sheet === 'CP asin'){
+                    $uniqueKeyMap = [];
                     foreach ($sheetList as $info){
-                        if (!empty($info['asin'])){
-                            $ceSkuMap[$info['CE#']][$info['skuId']]['cpAsin'][] = $info['asin'];
+                        if (!empty($info['asin'])) {
+                            $uniqueKey = "{$info['skuId']}{$info['asin']}";
+
+                            if (!isset($uniqueKeyMap[$uniqueKey])) {
+                                $ceSkuMap[$info['CE#']][$info['skuId']]['cpAsin'][] = $info['asin'];
+
+                                $uniqueKeyMap[$uniqueKey] = 1;
+                            }
                         }
+
                     }
                 }
             }
@@ -3487,7 +3502,7 @@ class SyncCurlController
                             $skuMaterialInfo['keywords'] = $tree2['keywords']??[];
                             $skuMaterialInfo['cpAsin'] = $tree2['cpAsin']??[];
                             $skuMaterialInfo['fitment'] = $tree2['fitment']??[];
-                            $skuMaterialInfo['modifiedBy'] = "system(zhouangang)";
+                            $skuMaterialInfo['modifiedBy'] = "system(zhouangang88)";
                             $this->log("更新sku{$ceBillNo}-{$skuId}" . json_encode($skuMaterialInfo,JSON_UNESCAPED_UNICODE));
                             $curlService->s3044()->put("pa_sku_materials/{$skuMaterialInfo['_id']}", $skuMaterialInfo);
                         }else{
