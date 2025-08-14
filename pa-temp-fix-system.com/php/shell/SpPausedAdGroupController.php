@@ -54,7 +54,7 @@ class SpPausedAdGroupController
         $this->log->log2($string);
     }
 
-    public function dingTalk(){
+    public function dingTalk($title){
         $proCurlService = new CurlService();
         $ali = $proCurlService->test()->phpali();
 
@@ -62,11 +62,11 @@ class SpPausedAdGroupController
         $postData = array(
             'userType' => 'userName',
             'userIdList' => "zhouangang",
-            'title' => "【adGroup广告暂停完毕】提醒",
+            'title' => $title,
             'msg' => [
                 [
                     "key" => "",
-                    "value" => "{$datetime} 已经暂停完毕"
+                    "value" => "{$datetime} 已经执行完毕"
                 ]
             ]
         );
@@ -201,7 +201,7 @@ class SpPausedAdGroupController
             }
 
 
-            $this->dingTalk();
+            $this->dingTalk("【暂停广告执行提醒】");
         }
 
     }
@@ -282,19 +282,14 @@ class SpPausedAdGroupController
                     $this->log("{$content['sku']} - 资呈不需要投放asin广告");
                 }
 
-
-
-
-
-                //$this->action1type1($content,2,3);
             }
         }
-
+        $this->dingTalk("【补充asin广告提醒】");
     }
 
 
     /**
-     * 保留原adGroup广告组，补充投放asin广告
+     * 关闭原adGroup广告组，重开asin广告
      * @return void
      */
     public function closeAdGroupWithOpenNewAsinAds()
@@ -486,10 +481,14 @@ class SpPausedAdGroupController
 
             }
         }
-
+        $this->dingTalk("【重开asin广告提醒】");
     }
 
 
+    /**
+     * 关闭原adGroup广告组，重开kw广告
+     * @return void
+     */
     public function closeAdGroupWithOpenNewKeywordAds()
     {
         $excelUtils = new ExcelUtils();
@@ -682,10 +681,8 @@ class SpPausedAdGroupController
             }
         }
 
+        $this->dingTalk("【重开kw广告提醒】");
     }
-
-
-
 
     public function fbaNo($channel,$sku)
     {
