@@ -24,6 +24,8 @@ class SpPausedAdGroupController
     private $curlService;
     private $messages = "system(资呈修复)";
 
+    private $redis;
+
     public function __construct()
     {
         $this->log = new MyLogger("sp");
@@ -47,6 +49,7 @@ class SpPausedAdGroupController
         ];
 
         $this->curlService = (new CurlService())->pro();
+        $this->redis = new RedisService();
     }
 
     private function log(string $string = "")
@@ -56,7 +59,7 @@ class SpPausedAdGroupController
 
     public function dingTalk($title){
         $proCurlService = new CurlService();
-        $ali = $proCurlService->test()->phpali();
+        $ali = $proCurlService->pro()->phpali();
 
         $datetime = date("Y-m-d H:i:s",time());
         $postData = array(
@@ -76,41 +79,50 @@ class SpPausedAdGroupController
 
     public function getAmazonSpRuleRegexSystemCampaignRegex($channel,$sellerId,$spType)
     {
-        $info = DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_sellers/queryPage",[
-            "company_in" => "CR201706060001",
-            "channel" => $channel,
-            "sellerId" => $sellerId,
-            "limit" => 1
-        ]));
-        if ($info){
-            $data = [];
-            foreach($info['bindRule'] as $item){
-                if ($item['spType'] == $spType && $item['status'] == 1 && $item['ruleTypeAndId']){
-                    foreach ($item['ruleTypeAndId'] as $dIt){
-                        if ($dIt['ruleType'] == "campaignRuleBySystem"){
-                            $rule = DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_rule_configs/queryPage",[
-                                "ruleId" => $dIt['ruleId'],
-                            ]));
-                            if ($rule){
-                                $data = [
-                                    "ruleRegex" => $rule['ruleRegex'],
-                                    "pipe" => "",
-                                ];
-                                foreach($rule['ruleFieldName'] as $dddItem){
-                                    if ($dddItem['fieldType'] == "pipe"){
-                                        $data['pipe'] = $dddItem['field'];
-                                        break;
+        $key = "{$channel}_{$sellerId}";
+        $pipeRuleStr = $this->redis->hGet("amazonRuleSpSellerPipe",$key);
+        if (!$pipeRuleStr){
+            $info = DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_sellers/queryPage",[
+                "company_in" => "CR201706060001",
+                "channel" => $channel,
+                "sellerId" => $sellerId,
+                "limit" => 1
+            ]));
+            if ($info){
+                $data = [];
+                foreach($info['bindRule'] as $item){
+                    if ($item['spType'] == $spType && $item['status'] == 1 && $item['ruleTypeAndId']){
+                        foreach ($item['ruleTypeAndId'] as $dIt){
+                            if ($dIt['ruleType'] == "campaignRuleBySystem"){
+                                $rule = DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_rule_configs/queryPage",[
+                                    "ruleId" => $dIt['ruleId'],
+                                ]));
+                                if ($rule){
+                                    $data = [
+                                        "ruleRegex" => $rule['ruleRegex'],
+                                        "pipe" => "",
+                                    ];
+                                    foreach($rule['ruleFieldName'] as $dddItem){
+                                        if ($dddItem['fieldType'] == "pipe"){
+                                            $data['pipe'] = $dddItem['field'];
+                                            break;
+                                        }
                                     }
                                 }
+                                break 2;
                             }
-                            break 2;
                         }
                     }
                 }
+                if ($data){
+                    $this->redis->hSet("amazonRuleSpSellerPipe",$key,json_encode($data,JSON_UNESCAPED_UNICODE));
+                }
+                return $data;
+            }else{
+                return [];
             }
-            return $data;
         }else{
-            return [];
+            return json_decode($pipeRuleStr,true);
         }
     }
 
@@ -699,12 +711,23 @@ class SpPausedAdGroupController
     //===================================== campaign start ===================================================
     public function getMongoCampaignInfo($sellerId,$campaign)
     {
-        return DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_campaigns/queryPage",[
-            "company" => "CR201706060001",
-            "channel" => $sellerId,
-            "campaignName" => $campaign,
-            "limit" => 1
-        ]));
+        $key = "{$sellerId}_{$campaign}";
+        $str = $this->redis->hGet("campaignSpData",$key);
+        $res = [];
+        if (!$str){
+            $res = DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_campaigns/queryPage",[
+                "company" => "CR201706060001",
+                "channel" => $sellerId,
+                "campaignName" => $campaign,
+                "limit" => 1
+            ]));
+            if ($res){
+                $this->redis->hSet("campaignSpData",$key,json_encode($res,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $res = json_decode($str,true);
+        }
+        return $res;
     }
     public function mongoCreateCampaignInfo($sellerId,$fixCampaign,$campaignId,$oldCampaignInfo)
     {
@@ -1180,20 +1203,22 @@ class SpPausedAdGroupController
                 "state" => "enabled"
             ];
         }
-
-        $resp = DataUtils::getResultData($this->curlService->phphk()->post("amazon/ad/keywords/postKeywords/{$sellerId}", $createKeywords));
         $ids = [];
-        if ($resp && $resp['data']){
-            $this->log("成功");
-            foreach($resp['data'] as $info){
-                if ($info['code'] == "SUCCESS"){
-                    $this->log("成功：{$info['keywordId']}");
-                    $ids[] = $info['keywordId'];
+        if (count($createKeywords) > 0){
+            $resp = DataUtils::getResultData($this->curlService->phphk()->post("amazon/ad/keywords/postKeywords/{$sellerId}", $createKeywords));
+            if ($resp && $resp['data']){
+                $this->log("成功");
+                foreach($resp['data'] as $info){
+                    if ($info['code'] == "SUCCESS"){
+                        $this->log("成功：{$info['keywordId']}");
+                        $ids[] = $info['keywordId'];
+                    }
                 }
+            }else{
+                $this->log("失败");
             }
-        }else{
-            $this->log("失败");
         }
+
         return $ids;
     }
 
@@ -1229,10 +1254,18 @@ class SpPausedAdGroupController
 
     public function buildKeyword($skuMaterialInfo,$defaultBid = "")
     {
-        $curlService = (new CurlService())->pro();
-        $getKeyResp = DataUtils::getNewResultData($curlService->gateway()->getModule("config")->getWayPost($curlService->module . "/business/config/v1/getConfigByKey", [
-            "configKey" => "PA_POMS_AMAZON_KEYWORD_SP_AUTO_RULE",
-        ]));
+        $redisRuleDataStr = $this->redis->get("paPomsAmazonKeywordSpAutoRule");
+        $getKeyResp = [];
+        if (!$redisRuleDataStr){
+            $curlService = (new CurlService())->pro();
+            $getKeyResp = DataUtils::getNewResultData($curlService->gateway()->getModule("config")->getWayPost($curlService->module . "/business/config/v1/getConfigByKey", [
+                "configKey" => "PA_POMS_AMAZON_KEYWORD_SP_AUTO_RULE",
+            ]));
+            $this->redis->set("paPomsAmazonKeywordSpAutoRule",json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
+        }else{
+            $getKeyResp = json_decode($redisRuleDataStr,true);
+        }
+
         if ($getKeyResp && $getKeyResp['configValue'] && is_array($getKeyResp['configValue']) && !empty($getKeyResp['configValue'])){
             // 过滤有效的配置
             $validConfigs = array_filter($getKeyResp['configValue'], function ($item) {
