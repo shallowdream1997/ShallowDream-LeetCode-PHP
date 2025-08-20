@@ -4123,11 +4123,70 @@ class SyncCurlController
 
     }
 
+    public function fixRepeatSkuMaterial()
+    {
+        $ceBillNo = "CE202508040023";
+
+        $curlService = (new CurlService())->pro();
+        $list = DataUtils::getPageDocList(
+            $curlService->s3044()->get("pa_sku_materials/queryPage", [
+                "ceBillNo" => $ceBillNo,
+                "limit" => 1000
+            ])
+        );
+        if ($list){
+            $sameSkuIdMap = [];
+           foreach ($list as &$item){
+               if (!isset($sameSkuIdMap[$item['skuId']])){
+                   if ($item['keywords']){
+                       $item['keywords'] = array_unique($item['keywords']);
+                   }
+                   if ($item['cpAsin']){
+                       $item['cpAsin'] = array_unique($item['cpAsin']);
+                   }
+                   if ($item['fitment']){
+                       $quchongfitment = [];
+                       $uniqFitmentMap = [];
+                       foreach ($item['fitment'] as $info){
+                           $uniqFitment = md5($info['make'] . $info['model']);
+                           if (!isset($uniqFitmentMap[$uniqFitment])){
+                               $quchongfitment[] = [
+                                   "make" => $info['make'],
+                                   "model" => $info['model']
+                               ];
+                               $uniqFitmentMap[$uniqFitment] = 1;
+                           }
+                       }
+                       if ($quchongfitment){
+                           $item['fitment'] = $quchongfitment;
+                       }
+                   }
+                   $sameSkuIdMap[$item['skuId']] = 1;
+                   $this->log(json_encode($item,JSON_UNESCAPED_UNICODE));
+
+                   $ss = $curlService->s3044()->put("pa_sku_materials/{$item['_id']}", $item);
+                   if ($ss){
+                       $this->log("更新完毕");
+                   }
+               }else{
+                   $this->log("{$item['skuId']} 重复了,删掉一个");
+                   $curlService->s3044()->delete("pa_sku_materials/{$item['_id']}");
+               }
+
+           }
+
+
+
+        }
+
+
+    }
 
 
 }
 
 $curlController = new SyncCurlController();
+$curlController->fixRepeatSkuMaterial();
 //$curlController->mergeSkuMaterialXlsx();
 //$curlController->fixCeMaterialSSSS();
 //$curlController->exportBeforeSkuMaterial();
@@ -4164,7 +4223,7 @@ $curlController = new SyncCurlController();
 //$curlController->updateFcuProductLine();
 //$curlController->getPaSkuMaterial();
 //$curlController->syncAllVerticalMonthlTargets();
-$curlController->ceWrite();
+//$curlController->ceWrite();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
 //$curlController->writeProductBaseFba();
