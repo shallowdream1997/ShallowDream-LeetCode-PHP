@@ -47,7 +47,7 @@ class EnvironmentConfig
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "uploadOss":
-                $this->curlService = (new CurlService())->pro();
+                $this->curlService = (new CurlService())->test();
                 break;
             case "getPmoData":
                 $this->curlService = (new CurlService())->pro();

@@ -1002,11 +1002,22 @@ class SyncCurlController
     public function ceWrite(){
         $env = "pro";
 
+        $data = [
+            "prePurchaseBillNo" => "DPMO250804004",
+            "ceBillNo" => "CE202508060170",
+            "operatorName" => "system(PA-CE回写)"
+        ];
+        $curlService1 = new CurlService();
+        $curlService1->$env()->gateway()->getModule('pa');
+        $resp3 = DataUtils::getNewResultData($curlService1->getWayPost($curlService1->module . "/scms/ce_bill_no/v1/writeBackAutarkyCeSkuToPrePurchase", $data));
+        if ($resp3){
+            $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
+        }
+        die(1111);
         $pmoList = [
-            "DPMO250114002-林泽键",
+            "DPMO250804004-陈炜佳",
         ];
         $curlService = new CurlService();
-        $list = [];
         foreach ($pmoList as $pmoBillNo){
             $resp = $curlService->$env()->s3009()->get("market-analysis-reports/getMainSkuIdInfo", [
                 "batch" => $pmoBillNo
@@ -1016,61 +1027,67 @@ class SyncCurlController
                 if ($pmoInfo){
                     $resp1 = $curlService->$env()->s3009()->post("cmo-managements/masterQuery", [
                         "conditionsJsonEncode" => json_encode(["pmoBillNoList" => [$pmoInfo['pmoBillNo']]], JSON_UNESCAPED_UNICODE),
-                        "entriesPerPage" => 1,
+                        "entriesPerPage" => 10,
                         "orderBy" => "cmoBillNo desc",
                         "pageNumber" => 1
                     ]);
                     if ($resp1 && $resp1['result'] && $resp1['result']['cmoMasterResponse'] && $resp1['result']['cmoMasterResponse']['cmoMasters'] && count($resp1['result']['cmoMasterResponse']['cmoMasters']) > 0){
-                        $cmoBillNoInfo = $resp1['result']['cmoMasterResponse']['cmoMasters'][0];
-                        if ($cmoBillNoInfo){
-                            $resp2 = $curlService->$env()->s3009()->get("cmo-managements/cmoMasterProgress", [
-                                "cmoBillNo" => $cmoBillNoInfo['cmoBillNo'],
-                            ]);
-                            if ($resp2['result'] && $resp2['result']['data']){
-                                foreach ( $resp2['result']['data'] as $sourceId => $ceList){
-                                    foreach ($ceList as $ceBillNo => $ceProcess){
-                                        if (strpos($ceBillNo, "CE") === 0) {
+                        foreach ($resp1['result']['cmoMasterResponse']['cmoMasters'] as $cmoBillNoInfo){
+                            if ($cmoBillNoInfo){
+                                $resp2 = $curlService->$env()->s3009()->get("cmo-managements/cmoMasterProgress", [
+                                    "cmoBillNo" => $cmoBillNoInfo['cmoBillNo'],
+                                ]);
+                                $list = [];
+                                if ($resp2['result'] && $resp2['result']['data']){
+                                    foreach ( $resp2['result']['data'] as $sourceId => $ceList){
+                                        foreach ($ceList as $ceBillNo => $ceProcess){
+                                            if (strpos($ceBillNo, "CE") === 0) {
 
-                                            $prePurchaseBillNo = $pmoBillNo;
-                                            $position = strpos($pmoBillNo, '-');
-                                            if ($position !== false) {
-                                                // 从开始到 '-' 的位置截取字符串
-                                                $prePurchaseBillNo = substr($pmoBillNo, 0, $position);
+                                                $prePurchaseBillNo = $pmoBillNo;
+                                                $position = strpos($pmoBillNo, '-');
+                                                if ($position !== false) {
+                                                    // 从开始到 '-' 的位置截取字符串
+                                                    $prePurchaseBillNo = substr($pmoBillNo, 0, $position);
+                                                }
+
+                                                $list[] = [
+                                                    "prePurchaseBillNo" => $prePurchaseBillNo,
+                                                    "ceBillNo" => $ceBillNo,
+                                                    "operatorName" => "system(PA-CE回写)"
+                                                ];
+                                                break;
                                             }
-
-                                            $list[] = [
-                                                "prePurchaseBillNo" => $prePurchaseBillNo,
-                                                "ceBillNo" => $ceBillNo,
-                                                "operatorName" => "system(Restful_PaProductInfo)"
-                                            ];
-                                            break;
                                         }
+                                        break;
                                     }
-                                    break;
                                 }
+
+                                if (count($list) > 0){
+                                    foreach ($list as $info){
+                                        if ($info['ceBillNo'] == "CE202508060047"){
+                                            continue;
+                                        }
+                                        $this->log(json_encode($info,JSON_UNESCAPED_UNICODE));
+
+                                        $curlService1 = new CurlService();
+                                        $curlService1->$env()->gateway()->getModule('pa');
+                                        $resp3 = DataUtils::getNewResultData($curlService1->getWayPost($curlService1->module . "/scms/ce_bill_no/v1/writeBackAutarkyCeSkuToPrePurchase", $info));
+                                        if ($resp3){
+                                            $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
+                                        }
+
+                                    }
+
+                                }
+
                             }
-
                         }
-
                     }
                 }
             }
 
         }
-        if (count($list) > 0){
-            foreach ($list as $info){
-                $this->log(json_encode($info,JSON_UNESCAPED_UNICODE));
 
-                $curlService1 = new CurlService();
-                $curlService1->$env()->gateway()->getModule('pa');
-                $resp3 = DataUtils::getNewResultData($curlService1->getWayPost($curlService1->module . "/scms/ce_bill_no/v1/writeBackAutarkyCeSkuToPrePurchase", $info));
-                if ($resp3){
-                    $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
-                }
-
-            }
-
-        }
 
 
 
@@ -4117,7 +4134,7 @@ $curlController = new SyncCurlController();
 //$curlController->getRepeatSkuMaterialByAliSls();
 //$curlController->getRepeatSkuMaterial();
 //$curlController->fixTranslationManagement();
-$curlController->fixPaSkuMaterialList();
+//$curlController->fixPaSkuMaterialList();
 //$curlController->ssss();
 //$curlController->fixCeMaterialS();
 //$curlController->fixCeMaterial();
@@ -4147,7 +4164,7 @@ $curlController->fixPaSkuMaterialList();
 //$curlController->updateFcuProductLine();
 //$curlController->getPaSkuMaterial();
 //$curlController->syncAllVerticalMonthlTargets();
-//$curlController->ceWrite();
+$curlController->ceWrite();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
 //$curlController->writeProductBaseFba();

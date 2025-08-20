@@ -1003,7 +1003,7 @@ class ProductSkuController
                 }
             }
         }
-
+        $downloadOssPath = null;
         if (count($pmoList) > 0){
             $exportList = [];
             foreach ($list as $batch){

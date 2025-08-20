@@ -228,7 +228,7 @@ class SpPausedAdGroupController
         $excelUtils = new ExcelUtils();
         $fileName = "../export/sp/";
         try {
-            $contentList = $excelUtils->getXlsxData($fileName . "supplement_adgroup_with_asin_ads.xlsx");
+            $contentList = $excelUtils->getXlsxData($fileName . "supplement_adgroup_with_asin_ads_v1.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -717,7 +717,7 @@ class SpPausedAdGroupController
         if (!$str){
             $res = DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_campaigns/queryPage",[
                 "company" => "CR201706060001",
-                "channel" => $sellerId,
+                "channel" => $this->specialSellerIdConver($sellerId),
                 "campaignName" => $campaign,
                 "limit" => 1
             ]));
@@ -1252,8 +1252,13 @@ class SpPausedAdGroupController
         return $resp;
     }
 
-    public function buildKeyword($skuMaterialInfo,$defaultBid = "")
+    public function buildKeyword($skuMaterialInfo,$defaultBid = "",$skuId = "")
     {
+
+        if ($skuId){
+            $skuMaterialInfo = $this->getPaSkuMaterials($skuId);
+        }
+
         $redisRuleDataStr = $this->redis->get("paPomsAmazonKeywordSpAutoRule");
         $getKeyResp = [];
         if (!$redisRuleDataStr){
@@ -1278,7 +1283,9 @@ class SpPausedAdGroupController
 
             //根据规则和资料呈现内容，组装keyword
             $contentList = $this->generateCombinations($validConfigs, $skuMaterialInfo, $defaultBid);
-
+            foreach ($contentList as $content){
+                $this->log("{$content['contentType']} 类型： {$content['content']}");
+            }
             return $contentList;
         }else {
             $this->log("配置中心不存在 keyword组装规则：PA_POMS_AMAZON_KEYWORD_SP_AUTO_RULE");
@@ -1391,15 +1398,148 @@ class SpPausedAdGroupController
     }
 
 
+    public function listFixSpData()
+    {
+        $excelUtils = new ExcelUtils();
+        $fileName = "../export/sp/";
+
+        $exportList = [];
+
+        try {
+            $contentList = $excelUtils->getXlsxData($fileName . "all.xlsx");
+        } catch (Exception $e) {
+            die($e->getLine() . " : " . $e->getMessage());
+        }
+        if (count($contentList) > 0) {
+            foreach ($contentList as $item){
+
+                $exportData = [
+                    "ce" => $item['CE单号'],
+                    "sku" => $item['sku'],
+                    "productLevel" => $item['产品分级'],
+                    "saleUser" => $item['运营人员'],
+                    "channel" => $item['渠道'],
+                    "sellerId" => $item['账号'],
+                    "fba" => $item['fba'],
+                    "fbaAsin" => $item['fba Asin'],
+                    "nonFba" => $item['nonfba编号'],
+                    "oldCampaign" => $item['campaign'],
+                    "oldAdGroup" => $item['adgroup'],
+                    "ceResult1" => $item['CE单情况'],
+                    "ceResult2" => $item['能找回覆盖前数据'],
+                    "ceResult3" => $item['广告类型'],
+                    "ceResult4" => $item['备注'],
+                    "ceResult5" => $item['是否关闭'],
+                    "ceResult6" => $item['是否重新投放'],
+                    "ceResult7" => $item['处理方案'],
+                    "newCampaign" => "/",
+                    "newAdGroup" => "/",
+                ];
+                $oldCampaignName = $item['campaign'];
+                $newCampaignName = "";
+
+                $oldAdGroupName = $item['adgroup'];
+                $newAdGroupName = "";
+
+
+
+                if ($item['处理方案'] == 'Asin：保留原广告组，补充Asin'){
+                    $newCampaignName = $item['campaign'];
+                    $newAdGroupName = $item['adgroup'];
+                }else if ($item['处理方案'] == 'Asin：关闭原广告组，重新开Asin广告（按CE单剔除首个sku）'){
+
+                    $manualAsinCampaignRule = $this->getAmazonSpRuleRegexSystemCampaignRegex($item['渠道'],$item['账号'],"manual asin");
+                    $pipe = "";
+                    if ($manualAsinCampaignRule && isset($manualAsinCampaignRule['pipe']) && $manualAsinCampaignRule['pipe']){
+                        $pipe = $manualAsinCampaignRule['pipe'];
+                    }
+                    $newCampaignName = $item['campaign'].$pipe."修正重开Asin";
+                    $newAdGroupName = $item['adgroup'];
+
+                }else if ($item['处理方案'] == 'KW：关闭原广告组，重新开KW广告（按CE单剔除首个sku）'){
+                    $manualAsinCampaignRule = $this->getAmazonSpRuleRegexSystemCampaignRegex($item['渠道'],$item['账号'],"manual");
+                    $pipe = "";
+                    if ($manualAsinCampaignRule && isset($manualAsinCampaignRule['pipe']) && $manualAsinCampaignRule['pipe']){
+                        $pipe = $manualAsinCampaignRule['pipe'];
+                    }
+                    $newCampaignName = $item['campaign'].$pipe."修正重开KW";
+                    $newAdGroupName = $item['adgroup'];
+                }
+
+                if (!$newCampaignName){
+                    $exportList[] = $exportData;
+                    continue;
+                }
+                $campaignInfo = $this->getMongoCampaignInfo($item['账号'],$newCampaignName);
+                $campaignId = "";
+                if ($campaignInfo && $campaignInfo['campaignId']){
+                    $exportData['newCampaign'] = $newCampaignName;
+                    $campaignId = $campaignInfo['campaignId'];
+                }
+                if (!$campaignId){
+                    $this->log("无campaign广告");
+                    $exportList[] = $exportData;
+                    continue;
+                }
+
+                $adGroupInfo = $this->getMongoAdGroupInfo($item['账号'],$campaignId,$newAdGroupName);
+                $adGroupId = "";
+                if ($adGroupInfo && $adGroupInfo['adGroupId']){
+                    $exportData['newAdGroup'] = $newAdGroupName;
+                    $adGroupId = $adGroupInfo['adGroupId'];
+                }
+                $exportList[] = $exportData;
+
+
+            }
+
+
+
+            if (count($exportList) > 0){
+                $excelUtils = new ExcelUtils("sp/");
+                $filePath = $excelUtils->downloadXlsx([
+                    "CE单号",
+                    "sku",
+                    "产品分级",
+                    "运营人员",
+                    "渠道",
+                    "账号",
+                    "fba",
+                    "fba Asin",
+                    "nonfba编号",
+                    "原campaign",
+                    "原adgroup",
+                    "CE单情况",
+                    "能找回覆盖前数据",
+                    "广告类型",
+                    "备注",
+                    "是否关闭",
+                    "是否重新投放",
+                    "处理方案",
+                    "重开campaign",
+                    "重开adgroup"
+                ],$exportList,"sku资料呈现广告修复后数据_".date("YmdHis").".xlsx");
+                $this->log($filePath);
+            }else{
+                $this->log("没有数据");
+
+            }
+
+        }
+
+
+    }
 }
 
 $con = new SpPausedAdGroupController();
 //$con->pausedAdGroup();
 //$con->supplementAdGroupWithAsinAds();
 //$con->closeAdGroupWithOpenNewAsinAds();
-$con->closeAdGroupWithOpenNewKeywordAds();
+//$con->closeAdGroupWithOpenNewKeywordAds();
 
-//$con->buildKeyword("a25011700ux0842",0.2);
+
+//$con->listFixSpData();
+$con->buildKeyword([],0.2,"a25080100ux0222");
 
 //$con->listCampaign("amazon","PA_座椅套-1_auto_李运月");
 //$con->listAdGroup("amazon_us_hope","426175740910397","240929hoape002395");

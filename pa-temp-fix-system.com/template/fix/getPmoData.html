@@ -123,10 +123,12 @@
                 });
                 console.log(res)
                 this.loading = "";
-                if (res.status === 200) {
+                if (res.status === 200 && res.data.data.length !== 0) {
                     let returnlist = res.data.data;
                     console.log(returnlist)
                     window.open("/php" + returnlist.downLink);
+                }else {
+                    this.errorMsg = "没有查询到数据";
                 }
 
             }
