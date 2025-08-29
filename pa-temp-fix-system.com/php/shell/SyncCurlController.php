@@ -4245,10 +4245,16 @@ class SyncCurlController
     {
         $curlService = (new CurlService())->pro();
 
-        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/QD202508010003.xlsx");
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/g号修复_1.xlsx");
         if (sizeof($fileFitContent) > 0) {
 
-            $list = array_column($fileFitContent,"sku_id");
+
+            $list = [];
+            foreach ($fileFitContent as $item){
+                if (!empty($item['sku_id'])){
+                    $list[] = $item['sku_id'];
+                }
+            }
             $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
             $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
                 "skuIdList" => $list,
@@ -4298,128 +4304,140 @@ class SyncCurlController
 //                }
 //            }
 
-//            $qdScmsPrePurchaseMap = [];
-//            $fix30List = [];
-//            foreach ($fileFitContent as $info){
-//
-//                if (isset($map[$info['sku_id']])){
-//                    $skuAttrData = $map[$info['sku_id']];
-//
-//                    if (!empty($skuAttrData['custom-sguInfo-groupTag'])){
-//
-//
-//                        $sguKey = "sgu_init_{$info['batch_no']}_{$skuAttrData['custom-sguInfo-groupTag']}";
-//                        $this->log("{$sguKey}");
-//                        $sguId = "";
-//                        if(!isset($qdScmsPrePurchaseMap[$sguKey])){
-//
-//                            //当前key重新创建sgu
-//                            $sguId = $this->createSguInfo();
-//
-//                            $this->log("{$info['sku_id']} 绑定 {$sguId}");
-//
-//
-//                            $qdScmsPrePurchaseMap[$sguKey] = $sguId;
-//
-//                        }else{
-//                            $this->log("同key：{$qdScmsPrePurchaseMap[$sguKey]}");
-//                            $sguId = $qdScmsPrePurchaseMap[$sguKey];
-//
-//
-//                        }
-//
-//                        if (!empty($sguId)){
-//                            $this->log("{$sguKey} 生成 {$sguId}");
-//
-//                            $sguInfo = DataUtils::getQueryListInFirstDataV3($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
-//                                "skuScuId" => $info['sku_id'],
-//                                "limit" => 1,
-//                            ]));
-//                            if ($sguInfo){
-//
-//                                $sguInfo['sguId'] = $sguId;
-//                                $sguInfo['modifiedBy'] = "system(zhouangang)";
-//                                $curlService->s3015()->put("sgu-sku-scu-maps/{$sguInfo['_id']}", $sguInfo);
-//
-//                            }else{
-//                                //创建
-//
-//                                $channelList = explode(",",$skuAttrData['custom-sguInfo-channel']);
-//                                $channelListData = [];
-//                                foreach ($channelList as $ch){
-//                                    $channelListData[] = [
-//                                        "groupName" => "",
-//                                        "groupAttrName" => [],
-//                                        "groupAttrValue" => [],
-//                                        "channel" => $ch,
-//                                        "modifiedBy" => "system(zhouangang)",
-//                                        "modifiedOn" => date("Y-m-d H:i:s",time ())."Z"
-//                                    ];
-//                                }
-//                                $create = [
-//                                    "createdBy" => "system(zhouangang)",
-//                                    "modifiedBy" => "system(zhouangang)",
-//                                    "skuScuId" => $info['sku_id'],
-//                                    "sguId" => $sguId,
-//                                    "remark" => "sgu自动绑定和初始化",
-//                                    "channel" => $channelListData,
-//                                    "createdOn" => date("Y-m-d H:i:s",time ())."Z",
-//                                    "modifiedOn" => date("Y-m-d H:i:s",time ())."Z"
-//                                ];
-//                                $curlService->s3015()->post("/sgu-sku-scu-maps",$create);
-//
-//                            }
-//
-//                            $fix30List[] = [
-//                                "tempSkuId" => $skuAttrData['custom-skuInfo-tempSkuId'],
-//                                "skuAttrList" => [
-//                                    [
-//                                        "name" => "custom-sguInfo-sguId",
-//                                        "value" => $sguId
-//                                    ]
-//                                ]
-//                            ];
-//
-//                            if(isset($qdScmsPrePurchaseMap[$sguKey])){
-//
-//                                $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/sms/sku/info/init/v1/initSkuInfo", [
-//                                    "initSkuId" => $info['sku_id'],
-//                                    "operatorName" => "system(修复sgu初始化)",
-//                                    "productType" => "SGU",
-//                                    "sguId" => $sguId
-//                                ]));
-//
-//                            }
-//
-//
-//                        }else{
-//                            $this->log("{$sguKey} 生成g号失败");
-//                        }
-//
-//
-//
-//                    }else{
-//                        $this->log("没有绑定g号，不用初始化");
-//                    }
-//
-//                }
-//
-//
-//
-//
-//            }
-//
-//
-//
-//            //回写3.0
-//            if ($fix30List){
-//                $curlSsll = (new CurlService())->pro()->gateway()->getModule("pa");
-//                $getKeyResp = DataUtils::getNewResultData($curlSsll->getWayPost($curlSsll->module . "/ppms/product_dev/sku/v1/directUpdateBatch", [
-//                    "operator" => "zhouangang",
-//                    "skuList" => $fix30List
-//                ]));
-//
-//            }
+            $qdScmsPrePurchaseMap = [];
+            $fix30List = [];
+            $hasSguInit = [];
+            foreach ($fileFitContent as $info){
+                if (empty($info['sku_id'])){
+                    $this->log("{$info['temp_sku_id']}没有sku_id");
+                    continue;
+                }
+                if (isset($map[$info['sku_id']])){
+                    $skuAttrData = $map[$info['sku_id']];
+
+                    if (!empty($skuAttrData['custom-sguInfo-groupTag'])){
+
+
+                        $sguKey = "sgu_init_{$info['batch_no']}_{$skuAttrData['custom-sguInfo-groupTag']}";
+                        $this->log("{$sguKey}");
+                        $sguId = $this->redis->hGet("sgu_fix_redis", $sguKey);
+                        if (!$sguId){
+                            //当前key重新创建sgu
+                            $sguId = $this->createSguInfo();
+
+                            $this->log("{$info['sku_id']} 绑定 {$sguId}");
+
+                            $this->redis->hSet("sgu_fix_redis", $sguKey, $sguId);
+                            //$qdScmsPrePurchaseMap[$sguKey] = $sguId;
+                        }
+
+                        if (!empty($sguId)){
+
+                            $this->log("{$sguKey} 生成 {$sguId}");
+
+                            $sguInfo = DataUtils::getQueryListInFirstDataV3($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
+                                "skuScuId" => $info['sku_id'],
+                                "limit" => 1,
+                            ]));
+                            if ($sguInfo){
+
+                                $sguInfo['sguId'] = $sguId;
+                                $sguInfo['modifiedBy'] = "system(zhouangang)";
+                                $curlService->s3015()->put("sgu-sku-scu-maps/{$sguInfo['_id']}", $sguInfo);
+
+                            }else{
+                                //创建
+
+                                $channelList = explode(",",$skuAttrData['custom-sguInfo-channel']);
+                                $channelListData = [];
+                                foreach ($channelList as $ch){
+                                    $channelListData[] = [
+                                        "groupName" => "",
+                                        "groupAttrName" => [],
+                                        "groupAttrValue" => [],
+                                        "channel" => $ch,
+                                        "modifiedBy" => "system(zhouangang)",
+                                        "modifiedOn" => date("Y-m-d H:i:s",time ())."Z"
+                                    ];
+                                }
+                                $create = [
+                                    "createdBy" => "system(zhouangang)",
+                                    "modifiedBy" => "system(zhouangang)",
+                                    "skuScuId" => $info['sku_id'],
+                                    "sguId" => $sguId,
+                                    "remark" => "sgu自动绑定和初始化",
+                                    "channel" => $channelListData,
+                                    "createdOn" => date("Y-m-d H:i:s",time ())."Z",
+                                    "modifiedOn" => date("Y-m-d H:i:s",time ())."Z"
+                                ];
+                                $curlService->s3015()->post("/sgu-sku-scu-maps",$create);
+
+                            }
+
+                            $fix30List[] = [
+                                "tempSkuId" => $skuAttrData['custom-skuInfo-tempSkuId'],
+                                "skuAttrList" => [
+                                    [
+                                        "name" => "custom-sguInfo-sguId",
+                                        "value" => $sguId
+                                    ]
+                                ]
+                            ];
+
+                            if(!isset($hasSguInit[$sguId])){
+                                $this->log("{$sguId} 开始初始化");
+                                $sssinof = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
+                                    "limit" => 1,
+                                    "productId" => $sguId
+                                ]));
+                                if (!$sssinof){
+                                    $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+                                    $resp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/sms/sku/info/init/v1/initSkuInfo", [
+                                        "initSkuId" => $info['sku_id'],
+                                        "operatorName" => "system(修复sgu初始化)",
+                                        "productType" => "SGU",
+                                        "sguId" => $sguId
+                                    ]));
+                                    $hasSguInit[$sguId] = 1;
+                                }else{
+                                    $hasSguInit[$sguId] = 1;
+                                }
+                                $this->log("{$sguId} 结束初始化");
+                            }
+
+
+
+                        }else{
+                            $this->log("{$sguKey} 生成g号失败");
+                        }
+
+
+
+                    }else{
+                        $this->log("没有绑定g号，不用初始化");
+                    }
+
+                }
+
+
+
+
+            }
+
+
+
+            //回写3.0
+            if ($fix30List){
+                foreach (array_chunk($fix30List,200) as $chunkFix30List){
+                    $curlSsll = (new CurlService())->pro()->gateway()->getModule("pa");
+                    $getKeyResp = DataUtils::getNewResultData($curlSsll->getWayPost($curlSsll->module . "/ppms/product_dev/sku/v1/directUpdateBatch", [
+                        "operator" => "zhouangang",
+                        "skuList" => $chunkFix30List
+                    ]));
+                }
+
+
+            }
 
 
         }
@@ -4539,15 +4557,389 @@ class SyncCurlController
             }
         }
 
+        //translation_management_categorys/queryPage?exampleCategory=1342943031&exampleChannel=amazon_uk
+
+    }
+
+
+    public function fixTranslationManagementCategory()
+    {
+        $curlService = (new CurlService())->pro();
+
+        $list = DataUtils::getPageList($curlService->s3015()->get("translation_management_categorys/queryPage",[
+            "exampleCategory" => 1342943031,
+            "exampleChannel" => "amazon_uk",
+            "orderBy" => "-modifiedOn",
+            "limit" => 500
+        ]));
+
+        $data = [
+            "exampleChannel" => "amazon_uk",
+            "exampleCategory" => "1342943031",
+            "exampleCategoryName" => "Electronics & Photo > Car & Vehicle Electronics > Car Electronics > Reversing Cameras",
+            "correspondData" => [],
+            "createdBy" => "system(zhouangang)",
+            "modifiedBy" => "system(zhouangang)",
+            "createdOn" => date("Y-m-d H:i:s",time())."Z",
+            "modifiedOn" => date("Y-m-d H:i:s",time())."Z"
+        ];
+        $correspondData = [];
+
+        $sameChannelData = [];
+        foreach ($list as $info){
+            if ($info['correspondData']){
+                foreach ($info['correspondData'] as $tree){
+                    if (!isset($sameChannelData[$tree['channel']])){
+                        $sameChannelData[$tree['channel']] = 1;
+                        $correspondData[] = $tree;
+                    }
+                }
+                $curlService->s3015()->delete("translation_management_categorys/{$info['_id']}");
+            }
+        }
+        $data['correspondData'] = $correspondData;
+
+        $this->log(json_encode($data,JSON_UNESCAPED_UNICODE));
+        $curlService->s3015()->post("translation_management_categorys",$data);
+    }
+
+
+    public function fixDengyiyi(){
+        $pmo = [
+            "DPMO250626003",
+            "DPMO250626004",
+            "DPMO250627004",
+            "DPMO250707006",
+            "DPMO250707011",
+            "DPMO250707012",
+            "DPMO250707013",
+            "DPMO250721007",
+            "DPMO250729010",
+            "DPMO250819009",
+        ];
+        $curlService = (new CurlService())->pro();
+        $list = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage",[
+            "batchName_in" => implode(",",$pmo),
+            "limit" => 500
+        ]));
+        if ($list){
+            foreach ($list as $info){
+                if ($info['ebayTraceMan'] == 'dengyiyi2'){
+                    $info['ebayTraceMan'] = 'dengyiyi';
+                    foreach ($info['ebayTraceManList'] as &$item){
+                        if ($item == 'dengyiyi2'){
+                            $item = 'dengyiyi';
+                        }
+                    }
+                    $this->log(json_encode($info,JSON_UNESCAPED_UNICODE));
+                    $curlService->s3044()->put("pa_ce_materials/{$info['_id']}",$info);
+                }
+            }
+        }
+    }
+
+
+
+    public function getssss()
+    {
+        $curlService = (new CurlService())->pro();
+        $list = [
+            "689ef98a7fbdf42093ce5d30",
+            "689ef98a7363a82099cc33cf",
+            "68a2e30bb78a492b51f5f1a3",
+            "68a2e30b7306c02b458956f7",
+            "68abcf6e5e49d202bb5568ce",
+            "68abcf6f719bc05600b18a1d",
+            "68abcf6f38d8aa2886ba6eb1",
+            "68abcf70f01bcc2893eea895",
+            "68abcf71468a8228805a44ac",
+            "68abcf74c54f2755ebc0960b",
+            "68abcf754d445b28a6a3caff",
+            "68abcf75468a8228805a44df",
+            "68abcf765e49d202bb5569b1",
+            "68abcf7640e74455f1f31c8f",
+            "68abcf76468a8228805a44e6",
+            "68abcf76c4758902b30a8433",
+            "68abcf77ff4d5402c5c4f004",
+            "68abcf779135e4560fec01ec",
+            "68abcf77c54f2755ebc09614",
+            "68abcf77f01bcc2893eea8e8",
+            "68abcf77c4758902b30a8449",
+            "68abcf77719bc05600b18a3d",
+            "68abcf7940e74455f1f31caf",
+            "68abcf7940e74455f1f31cb7",
+            "68abcf795e49d202bb5569e1",
+            "68abcf799135e4560fec0206",
+            "68abcf799135e4560fec020d",
+            "68abcf799135e4560fec0217",
+            "68abcf7a5e49d202bb5569ec",
+            "68abcf7ac4758902b30a8476",
+            "68abcf7bc4758902b30a84ac",
+            "68abcf7b468a8228805a451e",
+            "68abcf7c5e49d202bb556a6b",
+            "68abcf7cf01bcc2893eea91e",
+            "68abcf7c468a8228805a4529",
+            "68abcf7cff4d5402c5c4f12a",
+            "68abcf7c468a8228805a4530",
+            "68abcf7d40e74455f1f31cf8",
+            "68abcf7dc4758902b30a8500",
+            "68abcf7d5e49d202bb556aef",
+            "68abcf7d40e74455f1f31d00",
+            "68abcf7dc54f2755ebc0965f",
+            "68abcf7d5e49d202bb556afa",
+            "68abcf7d40e74455f1f31d0a",
+            "68abcf7eff4d5402c5c4f155",
+            "68abcf7e5e49d202bb556b07",
+            "68abcf7e4d445b28a6a3cb8f",
+            "68abcf7e5e49d202bb556b12",
+            "68abcf7e39fee202d4c117be",
+            "68abcf7eff4d5402c5c4f169",
+            "68abcf7fc4758902b30a8539",
+            "68abcf7f39fee202d4c117d7",
+            "68abcf7fc4758902b30a8557",
+            "68abcf7f719bc05600b18a8b",
+            "68abcf7ff01bcc2893eea990",
+            "68abcf809135e4560fec0283",
+            "68abcf805e49d202bb556c0c",
+            "68abcf8040e74455f1f31d26",
+            "68abcf804d445b28a6a3cbc0",
+            "68abcf80c54f2755ebc096af",
+            "68abcf815e49d202bb556c3d",
+            "68abcf81468a8228805a456e",
+            "68abcf8138d8aa2886ba6f7a",
+            "68abcf819135e4560fec029f",
+            "68abcf825e49d202bb556c50",
+            "68abcf82468a8228805a4585",
+            "68ad1c05468a82288066e613",
+            "68ad1c05468a82288066e61a",
+            "68ad1c06c54f2755ebceb7d3",
+            "68ad1c0639fee202d4d9b98b",
+            "68ad1c0638d8aa2886c906cc",
+            "68ad1c0638d8aa2886c906d3",
+            "68ad1c0639fee202d4d9b999",
+            "68ad1c06719bc05600bf9312",
+            "68ad1c069135e4560ff8ebaf",
+            "68ad1c073d113423e613a0a5",
+            "68ad1c079135e4560ff8ebb6",
+            "68ad1c07468a82288066e625",
+            "68ad77c2cc0c3d3d5b75813f",
+            "68ad778883de315576fe6832",
+            "68ad7787dce11b279223296e",
+            "68ad77a4cc0c3d3d5b757f57",
+            "68ad778e057d753d8386a7c2",
+            "68ad77b0cc0c3d3d5b758005",
+            "68ad77aeb0cd5d3d660bac50",
+            "68ad77c2057d753d8386acb4",
+            "68ad77c2dce11b2792232ec9",
+            "68ad7787b0cd5d3d660ba7b7",
+            "68ad778a07f7a755663c7c64",
+            "68ad77a45ae386557c752450",
+            "68ad778d5ae386557c752245",
+            "68ad77ae07f7a755663c80d0",
+            "68ad77ae514005556c02037c",
+            "68ad77c25ae386557c7527ae",
+            "68ad77c783de315576fe74f5",
+            "68ad778a5ae386557c7521da",
+            "68ad7787057d753d8386a6b3",
+            "68ad77a683de315576fe6a47",
+            "68ad77a3dce11b2792232cd9",
+            "68ad77aecc0c3d3d5b757fae",
+            "68ad77b1057d753d8386ab2a",
+            "68ad77c583de315576fe7371",
+            "68ad77c4cc0c3d3d5b75819f",
+            "68ad779f65126027a6c60d2d",
+            "68ad77a307f7a755663c7fe4",
+            "68ad77b907f7a755663c824c",
+            "68ad77b1514005556c0203b2",
+            "68ad77b065126027a6c60f95",
+            "68ad77c63701cb279a60bdef",
+            "68ad77c4b2c74a27b53aadae",
+            "68ad2ca338d8aa2886c9d0ce",
+            "68ad2ca4cfcce7046cdaeabc",
+            "68ad2ca4c4758902b32644aa",
+            "68ad2ca4c4758902b32644ad",
+            "68ad2ca5c54f2755ebcfb56b",
+            "68ad2ca5ff4d5402c5df3eab",
+            "68ad2ca5c4758902b32644bd",
+            "68ad2ca6c54f2755ebcfb575",
+            "68ad2ca64d445b28a6b1c7d3",
+            "68ad2ca63d113423e6149df9",
+            "68ad2ca6cfcce7046cdaeacc",
+            "68ad2ca640e74455f100c291",
+            "68ad2ca6719bc05600c0a072",
+            "68ad2ca6cfcce7046cdaead1",
+            "68ad2ca7719bc05600c0a076",
+            "68ad2ca7ff4d5402c5df3ee3",
+            "68ad2ca7468a82288067c77f",
+            "68ad2ca240e74455f100c254",
+            "68ad2ca24d445b28a6b1c7ad",
+            "68ad2ca239fee202d4dbe1f7",
+            "68ad2ca33d113423e6149d6c",
+            "68ad2ca340e74455f100c27e",
+            "68ad2ca39135e4560ff9d7e9",
+            "68ad2ca84d445b28a6b1c7da",
+            "68ad2ca8c54f2755ebcfb57e",
+            "68ad2ca8cfcce7046cdaeaed",
+            "68ad2ca89135e4560ff9d823",
+            "68ad2ca9c4758902b32644e9",
+            "68ad2ca9468a82288067c79a",
+            "68ad2ca73d113423e6149dfe",
+            "68ad2ca7ff4d5402c5df3eec",
+            "68ad2ca7c54f2755ebcfb57a",
+            "68ad2ca83d113423e6149e01",
+            "68ad2ca8468a82288067c783",
+            "68ad2ca8cfcce7046cdaeae9",
+            "68ad7907dce11b27922339a8",
+            "68ad793565126027a6c62096",
+            "68ad79353701cb279a60ccd6",
+            "68ad791a514005556c0242b7",
+            "68ad792e0c81493d7485f026",
+            "68ad791383de315576feac6c",
+            "68ad7913057d753d8386b846",
+            "68ad7908cc0c3d3d5b758beb",
+            "68ad7b60057d753d8386cf75",
+            "68ad7b5d0c81493d748604f5",
+        ];
+
+        $exportList = [];
+        foreach ($list as $id){
+            $info = DataUtils::getResultData($curlService->s3015()->get("/sgu-sku-scu-maps/{$id}",[]));
+            if ($info){
+                $hasGroupName = false;
+                foreach ($info['channel'] as $channel){
+                    if ($channel['groupName']){
+                        $hasGroupName = true;
+                    }
+                }
+                $res = (new RequestUtils("test"))->callAliCloudSls2($info['skuScuId']);
+                $oldSguId = "";
+                $oldSkuId = "";
+                if ($res && $res['data'] && count($res['data']) > 0){
+                    $logs = $res['data'][0]['FormString'];
+                    $data = json_decode($logs,true);
+                    $oldSkuId = $data['skuScuId'];
+                    $oldSguId = $data['sguId'];
+                }
+                $exportList[] = [
+                    "sku_id" => $info['skuScuId'],
+                    "sgu_id" => $info['sguId'],
+                    "old_sku_id" => $oldSkuId,
+                    "old_sgu_id" => $oldSguId,
+                    "hasGroupName" => $hasGroupName ? "有":"无",
+                    "createTime" => $info['createdOn'],
+                    "modifiedOn" => $info['modifiedOn'],
+                ];
+            }
+        }
+
+        if ($exportList){
+            $excelUtils = new ExcelUtils();
+            $downloadOssLink = "g号修复的被更新的_" . date("YmdHis") . ".xlsx";
+            $downloadOssPath = $excelUtils->downloadXlsx(["sku_id", "sgu_id", "旧A号","旧G号","有分组的","创建日期","修改日期"],$exportList,$downloadOssLink);
+
+        }
+
+    }
+
+
+    public function fallBack30()
+    {
+
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/g号修复的被更新的_20250826180811.xlsx");
+        if (sizeof($fileFitContent) > 0) {
+
+            $list = [];
+            foreach ($fileFitContent as $item){
+                if (!empty($item['sku_id'] && $item['有分组的'] == '有')){
+                    $list[] = $item['sku_id'];
+                }
+            }
+            $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+            $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
+                "skuIdList" => $list,
+                "attrCodeList" => [
+                    "custom-skuInfo-skuId",
+                    "custom-common-batchNo",
+                    "custom-sguInfo-sguId",
+                    "custom-sguInfo-groupTag",
+                    "custom-sguInfo-channel",
+                    "custom-skuInfo-tempSkuId"
+                ]
+            ]));
+            $map  =[];
+            if ($getKeyResp){
+                foreach ($getKeyResp as $item){
+                    $map[$item['custom-skuInfo-skuId']] = $item;
+                }
+            }
+
+            $fix30List = [];
+
+            foreach ($fileFitContent as $item){
+                if (!empty($item['sku_id'] && $item['有分组的'] == '有')){
+                    if (!isset($map[$item['sku_id']])){
+                        continue;
+                    }
+                    $tempSkuId = $map[$item['sku_id']]['custom-skuInfo-tempSkuId'];
+                    $sguId = $item['旧G号'];
+
+                    $curlService = (new CurlService())->pro();
+                    $sguInfo = DataUtils::getQueryListInFirstDataV3($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
+                        "skuScuId" => $item['sku_id'],
+                        "limit" => 1,
+                    ]));
+                    if ($sguInfo){
+                        $sguInfo['sguId'] = $sguId;
+                        $sguInfo['modifiedBy'] = "system(zhouangang)";
+                        $curlService->s3015()->put("sgu-sku-scu-maps/{$sguInfo['_id']}", $sguInfo);
+                    }
+
+
+
+                    $fix30List[] = [
+                        "tempSkuId" => $tempSkuId,
+                        "skuAttrList" => [
+                            [
+                                "name" => "custom-sguInfo-sguId",
+                                "value" => $sguId
+                            ]
+                        ]
+                    ];
+
+
+
+                }
+            }
+
+//            if ($fix30List){
+//                foreach (array_chunk($fix30List,200) as $chunkFix30List){
+//                    $curlSsll = (new CurlService())->pro()->gateway()->getModule("pa");
+//                    $getKeyResp = DataUtils::getNewResultData($curlSsll->getWayPost($curlSsll->module . "/ppms/product_dev/sku/v1/directUpdateBatch", [
+//                        "operator" => "zhouangang",
+//                        "skuList" => $chunkFix30List
+//                    ]));
+//                }
+//            }
+
+
+        }
+
+
+
 
 
     }
 }
 
 $curlController = new SyncCurlController();
-$curlController->fixProductSku();
+//$curlController->fallBack30();
+//$curlController->getssss();
+//$curlController->fixDengyiyi();
+//$curlController->fixTranslationManagementCategory();
+//$curlController->fixProductSku();
 //$curlController->fixMergeADV2SguId();
-//$curlController->fixMergeADSguId();
+$curlController->fixMergeADSguId();
 //$curlController->createSguInfo();
 //$curlController->fixRepeatSkuMaterial();
 //$curlController->fixRepeatSkuMaterial();

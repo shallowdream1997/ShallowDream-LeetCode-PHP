@@ -570,6 +570,79 @@ class RequestUtils
         // 返回响应
         return $body;
     }
+
+    public function callAliCloudSls2($skuId)
+    {
+        $url = 'https://sls.console.aliyun.com/console/logs/getLogs.json';
+
+        $headers = [
+            'accept: application/json',
+            'accept-language: zh-CN,zh;q=0.9,sq;q=0.8',
+            'b3: dd648db6ae4bbc9386fdd20aa677ceb8-81eb8bcb27a884c4-1',
+            'bx-v: 2.5.31',
+            'content-type: application/x-www-form-urlencoded',
+            'eagleeye-pappname: gaddp9ap8q@fcf4dd25082bab4',
+            'eagleeye-sessionid: qCmjOe5ksO9cXnzj28RszI60yzk8',
+            'eagleeye-traceid: 8823dac0175620201024011852bab4',
+            'origin: https://sls.console.aliyun.com',
+            'priority: u=1, i',
+            'referer: https://sls.console.aliyun.com/lognext/project/aliyun-hn1-all-log/logsearch/api_nodejs_access_log_new?encode=base64&queryString=UE1PMjAyNTA4MTUwMDAzMyBhbmQgUmVxdWVzdE1ldGhvZDogUFVUIA%3D%3D&filterInfo=eyJmamNvZGUiOiIoKSIsImZxIjoiIn0%3D&queryTimeType=99&startTime=1735660800&endTime=1755573379&slsRegion=cn-shenzhen',
+            'sec-ch-ua: "Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"',
+            'sec-ch-ua-mobile: ?0',
+            'sec-ch-ua-platform: "Linux"',
+            'sec-fetch-dest: empty',
+            'sec-fetch-mode: cors',
+            'sec-fetch-site: same-origin',
+            'traceparent: 00-dd648db6ae4bbc9386fdd20aa677ceb8-81eb8bcb27a884c4-01',
+            'uber-trace-id: dd648db6ae4bbc9386fdd20aa677ceb8:81eb8bcb27a884c4:0:1',
+            'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+            'x-csrf-token: 60969255'
+        ];
+
+        $cookies = 'cna=NaHqIBsy20oCAQ6Rk5/H14em; aliyun_site=CN; currentRegionId=cn-shenzhen; aliyun_lang=zh; aliyun_country=CN; partitioned_cookie_flag=doubleRemove; login_aliyunid_csrf=_csrf_tk_1591156189759269; login_aliyunid="16363354792682515 @ 1196618798442729"; login_aliyunid_ticket=3RctYK12wchS7wBJzHKJeoTE.1118RhrCpYNsxuC1jA5mCp9fpUsGyPTa6KCx8gcZx57sbo8BAWigHJpBfWE2mz3pG8DFUYisrp1CTRFzHi7ZeHKekjAVTWMBBMSPT5iHARoMJDLugHePWHWnAHba3J5tLc1bs18Cg6RnAF9mgYCzLsJ2akSDArcn4ZwZ8DTZSV9pRxaDAbt.2mWNaj2hkxo1R9sNHmqU87DtogKHx1c8JuH92EWhPoMeEE8MBezPXwFjEfz2dearG5; login_aliyunid_sc=3R5H3e3HY2c8gwLZuY5GmS7K.1113fs9jHcTwCZEPVPgLPybMTwyy3yGe49rMuhUz6hYSbK8xTPGdPhhi4k85GfE2Mg3Dr9.2mWNaj2rY8QYqPma4ZVq7MNGgPAz5s3L7x3WkBD74HVH346tFF1XQtBstvaisU6LFZ; login_aliyunid_pk=1196618798442729; login_current_pk=292058973591134045; tfstk=glcszH9hdzqejKM8CS8FNeVZhCPXxeJea2bjr4EV_tFtAonno-ha_qrxcDm7HFmqQICxAklabVP9lmi-YAS4053YHDnZQfr46STjbV6a3VhqhWEEcSPqWmofSXi5g1-MIqCbgSKy4QRrSFV0M3uB_nYfSrz1WtI4HM3Lgr_D79FnSVVc-wSvUv3GlHRRlsFxDWELrrNYWlFv9kE3ltCtDledvzauMonxDy3LlzaAHSEYJWE3kSExDSLQ9k4bMonYMegKTTjQudax5UZ7yoYvLLp4XsCxOPwpLKqdGJ4VaIrrWk1AMl1LQudzAsCxOP3jG2GP9IE-EDHKBY_OT-P3ADzsmQfg6-Mx_Wh9vIFxpcl7ljYRhowjsWZIVQC0-Ans9-GeoQgU1riuPmOln22YPcVt6HS_GWau3xiwxsEZF2nQUXSFa7HoAjw8wgofauZBGt_QEsaQ4eTCntj89HTYkIAX8RU3WQ8BRM60By4QReTCnhwT-PKDResad; isg=BPr6zoHCRtikhcp8MQhT4FLLSykcq36FDBxivwTMRg6Y9oExBzwClM5BR4Mr5_Yd';
+
+        $postData = [
+            'ProjectName' => 'aliyun-hn1-all-log',
+            'LogStoreName' => 'api_nodejs_access_log_new',
+            'from' => '1753977600',
+            'query' => "sgu-sku-scu-maps and RequestMethod: POST and {$skuId} not getSguSkuGroupData  | with_pack_meta",
+            'to' => '1756202010',
+            'Page' => '1',
+            'Size' => '100',
+            'Reverse' => 'true',
+            'pSql' => 'false',
+            'fullComplete' => 'false',
+            'schemaFree' => 'false',
+            'needHighlight' => 'true'
+        ];
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_COOKIE, $cookies);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+        // 执行请求
+        $response = curl_exec($ch);
+
+        // 检查是否有错误
+        if (curl_errno($ch)) {
+            throw new Exception('cURL error: ' . curl_error($ch));
+        }
+
+        // 关闭cURL资源
+        curl_close($ch);
+        //头信息
+        $body = json_decode($response,true);
+        // 返回响应
+        return $body;
+    }
 }
 
 //$request = new RequestUtils("test");
