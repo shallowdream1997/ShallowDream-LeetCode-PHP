@@ -1,0 +1,135 @@
+
+@startuml
+' 设置标题
+title 应用架构图 - 寄卖商接单流程 - PA业务端
+
+' 定义样式
+skinparam packageStyle rectangle
+skinparam componentStyle rectangle
+
+' 定义应用层
+package "前端应用层" {
+    [寄卖商清单竞标管理(pa-biz-web)] as web_admin
+}
+
+' 定义业务应用层
+package "业务应用层" {
+    package "清单管理应用(pa-biz-application)" {
+        [清单列表筛查] as listing_search
+        [处理寄卖清单] as handle_listing
+        [批量导出清单] as batch_export
+
+
+        [清单详情数据显示] as listing_detail
+    }
+}
+
+' 定义服务层
+package "核心服务层" {
+    package "寄卖清单crud服务(pa-biz-service)" {
+        [文件处理模块] as file_module
+
+        [page] as search_module
+        [create] as create_module
+        [check] as check_module
+        [update] as update_module
+        [delete] as delete_module
+    }
+
+    package "寄卖商投标申请crud服务(pa-biz-service)" {
+        [list] as list_module
+    }
+}
+
+' 定义中间件层
+package "中间件层" {
+    package "消息队列" {
+        [处理清单MQ] as handle_listing_mq
+    }
+}
+
+package "存储层" {
+    package "数据库" {
+        [mysql] as mysql
+    }
+    package "对象存储" {
+        [oss] as oss
+    }
+}
+
+' 定义数据流向和职责关系
+web_admin --> listing_search : 筛查清单
+web_admin --> handle_listing : 处理寄卖清单
+web_admin --> batch_export : 批量导出
+web_admin --> listing_detail : 查看详情
+
+listing_search --> search_module : 查询
+mysql --> search_module : 数据库读取
+
+batch_export --> search_module : 查询
+search_module --> file_module : 生成文件
+file_module --> oss : 上传导出文件到oss
+
+handle_listing -down-> check_module : <color #red>策略模式\n不同的策略执行不同的清单操作
+oss -down-> check_module : <color #red>文件读取并校验处理
+check_module -down-> update_module : <color #green>处理更新字段
+update_module --> mysql : 更新数据库
+
+listing_detail --> list_module : <color #red>不同轮次下清单的寄卖商竞标详情
+
+
+note top of listing_search
+  职责：
+  - 展示清单列表
+  - 提供清单搜索筛选
+end note
+
+note top of handle_listing
+  职责：
+  - 批量发布清单
+  - 批量作废清单
+  - 重新分配
+  - 重新发布
+  - 放弃清单
+end note
+
+note top of batch_export
+  职责：
+  - 导出清单列表
+  - 导出放弃清单原因
+  - 导出清单下载记录
+end note
+
+
+note top of listing_detail
+  职责：
+  - 提供清单详情
+  - 查看清单发布轮次详情
+  - 重新分配
+  - 重新发布
+  - 放弃清单
+  - 提供寄卖商得分详情
+end note
+
+note top of search_module
+  职责：
+  - 查
+end note
+
+note top of create_module
+  职责：
+  - 增
+end note
+note top of check_module
+  职责：
+  - 校验
+end note
+note top of update_module
+  职责：
+  - 改
+end note
+note top of delete_module
+  职责：
+  - 删
+end note
+@enduml

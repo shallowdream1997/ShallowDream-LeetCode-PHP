@@ -1,0 +1,24 @@
+@startuml
+left to right direction
+
+actor "供应商" as OperatorA
+
+rectangle "UX168供应商平台 - 清单列表申请记录" {
+  OperatorA --> (清单筛查)
+  OperatorA --> (申请寄卖)
+  OperatorA --> (下载清单)
+  OperatorA --> (反馈)
+  OperatorA --> (上传采购凭证)
+}
+
+note right of OperatorA
+  职责：
+  - 管理清单信息
+  - 参与竞标，申请清单
+  - 清单反馈
+  - 下载并查看指导清单
+  - 上传采购凭证
+end note
+
+
+@enduml

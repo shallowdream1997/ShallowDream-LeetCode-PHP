@@ -1,0 +1,163 @@
+
+@startuml
+' 设置标题
+title 应用架构图 - 寄卖商接单流程 - ux168供应商平台端
+
+' 定义样式
+skinparam packageStyle rectangle
+skinparam componentStyle rectangle
+
+' 定义应用层
+package "前端应用层" {
+    [寄卖商平台清单管理] as web_user
+    [寄卖商清单竞标(pa-biz-web)] as web_admin
+}
+
+package "对接" {
+    [PHP公网API] as php
+}
+
+
+' 定义业务应用层
+package "业务应用层" {
+    package "清单管理应用(pa-biz-application)" {
+        [清单列表筛查] as listing_search
+
+        [下载指导清单] as batch_import
+        [清单反馈] as feedback
+
+        [申请寄卖] as apply
+        [上传凭证] as upload_certificate
+    }
+}
+
+' 定义服务层
+package "核心服务层" {
+    package "寄卖清单crud服务(pa-biz-service)" {
+        [文件处理模块] as file_module
+
+        [page] as search_module
+        [create] as create_module
+        [check] as check_module
+        [update] as update_module
+        [delete] as delete_module
+    }
+
+
+    package "寄卖商投标申请crud服务(pa-biz-service)" {
+        [list] as list_module
+        [create] as create_list_module
+        [update] as update_list_module
+    }
+
+    package "寄卖清单反馈crud服务(pa-biz-service)" {
+        [list] as list_feedback_module
+        [create] as create_feedback_module
+        [update] as update_feedback_module
+    }
+}
+
+' 定义中间件层
+package "中间件层" {
+    package "消息队列" {
+        [处理清单MQ] as handle_listing_mq
+    }
+}
+
+package "存储层" {
+    package "数据库" {
+        [mysql] as mysql
+    }
+    package "对象存储" {
+        [oss] as oss
+    }
+    package "缓存层" {
+        [redis] as redis
+    }
+}
+
+
+' 定义数据流向和职责关系
+
+web_user --> web_admin : 页面嵌套
+web_admin --> php : 公网域名API转调内网API
+
+php --> listing_search : 筛查清单
+php --> feedback : 清单反馈
+php --> batch_import : 下载指导清单
+php --> apply : 申请寄卖
+php --> upload_certificate : 上传凭证
+
+listing_search --> search_module : 查询
+mysql --> search_module : 数据库读取
+
+
+batch_import <-- oss : 下载文件
+
+feedback --> create_feedback_module : 新增反馈
+create_feedback_module --> mysql : 存储反馈信息
+
+apply --> create_list_module : 新增申请
+create_list_module --> redis : 缓存,队列先到先出，第一名排名
+create_list_module --> mysql : 存储申请信息
+
+upload_certificate --> file_module : 文件处理
+file_module --> oss : 上传文件
+file_module --> update_module : 更新文件凭证
+file_module --> mysql : 存储文件信息
+
+note top of listing_search
+  职责：
+  - 展示清单列表
+  - 提供清单搜索筛选
+end note
+
+note top of feedback
+  职责：
+  - 提交寄卖商反馈
+end note
+
+note top of batch_import
+  职责：
+  - 导出指导清单
+end note
+
+
+note top of apply
+  职责：
+  - 寄卖商申请寄卖(参与投标)
+end note
+
+note top of upload_certificate
+  职责：
+  - 上传凭证
+end note
+
+note top of search_module
+  职责：
+  - 查
+end note
+
+note top of create_module
+  职责：
+  - 增
+end note
+note top of check_module
+  职责：
+  - 校验
+end note
+note top of update_module
+  职责：
+  - 改
+end note
+note top of delete_module
+  职责：
+  - 删
+end note
+
+note top of create_list_module
+  职责：
+  - 寄卖对清单参与投标的新增
+end note
+
+@enduml

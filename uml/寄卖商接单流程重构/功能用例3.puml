@@ -1,0 +1,21 @@
+@startuml
+left to right direction
+
+actor "Job" as OperatorA
+
+rectangle "寄卖商接单流程 - 定时任务" {
+  OperatorA --> (自动创建寄卖QD单)
+  OperatorA --> (寄卖QD清单自动发布含重新发布)
+  OperatorA --> (寄卖QD清单自动更新从发布中到待分配)
+  OperatorA --> (自动对寄卖QD清单分配寄卖商)
+}
+
+note right of OperatorA
+  职责：
+  - 处理清单流程的状态变更
+  - 分配发布日期
+  - 分配寄卖商
+end note
+
+
+@enduml

@@ -1,0 +1,162 @@
+@startuml
+title 资料变更单据创建
+autonumber
+
+actor customer
+
+box "product_operation_js_angular5" #LightBlue
+    participant page1 as "资料编辑-保存"
+    participant page3 as "批量资料编辑"
+end box
+
+box "pa-biz-application" #LightGreen
+    participant app1 as "处理资料变更单据服务"
+end box
+
+box "pa-biz-service" #LightYellow
+    participant service1 as "初始化创建资料变更单据"
+    participant service2 as "更新资料变更单据"
+    participant service3 as "资料翻译+禁词检查+长度校验服务"
+end box
+
+box "product_operation_listing_management_nodejs_app" #LightCoral
+    participant node1 as "updateProductSku接口更新资料服务"
+    participant node2 as "资料变更前后差异比对服务"
+    participant node3 as "禁词检查"
+end box
+
+box "translation_nodejs_app" #LightCyan
+    participant translation as "翻译"
+end box
+
+box "platform-config-service" #LightGoldenRodYellow
+    participant config1 as "配置"
+end box
+
+box "platform-message-service" #LightGray
+    participant msg1 as "钉钉通知"
+end box
+
+box "RocketMQ" #LightPink
+    participant mq1 as "资料翻译+禁词检查MQ"
+end box
+
+box "mysql" #LightSalmon
+    participant sql1 as "sms_material_changed_notice_doc"
+    participant sql2 as "sms_material_changed_batch_export_apply"
+end box
+
+box "mongo" #LightYellow
+    participant mongo1 as "product-sku"
+    participant mongo2 as "product-sku-log"
+end box
+
+customer -> page1 : 进入资料编辑页面,保存资料
+
+page1 -> node1 : 调用更新资料接口
+node1 -> mongo1 : 更新旧数据
+mongo1 --> node1 : 返回新数据
+note over node1#yellow: 处理product-sku的变更数据，一直到product-sku-log创建，获取新数据newProductSkuInfo
+alt 保存的类型为UpdateAttribute或者UpdateForbiddenWord
+
+node1 -> node2 :
+note over node1#yellow: 旧数据oldProductSkuInfo和新数据newProductSkuInfo做差异对比
+node2 --> node1 : 返回差异 diffProductSkuInfo
+end
+
+note over node1:把diffProductSkuInfo和skuId传参
+node1 -> app1 : 调用处理资料变更单据服务
+app1 -> config1 : 获取配置参数
+config1 --> app1 : 返回可以创建资料变更单据的配置参数
+
+loop diff of diffProductSkuInfo
+note over app1:diff，每个属性都和允许资料变更的配置参数做判断
+alt diff的渠道和attribute_name属性名称 和 config相等
+
+app1 -> service1 : 创建apply_status = 10(新建)且process_status=0(新建)的单据
+service1 -> sql1 : 存储数据库
+sql1 --> service1 : 返回主键id
+service1 -> mq1 : 发送mq，开始自动翻译
+note over service1#yellow:更新资料变更单据process_status = 10(等待翻译)
+
+mq1 -> service3 : 接收mq
+note over service3#yellow:autoCheckTranslationReferenceAttributeForbidden自动翻译和检查禁词等
+
+group 自动翻译
+note over service3#yellow:autoTranslationReferenceAttribute
+
+service3 -> translation : 调用翻译
+translation --> service3 : 返回翻译结果
+
+alt 翻译成功
+    service3 -> service3 : 更新process_status = 30(翻译完成)
+else 翻译失败
+    service3 -> mq1 : 更新process_status = 40(翻译失败)
+    note over service3#red:中止流程
+end
+end
+
+group 自动禁词检查
+note over service3#yellow:autoCheckReferenceAttributeForbidden
+
+service3 -> node3 : 调用禁词检查
+node3 --> service3 : 返回禁词结果
+
+alt 禁词检查成功
+    service3 -> service3 : 更新process_status = 70(禁词检查完成)
+    loop 禁词结果
+     alt type=禁词
+        note over service3#yellow:记录禁词forbidden_words[]
+        end
+
+    end
+else 禁词检查失败
+    service3 -> mq1 : 更新process_status = 80(禁词检查失败)
+    note over service3#red:中止流程
+end
+end
+
+group 长度检查
+note over service3#yellow:autoCheckAttributeLength
+
+service3 -> config1 : 获取属性长度条件配置
+config1 --> service3 : 返回长度条件
+
+alt 长度检查成功
+    service3 -> service3 : 更新process_status = 100(长度检查成功)
+    alt 超长
+    note over service3#yellow: 记录超长 autoCheckAttributeLength
+    end
+
+else 长度检查失败
+    service3 -> mq1 : 更新process_status = 110(长度检查失败)
+    note over service3#red:中止流程
+end
+end
+
+note over service3#yellow: 平台，渠道，skuId，属性值，属性内容，翻译结果，禁词结果，超长长度等整理
+service3 -> service2 : 更新资料变更的接口
+service2 -> service2 : 更新apply_status=20(待审核)+更新process_status=120(全部检查完毕)
+service2 -> sql1 : 存储到sql1
+sql1 --> service2 : 返回结果
+
+
+note over service2#red:流程结束
+
+
+
+
+
+
+
+
+
+
+
+
+
+end
+end
+
+
+@enduml

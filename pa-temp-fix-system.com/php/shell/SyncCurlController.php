@@ -4453,12 +4453,14 @@ class SyncCurlController
     {
         $curlService = (new CurlService())->pro();
 
-        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/AD1_2.xlsx");
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/修复SGU号_陈启莲.xlsx");
         if (sizeof($fileFitContent) > 0) {
+
+
             $list = [];
-            foreach ($fileFitContent as $info){
-                if(!empty($info['sku_id'])){
-                    $list[] = $info['sku_id'];
+            foreach ($fileFitContent as $item){
+                if (!empty($item['skuId'])){
+                    $list[] = $item['skuId'];
                 }
             }
             $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
@@ -4470,37 +4472,53 @@ class SyncCurlController
                     "custom-sguInfo-sguId",
                     "custom-sguInfo-groupTag",
                     "custom-sguInfo-channel",
-                    "custom-skuInfo-tempSkuId",
-                    "custom-prePurchase-prePurchaseBillNo"
+                    "custom-skuInfo-tempSkuId"
                 ]
             ]));
             $map  =[];
             if ($getKeyResp){
-
-                $exportList = [];
                 foreach ($getKeyResp as $item){
-                    $exportList[] = [
-                        "batchNo" => $item['custom-common-batchNo'],
-                        "prePurchaseBillNo" => $item['custom-prePurchase-prePurchaseBillNo'],
-                        "skuId" => $item['custom-skuInfo-skuId'],
-                        "groupTag" => $item['custom-sguInfo-groupTag'],
-                        "sguId" => $item['custom-sguInfo-sguId']
-                    ];
+                    $map[$item['custom-skuInfo-skuId']] = $item;
+                }
+            }
+
+
+            foreach ($fileFitContent as $item){
+                $sguId = "";
+                $fix30List[] = [
+                    "tempSkuId" => $item['产品序号'],
+                    "skuAttrList" => [
+                        [
+                            "name" => "custom-sguInfo-sguId",
+                            "value" => $item['修复SGU号']
+                        ],
+                        [
+                            "name" => "custom-sguInfo-groupTag",
+                            "value" => "sgu_4"
+                        ]
+                    ]
+                ];
+            }
+
+
+
+
+
+            //回写3.0
+            if ($fix30List){
+                foreach (array_chunk($fix30List,200) as $chunkFix30List){
+                    $curlSsll = (new CurlService())->pro()->gateway()->getModule("pa");
+                    $getKeyResp = DataUtils::getNewResultData($curlSsll->getWayPost($curlSsll->module . "/ppms/product_dev/sku/v1/directUpdateBatch", [
+                        "operator" => "zhouangang",
+                        "skuList" => $chunkFix30List
+                    ]));
                 }
 
 
-                $excelUtils = new ExcelUtils();
-                $downloadOssLink = "AD250729000020_QD问题_" . date("YmdHis") . ".xlsx";
-                $filePath = $excelUtils->downloadXlsx(["batchNo","prePurchaseBillNo","skuId","groupTag","sguId"],$exportList,$downloadOssLink);
-                $this->log($filePath);
-
             }
 
+
         }
-
-
-
-
 
     }
 
@@ -4938,8 +4956,8 @@ $curlController = new SyncCurlController();
 //$curlController->fixDengyiyi();
 //$curlController->fixTranslationManagementCategory();
 //$curlController->fixProductSku();
-//$curlController->fixMergeADV2SguId();
-$curlController->fixMergeADSguId();
+$curlController->fixMergeADV2SguId();
+//$curlController->fixMergeADSguId();
 //$curlController->createSguInfo();
 //$curlController->fixRepeatSkuMaterial();
 //$curlController->fixRepeatSkuMaterial();
