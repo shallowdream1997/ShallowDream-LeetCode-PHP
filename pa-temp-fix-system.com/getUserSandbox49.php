@@ -1,15 +1,28 @@
 <?php
+
+require_once(dirname(__FILE__) . "/php/redis/RedisService.php");
+
 header("Access-Control-Allow-Origin: *");
 if (isset($_REQUEST['user']) && ! empty($_REQUEST['user']) || true) {
-    $manualUserList = array(
-        "172.16.29.23"=>"zhouangang",//zhou
-        "172.16.24.64"=>"linqinxiang",//祥
-        "172.16.24.44"=>"xiaoan",//老肖
-    );
-    if (isset($manualUserList[get_client_ip()])) {
-        echo $manualUserList[get_client_ip()];
-    } else {
-        echo "lixuehui";
+    $redis = new RedisService();
+    $ipConfig = $redis->hGetAll("ipHostUserNameConfig");
+    if ($ipConfig){
+        if (isset($ipConfig[get_client_ip()])) {
+            echo $ipConfig[get_client_ip()];
+        } else {
+            echo "zhengyusheng";
+        }
+    }else{
+        $manualUserList = array(
+            "172.16.29.23"=>"chennuo",//zhou
+            "172.16.24.64"=>"linqinxiang",//祥
+            "172.16.24.44"=>"xiaoan",//老肖
+        );
+        if (isset($manualUserList[get_client_ip()])) {
+            echo $manualUserList[get_client_ip()];
+        } else {
+            echo "lixuehui";
+        }
     }
 } else {
     define("COOKIE_AUTH", "product_operation_auth");

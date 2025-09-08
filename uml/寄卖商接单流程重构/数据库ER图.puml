@@ -1,45 +1,124 @@
 @startuml
 
-entity "sms_sku_material_changed_doc" as sms_sku_material_changed_doc {
-    id : INT
-    doc_number : CHAR
-    platform : VARCHAR
-    channel : VARCHAR
-    seller_id : VARCHAR
-    sku_id : VARCHAR
-    company_id : VARCHAR
-    attribute_name : VARCHAR
-    before_changed_attribute_value : TEXT
-    after_changed_attribute_value : TEXT
-    before_changed_translation_attribute_value : TEXT
-    after_changed_translation_attribute_value : TEXT
-    is_over_str_length : INT
-    over_str_length_reason : VARCHAR
-    exist_forbidden_word_reason : VARCHAR
-    update_type : VARCHAR
-    apply_status : TINYINT
-    process_status : TINYINT
-    remark : TEXT
-    apply_user : VARCHAR
-    batch_apply_id : INT
+entity "scms_consignment_qd_list" as scms_consignment_qd_list {
+    id : bigint unsigned (PK)
+    group_id : int
+    supplier_id : int
+    vertical : varchar(50)
+    qd_bill_no : varchar(32)
+    bid_bill_no : varchar(32)
+    type : int
+    supplier_type : varchar(32)
+    channel : varchar(32)
+    category_full_path_id : varchar(255)
+    category_id : varchar(255)
+    developer_user_name : varchar(255)
+    source_developer_user_name : varchar(255)
+    sku_count : int
+    estimated_cost : decimal(19,4)
+    consignment_coefficient : decimal(19,4)
+    avg_sales_forecast : INT
+    sku_avg_moq : decimal(19,4)
+    qd_file_url : varchar(4000)
+    status : tinyint(3)
+    publish_begin_time : datetime
+    publish_end_time : datetime
+    certificate_upload_time : datetime
+    audit_user_name : varchar(255)
+    audit_time : datetime
+    cancel_user_name : varchar(255)
+    cancel_time : datetime
+    cancel_type : datetime
+    cancel_reason : varchar(4000)
+    tenant_id : bigint unsigned
+    instance_id : bigint unsigned
+    application_id : bigint unsigned
+    create_by : varchar(50)
+    update_by : varchar(50)
+    create_time : datetime
+    update_time : datetime
+    is_deleted : tinyint unsigned
+    version : tinyint
 }
 
-entity "sms_sku_batch_import_material_changed_file" as sms_sku_batch_import_material_changed_file {
-    id : INT
-    doc_total_count : INT
-    operator : VARCHAR
-    platform : VARCHAR
-    import_file_link : VARCHAR
-    import_file_result : VARCHAR
+entity "scms_consignment_qd_publish_record" as scms_consignment_qd_publish_record {
+    id : bigint unsigned (PK)
+    group_id : int
+    supplier_id : int
+    vertical : varchar(50)
+    second_vertical : varchar(50)
+    consignment_qd_id : bigint
+    qd_bill_no : varchar(32)
+    bid_bill_no : varchar(32)
+    publish_count : int
+    status : tinyint
+    certificate_upload_image_url : varchar(4000)
+    certificate_upload_time : datetime
+    publish_begin_time : datetime
+    publish_end_time : datetime
+    tenant_id : bigint unsigned
+    instance_id : bigint unsigned
+    application_id : bigint unsigned
+    create_by : varchar(50)
+    update_by : varchar(50)
+    create_time : datetime
+    update_time : datetime
+    is_deleted : tinyint unsigned
+    version : tinyint
 }
 
-entity "sms_sku_material_doc_and_import_relation" as sms_sku_material_doc_and_import_relation {
-    id : INT
-    doc_id : INT
-    import_id : INT
+entity "scms_consignment_qd_apply_record" as scms_consignment_qd_apply_record {
+    id : bigint unsigned (PK)
+    group_id : int
+    supplier_id : int
+    vertical : varchar(50)
+    qd_bill_no : varchar(32)
+    bid_bill_no : varchar(32)
+    consignment_qd_publish_id : bigint
+    publish_count : int
+    qd_status : tinyint
+    bid_score_detail : json
+    group_score_detail : json
+    tenant_id : bigint unsigned
+    instance_id : bigint unsigned
+    application_id : bigint unsigned
+    create_by : varchar(50)
+    update_by : varchar(50)
+    create_time : datetime
+    update_time : datetime
+    is_deleted : tinyint unsigned
+    version : tinyint
 }
 
-sms_sku_material_changed_doc ||--o{ sms_sku_material_doc_and_import_relation : "batch_apply_id"
-sms_sku_batch_import_material_changed_file }o--|| sms_sku_material_doc_and_import_relation : "id"
+' 定义实体间的关系
+scms_consignment_qd_list ||--o{ scms_consignment_qd_publish_record : "1:N"
+scms_consignment_qd_publish_record ||--o{ scms_consignment_qd_apply_record : "1:N"
+
+' 添加外键关系说明
+note right of scms_consignment_qd_publish_record
+  consignment_qd_id references scms_consignment_qd_list.id
+end note
+
+note right of scms_consignment_qd_apply_record
+  consignment_qd_publish_id references scms_consignment_qd_publish_record.id
+end note
+
+note top of scms_consignment_qd_list
+  寄卖清单表
+  存储QD清单的基本信息和状态
+  状态值: 新建-10,待发布-20,发布中-30,待分配-40,分配完成-50,清单完成-60,已作废-100
+end note
+
+note top of scms_consignment_qd_publish_record
+  寄卖清单发布表
+  记录清单的各个发布轮次信息
+  状态值: 发布中-30,待分配-40,分配完成-50,已作废-100
+end note
+
+note top of scms_consignment_qd_apply_record
+  寄卖清单竞标申请表
+  存储竞标申请和得分详情
+  状态值: 待分配-40,分配完成-50,已作废-100
+end note
 
 @enduml

@@ -1,0 +1,86 @@
+
+@startuml
+title 定时任务处理寄卖清单流程
+autonumber
+
+actor "定时任务" as job
+
+box "业务应用层" #LightGreen
+    participant auto_create as "自动创建寄卖QD清单"
+    participant auto_publish as "寄卖QD清单自动发布(含重新发布)"
+    participant auto_update as "寄卖QD清单自动更新从发布中到待分配"
+    participant auto_assign as "自动对寄卖QD清单分配寄卖商"
+end box
+
+box "核心服务层" #LightYellow
+    participant search_module as "page(寄卖清单crud服务)"
+    participant create_module as "create(寄卖清单crud服务)"
+    participant update_module as "update(寄卖清单crud服务)"
+    participant list_module as "list(寄卖商投标申请crud服务)"
+    participant update_list_module as "update(寄卖商投标申请crud服务)"
+    participant config as "配置中心(platform)"
+    participant scms_prepurchase as "预采购清单(pa-biz-service)"
+end box
+
+box "存储层" #LightSalmon
+    participant mysql as "mysql"
+end box
+
+== 自动创建寄卖清单 ==
+job -> auto_create : 触发自动创建任务
+auto_create -> scms_prepurchase : 获取预采购清单信息
+scms_prepurchase --> auto_create : 返回预采购清单数据
+auto_create -> config : 获取创建配置
+config --> auto_create : 返回配置信息
+auto_create -> create_module : 创建寄卖清单
+create_module -> mysql : 插入清单数据
+mysql --> create_module : 返回创建结果
+create_module --> auto_create : 返回创建成功
+
+== 自动发布寄卖清单 ==
+job -> auto_publish : 触发自动发布任务
+auto_publish -> search_module : 查询待发布清单
+search_module -> mysql : 查询数据库
+mysql --> search_module : 返回待发布清单
+search_module --> auto_publish : 返回清单列表
+auto_publish -> config : 获取发布日期配置
+config --> auto_publish : 返回发布配置
+auto_publish -> update_module : 更新清单状态为发布中(30)
+update_module -> mysql : 更新清单状态
+mysql --> update_module : 返回更新结果
+update_module --> auto_publish : 返回更新成功
+
+== 自动更新清单状态为待分配 ==
+job -> auto_update : 触发状态更新任务
+auto_update -> search_module : 查询发布中清单
+search_module -> mysql : 查询发布中清单
+mysql --> search_module : 返回发布中清单
+search_module --> auto_update : 返回清单列表
+auto_update -> config : 获取发布结束配置
+config --> auto_update : 返回时间配置
+auto_update -> update_module : 更新清单状态为待分配(40)
+update_module -> mysql : 更新清单状态
+mysql --> update_module : 返回更新结果
+update_module --> auto_update : 返回更新成功
+
+== 自动分配寄卖商 ==
+job -> auto_assign : 触发自动分配任务
+auto_assign -> search_module : 查询待分配清单
+search_module -> mysql : 查询待分配清单
+mysql --> search_module : 返回待分配清单
+search_module --> auto_assign : 返回清单列表
+auto_assign -> list_module : 查询参与投标的寄卖商
+list_module -> mysql : 查询投标申请
+mysql --> list_module : 返回投标申请列表
+list_module --> auto_assign : 返回寄卖商投标信息
+note over auto_assign: 根据得分规则计算最优寄卖商
+auto_assign -> update_module : 更新清单状态为分配完成(50)
+update_module -> mysql : 更新清单分配状态
+mysql --> update_module : 返回更新结果
+update_module --> auto_assign : 返回更新成功
+auto_assign -> update_list_module : 更新中标寄卖商信息
+update_list_module -> mysql : 更新寄卖商中标状态
+mysql --> update_list_module : 返回更新结果
+update_list_module --> auto_assign : 返回更新成功
+
+@enduml

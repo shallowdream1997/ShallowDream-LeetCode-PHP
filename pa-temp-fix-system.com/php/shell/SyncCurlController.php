@@ -4948,15 +4948,381 @@ class SyncCurlController
 
 
     }
+
+
+    public function searchLossSku()
+    {
+        $curlService = (new CurlService())->pro();
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/22-26生成的sku数据.xlsx");
+        if (sizeof($fileFitContent) > 0) {
+            $skuIdList = array_column($fileFitContent,"productid");
+
+            $list = [];
+            foreach (array_chunk($skuIdList,200) as $chunk){
+                $getProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryPage", [
+                    "skuId" => implode(",",$chunk),
+                    "limit" => 200
+                ]));
+                if ($getProductMainResp && count($getProductMainResp['data']) > 0){
+                    $list = array_merge($list,$getProductMainResp['data']);
+                }
+            }
+            $skuIdProductLineMap = [];
+            if (count($list) > 0){
+                $skuIdProductLineMap = array_column($list,null,"skuId");
+            }
+
+            $sampleMap = [];
+            foreach (array_chunk($skuIdList,200) as $chunk){
+                $curlServiceS = (new CurlService())->pro();
+                $curlServiceS->gateway()->getModule('wms');
+                $resp = DataUtils::getNewResultData($curlServiceS->getWayPost($curlServiceS->module . "/receive/sample/expect/v1/page", [
+                    "skuIdIn" => $chunk,
+                    "vertical" => "PA",
+                    "pageSize" => 500,
+                    "pageNum" => 1,
+                ]));
+                if ($resp['list']){
+                    foreach ($resp['list'] as $item){
+                        $sampleMap[$item['skuId']][$item['category']] = $item;
+                    }
+                }
+
+            }
+
+
+            $export = [];
+            foreach ($fileFitContent as $item){
+                $data = $item;
+                if (isset($skuIdProductLineMap[$item['productid']])){
+                    $data['noProductLineId'] = "有";
+                }else{
+                    $data['noProductLineId'] = "无";
+                }
+
+                if (!isset($sampleMap[$item['productid']])){
+                    $data['noSampleBg'] = "无";
+                    $data['noSampleDt'] = "无";
+                }else{
+                    if (isset($sampleMap[$item['productid']]['bg'])){
+                        $data['noSampleBg'] = "有";
+                    }else{
+                        $data['noSampleBg'] = "无";
+                    }
+
+                    if (isset($sampleMap[$item['productid']]['dataTeam'])){
+                        $data['noSampleDt'] = "有";
+                    }else{
+                        $data['noSampleDt'] = "无";
+                    }
+                }
+
+                $export[]=$data;
+
+            }
+
+            if (count($export) > 0){
+                $excelUtils = new ExcelUtils();
+                $downloadOssLink = "22-26sku后续问题HHHHHHHH_" . date("YmdHis") . ".xlsx";
+                $downloadOssPath = $excelUtils->downloadXlsx(["productid",	"producttype",	"status",	"createdon","有无产品线","有无bg留样","有无资料留样"],$export,$downloadOssLink);
+
+            }
+
+
+        }
+
+    }
+
+
+    public function fixLossSku()
+    {
+        $curlService = (new CurlService())->pro();
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/22-26sku后续问题_20250901183523.xlsx");
+        if (sizeof($fileFitContent) > 0) {
+            $skuIdList = [];
+            foreach ($fileFitContent as $item){
+                if ($item['producttype'] == 'SKU' && $item['有无产品线'] == "无"){
+                    $skuIdList[] = $item['productid'];
+                }
+            }
+            $productLineNameSkuIdList = [];
+            foreach (array_chunk($skuIdList,200) as $chunk){
+
+                $productList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+                    "limit" => 200,
+                    "productId" => implode(",",$chunk)
+                ]));
+                foreach ($productList as $info){
+                    $cnCategoryList = explode(" -> ",$info['cn_Category']);
+                    $endCategoryName = end($cnCategoryList);
+
+                    $productLineNameSkuIdList[$endCategoryName . "-" . $info['category']][$info['developerUserName']][$info['salesUserName']][] = $info['productId'];
+                }
+            }
+
+
+            foreach ($productLineNameSkuIdList as $aProductLineName => $firstObj){
+                foreach ($firstObj as $developName => $secondObj){
+                    foreach ($secondObj as $salesUserName => $skuIdList){
+                        $this->log("{$aProductLineName} - {$developName} - {$salesUserName} ：". json_encode($skuIdList,JSON_UNESCAPED_UNICODE));
+
+
+                        if (count($skuIdList) > 0){
+                            $list = [];
+
+                            foreach (array_chunk($skuIdList,200) as $chunk){
+                                $getProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryPage", [
+                                    "skuId" => implode(",",$chunk),
+                                    "limit" => 200
+                                ]));
+                                if ($getProductMainResp && count($getProductMainResp['data']) > 0){
+                                    $list = array_merge($list,$getProductMainResp['data']);
+                                }
+                            }
+
+                            $skuIdProductLineMap = [];
+                            if (count($list) > 0){
+                                $skuIdProductLineMap = array_column($list,null,"skuId");
+                            }
+
+                            $resp = $curlService->s3009()->get("product-operation-lines/getProductOperatorMainInfoByProductLineName",[
+                                "productLineName" => $aProductLineName
+                            ]);
+                            if (empty($resp['result'])){
+                                $uuid = DataUtils::buildGenerateUuidLike();
+                                $this->log("生成product_line_id：{$uuid}");
+                                //echo $uuid;
+                                //没有产品线，创建产品线
+                                $createProductMainResp = $curlService->s3009()->post("product-operation-lines/createProductOperatorMainInfo", [
+                                    "modifiedBy" => "pa_fix_system",
+                                    "createdBy" => "pa_fix_system",
+                                    "traceMan" => $salesUserName,
+                                    "developer" => $developName,
+                                    "product_line_id" => "PA_NEW_" . $uuid,
+                                    "productLineName" => $aProductLineName,
+                                    "companySequenceId" => "CR201706060001",
+                                ]);
+                                if ($createProductMainResp){
+
+                                    foreach ($skuIdList as $skuId){
+
+                                        if (isset($skuIdProductLineMap[$skuId])){
+                                            //先删除
+//                                                $delResp = $curlService->s3009()->post("product-operation-lines/removeSkuIdBySkuId", [
+//                                                    "skuIdArray" => $skuId
+//                                                ]);
+//                                                $this->logger->log2("已删除：".json_encode($delResp,JSON_UNESCAPED_UNICODE));
+
+                                            //更新
+                                            $skuData = $skuIdProductLineMap[$skuId];
+                                            $skuData['developer'] = $developName;
+                                            $skuData['traceMan'] = $salesUserName;
+                                            $skuData['operatorName'] = $salesUserName;
+                                            $skuData['userName'] = $salesUserName;
+                                            $curlService->s3009()->put("product-operation-lines/{$skuData['_id']}",$skuData);
+                                            continue;
+                                        }else{
+                                            $mainInfo = $createProductMainResp['result'];
+                                            $curlService->s3009()->post("product-operation-lines", [
+                                                "companySequenceId" => $mainInfo['companySequenceId'],
+                                                "productLineName" => $mainInfo['productLineName'],
+                                                "product_line_id" => $mainInfo['product_line_id'],
+                                                "sign" => "NP",
+                                                "developer" => $developName,
+                                                "traceMan" => $salesUserName,
+                                                "createdBy" => $developName,
+                                                "modifiedBy" => $developName,
+                                                "createdOn" => date("Y-m-d H:i:s",time())."Z",
+                                                "verticalName" => "PA",
+                                                "operatorName" => $salesUserName,
+                                                "skuId" => $skuId,
+                                                "userName" => $salesUserName,
+                                                "product_operator_mainInfo_id" => $mainInfo['_id'],
+                                                "batch" => "",
+                                                "factoryId" => "",
+                                                "supplyType" => null,
+                                                "styleId" => ""
+                                            ]);
+                                        }
+
+                                    }
+                                }
+
+                            }else{
+                                $mainInfo = $resp['result'][0];
+                                foreach ($skuIdList as $skuId){
+
+                                    if (isset($skuIdProductLineMap[$skuId])){
+                                        $skuData = $skuIdProductLineMap[$skuId];
+                                        $skuData['developer'] = $developName;
+                                        $skuData['traceMan'] = $salesUserName;
+                                        $skuData['operatorName'] = $salesUserName;
+                                        $skuData['userName'] = $salesUserName;
+                                        $curlService->s3009()->put("product-operation-lines/{$skuData['_id']}",$skuData);
+                                    }else{
+                                        $skuData = [
+                                            "companySequenceId" => $mainInfo['companySequenceId'],
+                                            "productLineName" => $mainInfo['productLineName'],
+                                            "product_line_id" => $mainInfo['product_line_id'],
+                                            "sign" => "NP",
+                                            "developer" => $developName,
+                                            "traceMan" => $salesUserName,
+                                            "createdBy" => $developName,
+                                            "modifiedBy" => $developName,
+                                            "createdOn" => date("Y-m-d H:i:s",time())."Z",
+                                            "verticalName" => "PA",
+                                            "operatorName" => $salesUserName,
+                                            "skuId" => $skuId,
+                                            "userName" => $salesUserName,
+                                            "product_operator_mainInfo_id" => $mainInfo['_id'],
+                                            "batch" => "",
+                                            "factoryId" => "",
+                                            "supplyType" => null,
+                                            "styleId" => ""
+                                        ];
+
+                                        $curlService->s3009()->post("product-operation-lines", $skuData);
+                                    }
+
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+
+
+
+
+
+        }
+
+    }
+
+
+
+    public function fixLossSkuV2()
+    {
+
+        $curlService = (new CurlService())->pro();
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/修成30.xlsx");
+        if (sizeof($fileFitContent) > 0) {
+            //$skuIdList = array_column($fileFitContent,"productid");
+            $skuIdList = [];
+            foreach ($fileFitContent as $item){
+                if ($item['是否留样'] == '修成30'){
+                    $skuIdList[] = $item['productid'];
+                }
+            }
+
+            if (count($skuIdList) > 0){
+                $sampleMap = [];
+                foreach (array_chunk($skuIdList,200) as $chunk){
+                    $curlServiceS = (new CurlService())->pro();
+                    $curlServiceS->gateway()->getModule('wms');
+                    $resp = DataUtils::getNewResultData($curlServiceS->getWayPost($curlServiceS->module . "/receive/sample/expect/v1/page", [
+                        "skuIdIn" => $chunk,
+                        "vertical" => "PA",
+                        "pageSize" => 500,
+                        "pageNum" => 1,
+                    ]));
+                    if ($resp['list']){
+                        foreach ($resp['list'] as $item){
+                            $sampleMap[$item['skuId']][$item['category']] = $item;
+                        }
+                    }
+
+                }
+
+
+                $needSampleSkuIdList = [];
+                foreach ($skuIdList as $skuId) {
+                    if (!isset($sampleMap[$skuId])){
+                        $needSampleSkuIdList[] = [
+                            "category" => "dataTeam",
+                            "createBy" => "pa-fix-system",
+                            "remark" => "",
+                            "skuId" => $skuId,
+                            "vertical" => "PA",
+                            "state" => 30
+                        ];
+                        $needSampleSkuIdList[] = [
+                            "category" => "bg",
+                            "createBy" => "pa-fix-system",
+                            "remark" => "",
+                            "skuId" => $skuId,
+                            "vertical" => "PA",
+                            "state" => 30
+                        ];
+                    }else{
+
+                        if (!isset($sampleMap[$skuId]['bg'])){
+                            $needSampleSkuIdList[] = [
+                                "category" => "bg",
+                                "createBy" => "pa-fix-system",
+                                "remark" => "",
+                                "skuId" => $skuId,
+                                "vertical" => "PA",
+                                "state" => 30
+                            ];
+                        }
+
+                        if (!isset($sampleMap[$skuId]['dataTeam'])){
+                            $needSampleSkuIdList[] = [
+                                "category" => "dataTeam",
+                                "createBy" => "pa-fix-system",
+                                "remark" => "",
+                                "skuId" => $skuId,
+                                "vertical" => "PA",
+                                "state" => 30
+                            ];
+                        }
+
+                    }
+
+                }
+                if (count($needSampleSkuIdList) > 0) {
+                    $curlServiceSS = (new CurlService())->pro();
+                    $curlServiceSS->gateway()->getModule('wms');
+                    $createResp = DataUtils::getNewResultData($curlServiceSS->getWayPost($curlServiceSS->module . "/receive/sample/expect/v1/batchCreate", $needSampleSkuIdList));
+                    if ($createResp && $createResp['value']) {
+                        $this->log("剩余sku：" . implode(',', array_column($needSampleSkuIdList, 'skuId')) . " 留样打标成功...");
+                    } else {
+                        $this->log("留样打标失败");
+                    }
+                } else {
+                    $this->log("预计留样的数据都已存在，无需留样");
+                }
+
+
+            }
+
+
+
+        }
+
+
+
+
+
+
+    }
 }
 
 $curlController = new SyncCurlController();
+//$curlController->fixLossSkuV2();
+//$curlController->fixLossSku();
+$curlController->searchLossSku();
 //$curlController->fallBack30();
 //$curlController->getssss();
 //$curlController->fixDengyiyi();
 //$curlController->fixTranslationManagementCategory();
 //$curlController->fixProductSku();
-$curlController->fixMergeADV2SguId();
+//$curlController->fixMergeADV2SguId();
 //$curlController->fixMergeADSguId();
 //$curlController->createSguInfo();
 //$curlController->fixRepeatSkuMaterial();

@@ -1,0 +1,116 @@
+@startuml
+title 寄卖商申请寄卖清单流程
+autonumber
+
+actor "寄卖商" as vendor
+
+box "前端应用层" #LightBlue
+    participant web_user as "寄卖商平台清单管理"
+    participant web_admin as "寄卖商清单竞标(pa-biz-web)"
+end box
+
+box "对接层" #LightCyan
+    participant php as "PHP公网API"
+end box
+
+box "业务应用层" #LightGreen
+    participant apply as "申请寄卖"
+end box
+
+box "核心服务层" #LightYellow
+    participant create_list_module as "create(寄卖商投标申请crud服务)"
+    participant search_module as "page(寄卖清单crud服务)"
+end box
+
+box "中间件层" #LightPink
+    participant redis as "redis"
+end box
+
+box "存储层" #LightSalmon
+    participant mysql as "mysql"
+end box
+
+vendor -> web_user : 登录寄卖商平台
+web_user -> web_admin : 进入清单竞标页面
+
+note over vendor,web_admin : 寄卖商浏览可申请的寄卖清单
+
+vendor -> web_admin : 点击申请寄卖按钮
+web_admin -> php : 调用申请寄卖接口
+php -> apply : 转调内网申请寄卖服务
+apply -> search_module : 验证清单状态和申请条件
+search_module -> mysql : 查询清单详情
+mysql --> search_module : 返回清单信息
+search_module --> apply : 返回验证结果
+
+alt 清单可申请
+    apply -> create_list_module : 创建寄卖商投标申请
+    create_list_module -> mysql : 存储申请信息
+    mysql --> create_list_module : 返回申请结果
+    create_list_module -> redis : 缓存申请信息，队列先到先出，记录排名
+    redis --> create_list_module : 返回缓存结果
+    create_list_module --> apply : 返回申请成功
+    apply -> php : 返回申请结果
+    php -> web_admin : 返回前端结果
+    web_admin -> vendor : 显示申请成功提示
+
+    note over vendor,mysql #LightBlue: 等待系统自动分配结果
+
+    vendor -> web_admin : 查看申请状态
+    web_admin -> php : 调用查询接口
+    php -> search_module : 查询清单及申请状态
+    search_module -> mysql : 查询清单和申请状态
+    mysql --> search_module : 返回状态信息
+    search_module --> php : 返回查询结果
+    php -> web_admin : 返回前端展示
+    web_admin -> vendor : 显示当前状态(待分配/已分配等)
+
+    note over vendor,mysql #LightBlue: 系统根据得分规则和申请时间自动分配清单
+
+    alt 分配成功且中标
+        vendor -> web_admin : 接受清单分配
+        web_admin -> php : 调用接受分配接口
+        php -> apply : 处理接受分配请求
+        apply -> create_list_module : 更新申请状态为中标
+        create_list_module -> mysql : 更新申请状态
+        mysql --> create_list_module : 返回更新结果
+        create_list_module --> apply : 返回更新成功
+        apply -> php : 返回处理结果
+        php -> web_admin : 返回前端结果
+        web_admin -> vendor : 显示接受成功
+
+        note over vendor,mysql #LightBlue: 寄卖商需在规定时间内上传采购凭证
+
+        vendor -> web_admin : 上传采购凭证
+        web_admin -> php : 调用上传凭证接口
+        php --> web_admin : 返回上传地址
+
+        vendor -> web_admin : 提交凭证文件
+        web_admin -> php : 上传文件到OSS
+        php -> oss : 保存凭证文件
+        oss --> php : 返回文件地址
+        php -> apply : 更新凭证信息
+        apply -> update_module : 更新清单凭证信息
+        update_module -> mysql : 存储凭证信息
+        mysql --> update_module : 返回更新结果
+        update_module --> apply : 返回更新成功
+        apply -> php : 返回上传成功
+        php -> web_admin : 返回前端结果
+        web_admin -> vendor : 显示上传成功
+    else 分配失败或未中标
+        vendor -> web_admin : 查看未中标通知
+        web_admin -> php : 调用查询接口
+        php -> search_module : 查询申请结果
+        search_module -> mysql : 查询申请状态
+        mysql --> search_module : 返回申请结果
+        search_module --> php : 返回查询结果
+        php -> web_admin : 返回前端展示
+        web_admin -> vendor : 显示未中标信息
+    end
+else 清单不可申请
+    apply -> php : 返回申请失败
+    php -> web_admin : 返回前端结果
+    web_admin -> vendor : 显示申请失败原因(如不在申请时间范围内)
+end
+
+@enduml
