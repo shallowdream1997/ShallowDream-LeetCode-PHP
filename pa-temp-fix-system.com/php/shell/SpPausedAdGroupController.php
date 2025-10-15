@@ -526,7 +526,8 @@ class SpPausedAdGroupController
                 if ($manualAsinCampaignRule && isset($manualAsinCampaignRule['pipe']) && $manualAsinCampaignRule['pipe']){
                     $pipe = $manualAsinCampaignRule['pipe'];
                 }
-                $fixCampaign = $content['campaign'].$pipe."修正重开KW";
+//                $fixCampaign = $content['campaign'].$pipe."修正重开KW";
+                $fixCampaign = $content['campaign'];
 
                 $campaignInfo = $this->getMongoCampaignInfo($content['账号'],$fixCampaign);
                 $oldCampaignInfo = $this->getMongoCampaignInfo($content['账号'],$content['campaign']);
@@ -1535,11 +1536,11 @@ $con = new SpPausedAdGroupController();
 //$con->pausedAdGroup();
 //$con->supplementAdGroupWithAsinAds();
 //$con->closeAdGroupWithOpenNewAsinAds();
-//$con->closeAdGroupWithOpenNewKeywordAds();
+$con->closeAdGroupWithOpenNewKeywordAds();
 
 
 //$con->listFixSpData();
-$con->buildKeyword([],0.2,"a25080100ux0222");
+//$con->buildKeyword([],0.2,"a25081400ux0270");
 
 //$con->listCampaign("amazon","PA_座椅套-1_auto_李运月");
 //$con->listAdGroup("amazon_us_hope","426175740910397","240929hoape002395");

@@ -21,6 +21,7 @@ entity "scms_consignment_qd_list" as scms_consignment_qd_list {
     sku_avg_moq : decimal(19,4)
     qd_file_url : varchar(4000)
     status : tinyint(3)
+    consignment_qd_publish_record_id : bigint unsigned
     publish_begin_time : datetime
     publish_end_time : datetime
     certificate_upload_time : datetime
@@ -74,7 +75,8 @@ entity "scms_consignment_qd_apply_record" as scms_consignment_qd_apply_record {
     vertical : varchar(50)
     qd_bill_no : varchar(32)
     bid_bill_no : varchar(32)
-    consignment_qd_publish_id : bigint
+    consignment_qd_id : bigint
+    consignment_qd_publish_record_id : bigint
     publish_count : int
     qd_status : tinyint
     bid_score_detail : json
@@ -92,6 +94,7 @@ entity "scms_consignment_qd_apply_record" as scms_consignment_qd_apply_record {
 
 ' 定义实体间的关系
 scms_consignment_qd_list ||--o{ scms_consignment_qd_publish_record : "1:N"
+scms_consignment_qd_list --|| scms_consignment_qd_publish_record : "1:1"
 scms_consignment_qd_publish_record ||--o{ scms_consignment_qd_apply_record : "1:N"
 
 ' 添加外键关系说明
@@ -100,7 +103,8 @@ note right of scms_consignment_qd_publish_record
 end note
 
 note right of scms_consignment_qd_apply_record
-  consignment_qd_publish_id references scms_consignment_qd_publish_record.id
+  consignment_qd_publish_record_id references scms_consignment_qd_publish_record.id
+  consignment_qd_id references scms_consignment_qd_list.id
 end note
 
 note top of scms_consignment_qd_list

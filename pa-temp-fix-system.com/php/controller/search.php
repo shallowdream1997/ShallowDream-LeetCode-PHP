@@ -482,6 +482,20 @@ class search
         return ["env" => $env, "data" => $resp['list']];
 
     }
+
+    /**
+     * 寄卖新QD单
+     * @param $params
+     * @return array
+     */
+    public function consignmentQD($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+
+
+
+        return ["env" => $env, "data" => []];
+    }
 }
 
 
@@ -556,6 +570,10 @@ switch ($data['action']) {
     case "configPage":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->configPage($params);
+        break;
+    case "consignmentQD":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->consignmentQD($params);
         break;
 }
 

@@ -64,6 +64,9 @@ class EnvironmentConfig
             case "configPage":
                 $this->curlService = (new CurlService())->test();
                 break;
+            case "consignmentQD":
+                $this->curlService = (new CurlService())->test();
+                break;
         }
         return $this;
     }

@@ -709,7 +709,8 @@ class update
                     ), false);
                     $cfile = new CURLFile($target_dir, "", $target_dir);
 
-                    $key = "pa/oss_test/{$dataInfo['actualFileName']}";
+//                    $key = "pa/oss_test/{$dataInfo['actualFileName']}";
+                    $key = "dull_sale/{$dataInfo['actualFileName']}";
                     $uploadOssResp = $curlService1->upload($resp['url'], "", [
                         "OSSAccessKeyId" => $resp['ossAccessKeyId'],
                         "policy" => $resp['policy'],
@@ -897,6 +898,60 @@ class update
         return ["env" => $env, "data" => $returnMsg];
     }
 
+
+    public function consignmentQD($params){
+        $curlService = $this->envService->gateway();
+        $env = $curlService->environment;
+
+
+        $createResp = [];
+        if (isset($params['qdList']) && !empty($params['qdList'])){
+
+            if(isset($params['status']) && !empty($params['status'])){
+
+                if ($params['status'] == "to发布"){
+
+                    $condition = [
+                        "qdBillNos" => $params['qdList'],
+                        "hasPublish" => $params['autoPublish'] ?? false,
+                        "hasRepublish" => $params['autoRePublish'] ?? false,
+                    ];
+                    $curlService->getModule("pa");
+                    $createResp = DataUtils::getResultData($curlService->getWayPost($curlService->module . "/scms/consignment/workflow/v1/manualExecutionPublish", $condition));
+                    if ($createResp){
+
+                        $this->logger->log2(json_encode($createResp,JSON_UNESCAPED_UNICODE));
+                    }
+                }
+
+
+                if ($params['status'] == "to待分配"){
+                    $curlService->getModule("pa");
+                    $createResp = DataUtils::getResultData($curlService->getWayPost($curlService->module . "/scms/consignment/workflow/v1/autoWaitAssign", $params['qdList']));
+                    if ($createResp){
+
+                        $this->logger->log2(json_encode($createResp,JSON_UNESCAPED_UNICODE));
+                    }
+                }
+
+                if($params['status'] == "to处理分配"){
+                    $curlService->getModule("pa");
+                    $createResp = DataUtils::getResultData($curlService->getWayPost($curlService->module . "/scms/consignment/workflow/v1/autoHandleWaitAssign", $params['qdList']));
+                    if ($createResp){
+
+                        $this->logger->log2(json_encode($createResp,JSON_UNESCAPED_UNICODE));
+                    }
+                }
+
+            }
+
+
+        }
+
+
+        return ["env" => $env, "data" => $createResp];
+    }
+
 }
 
 
@@ -955,6 +1010,10 @@ switch ($data['action']) {
     case "fixFcuProductLine":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->fixFcuProductLine($params);
+        break;
+    case "consignmentQD":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->consignmentQD($params);
         break;
 }
 

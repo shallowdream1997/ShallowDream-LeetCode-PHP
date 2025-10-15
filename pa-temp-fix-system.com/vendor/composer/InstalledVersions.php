@@ -32,7 +32,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'b4d76ab051aeeb87a4cabaedd91e5d149dbf8356',
+    'reference' => '8e25dff1b0048e3712d7f017e4e0685fc73295e3',
     'name' => '__root__',
   ),
   'versions' => 
@@ -44,7 +44,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'b4d76ab051aeeb87a4cabaedd91e5d149dbf8356',
+      'reference' => '8e25dff1b0048e3712d7f017e4e0685fc73295e3',
     ),
     'ezyang/htmlpurifier' => 
     array (
@@ -172,8 +172,8 @@ private static $installed = array (
     ),
     'symfony/polyfill-mbstring' => 
     array (
-      'pretty_version' => 'v1.32.0',
-      'version' => '1.32.0.0',
+      'pretty_version' => 'v1.33.0',
+      'version' => '1.33.0.0',
       'aliases' => 
       array (
       ),

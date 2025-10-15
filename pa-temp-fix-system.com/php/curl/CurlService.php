@@ -52,6 +52,9 @@ class CurlService
             case "ux168log":
                 $this->module = "ux168-log-service";
                 break;
+            case "pa_service":
+                $this->module = "pa-biz-service";
+                break;
         }
 
         return $this;

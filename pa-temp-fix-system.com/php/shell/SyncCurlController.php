@@ -731,71 +731,67 @@ class SyncCurlController
 
     public function get30PpmsByTempskuid(){
         $t = [
-            "T250114000359",
-            "T250114000354",
-            "T250114000352",
-            "T250114000351",
-            "T250114000350",
-            "T250114000349",
-            "T250114000348",
-            "T250114000345",
-            "T250114000344",
-            "T250114000191",
+            "a09052200ux0075",
+            "a09052200ux0065",
+            "a09052300ux0012",
         ];
-        $curlSsl = (new CurlService())->pro();
+        $curlSsl = (new CurlService())->test();
         $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
             "skuIdList" => $t,
             "attrCodeList" => [
-                "custom-skuInfo-tempSkuId",
-                "custom-skuInfo-consignmentPrice",
-                "min_arrival_quantity",
+//                "custom-skuInfo-tempSkuId",
+//                "custom-skuInfo-consignmentPrice",
+//                "min_arrival_quantity",
+//                "custom-common-salesUserName",
+//                "custom-skuInfo-factoryId",
+//                "custom-skuInfo-supplierProductNo",
+//                "custom-skuInfo-outsideTitle",
+//                "custom-skuInfo-supplierId",
                 "custom-common-salesUserName",
-                "custom-skuInfo-factoryId",
-                "custom-skuInfo-supplierProductNo",
-                "custom-skuInfo-outsideTitle",
-                "custom-skuInfo-supplierId",
+                "custom-skuInfo-skuId",
+                "custom-common-minorSalesUserName"
             ]
         ]));
         if ($getKeyResp){
-            $tempIdsList = [
-                [
-                    "id" => "1879052194089963565",
-                    "temp_sku_id" => "T250114000191"
-                ], [
-                    "id" => "1879052194089963718",
-                    "temp_sku_id" => "T250114000344"
-                ], [
-                    "id" => "1879052194089963719",
-                    "temp_sku_id" => "T250114000345"
-                ], [
-                    "id" => "1879052194089963722",
-                    "temp_sku_id" => "T250114000348"
-                ], [
-                    "id" => "1879052194089963723",
-                    "temp_sku_id" => "T250114000349"
-                ], [
-                    "id" => "1879052194089963724",
-                    "temp_sku_id" => "T250114000350"
-                ], [
-                    "id" => "1879052194089963725",
-                    "temp_sku_id" => "T250114000351"
-                ], [
-                    "id" => "1879052194089963726",
-                    "temp_sku_id" => "T250114000352"
-                ], [
-                    "id" => "1879052194089963728",
-                    "temp_sku_id" => "T250114000354"
-                ], [
-                    "id" => "1879052194089963733",
-                    "temp_sku_id" => "T250114000359"
-                ]
-            ];
-            $tempIdsIdMap = [];
-            foreach ($tempIdsList as $sss){
-                $tempIdsIdMap[$sss['temp_sku_id']] = $sss['id'];
-            }
-            $this->log(json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
-            $preSkuList = [];
+//            $tempIdsList = [
+//                [
+//                    "id" => "1879052194089963565",
+//                    "temp_sku_id" => "T250114000191"
+//                ], [
+//                    "id" => "1879052194089963718",
+//                    "temp_sku_id" => "T250114000344"
+//                ], [
+//                    "id" => "1879052194089963719",
+//                    "temp_sku_id" => "T250114000345"
+//                ], [
+//                    "id" => "1879052194089963722",
+//                    "temp_sku_id" => "T250114000348"
+//                ], [
+//                    "id" => "1879052194089963723",
+//                    "temp_sku_id" => "T250114000349"
+//                ], [
+//                    "id" => "1879052194089963724",
+//                    "temp_sku_id" => "T250114000350"
+//                ], [
+//                    "id" => "1879052194089963725",
+//                    "temp_sku_id" => "T250114000351"
+//                ], [
+//                    "id" => "1879052194089963726",
+//                    "temp_sku_id" => "T250114000352"
+//                ], [
+//                    "id" => "1879052194089963728",
+//                    "temp_sku_id" => "T250114000354"
+//                ], [
+//                    "id" => "1879052194089963733",
+//                    "temp_sku_id" => "T250114000359"
+//                ]
+//            ];
+//            $tempIdsIdMap = [];
+//            foreach ($tempIdsList as $sss.txt){
+//                $tempIdsIdMap[$sss.txt['temp_sku_id']] = $sss.txt['id'];
+//            }
+//            $this->log(json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
+//            $preSkuList = [];
 //            foreach ($getKeyResp as $info){
 //                $resp = DataUtils::getResultData($curlSsl->s3009()->post("po-composite-services/getSampleSkuInfoByConditions",[
 //                    "conditionsJsonEncode" => ["titleCn" => $info['custom-skuInfo-outsideTitle']],
@@ -813,34 +809,34 @@ class SyncCurlController
 //                }
 //            }
 
-            $fileContent = (new ExcelUtils())->getXlsxData("../export/qd/补充的T号.xlsx");
-            $titleCnMap = [];
-            foreach ($fileContent as $info){
-                $titleCnMap[$info['titleCn']] = $info;
-            }
-            foreach ($getKeyResp as $info){
-                if (isset($titleCnMap[$info['custom-skuInfo-outsideTitle']])){
-                    $preSkuList[] = [
-                        "devSkuPkId" => $tempIdsIdMap[$info['custom-skuInfo-tempSkuId']],
-                        "skuId" => $titleCnMap[$info['custom-skuInfo-outsideTitle']]['skuId']
-                    ];
-                }
-            }
-            if ($preSkuList){
-                $writeData = [
-                    "prePurchaseBillNo" => "QD202504080024",
-                    "ceBillNo" => "CE202505050082",
-//                    "skuList" => $preSkuList,
-                    "operatorName" => "zhouangang",
-//                    "purchaseHandleStatus" => 70$tempIdsIdMap = {数组} [10]
-                ];
-
-                $this->log(json_encode($writeData,JSON_UNESCAPED_UNICODE));
-                $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $writeData));
-                if ($getKeyResp){
-                    $this->log(json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
-                }
-            }
+//            $fileContent = (new ExcelUtils())->getXlsxData("../export/qd/补充的T号.xlsx");
+//            $titleCnMap = [];
+//            foreach ($fileContent as $info){
+//                $titleCnMap[$info['titleCn']] = $info;
+//            }
+//            foreach ($getKeyResp as $info){
+//                if (isset($titleCnMap[$info['custom-skuInfo-outsideTitle']])){
+//                    $preSkuList[] = [
+//                        "devSkuPkId" => $tempIdsIdMap[$info['custom-skuInfo-tempSkuId']],
+//                        "skuId" => $titleCnMap[$info['custom-skuInfo-outsideTitle']]['skuId']
+//                    ];
+//                }
+//            }
+//            if ($preSkuList){
+//                $writeData = [
+//                    "prePurchaseBillNo" => "QD202504080024",
+//                    "ceBillNo" => "CE202505050082",
+////                    "skuList" => $preSkuList,
+//                    "operatorName" => "zhouangang",
+////                    "purchaseHandleStatus" => 70$tempIdsIdMap = {数组} [10]
+//                ];
+//
+//                $this->log(json_encode($writeData,JSON_UNESCAPED_UNICODE));
+//                $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $writeData));
+//                if ($getKeyResp){
+//                    $this->log(json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
+//                }
+//            }
         }
 
     }
@@ -1919,15 +1915,15 @@ class SyncCurlController
 //
 //            }
 
-            $resp = DataUtils::getPageList($curlService->pro()->s3044()->get("pa_sku_materials/680dfa0951c9ac303c17fe33",[]));
-            if (count($resp) > 0) {
-                $resp['ceBillNo'] = "CE202504280011";
-
-                $curlService->pro()->s3044()->put("pa_sku_materials/{$resp['_id']}",$resp);
-            }else{
-
-
-            }
+//            $resp = DataUtils::getPageList($curlService->pro()->s3044()->get("pa_sku_materials/680dfa0951c9ac303c17fe33",[]));
+//            if (count($resp) > 0) {
+//                $resp['ceBillNo'] = "CE202504280011";
+//
+//                $curlService->pro()->s3044()->put("pa_sku_materials/{$resp['_id']}",$resp);
+//            }else{
+//
+//
+//            }
 //
 //
 //
@@ -5311,12 +5307,170 @@ class SyncCurlController
 
 
     }
+
+
+    public function fixEbayTranslationMainSku(){
+        $curlService = (new CurlService())->pro();
+
+        foreach (
+            [
+                "2025 W13 PA for EU_HEROCAR ES",
+                "2025 W13 PA for EU_Motoforti ES",
+                "2025 W13 PA for EU_Part to U ES",
+                "2025 W17 PA for EU_Part to U ES",
+                "2025 W13 PA for EU_SOPRO ES",
+                "2025 W15 PA for EU_Tuckbold ES",
+                "2025 W09 PA for EU_HEROCAR ES",
+                "2025 W09 PA for EU_luuxhaha ES",
+                "2025 W09 PA for EU_Motoforti ES",
+                "2025 W09 PA for EU_Part to U ES",
+            ] as $title
+        ) {
+            $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_managements/queryPage", [
+                "limit" => 1,
+                "page" => 1,
+                "title" => $title,
+            ]));
+            if ($mainInfo['status'] != "5") {
+                $mainInfo['transfer'] = "2";
+                $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
+                $this->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
+
+            }
+        }
+
+
+
+
+//        $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_management_ebays/queryPage", [
+//            "limit" => 1,
+//            "page" => 1,
+//            "batch_title" => $title,
+//        ]));
+//        if ($mainInfo['status'] != "5") {
+//            $mainInfo['status'] = "2";
+//            $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
+//            $this->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
+//
+//            $detailList = DataUtils::getPageList($curlService->s3015()->get("translation_management_ebay_skus/queryPage", [
+//                "limit" => 1000,
+//                "translationMainId" => $mainInfo['_id']
+//            ]));
+//            if ($detailList) {
+//                foreach ($detailList as $detail) {
+//                    if ($detail['status'] != "5") {
+//                        $detail['status'] = "2";
+//                        DataUtils::getResultData($curlService->s3015()->put("translation_management_ebay_skus/{$detail['_id']}", $detail));
+//                    }
+//                }
+//            }
+//
+//        }
+
+    }
+    public function downloadChannelAmazonCategory()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        $page = 1;
+        $list = [];
+        do {
+            $this->log($page);
+            $ss = DataUtils::getResultData($curlService->s3015()->get("channel-amazon-categories/queryPage", [
+                "channel" => "amazon_jp",
+                "columns"=>"channel,categoryId,categoryName,leafCategory,browsePathId,browsePathName",
+                "limit" => 1000,
+                "page" => $page
+            ]));
+            if (count($ss['data']) == 0) {
+                break;
+            }
+            foreach ($ss['data'] as $info) {
+                $list[] = [
+                    "channel" => $info['channel'],
+                    "categoryId" => $info['categoryId'],
+                    "categoryName" => $info['categoryName'],
+                    "leafCategory" => $info['leafCategory'],
+                    "browsePathId" => $info['browsePathId'],
+                    "browsePathName" => $info['browsePathName'],
+                ];
+            }
+
+            $page++;
+        } while (true);
+
+        if (count($list) > 0){
+            $excelUtils = new ExcelUtils();
+
+            $filePath = $excelUtils->downloadXlsx([
+                "channel",
+                "categoryId",
+                "categoryName",
+                "leafCategory",
+                "browsePathId",
+                "browsePathName",
+            ], $list, "JP_amazon_category_" . date("YmdHis") . ".xlsx");
+
+
+        }else{
+            $this->log("没有导出");
+        }
+
+
+    }
+
+
+
+    public function deleteSpmoDetails()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        $page = 1;
+        $list = [];
+        do {
+            $this->log($page);
+            $ss = DataUtils::getPageList($curlService->s3044()->get("pa_spmo_details/queryPage", [
+                "batchNo" => "20251013_张桂源_001",
+                "limit" => 1000,
+                "page" => $page
+            ]));
+            if (count($ss['data']) == 0) {
+                break;
+            }
+            foreach ($ss['data'] as $info) {
+                $createDate = new DateTime($info['createdOn']);
+                $today = new DateTime('now');
+                $today->setTime(0, 0, 0); // 设置时间为 00:00:00 以便比较日期
+
+                if ($createDate->format('Y-m-d') === $today->format('Y-m-d')) {
+                    // 如果等于今天，则进入 if 语句块
+                    $this->log("createOn 是今天的日期" . $info['skuId']);
+                    $curlService->s3044()->delete("pa_spmo_details/{$info['_id']}");
+                }
+
+            }
+
+            $page++;
+        } while (true);
+
+
+
+    }
+
+
+
+
 }
 
 $curlController = new SyncCurlController();
+$curlController->deleteSpmoDetails();
+//$curlController->downloadChannelAmazonCategory();
+//$curlController->fixEbayTranslationMainSku();
 //$curlController->fixLossSkuV2();
 //$curlController->fixLossSku();
-$curlController->searchLossSku();
+//$curlController->searchLossSku();
 //$curlController->fallBack30();
 //$curlController->getssss();
 //$curlController->fixDengyiyi();

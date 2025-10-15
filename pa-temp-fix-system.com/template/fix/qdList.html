@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue3接口请求示例</title>
+    <!-- 引入Vue3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- 引入Axios用于HTTP请求 -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义颜色 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        danger: '#EF4444',
+                        neutral: '#64748B'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+            .transition-all-300 {
+                transition: all 300ms ease-in-out;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <div id="app" class="container mx-auto px-4 py-8 max-w-6xl">
+        <header class="mb-8">
+            <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-gray-800 mb-2">运单申请记录列表</h1>
+            <p class="text-neutral">使用Vue3请求接口数据展示示例</p>
+        </header>
+        
+        <!-- 控制区域 -->
+        <div class="bg-white rounded-lg p-4 mb-6 card-shadow">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex flex-wrap gap-3">
+                    <button @click="fetchData" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-md transition-all-300 flex items-center">
+                        <i class="fa fa-refresh mr-2"></i>刷新数据
+                    </button>
+                    <button @click="clearData" class="bg-neutral hover:bg-neutral/90 text-white px-4 py-2 rounded-md transition-all-300 flex items-center">
+                        <i class="fa fa-trash mr-2"></i>清空数据
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <label for="pageSize" class="text-gray-600">每页条数:</label>
+                    <select v-model="pageSize" @change="handlePageSizeChange" id="pageSize" class="border border-gray-300 rounded-md px-2 py-1">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 加载状态 -->
+        <div v-if="loading" class="flex justify-center items-center py-16 bg-white rounded-lg card-shadow">
+            <div class="flex flex-col items-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+                <p class="text-gray-600">正在加载数据...</p>
+            </div>
+        </div>
+        
+        <!-- 错误信息 -->
+        <div v-if="errorMessage" class="bg-danger/10 border border-danger/30 text-danger rounded-lg p-4 mb-6">
+            <div class="flex items-start">
+                <i class="fa fa-exclamation-circle mt-1 mr-3 text-xl"></i>
+                <div>
+                    <h3 class="font-medium">请求失败</h3>
+                    <p class="text-sm mt-1">{{ errorMessage }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 数据表格 -->
+        <div v-else-if="records.length > 0" class="bg-white rounded-lg overflow-hidden card-shadow mb-6">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">申请单号</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">申请时间</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="record in records" :key="record.id" class="hover:bg-gray-50 transition-all-300">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ record.id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ record.applyNo }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span :class="getStatusClass(record.status)" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                                {{ getStatusText(record.status) }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(record.createTime) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button @click="viewDetails(record)" class="text-primary hover:text-primary/80 mr-3">查看详情</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 空状态 -->
+        <div v-else class="bg-white rounded-lg p-10 text-center card-shadow">
+            <i class="fa fa-inbox text-5xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500">暂无数据，请点击"刷新数据"按钮获取数据</p>
+        </div>
+        
+        <!-- 分页 -->
+        <div v-if="total > 0 && !loading" class="flex items-center justify-between bg-white p-4 rounded-lg card-shadow">
+            <div class="text-sm text-gray-600">
+                显示 {{ (currentPage - 1) * pageSize + 1 }} 到 {{ Math.min(currentPage * pageSize, total) }} 条，共 {{ total }} 条
+            </div>
+            <div class="flex items-center space-x-1">
+                <button 
+                    @click="changePage(1)" 
+                    :disabled="currentPage === 1"
+                    class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <i class="fa fa-angle-double-left"></i>
+                </button>
+                <button 
+                    @click="changePage(currentPage - 1)" 
+                    :disabled="currentPage === 1"
+                    class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <i class="fa fa-angle-left"></i>
+                </button>
+                
+                <button 
+                    v-for="page in visiblePages" 
+                    :key="page"
+                    @click="changePage(page)"
+                    :class="{'bg-primary text-white': currentPage === page, 'bg-white': currentPage !== page}"
+                    class="px-3 py-1 border rounded mx-0.5"
+                >
+                    {{ page }}
+                </button>
+                
+                <button 
+                    @click="changePage(currentPage + 1)" 
+                    :disabled="currentPage === totalPages"
+                    class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <i class="fa fa-angle-right"></i>
+                </button>
+                <button 
+                    @click="changePage(totalPages)" 
+                    :disabled="currentPage === totalPages"
+                    class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <i class="fa fa-angle-double-right"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 详情模态框 -->
+        <div v-if="showDetailModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6 border-b">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold">申请记录详情</h3>
+                        <button @click="showDetailModal = false" class="text-gray-500 hover:text-gray-700">
+                            <i class="fa fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div v-if="selectedRecord" class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">ID</p>
+                            <p class="font-medium">{{ selectedRecord.id }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">申请单号</p>
+                            <p class="font-medium">{{ selectedRecord.applyNo }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">状态</p>
+                            <p :class="getStatusClass(selectedRecord.status)" class="inline-flex px-2 text-xs leading-5 font-semibold rounded-full">
+                                {{ getStatusText(selectedRecord.status) }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">申请时间</p>
+                            <p>{{ formatDate(selectedRecord.createTime) }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <p class="text-sm text-gray-500">原始数据</p>
+                            <pre class="bg-gray-50 p-3 rounded text-sm overflow-x-auto mt-1">{{ JSON.stringify(selectedRecord, null, 2) }}</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-4 border-t flex justify-end">
+                    <button @click="showDetailModal = false" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-md transition-all-300">
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 创建Vue实例
+        const { createApp, ref, computed, onMounted } = Vue;
+        
+        createApp({
+            setup() {
+                // 状态管理
+                const records = ref([]);
+                const loading = ref(false);
+                const errorMessage = ref('');
+                const total = ref(0);
+                const currentPage = ref(1);
+                const pageSize = ref(10);
+                const showDetailModal = ref(false);
+                const selectedRecord = ref(null);
+                
+                // 计算总页数
+                const totalPages = computed(() => {
+                    return Math.ceil(total.value / pageSize.value) || 1;
+                });
+                
+                // 计算可见页码
+                const visiblePages = computed(() => {
+                    const pages = [];
+                    const maxVisible = 5; // 最多显示5个页码
+                    
+                    // 计算显示的起始页码
+                    let startPage = Math.max(1, currentPage.value - Math.floor(maxVisible / 2));
+                    
+                    // 调整结束页码
+                    let endPage = startPage + maxVisible - 1;
+                    if (endPage > totalPages.value) {
+                        endPage = totalPages.value;
+                        startPage = Math.max(1, endPage - maxVisible + 1);
+                    }
+                    
+                    // 生成页码数组
+                    for (let i = startPage; i <= endPage; i++) {
+                        pages.push(i);
+                    }
+                    
+                    return pages;
+                });
+                
+                // 格式化日期
+                const formatDate = (dateString) => {
+                    if (!dateString) return '';
+                    const date = new Date(dateString);
+                    return date.toLocaleString('zh-CN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                };
+                
+                // 获取状态文本
+                const getStatusText = (status) => {
+                    // 根据实际接口返回的状态值进行映射
+                    const statusMap = {
+                        '0': '待处理',
+                        '1': '处理中',
+                        '2': '已完成',
+                        '3': '已拒绝'
+                    };
+                    return statusMap[status] || `状态(${status})`;
+                };
+                
+                // 获取状态样式
+                const getStatusClass = (status) => {
+                    // 根据状态值返回不同的样式类
+                    const classMap = {
+                        '0': 'bg-yellow-100 text-yellow-800',
+                        '1': 'bg-blue-100 text-blue-800',
+                        '2': 'bg-green-100 text-green-800',
+                        '3': 'bg-red-100 text-red-800'
+                    };
+                    return classMap[status] || 'bg-gray-100 text-gray-800';
+                };
+                
+                // 查看详情
+                const viewDetails = (record) => {
+                    selectedRecord.value = { ...record };
+                    showDetailModal.value = true;
+                };
+                
+                // 切换页码
+                const changePage = (page) => {
+                    if (page < 1 || page > totalPages.value) return;
+                    currentPage.value = page;
+                    fetchData();
+                };
+                
+                // 处理每页条数变化
+                const handlePageSizeChange = () => {
+                    currentPage.value = 1; // 重置到第一页
+                    fetchData();
+                };
+                
+                // 清空数据
+                const clearData = () => {
+                    records.value = [];
+                    total.value = 0;
+                    errorMessage.value = '';
+                };
+                
+                // 请求接口数据
+                const fetchData = async () => {
+                    // 重置错误信息
+                    errorMessage.value = '';
+                    
+                    // 显示加载状态
+                    loading.value = true;
+                    // 1. 先写入目标Cookie到接口域名（需确保页面能操作接口域名的Cookie，通常需同主域）
+                    // 注意：若页面域名与接口域名无关联（如localhost和172.16.29.23），无法直接写入，需后端配合
+                    document.cookie = "PHPSESSID=1qr4boahbq7ce4erjuk9tkme17; path=/; domain=172.16.29.23;";
+                    document.cookie = "_bl_uid=1vmvFgO15ewy8UkF7tXbp7zjje2I; path=/; domain=172.16.29.23;";
+
+                    try {
+                        const params = { pageNum: currentPage.value, pageSize: pageSize.value };
+                        const response = await axios.get(
+                            'https://ux168-admin-test.ux168.com/consignment/uxplatform/v1/applyRecordList',
+                            {
+                                params,
+                                // 关键配置：允许跨域请求携带Cookie
+                                withCredentials: true,
+                                // 无需手动写headers: { Cookie: ... }，浏览器会自动携带
+                                headers: {"X-Requested-With": "XMLHttpRequest"}
+                            }
+                        );
+
+                        if (response.data && response.data.code === 200) {
+                            records.value = response.data.data?.list || [];
+                            total.value = response.data.data?.total || 0;
+                        } else {
+                            errorMessage.value = response.data?.message || '获取数据失败，请稍后重试';
+                            records.value = [];
+                            total.value = 0;
+                        }
+                    } catch (err) {
+                        console.error('请求错误:', err);
+                        errorMessage.value = '网络请求失败，请检查跨域配置或Cookie有效性';
+                    }
+                };
+                
+                // 组件挂载时获取数据
+                onMounted(() => {
+                    fetchData();
+                });
+                
+                return {
+                    records,
+                    loading,
+                    errorMessage,
+                    total,
+                    currentPage,
+                    pageSize,
+                    totalPages,
+                    visiblePages,
+                    showDetailModal,
+                    selectedRecord,
+                    
+                    formatDate,
+                    getStatusText,
+                    getStatusClass,
+                    viewDetails,
+                    changePage,
+                    handlePageSizeChange,
+                    clearData,
+                    fetchData
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
