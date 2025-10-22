@@ -1,0 +1,162 @@
+@startuml
+title Amazon SP广告自动化规则组装 - 时序图
+autonumber
+actor "message" as message
+box "product_operation_php_restful" #lightBlue
+participant "AmazonSpPaPlacementSysController" as assignment
+participant "KeepaController" as getKeepAsin
+participant "AdvertisingAdapter" as amazonSPApi
+end box
+
+box "product_operation_sold_nodejs_app"
+participant "campaign" as n1
+participant "adgroup" as n2
+participant "keyword" as n3
+participant "target" as n3
+end box
+
+box "pa-biz-application" #lightYellow
+participant "获取sku产品信息" as getPPMsSkuAttr
+end box
+
+box "pa-biz-service" #lightGreen
+participant "ppms_product_dev_sku_attr" as ppmsDevSkuAttr
+end box
+
+box "database" #lightYellow
+
+participant "ppms_product_dev_sku" as ppms_product_dev_sku
+participant "ppms_product_dev_sku_attr" as ppms_product_dev_sku_attr
+end box
+
+
+message -> assignment : 开始组装广告
+group 获取sku的3.0信息
+assignment -> getPPMsSkuAttr : 调取ppms的sku属性接口
+getPPMsSkuAttr -> ppmsDevSkuAttr : 调取ppms的sku属性接口
+group sql查询，串表
+ppmsDevSkuAttr -> ppms_product_dev_sku : 获取sku表主键id
+ppms_product_dev_sku -> ppms_product_dev_sku_attr : 查属性
+
+note over ppms_product_dev_sku_attr#FFAAAA : product_level\nchannel\nkeyword4\nkeyword5\nkeyword6\ncp_asin\noe_number\nhot_fitment
+
+ppms_product_dev_sku_attr --> ppmsDevSkuAttr : 返回属性值
+
+end
+ppmsDevSkuAttr --> getPPMsSkuAttr : 返回属性值
+getPPMsSkuAttr --> assignment : 返回属性值
+end
+
+group campaign广告投放
+assignment -> assignment : 获取系统campaign规则，模拟投放
+note over assignment#FFAAAA : 根据channel+sellerId+广告投放类型\n获取相关系统投放campaign规则\n再依据sku的product_level+专项开发渠道判断sku对应的系统投放campaign规则A(包含bid，预算等)
+assignment -> n1 : 查询mongo-campaignName
+n1 --> assignment : 返回结果
+alt 存在mongo-campaign
+alt 有mongo-campaignId
+ alt 规则有portfolioId
+  alt 有mongo-portfolioId 且一致
+  assignment -> assignment : 直接用campaignId和portfolioId
+else 没有mongo-portfolioId 或者 有mongo-portfolioId 但是规则portfolioId不一致
+ assignment -> assignment : 接下面的方法<color #red>投放campaign到amazon后台并获取campaignId和portfolioId
+end
+ else 规则没有portfolioId
+assignment -> assignment : 直接用campaignId
+ end
+else 没有mongo-campaignId
+assignment -> assignment : 接下面的方法<color #red>投放campaign到amazon后台并获取campaignId
+end
+end
+
+group 投放campaign到amazon后台并获取campaignId和portfolioId
+assignment -> amazonSPApi : 查看amazon-campaign
+note over amazonSPApi#FFAAAA : 先通过campaignName获取amazon sp后台的campaignId
+amazonSPApi -> assignment : 返回amazon-campaign
+alt 无amazon-campaign
+ alt 规则有portfolioId
+    assignment -> amazonSPApi : 投放campaign带portfolioId
+amazonSPApi --> assignment : 返回amazon-campaignId和portfolioId
+ else 规则无portfolioId
+    assignment -> amazonSPApi : 投放campaign不带portfolioId
+    amazonSPApi --> assignment : 返回amazon-campaignId
+ end
+else 有amazon-campaign
+ alt 规则有portfolioId
+  alt amazon-campaign对应的portfolioId和规则的portfolioId一致
+    assignment -> assignment : 直接用amazon-campaignId和portfolioId
+  else amazon-campaign对应的portfolioId和规则的portfolioId不一致
+    assignment -> amazonSPApi : 更新campaign对应的portfolioId和portfolioId
+  end
+else 规则无portfolioId
+  assignment -> assignment : 直接用amazon-campaignId
+end
+
+end
+
+end
+
+group adgroup广告投放
+ note over assignment#FFAAAA : 该逻辑没有变动，不改，返回adGroupId
+end
+
+
+group product广告投放
+ note over assignment#FFAAAA : 该逻辑没有变动，不改，返回productId
+end
+
+group asin广告投放
+    assignment -> getKeepAsin : OE号获取keepa-tops-asin，根据相关sku的属性和广告规则，只获取前几个asin，每个OE号对应的top-asin合并
+    getKeepAsin -> assignment : 获取不重复的asin数据
+    assignment -> assignment : top-asin和3.0的cp_asin合并，去重
+
+    assignment -> n3 : 查询mongo-target-asin
+    n3 --> assignment : 返回结果
+
+    alt 存在mongo-target-asin
+     alt 存在mongo-target-asinId
+      assignment -> assignment : 直接用targetId
+      else 不存在mongo-target-asinId
+        assignment -> amazonSPApi : 投放amazon-asin广告，调批量投放asin广告
+      end
+    else 不存在mongo-target-asin
+        assignment -> amazonSPApi : 投放amazon-asin广告，调批量投放asin广告
+    end
+    group 批量投放asin广告
+    assignment -> amazonSPApi : 批量投放asin广告
+    amazonSPApi -> assignment : 返回结果
+    end
+
+
+end
+
+
+group keyword广告投放
+    assignment -> assignment : 根据keyword规则，对hot_fitment和次关键词3-5进行拼接，得到keyword，以及相关keyword的类型
+
+
+    assignment -> n3 : 查询mongo-keyword
+    n3 --> assignment : 返回结果
+
+    alt 存在mongo-keyword
+     alt 存在mongo-keywordId
+      assignment -> assignment : 直接用keywordId
+      else 不存在mongo-keywordId
+        assignment -> amazonSPApi : 投放amazon-keyword广告，调批量投放keyword广告
+      end
+    else 不存在mongo-keyword
+        assignment -> amazonSPApi : 投放amazon-keyword广告，调批量投放keyword广告
+    end
+    group 批量投放keyword广告
+    assignment -> amazonSPApi : 批量投放keyword广告
+    amazonSPApi -> assignment : 返回结果
+    end
+
+
+end
+
+end
+
+
+
+
+@enduml

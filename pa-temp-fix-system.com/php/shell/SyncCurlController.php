@@ -4533,7 +4533,7 @@ class SyncCurlController
 
 
     public function fixProductSku(){
-        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/需要修复的upc.xlsx");
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/需要删除来货的.xlsx");
         $fitmentSkuMap = [];
         if (sizeof($fileFitContent) > 0) {
 
@@ -4556,10 +4556,26 @@ class SyncCurlController
             foreach ($fileFitContent as $info){
 
                 if (isset($map[$info['skuId']])){
-                    $productInfo = $map[$info['skuId']];
-                    ProductUtils::editProductAttribute($productInfo['attribute'], "upc", $info['channel'], $info['upc']);
+                    $deleteAttributeArray = [];
+                    $channel = $info['channel'];
 
-                    $productInfo['action'] = "system(amazon_es修复upc)250822";
+                    foreach ($info as $key => $value){
+                        //判断$key的开头是delete
+                        if (strpos($key,"delete") === 0){
+                            $deleteAttributeArray[] = [
+                                "channel" => $channel,
+                                "label" => $value,
+                            ];
+                        }
+                    }
+                    if (empty($deleteAttributeArray)){
+                        $this->log("没有需要删除的attribute");
+                        continue;
+                    }
+                    $productInfo = $map[$info['skuId']];
+                    ProductUtils::deleteProductAttributeByArr($productInfo['attribute'], $deleteAttributeArray);
+
+                    $productInfo['action'] = "system(删除错误的attribute)251016";
                     $productInfo['userName'] = "system(zhouangang)";
 
                     $this->log(json_encode($productInfo,JSON_UNESCAPED_UNICODE));
@@ -4571,7 +4587,6 @@ class SyncCurlController
             }
         }
 
-        //translation_management_categorys/queryPage?exampleCategory=1342943031&exampleChannel=amazon_uk
 
     }
 
@@ -5465,7 +5480,7 @@ class SyncCurlController
 }
 
 $curlController = new SyncCurlController();
-$curlController->deleteSpmoDetails();
+//$curlController->deleteSpmoDetails();
 //$curlController->downloadChannelAmazonCategory();
 //$curlController->fixEbayTranslationMainSku();
 //$curlController->fixLossSkuV2();
@@ -5475,7 +5490,7 @@ $curlController->deleteSpmoDetails();
 //$curlController->getssss();
 //$curlController->fixDengyiyi();
 //$curlController->fixTranslationManagementCategory();
-//$curlController->fixProductSku();
+$curlController->fixProductSku();
 //$curlController->fixMergeADV2SguId();
 //$curlController->fixMergeADSguId();
 //$curlController->createSguInfo();
