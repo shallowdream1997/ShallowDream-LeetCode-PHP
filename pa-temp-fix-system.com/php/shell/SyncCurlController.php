@@ -1852,20 +1852,43 @@ class SyncCurlController
 //            $filePath = $excelUtils->downloadXlsx(["skuId","model"],$list,"sku资料呈现热销词.xlsx");
 //            $this->log($filePath);
 //        }
+        $fileContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/lianjie.xlsx");
 
         $curlService = new CurlService();
-
         $curlService = $curlService->pro();
 
-        $list = DataUtils::getPageList($curlService->s3015()->get("pa_goods_source_manages/queryPage",[
-            "limit" => 1000,
-            "ceBillNoOrCeBillNoNew_in" => "CE202503280130",
-        ]));
+        if (sizeof($fileContent) > 0) {
 
-        foreach ($list as $info){
-            $info['ceDate'] = "2025-03-28T16:47:58.000Z";
-            $curlService->s3015()->put("pa_goods_source_manages/{$info['_id']}",$info);
+            $curlService = new CurlService();
+
+            $curlService = $curlService->pro();
+
+            $skuIdList = array_column($fileContent,"skuid");
+            $map = [];
+            foreach ($fileContent as $info){
+                $map[$info['skuid']] = $info['ppmcaigoulianjie'];
+            }
+            $list = [];
+            foreach (array_chunk($skuIdList,200) as $chunk){
+                $list = DataUtils::getPageList($curlService->s3015()->get("pa_goods_source_manages/queryPage",[
+                    "limit" => 200,
+                    "skuId_in" => implode(",",$chunk),
+                ]));
+                if (count($list) > 0){
+                    foreach ($list as $item){
+                        if (isset($map[$item['skuId']]) && $map[$item['skuId']]){
+                            $item['purchaseLink'] = $map[$item['skuId']];
+                            $item['modifiedBy'] = "zhouangang(修复采购链接)";
+                            $curlService->s3015()->put("pa_goods_source_manages/{$item['_id']}",$item);
+                        }else{
+                            $this->log("{$item['skuId']}没有采购链接");
+                        }
+                    }
+                }
+            }
+
         }
+
 
     }
     public function updateSkuMaterial(){
@@ -5327,60 +5350,80 @@ class SyncCurlController
     public function fixEbayTranslationMainSku(){
         $curlService = (new CurlService())->pro();
 
+//        foreach (
+//            [
+//                "2025 W43 PA for EU_AUTOFIND ES",
+//                "2025 W36 PA Part to U sku FR",
+//                "2025 W36 PA Motoforti sku FR",
+//                "2025 W36 PA luuxhaha sku FR",
+//                "2025 W36 PA Infincar sku FR",
+//                "2025 W36 PA SOPRO sku FR",
+//                "2025 W36 PA X AUTOHAUX sku FR",
+//                "2025 W36 PA Tuckbold sku FR",
+//                "2025 W36 PA RATCHROLL sku FR 人工",
+//                "2025 W43 PA for EU_AUTOFIND ES",
+//                "2025 W13 PA for EU_HEROCAR ES",
+//            ] as $title
+//        ) {
+//            $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_managements/queryPage", [
+//                "limit" => 1,
+//                "page" => 1,
+//                "title" => $title,
+//            ]));
+//            if ($mainInfo['status'] != "5") {
+//                $mainInfo['transfer'] = "2";
+//                $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
+//                $this->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
+//
+//            }
+//        }
+
+
         foreach (
             [
+                "2025 W43 PA for EU_AUTOFIND ES",
+                "2025 W36 PA Part to U sku FR",
+                "2025 W36 PA Motoforti sku FR",
+                "2025 W36 PA luuxhaha sku FR",
+                "2025 W36 PA Infincar sku FR",
+                "2025 W36 PA SOPRO sku FR",
+                "2025 W36 PA X AUTOHAUX sku FR",
+                "2025 W36 PA Tuckbold sku FR",
+                "2025 W36 PA RATCHROLL sku FR 人工",
+                "2025 W43 PA for EU_AUTOFIND ES",
                 "2025 W13 PA for EU_HEROCAR ES",
-                "2025 W13 PA for EU_Motoforti ES",
-                "2025 W13 PA for EU_Part to U ES",
-                "2025 W17 PA for EU_Part to U ES",
-                "2025 W13 PA for EU_SOPRO ES",
-                "2025 W15 PA for EU_Tuckbold ES",
-                "2025 W09 PA for EU_HEROCAR ES",
-                "2025 W09 PA for EU_luuxhaha ES",
-                "2025 W09 PA for EU_Motoforti ES",
-                "2025 W09 PA for EU_Part to U ES",
             ] as $title
         ) {
-            $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_managements/queryPage", [
+
+
+            $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_management_ebays/queryPage", [
                 "limit" => 1,
                 "page" => 1,
-                "title" => $title,
+                "batch_title" => $title,
             ]));
             if ($mainInfo['status'] != "5") {
-                $mainInfo['transfer'] = "2";
-                $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
+                $mainInfo['status'] = "2";
+                $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_management_ebays/{$mainInfo['_id']}", $mainInfo));
                 $this->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
 
+                $detailList = DataUtils::getPageList($curlService->s3015()->get("translation_management_ebay_skus/queryPage", [
+                    "limit" => 1000,
+                    "translationMainId" => $mainInfo['_id']
+                ]));
+                if ($detailList) {
+                    foreach ($detailList as $detail) {
+                        if ($detail['status'] != "5") {
+                            $detail['status'] = "2";
+                            DataUtils::getResultData($curlService->s3015()->put("translation_management_ebay_skus/{$detail['_id']}", $detail));
+                        }
+                    }
+                }
+
             }
+
         }
 
 
-
-
-//        $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_management_ebays/queryPage", [
-//            "limit" => 1,
-//            "page" => 1,
-//            "batch_title" => $title,
-//        ]));
-//        if ($mainInfo['status'] != "5") {
-//            $mainInfo['status'] = "2";
-//            $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
-//            $this->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
-//
-//            $detailList = DataUtils::getPageList($curlService->s3015()->get("translation_management_ebay_skus/queryPage", [
-//                "limit" => 1000,
-//                "translationMainId" => $mainInfo['_id']
-//            ]));
-//            if ($detailList) {
-//                foreach ($detailList as $detail) {
-//                    if ($detail['status'] != "5") {
-//                        $detail['status'] = "2";
-//                        DataUtils::getResultData($curlService->s3015()->put("translation_management_ebay_skus/{$detail['_id']}", $detail));
-//                    }
-//                }
-//            }
-//
-//        }
 
     }
     public function downloadChannelAmazonCategory()
@@ -5490,7 +5533,7 @@ $curlController = new SyncCurlController();
 //$curlController->getssss();
 //$curlController->fixDengyiyi();
 //$curlController->fixTranslationManagementCategory();
-$curlController->fixProductSku();
+//$curlController->fixProductSku();
 //$curlController->fixMergeADV2SguId();
 //$curlController->fixMergeADSguId();
 //$curlController->createSguInfo();
@@ -5519,7 +5562,7 @@ $curlController->fixProductSku();
 //$curlController->updateSkuMaterial();
 //$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();
-//$curlController->updatePaGoodsSourceManage();
+$curlController->updatePaGoodsSourceManage();
 //$curlController->getAmazonSpKeyword();
 //$curlController->syncSkuSellerConfig();
 //$curlController->skuMaterialDocCreate();

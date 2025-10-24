@@ -1105,6 +1105,21 @@ class SpPausedAdGroupController
         }
     }
 
+    public function pausedProduct($sellerId,$adId,$sku)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/productAds/putProductAds/{$sellerId}", [[
+            "adId" => $adId,
+            "state" => "paused"
+        ]]));
+        if ($returnMessage['status'] == 'success' && count($returnMessage['data']) > 0 && $returnMessage['data'][0]['code'] == "SUCCESS") {
+            //关停成功
+            return true;
+        }else{
+            $this->log("关停product失败：{$sellerId} {$adId} {$sku}");
+            return false;
+        }
+    }
+
     //=============================Product end==============================================///
 
 

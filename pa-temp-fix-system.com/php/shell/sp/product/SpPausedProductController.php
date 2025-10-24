@@ -37,11 +37,11 @@ class SpUpdateAdGroupController
         $postData = array(
             'userType' => 'userName',
             'userIdList' => "zhouangang",
-            'title' => "【keyword广告写入暂停完毕】提醒",
+            'title' => "【product广告写入暂停完毕】提醒",
             'msg' => [
                 [
                     "key" => "",
-                    "value" => "{$datetime} 已经暂停keyword完毕"
+                    "value" => "{$datetime} product广告写入暂停完毕"
                 ]
             ]
         );
