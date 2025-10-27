@@ -439,17 +439,14 @@ class SpApi
         }
     }
 
-    public function pausedProduct($sellerId,$adId,$sku)
+    public function pausedProduct($sellerId,$pausedArr)
     {
-        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/productAds/putProductAds/{$sellerId}", [[
-            "adId" => $adId,
-            "state" => "paused"
-        ]]));
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/productAds/putProductAds/{$sellerId}", $pausedArr));
         if ($returnMessage['status'] == 'success' && count($returnMessage['data']) > 0 && $returnMessage['data'][0]['code'] == "SUCCESS") {
             //关停成功
             return true;
         }else{
-            $this->log("关停product失败：{$sellerId} {$adId} {$sku}");
+            $this->log("关停product失败：{$sellerId} " . json_encode($pausedArr,JSON_UNESCAPED_UNICODE));
             return false;
         }
     }
@@ -576,10 +573,10 @@ class SpApi
     //=================================keyword end===========================================///
 
 
-    private function specialSellerIdConver($sellerId){
+    public function specialSellerIdConver($sellerId){
         return ($sellerId == 'amazon') ? 'amazon_us' : $sellerId;
     }
-    private function specialSellerIdReverseConver($sellerId){
+    public function specialSellerIdReverseConver($sellerId){
         return ($sellerId == 'amazon_us') ? 'amazon' : $sellerId;
     }
 

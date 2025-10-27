@@ -5381,17 +5381,7 @@ class SyncCurlController
 
         foreach (
             [
-                "2025 W43 PA for EU_AUTOFIND ES",
-                "2025 W36 PA Part to U sku FR",
-                "2025 W36 PA Motoforti sku FR",
-                "2025 W36 PA luuxhaha sku FR",
-                "2025 W36 PA Infincar sku FR",
-                "2025 W36 PA SOPRO sku FR",
-                "2025 W36 PA X AUTOHAUX sku FR",
-                "2025 W36 PA Tuckbold sku FR",
-                "2025 W36 PA RATCHROLL sku FR 人工",
-                "2025 W43 PA for EU_AUTOFIND ES",
-                "2025 W13 PA for EU_HEROCAR ES",
+                "2025 W36 PA ROCKCAR sku FR",
             ] as $title
         ) {
 
@@ -5525,7 +5515,7 @@ class SyncCurlController
 $curlController = new SyncCurlController();
 //$curlController->deleteSpmoDetails();
 //$curlController->downloadChannelAmazonCategory();
-//$curlController->fixEbayTranslationMainSku();
+$curlController->fixEbayTranslationMainSku();
 //$curlController->fixLossSkuV2();
 //$curlController->fixLossSku();
 //$curlController->searchLossSku();
@@ -5562,7 +5552,7 @@ $curlController = new SyncCurlController();
 //$curlController->updateSkuMaterial();
 //$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();
-$curlController->updatePaGoodsSourceManage();
+//$curlController->updatePaGoodsSourceManage();
 //$curlController->getAmazonSpKeyword();
 //$curlController->syncSkuSellerConfig();
 //$curlController->skuMaterialDocCreate();
