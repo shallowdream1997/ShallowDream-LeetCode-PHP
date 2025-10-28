@@ -960,12 +960,21 @@ class update
 
         $createResp = [];
         if (isset($params['skuList']) && !empty($params['skuList'])){
+            $preList = (new ProductSkuController())->getSkuPhotoProgress($params['skuList'],$env);
 
-
+            $batch = [];
+            foreach ($preList as $info){
+                if ($info['isExist'] == "可修补"){
+                    $batch[] = $info;
+                }
+            }
+            if (count($batch) > 0){
+                $curlService->s3015()->post("sku_photography_progresss/createBatch",$batch);
+            }
         }
 
 
-        return ["env" => $env, "data" => $createResp];
+        return ["env" => $env, "data" => true];
     }
 
 }

@@ -80,15 +80,8 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <!-- CE单输入区域 -->
-                <div class="col-md-6 mb-3">
-                    <label for="ceInput" class="form-label fw-bold">CE单号</label>
-                    <input v-model="ceNumber" class="form-control" id="ceInput"
-                           placeholder="请输入CE单号" type="text">
-                </div>
-
                 <!-- SKU输入区域 -->
-                <div class="col-md-6 mb-3">
+                <div class="col-md-12 mb-3">
                     <label for="skuInput" class="form-label fw-bold">SKU号（多个请换行）</label>
                     <textarea v-model="skuString" class="form-control" id="skuInput"
                               placeholder="请输入SKU号，多个SKU请换行" rows="6"></textarea>
@@ -128,18 +121,22 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr>
-                            <th>SKU</th>
-                            <th>预计数量</th>
-                            <th>预计完成时间</th>
+                            <th>SKU<br>T号</th>
+                            <th>CE单<br>创建CE单日期</th>
+                            <th>批次号<br>来货类型</th>
+                            <th>资料完成时间</th>
                             <th>状态</th>
+                            <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="item in productionData" :key="item.sku">
-                            <td>{{ item.sku }}</td>
-                            <td>{{ item.quantity }}</td>
-                            <td>{{ item.estimatedTime }}</td>
-                            <td :class="getStatusClass(item.status)">{{ item.status }}</td>
+                        <tr v-for="item in productionData" :key="item.skuId">
+                            <td><b style="color: red">{{ item.skuId }}</b><br>{{ item.tempSkuId }}</td>
+                            <td>{{ item.ceBillNo }}<br>{{ item.createCeBillNoOn }}</td>
+                            <td>{{ item.batchName }}<br>{{item.salesType}}</td>
+                            <td>{{ item.infoCompletedOn }}</td>
+                            <td class="text-muted fw-bold">{{ item.status }}</td>
+                            <td :class="getStatusClass(item.isExist)">{{ item.isExist }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -245,13 +242,6 @@
                 this.successMsg = "";
                 this.productionData = [];
 
-                // 验证输入
-                if (!this.ceNumber.trim()) {
-                    this.loading = "";
-                    this.errorMsg = "请输入CE单号";
-                    return;
-                }
-
                 // 处理SKU列表
                 let skuList = this.getSkuList();
 
@@ -265,7 +255,6 @@
                 const data = {
                     action: "skuPhotoFix",
                     params: {
-                        ceNumber: this.ceNumber,
                         skuList: skuList
                     }
                 };
@@ -277,6 +266,7 @@
                     this.loading = "";
 
                     if (res.status === 200 && res.data.data) {
+                        console.log(res.data.data)
                         this.productionData = res.data.data;
                         this.successMsg = "成功获取预计生产数据";
                     } else {
@@ -296,13 +286,6 @@
                 this.errorMsg = "";
                 this.successMsg = "";
 
-                // 验证输入
-                if (!this.ceNumber.trim()) {
-                    this.loading = "";
-                    this.errorMsg = "请输入CE单号";
-                    return;
-                }
-
                 // 处理SKU列表
                 let skuList = this.getSkuList();
 
@@ -316,7 +299,6 @@
                 const data = {
                     action: "skuPhotoFix",
                     params: {
-                        ceNumber: this.ceNumber,
                         skuList: skuList
                     }
                 };
@@ -327,8 +309,8 @@
 
                     this.loading = "";
 
-                    if (res.status === 200 && res.data.success) {
-                        this.successMsg = "确认生成成功！";
+                    if (res.status === 200 && res.data.data) {
+                        this.successMsg = "执行完成，请去页面查看，或点击 [预计生产数据] 按钮 查看！";
                         this.productionData = []; // 清空数据展示
                     } else {
                         this.errorMsg = res.data.message || "确认生成失败，请重试";
@@ -343,11 +325,9 @@
             // 获取状态对应的样式
             getStatusClass(status) {
                 switch(status) {
-                    case '已完成':
+                    case '可修补':
                         return 'text-success fw-bold';
-                    case '处理中':
-                        return 'text-primary fw-bold';
-                    case '待处理':
+                    case '已存在':
                         return 'text-warning fw-bold';
                     case '异常':
                         return 'text-danger fw-bold';

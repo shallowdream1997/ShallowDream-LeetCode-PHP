@@ -1038,4 +1038,112 @@ class ProductSkuController
         return $downloadOssPath;
     }
 
+
+    /**
+     * 获取SKU图片进度，预计添加的图片
+     * @param $skuIdList
+     * @param $env
+     * @return array
+     */
+    public function getSkuPhotoProgress($skuIdList = [],$env = "test"){
+        $curlService = (new CurlService())->$env();
+        $curlServiceV1 = (new CurlService())->$env();
+
+        $preList = [];
+        if (!empty($skuIdList)){
+            $curlService->gateway();
+            $curlService->getModule('pa');
+
+            $resp = DataUtils::getNewResultData($curlService->getWayPost( $curlService->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
+                "skuIdList" => $skuIdList,
+                "attrCodeList" => [
+                    "custom-skuInfo-skuId",
+                    "custom-common-ceBillNo",
+                    "custom-prePurchase-prePurchaseBillNo",
+                    "custom-skuInfo-supplierType",
+                    "custom-skuInfo-tempSkuId"
+                ]
+            ]));
+            if ($resp){
+                $skuBatchMap = [];
+                $ceBillNoSkuIds  =[];
+                foreach ($resp as $item){
+                    $ceBillNoSkuIds[$item['custom-common-ceBillNo']][] = $item['custom-skuInfo-skuId'];
+                    $skuBatchMap[$item['custom-skuInfo-skuId']] = [
+                        "batchName" => $item['custom-prePurchase-prePurchaseBillNo'],
+                        "supplierType" => $item['custom-skuInfo-supplierType'],
+                        "tempSkuId" => $item['custom-skuInfo-tempSkuId'],
+                    ];
+                }
+                foreach ($ceBillNoSkuIds as $ceBillNo => $skuIds){
+                    $ceResp = $curlServiceV1->s3009()->get("/consignment-bills/ceMasterQuery", [
+                        "ceBillNoListJsonEncode" => json_encode([$ceBillNo])
+                    ]);
+
+                    $ceMasterCreatedOn = "";
+                    if ($ceResp && $ceResp['result'] && $ceResp['result']['ceMasterResponse'] && count($ceResp['result']['ceMasterResponse']['ceMasters']) > 0){
+                        $ceMasterCreatedOn = $ceResp['result']['ceMasterResponse']['ceMasters'][0]['createdOn'];
+                    }
+
+                    $skuMap = [];
+                    $skuPhotoMap = [];
+                    foreach (array_chunk($skuIds,200) as $chunk){
+                        $list = DataUtils::getPageList($curlServiceV1->s3015()->get("product-skus/queryPage",[
+                            "limit" => 200,
+                            "productId" => implode(",",$chunk),
+                            "columns" => "productId,status,reviewingList",
+                        ]));
+                        foreach ($list as $info){
+                            if ($info['status'] == "completed"){
+                                $secondVeroDateTime = "";
+                                foreach ($info['reviewingList'] as $val){
+                                    if ($val['reviewingName'] == "secondVero"){
+                                        $secondVeroDateTime = $val['createdOn'];
+                                        break;
+                                    }
+                                }
+                                $skuMap[$info['productId']] = $secondVeroDateTime;
+                            }
+                        }
+
+                        $ss = DataUtils::getPageList($curlServiceV1->s3015()->get("sku_photography_progresss/queryPage",[
+                            "skuId_in" => implode(",",$chunk),
+                            "ceBillNo" => $ceBillNo,
+                            "limit" => 200,
+                        ]));
+                        if ($ss){
+                            foreach ($ss as $item){
+                                $skuPhotoMap[$item['skuId']] = $item;
+                            }
+                        }
+                    }
+
+                    foreach ($skuIds as $skuId){
+                        $salesType = "";
+                        if (isset($skuBatchMap[$skuId]) && $skuBatchMap[$skuId]){
+                            if ($skuBatchMap[$skuId]['supplierType'] == "consignment"){
+                                $salesType = "寄卖";
+                            }else if ($skuBatchMap[$skuId]['supplierType'] == "nonconsignment"){
+                                $salesType = "自营";
+                            }
+                        }
+                        $preList[] = [
+                            "skuId" => $skuId,
+                            "batchName" => isset($skuBatchMap[$skuId]) && $skuBatchMap[$skuId] ? $skuBatchMap[$skuId]['batchName'] : "",
+                            "ceBillNo" => $ceBillNo,
+                            "createdBy" => "system(zhouangang)",
+                            "status" => "待拍摄",
+                            "createCeBillNoOn" => $ceMasterCreatedOn,
+                            "tempSkuId" => isset($skuBatchMap[$skuId]) && $skuBatchMap[$skuId] ? $skuBatchMap[$skuId]['tempSkuId'] : "",
+                            "salesType" => $salesType,
+                            "infoCompletedOn" => isset($skuMap[$skuId]) && $skuMap[$skuId] ? $skuMap[$skuId] : "",
+                            "isInfoDrafted" => "",
+                            "isExist" => isset($skuPhotoMap[$skuId]) && $skuPhotoMap[$skuId] ? "已存在" : "可修补",
+                        ];
+                    }
+                }
+            }
+        }
+        return $preList;
+    }
 }

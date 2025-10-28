@@ -506,9 +506,11 @@ class search
         $curlService = $this->envService;
         $env = $curlService->environment;
 
-
-
-        return ["env" => $env, "data" => []];
+        $preList = [];
+        if (isset($params['skuList']) && !empty($params['skuList'])){
+            $preList = (new ProductSkuController())->getSkuPhotoProgress($params['skuList'],$env);
+        }
+        return ["env" => $env, "data" => $preList];
     }
 }
 
