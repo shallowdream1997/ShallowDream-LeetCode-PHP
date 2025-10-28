@@ -442,6 +442,7 @@ class SpApi
     public function pausedProduct($sellerId,$pausedArr)
     {
         $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/productAds/putProductAds/{$sellerId}", $pausedArr));
+        $this->log(json_encode($returnMessage,JSON_UNESCAPED_UNICODE));
         if ($returnMessage['status'] == 'success' && count($returnMessage['data']) > 0 && $returnMessage['data'][0]['code'] == "SUCCESS") {
             //关停成功
             return true;

@@ -366,7 +366,7 @@ class SyncCurlController
 
     public function fixPaSkuPhotoGress(){
         $list = $this->commonFindByParams("s3015","sku_photography_progresss",[
-            "ceBillNo_in" => "CE202503280130"
+            "ceBillNo_in" => "CE202509250127"
         ],"pro");
         foreach ($list as &$item){
             $item['createCeBillNoOn'] = "2025-03-28T16:47:58.000Z";
@@ -1450,7 +1450,7 @@ class SyncCurlController
         $curlService = new CurlService();
         $curlService = $curlService->pro();
 
-        $ceBillNo = "CE202503260168";
+        $ceBillNo = "CE202509250127";
 
 //        $curlService->s3015()->delete("sku_photography_progresss","67d0f8fe4e0359ccd8168459");
 //        $curlService->s3015()->delete("sku_photography_progresss","67d0f8fe4e0359ccd8168514");
@@ -1462,9 +1462,13 @@ class SyncCurlController
 //        ]));
 //        $skuIdList = array_column($res,"skuId");
 
-        $skuIdList = ["a25032600ux2646"];
+        $skuIdList = [
+            "a25092500ux0903",
+            "a25092500ux0904",
+            "a25092500ux0902",
+        ];
 
-        $ceMasterCreatedOn = "2025-03-26T15:54:35.000Z";
+        $ceMasterCreatedOn = "2025-09-25T20:53:15.000Z";
         $skuMap = [];
         foreach (array_chunk($skuIdList,200) as $chunk){
             $list = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
@@ -5515,7 +5519,7 @@ class SyncCurlController
 $curlController = new SyncCurlController();
 //$curlController->deleteSpmoDetails();
 //$curlController->downloadChannelAmazonCategory();
-$curlController->fixEbayTranslationMainSku();
+//$curlController->fixEbayTranslationMainSku();
 //$curlController->fixLossSkuV2();
 //$curlController->fixLossSku();
 //$curlController->searchLossSku();
@@ -5557,7 +5561,7 @@ $curlController->fixEbayTranslationMainSku();
 //$curlController->syncSkuSellerConfig();
 //$curlController->skuMaterialDocCreate();
 //$curlController->fixProductOpt();
-//$curlController->fixSkuPhotoProcess();
+$curlController->fixSkuPhotoProcess();
 //$curlController->updateProductListNo();
 //$curlController->deleteFC();
 //$curlController->combineFC();

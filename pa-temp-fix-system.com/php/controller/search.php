@@ -496,6 +496,20 @@ class search
 
         return ["env" => $env, "data" => []];
     }
+
+    /**
+     * sku修补拍摄工单
+     * @param $params
+     * @return array
+     */
+    public function skuPhotoFix($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+
+
+
+        return ["env" => $env, "data" => []];
+    }
 }
 
 
@@ -574,6 +588,10 @@ switch ($data['action']) {
     case "consignmentQD":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->consignmentQD($params);
+        break;
+    case "skuPhotoFix":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->skuPhotoFix($params);
         break;
 }
 

@@ -952,6 +952,22 @@ class update
         return ["env" => $env, "data" => $createResp];
     }
 
+    public function skuPhotoFix($params){
+
+        $curlService = $this->envService->gateway();
+        $env = $curlService->environment;
+
+
+        $createResp = [];
+        if (isset($params['skuList']) && !empty($params['skuList'])){
+
+
+        }
+
+
+        return ["env" => $env, "data" => $createResp];
+    }
+
 }
 
 
@@ -1014,6 +1030,10 @@ switch ($data['action']) {
     case "consignmentQD":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->consignmentQD($params);
+        break;
+    case "skuPhotoFix":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->skuPhotoFix($params);
         break;
 }
 

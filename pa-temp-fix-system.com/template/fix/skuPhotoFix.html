@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修补SKU拍摄进度</title>
+    <link href="../css_js/bootstrap-5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../css_js/script/jquery-3.7.0.min.js"></script>
+    <script src="../css_js/bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <script src="../css_js/script/qs.min.js"></script>
+    <!-- 粒子特效 -->
+    <link rel="stylesheet" href="../css_js/own/lizi.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            padding: 20px 0;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 6px;
+        }
+        .btn-action {
+            width: 100%;
+            padding: 8px 0;
+            font-weight: bold;
+        }
+        .status-text {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .alert-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .publish-options {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .form-check {
+            margin-bottom: 10px;
+        }
+        .btn-success {
+            background-color: #198754;
+            border-color: #198754;
+        }
+        .btn-success:hover {
+            background-color: #157347;
+            border-color: #146c43;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <!-- 页面标题和环境信息 -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2>{{ message }}</h2>
+            <p class="text-muted">当前环境：<span :class="envClass">{{ envMsg }}</span></p>
+        </div>
+    </div>
+
+    <!-- SKU拍摄进度修补卡片 -->
+    <div class="card">
+        <div class="card-header">
+            SKU拍摄进度修补
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- CE单输入区域 -->
+                <div class="col-md-6 mb-3">
+                    <label for="ceInput" class="form-label fw-bold">CE单号</label>
+                    <input v-model="ceNumber" class="form-control" id="ceInput"
+                           placeholder="请输入CE单号" type="text">
+                </div>
+
+                <!-- SKU输入区域 -->
+                <div class="col-md-6 mb-3">
+                    <label for="skuInput" class="form-label fw-bold">SKU号（多个请换行）</label>
+                    <textarea v-model="skuString" class="form-control" id="skuInput"
+                              placeholder="请输入SKU号，多个SKU请换行" rows="6"></textarea>
+                    <div class="form-text">系统会自动去除空行和重复的SKU号</div>
+                </div>
+            </div>
+
+            <!-- 按钮区域 -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <button @click="fetchProductionData" class="btn btn-success btn-action">
+                        <i class="bi bi-search"></i> 预计生产数据
+                    </button>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <button @click="confirmProduction" class="btn btn-primary btn-action">
+                        <i class="bi bi-check-circle"></i> 确认生成
+                    </button>
+                </div>
+            </div>
+
+            <!-- 处理结果信息 -->
+            <div v-if="loading" class="alert-message alert alert-info">
+                <i class="bi bi-hourglass-split"></i> {{ loading }}
+            </div>
+            <div v-if="errorMsg" class="alert-message alert alert-danger">
+                <i class="bi bi-exclamation-circle"></i> {{ errorMsg }}
+            </div>
+            <div v-if="successMsg" class="alert-message alert alert-success">
+                <i class="bi bi-check-circle"></i> {{ successMsg }}
+            </div>
+
+            <!-- 生产数据展示区域 -->
+            <div v-if="productionData.length > 0" class="mt-4">
+                <h5>预计生产数据</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>预计数量</th>
+                            <th>预计完成时间</th>
+                            <th>状态</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="item in productionData" :key="item.sku">
+                            <td>{{ item.sku }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.estimatedTime }}</td>
+                            <td :class="getStatusClass(item.status)">{{ item.status }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../css_js/own/lizi.js"></script>
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            this.initPage();
+            return {
+                message: '修补SKU拍摄进度',
+                // SKU处理相关
+                ceNumber: '',
+                skuString: '',
+
+                // 生产数据
+                productionData: [],
+
+                // 消息提示
+                errorMsg: '',
+                successMsg: '',
+                loading: '',
+
+                // 环境配置
+                env: "",
+                envMsg: "",
+                envClass: "",
+                url: "http://172.16.29.23:90/php/controller",
+                header: {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            }
+        },
+
+        methods: {
+            // 初始化页面，获取环境信息
+            async initPage() {
+                const data = {
+                    action: "skuPhotoFix",
+                    params: {}
+                };
+
+                try {
+                    this.url = "http://172.16.29.23:90/php/controller";
+                    let res = await axios.post(`${this.url}/search.php`, data, this.header);
+                    if (res.status === 200) {
+                        this.env = res.data.env;
+                        this.setEnvMessage();
+                    }
+                } catch (error) {
+                    this.errorMsg = "初始化失败，无法获取环境信息";
+                    console.error("初始化错误:", error);
+                }
+            },
+
+            // 设置环境信息显示
+            setEnvMessage() {
+                switch(this.env) {
+                    case 'test':
+                        this.envMsg = 'Test环境';
+                        this.envClass = 'text-warning';
+                        break;
+                    case 'local':
+                        this.envMsg = '开发环境';
+                        this.envClass = 'text-info';
+                        break;
+                    case 'uat':
+                        this.envMsg = 'UAT环境';
+                        this.envClass = 'text-primary';
+                        break;
+                    default:
+                        this.envMsg = '生产环境';
+                        this.envClass = 'text-danger';
+                }
+            },
+
+            // 获取SKU列表（去重、过滤空行）
+            getSkuList() {
+                let skuList = this.skuString.split("\n")
+                    .map(sku => sku.trim())
+                    .filter(sku => sku); // 过滤空字符串
+
+                // 去重
+                skuList = [...new Set(skuList)];
+
+                return skuList;
+            },
+
+            // 预计生产数据按钮点击事件
+            async fetchProductionData() {
+                // 重置消息
+                this.loading = "正在获取预计生产数据，请稍候...";
+                this.errorMsg = "";
+                this.successMsg = "";
+                this.productionData = [];
+
+                // 验证输入
+                if (!this.ceNumber.trim()) {
+                    this.loading = "";
+                    this.errorMsg = "请输入CE单号";
+                    return;
+                }
+
+                // 处理SKU列表
+                let skuList = this.getSkuList();
+
+                if (skuList.length === 0) {
+                    this.loading = "";
+                    this.errorMsg = "未找到有效的SKU号";
+                    return;
+                }
+
+                // 构造请求数据
+                const data = {
+                    action: "skuPhotoFix",
+                    params: {
+                        ceNumber: this.ceNumber,
+                        skuList: skuList
+                    }
+                };
+
+                try {
+                    // 调用接口
+                    let res = await axios.post(`${this.url}/search.php`, data, this.header);
+
+                    this.loading = "";
+
+                    if (res.status === 200 && res.data.data) {
+                        this.productionData = res.data.data;
+                        this.successMsg = "成功获取预计生产数据";
+                    } else {
+                        this.errorMsg = res.data.message || "获取数据失败，请重试";
+                    }
+                } catch (error) {
+                    this.loading = "";
+                    this.errorMsg = "网络错误，无法连接到服务器";
+                    console.error("获取预计生产数据错误:", error);
+                }
+            },
+
+            // 确认生成按钮点击事件
+            async confirmProduction() {
+                // 重置消息
+                this.loading = "正在确认生成，请稍候...";
+                this.errorMsg = "";
+                this.successMsg = "";
+
+                // 验证输入
+                if (!this.ceNumber.trim()) {
+                    this.loading = "";
+                    this.errorMsg = "请输入CE单号";
+                    return;
+                }
+
+                // 处理SKU列表
+                let skuList = this.getSkuList();
+
+                if (skuList.length === 0) {
+                    this.loading = "";
+                    this.errorMsg = "未找到有效的SKU号";
+                    return;
+                }
+
+                // 构造请求数据
+                const data = {
+                    action: "skuPhotoFix",
+                    params: {
+                        ceNumber: this.ceNumber,
+                        skuList: skuList
+                    }
+                };
+
+                try {
+                    // 调用接口
+                    let res = await axios.post(`${this.url}/update.php`, data, this.header);
+
+                    this.loading = "";
+
+                    if (res.status === 200 && res.data.success) {
+                        this.successMsg = "确认生成成功！";
+                        this.productionData = []; // 清空数据展示
+                    } else {
+                        this.errorMsg = res.data.message || "确认生成失败，请重试";
+                    }
+                } catch (error) {
+                    this.loading = "";
+                    this.errorMsg = "网络错误，无法连接到服务器";
+                    console.error("确认生成错误:", error);
+                }
+            },
+
+            // 获取状态对应的样式
+            getStatusClass(status) {
+                switch(status) {
+                    case '已完成':
+                        return 'text-success fw-bold';
+                    case '处理中':
+                        return 'text-primary fw-bold';
+                    case '待处理':
+                        return 'text-warning fw-bold';
+                    case '异常':
+                        return 'text-danger fw-bold';
+                    default:
+                        return 'text-muted fw-bold';
+                }
+            }
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
