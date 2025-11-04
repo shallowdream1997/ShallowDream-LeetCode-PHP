@@ -1967,23 +1967,24 @@ class SyncCurlController
         $curlService->gateway();
         $this->getModule('pa');
 
-//        $resp1 = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/material/changed_doc/v1/page", [
-//            "pageNum" => 1,
-//            "pageSize" => 200,
-//            "applyStatus" => 20
-//        ]));
-//
-//        $batchNameList = [];
-//        if ($resp1 && count($resp1['list']) > 0){
-//            foreach ($resp1['list'] as $info){
+        $resp1 = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/material/changed_doc/v1/page", [
+            "pageNum" => 1,
+            "pageSize" => 500,
+            "applyStatus" => 30
+        ]));
+
+        $batchNameList = [];
+        if ($resp1 && count($resp1['list']) > 0){
+            foreach ($resp1['list'] as $info){
 //                if ($info['afterChangedTranslationAttributeValue'] == "<p></p>\n"){
 //                    $batchNameList[] = $info['docNumber'];
 //                }
-//            }
-//        }
-        $batchNameList = [
-            "2025080700056",
-        ];
+                $batchNameList[] = $info['docNumber'];
+            }
+        }
+//        $batchNameList = [
+//            "2025080700056",
+//        ];
         if (count($batchNameList) > 0) {
             $this->log("一共：".count($batchNameList)."个单据翻译失败，");
             $this->log(json_encode($batchNameList,JSON_UNESCAPED_UNICODE));
@@ -3354,7 +3355,7 @@ class SyncCurlController
 
     }
 
-    public function ssss()
+    public function bindSgu()
     {
         $curlService = (new CurlService())->pro();
 //        $curlService->gateway();
@@ -3362,95 +3363,7 @@ class SyncCurlController
 
         $list = [
             "a25081500ux1375",
-            "a25081500ux1376",
-            "a25081500ux1377",
-            "a25081500ux1378",
-            "a25081500ux1379",
-            "a25081500ux1380",
-            "a25081500ux1381",
-            "a25081500ux1382",
-            "a25081500ux1383",
-            "a25081500ux1384",
-            "a25081500ux1385",
-            "a25081500ux1386",
-            "a25081500ux1387",
-            "a25081500ux1388",
-            "a25081800ux1872",
-            "a25081800ux1873",
-            "a25081800ux1874",
-            "a25081800ux1875",
-            "a25081800ux1876",
-            "a25081800ux1877",
-            "a25081800ux1878",
-            "a25081800ux1879",
-            "a25081800ux1880",
-            "a25081800ux1881",
-            "a25081800ux1882",
-            "a25081800ux1883",
-            "a25081800ux1884",
-            "a25081800ux1885",
-            "a25081800ux1886",
-            "a25081800ux1887",
-            "a25081800ux1888",
-            "a25081800ux1889",
-            "a25081800ux1890",
-            "a25081800ux1891",
-            "a25081800ux1892",
-            "a25081800ux1893",
-            "a25081800ux1894",
-            "a25081800ux1895",
-            "a25081800ux1896",
-            "a25081800ux1897",
-            "a25081800ux1898",
-            "a25081800ux1899",
-            "a25081800ux1900",
-            "a25081800ux1901",
-            "a25081800ux1902",
-            "a25081800ux1903",
-            "a25081800ux1904",
-            "a25081800ux1905",
-            "a25081800ux1906",
-            "a25081800ux1907",
-            "a25081800ux1908",
-            "a25081800ux1909",
-            "a25081800ux1910",
-            "a25081800ux1911",
-            "a25081800ux1912",
-            "a25081800ux1913",
-            "a25081800ux1914",
-            "a25081800ux1915",
-            "a25081800ux1916",
-            "a25081800ux1917",
-            "a25081800ux1918",
-            "a25081800ux1919",
-            "a25081800ux1920",
-            "a25081800ux1921",
-            "a25081800ux1922",
-            "a25081800ux1923",
-            "a25081800ux1924",
-            "a25081800ux1925",
-            "a25081800ux1926",
-            "a25081800ux1927",
-            "a25081800ux1928",
-            "a25081800ux1929",
-            "a25081800ux1930",
-            "a25081800ux1931",
-            "a25081800ux1932",
-            "a25081800ux1933",
-            "a25081800ux1934",
-            "a25081800ux1935",
-            "a25081800ux1936",
-            "a25081800ux1937",
-            "a25081800ux1938",
-            "a25081800ux1939",
-            "a25081800ux1940",
-            "a25081800ux1941",
-            "a25081800ux1942",
-            "a25081800ux1943",
-            "a25081800ux1944",
-            "a25081800ux1945",
-            "a25081800ux1946",
-            "a25081800ux1947",
+            "a25081500ux1376"
         ];
         $curlSsl = (new CurlService())->pro();
         $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
@@ -5512,11 +5425,88 @@ class SyncCurlController
     }
 
 
+    public function getProductSku()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->test();
+
+        $list = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+            "verticalId" => "CR201706060001",
+            "productType" => "SKU",
+            "columns" => "productId",
+            "limit" => 5000,
+        ]));
+        $this->log(json_encode(array_column($list, "productId"), JSON_UNESCAPED_UNICODE));
+
+    }
+
+    public function deleteTranslationManagementEbaySku()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+//        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/deleteEbaySku.xlsx");
+//
+//        if (sizeof($fileFitContent) > 0) {
+//
+//
+//            $channelSkuIds = [];
+//            foreach ($fileFitContent as $info){
+//                $channelSkuIds[$info['channel']][] = $info['skuId'];
+//            }
+//
+//            foreach ($channelSkuIds as $channel => $skuIds){
+//
+//                $detailList = DataUtils::getPageList($curlService->s3015()->get("translation_management_ebay_skus/queryPage", [
+//                    "skuId_in" => implode(",", $skuIds),
+//                    "status_in" => "0,1",
+//                    "channel" => $channel,
+//                    "columns" => "skuId",
+//                    "limit" => 1000,
+//                    "page" => 1
+//                ]));
+//                if ($detailList) {
+//                    foreach ($detailList as $detail) {
+//                        $info = DataUtils::getResultData($curlService->s3015()->delete("translation_management_ebay_skus/{$detail['_id']}"));
+//                        $this->log(json_encode($info, JSON_UNESCAPED_UNICODE));
+//                    }
+//                }
+//
+//
+//            }
+//
+//        }
+
+        $ids = DataUtils::getResultData($curlService->s3015()->get("translation_management_ebay_skus/distinct", [
+            "uxField" => "translationMainId",
+        ]));
+        if (count($ids) > 0){
+            $mainIds = DataUtils::getResultData($curlService->s3015()->get("translation_management_ebays/distinct", [
+                "uxField" => "_id",
+            ]));
+            $unsetIds = [];
+            foreach ($ids as $id){
+                if (!in_array($id,$mainIds)){
+                    $this->log("主表不存在: {$id}");
+                    $unsetIds[] = $id;
+                }else{
+                    $this->log("主表存在");
+                }
+            }
+            $this->log(json_encode($unsetIds, JSON_UNESCAPED_UNICODE));
+        }
+
+
+
+    }
+
 
 
 }
 
 $curlController = new SyncCurlController();
+//$curlController->deleteTranslationManagementEbaySku();
+//$curlController->getProductSku();
 //$curlController->deleteSpmoDetails();
 //$curlController->downloadChannelAmazonCategory();
 //$curlController->fixEbayTranslationMainSku();
@@ -5540,7 +5530,7 @@ $curlController = new SyncCurlController();
 //$curlController->getRepeatSkuMaterial();
 //$curlController->fixTranslationManagement();
 //$curlController->fixPaSkuMaterialList();
-//$curlController->ssss();
+//$curlController->bindSgu();
 //$curlController->fixCeMaterialS();
 //$curlController->fixCeMaterial();
 //$curlController->ceMaterialObjectLog();
@@ -5551,7 +5541,7 @@ $curlController = new SyncCurlController();
 //$curlController->downloadPaSkuMaterialSP();
 //$curlController->test();
 //$curlController->fix();
-//$curlController->syncSkuMaterialToAudit();
+$curlController->syncSkuMaterialToAudit();
 //$curlController->fixPaSkuPhotoGress();
 //$curlController->updateSkuMaterial();
 //$curlController->syncPaSkuMaterial();
@@ -5561,7 +5551,7 @@ $curlController = new SyncCurlController();
 //$curlController->syncSkuSellerConfig();
 //$curlController->skuMaterialDocCreate();
 //$curlController->fixProductOpt();
-$curlController->fixSkuPhotoProcess();
+//$curlController->fixSkuPhotoProcess();
 //$curlController->updateProductListNo();
 //$curlController->deleteFC();
 //$curlController->combineFC();

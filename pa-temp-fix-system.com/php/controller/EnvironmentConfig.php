@@ -65,7 +65,7 @@ class EnvironmentConfig
                 $this->curlService = (new CurlService())->test();
                 break;
             case "consignmentQD":
-                $this->curlService = (new CurlService())->test();
+                $this->curlService = (new CurlService())->pro();
                 break;
             case "skuPhotoFix":
                 $this->curlService = (new CurlService())->pro();
