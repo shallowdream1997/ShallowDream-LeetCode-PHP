@@ -13,6 +13,7 @@ class CurlService
     private $s3044 = null;
     private $s3009 = null;
     private $s3023 = null;
+    private $s3013 = null;
     private $phphk = null;
     private $phpali = null;
     private $ux168 = null;
@@ -189,6 +190,18 @@ class CurlService
         $this->setBaseComponentByEnv();
         return $this;
     }
+
+    /**
+     * ux168_nodes_js
+     * @return $this
+     */
+    public function s3013(): CurlService
+    {
+        $this->port = "s3013";
+        $this->setBaseComponentByEnv();
+        return $this;
+    }
+
 
     /**
      * product_operation_php_restful 广州服务
@@ -422,6 +435,9 @@ class CurlService
             case "s3023":
                 $this->s3023 = "http://172.16.29.23:3023";
                 break;
+            case "s3013":
+                $this->s3013 = "http://172.16.29.23:3013";
+                break;
             case "phphk":
             case "phpali":
                 $this->phpali = "http://172.16.29.23:8000";
@@ -464,6 +480,9 @@ class CurlService
                 break;
             case "s3023":
                 $this->s3023 = "http://172.16.10.62:30023";
+                break;
+            case "s3013":
+                $this->s3013 = "http://172.16.10.62:30013";
                 break;
             case "phphk":
             case "phpali":
@@ -510,6 +529,9 @@ class CurlService
             case "s3023":
                 $this->s3023 = "http://172.16.11.221:30023";
                 break;
+            case "s3013":
+                $this->s3013 = "http://172.16.11.221:30013";
+                break;
             case "phphk":
             case "phpali":
                 $this->phpali = "http://172.16.10.66:8000";
@@ -552,6 +574,9 @@ class CurlService
                 break;
             case "s3023":
                 $this->s3023 = "https://master-nodejs-poms-sold.ux168.cn";
+                break;
+            case "s3013":
+                $this->s3013 = "http://master.nodejs.168.ux168.cn:60013/";
                 break;
             case "phphk":
                 $this->phphk = "https://hk-alivpc-slim-poms.ux168.cn";

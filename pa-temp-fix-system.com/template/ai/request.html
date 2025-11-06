@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API批量请求工具</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#64748b',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#06b6d4',
+                        light: '#f8fafc',
+                        dark: '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .transition-all-300 {
+                transition: all 300ms ease-in-out;
+            }
+
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+<div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white rounded-lg shadow-lg shadow-md p-4 mb-6 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="bg-primary text-white p-2 rounded-lg">
+                <i class="fa fa-rocket text-xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800">API批量请求工具</h1>
+        </div>
+        <div class="text-sm text-gray-500">
+            <span id="current-time"></span>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- 左侧：配置面板 -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- API配置 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fa fa-cog text-primary mr-2"></i>
+                    API配置
+                </h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">请求URL</label>
+                        <input type="text" id="api-url"
+                               value="https://gateway-test.ux168.cn/pa-biz-application/scms/consignment/uxplatform/v1/apply"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">请求方法</label>
+                        <select id="request-method"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <option value="POST" selected>POST</option>
+                            <option value="GET">GET</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">请求头 (JSON格式)</label>
+                        <textarea id="request-headers" rows="3"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-sm"
+                                  placeholder='{"Authorization": "bearer 994cca36-bc66-4293-bb3d-1d109096717c"}'>{"Authorization": "bearer 994cca36-bc66-4293-bb3d-1d109096717c"}</textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">请求体 (JSON格式)</label>
+                        <textarea id="request-body" rows="6"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-mono text-sm"
+                                  placeholder='{"bidBillNo": "2025110300002","qdBillNo":"QD202510100123","groupId": {{groupId}},"supplierId": {{supplierId}},"vertical": "PA"}'>{"bidBillNo": "2025110300002","qdBillNo":"QD202510100123","groupId": {{groupId}},"supplierId": {{supplierId}},"vertical": "PA"}</textarea>
+                        <p class="text-xs text-gray-500 mt-1">使用{{ 变量名 }}作为动态参数占位符</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 批量配置 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fa fa-cubes text-primary mr-2"></i>
+                    批量配置
+                </h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">请求数量</label>
+                        <input type="number" id="request-count" value="500" min="1" max="1000"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">并发数</label>
+                            <input type="number" id="concurrency" value="10" min="1" max="50"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">延迟 (ms)</label>
+                            <input type="number" id="delay" value="0" min="0" max="1000"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h3 class="text-md font-medium text-gray-700">动态参数配置</h3>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">groupId 起始值</label>
+                                <input type="number" id="group-id-start" value="1"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">groupId 步长</label>
+                                <input type="number" id="group-id-step" value="1"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">supplierId 起始值</label>
+                                <input type="number" id="supplier-id-start" value="1"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">supplierId 步长</label>
+                                <input type="number" id="supplier-id-step" value="1"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button id="start-button"
+                                class="w-full bg-primary hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition-all-300 flex items-center justify-center items-center">
+                            <i class="fa fa-play mr-2"></i>
+                            开始发送请求
+                        </button>
+                    </div>
+
+                    <div class="pt-2">
+                        <button id="stop-button"
+                                class="w-full bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-all-300 flex items-center justify-center"
+                                disabled>
+                            <i class="fa fa-stop mr-2"></i>
+                            停止
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：结果展示 -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- 状态概览 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fa fa-tachometer text-primary mr-2"></i>
+                    状态概览
+                </h2>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <p class="text-sm text-gray-500">总请求数</p>
+                        <p id="total-requests" class="text-2xl font-bold text-gray-800">0</p>
+                    </div>
+
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <p class="text-sm text-gray-500">成功数</p>
+                        <p id="success-count" class="text-2xl font-bold text-success">0</p>
+                    </div>
+
+                    <div class="bg-red-50 p-4 rounded-lg">
+                        <p class="text-sm text-gray-500">失败数</p>
+                        <p id="error-count" class="text-2xl font-bold text-danger">0</p>
+                    </div>
+
+                    <div class="bg-yellow-50 p-4 rounded-lg">
+                        <p class="text-sm text-gray-500">平均响应时间</p>
+                        <p id="avg-response-time" class="text-2xl font-bold text-warning">0ms</p>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <div class="flex justify-between text-sm text-gray-500 mb-1">
+                        <span>进度</span>
+                        <span id="progress-text">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="progress-bar" class="bg-primary h-2.5 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <div id="status-message" class="text-sm font-medium text-gray-700">
+                        准备就绪
+                    </div>
+                </div>
+            </div>
+
+            <!-- 响应时间图表 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fa fa-line-chart text-primary mr-2"></i>
+                    响应时间趋势
+                </h2>
+
+                <div class="h-64">
+                    <canvas id="response-time-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- 请求结果列表 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold flex items-center">
+                        <i class="fa fa-list-alt text-primary mr-2"></i>
+                        请求结果
+                    </h2>
+
+                    <div class="flex space-x-2">
+                        <select id="result-filter"
+                                class="text-sm px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary">
+                            <option value="all">全部</option>
+                            <option value="success">成功</option>
+                            <option value="error">失败</option>
+                        </select>
+
+                        <button id="export-results"
+                                class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 py-1 px-3 rounded-md transition-all-300 flex items-center">
+                            <i class="fa fa-download mr-1"></i>
+                            导出
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                序号
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                参数
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                状态码
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                响应时间
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                结果
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="results-table-body"
+                               class="bg-white divide-y divide-gray-200 max-h-64 overflow-y-auto">
+                        <!-- 结果将通过JavaScript动态添加 -->
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                                尚未发送请求
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4 flex justify-between items-center text-sm text-gray-500">
+                    <span>显示 <span id="displayed-count">0</span> 条结果</span>
+                    <div class="flex space-x-1">
+                        <button id="prev-page" class="px-2 py-1 border border-gray-300 rounded-md disabled:opacity-50"
+                                disabled>
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                        <span id="current-page">1</span>
+                        <button id="next-page" class="px-2 py-1 border border-gray-300 rounded-md disabled:opacity-50"
+                                disabled>
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <footer class="mt-8 text-center text-sm text-gray-500">
+        <p>API批量请求工具 &copy; 2025</p>
+    </footer>
+</div>
+
+<!-- 详情模态框 -->
+<div id="detail-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">请求详情</h3>
+                <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">请求URL</h4>
+                    <p id="detail-url" class="text-sm font-mono bg-gray-50 p-2 rounded"></p>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">请求方法</h4>
+                    <p id="detail-method" class="text-sm"></p>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">请求头</h4>
+                    <pre id="detail-headers" class="text-xs font-mono bg-gray-50 p-2 rounded overflow-x-auto"></pre>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">请求体</h4>
+                    <pre id="detail-body" class="text-xs font-mono bg-gray-50 p-2 rounded overflow-x-auto"></pre>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">响应状态</h4>
+                    <p id="detail-status" class="text-sm"></p>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">响应时间</h4>
+                    <p id="detail-time" class="text-sm"></p>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">响应体</h4>
+                    <pre id="detail-response"
+                         class="text-xs font-mono bg-gray-50 p-2 rounded overflow-x-auto max-h-40"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 全局变量
+    let isRunning = false;
+    let abortController = null;
+    let results = [];
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let responseTimeChart = null;
+
+    // DOM元素
+    const elements = {
+        apiUrl: document.getElementById('api-url'),
+        requestMethod: document.getElementById('request-method'),
+        requestHeaders: document.getElementById('request-headers'),
+        requestBody: document.getElementById('request-body'),
+        requestCount: document.getElementById('request-count'),
+        concurrency: document.getElementById('concurrency'),
+        delay: document.getElementById('delay'),
+        groupIdStart: document.getElementById('group-id-start'),
+        groupIdStep: document.getElementById('group-id-step'),
+        supplierIdStart: document.getElementById('supplier-id-start'),
+        supplierIdStep: document.getElementById('supplier-id-step'),
+        startButton: document.getElementById('start-button'),
+        stopButton: document.getElementById('stop-button'),
+        totalRequests: document.getElementById('total-requests'),
+        successCount: document.getElementById('success-count'),
+        errorCount: document.getElementById('error-count'),
+        avgResponseTime: document.getElementById('avg-response-time'),
+        progressBar: document.getElementById('progress-bar'),
+        progressText: document.getElementById('progress-text'),
+        statusMessage: document.getElementById('status-message'),
+        resultsTableBody: document.getElementById('results-table-body'),
+        resultFilter: document.getElementById('result-filter'),
+        exportResults: document.getElementById('export-results'),
+        displayedCount: document.getElementById('displayed-count'),
+        prevPage: document.getElementById('prev-page'),
+        nextPage: document.getElementById('next-page'),
+        currentPage: document.getElementById('current-page'),
+        detailModal: document.getElementById('detail-modal'),
+        closeModal: document.getElementById('close-modal'),
+        detailUrl: document.getElementById('detail-url'),
+        detailMethod: document.getElementById('detail-method'),
+        detailHeaders: document.getElementById('detail-headers'),
+        detailBody: document.getElementById('detail-body'),
+        detailStatus: document.getElementById('detail-status'),
+        detailTime: document.getElementById('detail-time'),
+        detailResponse: document.getElementById('detail-response'),
+        currentTime: document.getElementById('current-time')
+    };
+
+    // 更新当前时间
+    function updateCurrentTime() {
+        const now = new Date();
+        elements.currentTime.textContent = now.toLocaleString('zh-CN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+
+    // 初始化图表
+    function initChart() {
+        const ctx = document.getElementById('response-time-chart').getContext('2d');
+        responseTimeChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '响应时间 (ms)',
+                    data: [],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '请求序号'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '响应时间 (ms)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    // 生成请求参数
+    function generateRequests() {
+        const count = parseInt(elements.requestCount.value);
+        const groupIdStart = parseInt(elements.groupIdStart.value);
+        const groupIdStep = parseInt(elements.groupIdStep.value);
+        const supplierIdStart = parseInt(elements.supplierIdStart.value);
+        const supplierIdStep = parseInt(elements.supplierIdStep.value);
+
+        const requests = [];
+
+        for (let i = 0; i < count; i++) {
+            const groupId = groupIdStart + (i * groupIdStep);
+            const supplierId = supplierIdStart + (i * supplierIdStep);
+
+            // 替换请求体中的占位符
+            let body = elements.requestBody.value;
+            body = body.replace(/{{groupId}}/g, groupId);
+            body = body.replace(/{{supplierId}}/g, supplierId);
+
+            try {
+                const bodyObj = JSON.parse(body);
+                requests.push({
+                    index: i + 1,
+                    url: elements.apiUrl.value,
+                    method: elements.requestMethod.value,
+                    headers: JSON.parse(elements.requestHeaders.value),
+                    body: bodyObj,
+                    groupId,
+                    supplierId
+                });
+            } catch (error) {
+                console.error('生成请求参数失败:', error);
+                throw error;
+            }
+        }
+
+        return requests;
+    }
+
+    // 发送单个请求
+    async function sendRequest(request) {
+        return new Promise(async (resolve) => {
+            const result = {
+                index: request.index,
+                url: request.url,
+                method: request.method,
+                headers: request.headers,
+                body: request.body,
+                groupId: request.groupId,
+                supplierId: request.supplierId,
+                status: null,
+                statusText: null,
+                responseTime: null,
+                response: null,
+                error: null
+            };
+
+            try {
+                const startTime = performance.now();
+
+                // 添加Content-Type头
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...request.headers
+                };
+
+                const response = await fetch(request.url, {
+                    method: request.method,
+                    headers: headers,
+                    body: JSON.stringify(request.body),
+                    signal: abortController.signal
+                });
+
+                const endTime = performance.now();
+                result.responseTime = Math.round(endTime - startTime);
+                result.status = response.status;
+                result.statusText = response.statusText;
+
+                try {
+                    result.response = await response.json();
+                } catch (e) {
+                    result.response = await response.text();
+                }
+
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    result.error = '请求被取消';
+                } else {
+                    result.error = error.message;
+                }
+            }
+
+            resolve(result);
+        });
+    }
+
+    // 批量发送请求
+    async function sendBatchRequests() {
+        if (isRunning) return;
+
+        try {
+            // 重置状态
+            isRunning = true;
+            results = [];
+            currentPage = 1;
+            elements.startButton.disabled = true;
+            elements.stopButton.disabled = false;
+            elements.statusMessage.textContent = '正在准备请求...';
+            elements.statusMessage.className = 'text-sm font-medium text-gray-700';
+
+            // 清空结果表格
+            elements.resultsTableBody.innerHTML = '';
+
+            // 初始化进度
+            const totalCount = parseInt(elements.requestCount.value);
+            elements.totalRequests.textContent = totalCount;
+            elements.successCount.textContent = '0';
+            elements.errorCount.textContent = '0';
+            elements.avgResponseTime.textContent = '0ms';
+            elements.progressBar.style.width = '0%';
+            elements.progressText.textContent = '0%';
+
+            // 重置图表
+            if (responseTimeChart) {
+                responseTimeChart.data.labels = [];
+                responseTimeChart.data.datasets[0].data = [];
+                responseTimeChart.update();
+            }
+
+            // 生成请求列表
+            const requests = generateRequests();
+
+            // 创建AbortController
+            abortController = new AbortController();
+
+            // 获取配置
+            const concurrency = parseInt(elements.concurrency.value);
+            const delay = parseInt(elements.delay.value);
+
+            // 并发发送请求
+            let completed = 0;
+            let success = 0;
+            let error = 0;
+            let totalResponseTime = 0;
+
+            elements.statusMessage.textContent = `正在发送请求 (0/${totalCount})`;
+
+            // 使用队列处理并发请求
+            const queue = [...requests];
+            const activeWorkers = [];
+
+            while (queue.length > 0 || activeWorkers.length > 0) {
+                // 启动新的工作线程，直到达到达并发限制
+                while (activeWorkers.length < concurrency && queue.length > 0) {
+                    const request = queue.shift();
+
+                    // 如果设置了延迟，添加延迟
+                    if (delay > 0 && completed > 0) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+
+                    const worker = sendRequest(request)
+                        .then(result => {
+                            // 处理结果
+                            completed++;
+                            results.push(result);
+
+                            if (result.error) {
+                                error++;
+                            } else if (result.status >= 200 && result.status < 300) {
+                                success++;
+                                totalResponseTime += result.responseTime;
+                            } else {
+                                error++;
+                            }
+
+                            // 更新UI
+                            elements.successCount.textContent = success;
+                            elements.errorCount.textContent = error;
+
+                            if (success > 0) {
+                                const avgTime = Math.round(totalResponseTime / success);
+                                elements.avgResponseTime.textContent = `${avgTime}ms`;
+                            }
+
+                            const progress = Math.round((completed / totalCount) * 100);
+                            elements.progressBar.style.width = `${progress}%`;
+                            elements.progressText.textContent = `${progress}%`;
+
+                            elements.statusMessage.textContent = `正在发送请求 (${completed / ${totalCount})`
+                        ;
+
+                                        // 更新图表
+                                        if (responseTimeChart && result.responseTime !== null) {
+                                          responseTimeChart.data.labels.push(result.index);
+                                          responseTimeChart.data.datasets[0].data.push(result.result.responseTime);
+
+                                          // 限制图表数量，保持图表流畅
+                                          if (responseTimeChart.data.labels.length > 50) {
+                                            responseTimeChart.data.labels.shift();
+                                            responseTimeChart.data.datasets[0].data.shift();
+                                          }
+
+                                          responseTimeChart.update();
+                                        }
+
+                                        // 添加到结果表格
+                                        addResultToTable(result);
+
+                                        return result;
+                                      })
+                                      .catch(err => {
+                                        console.error('请求处理失败:', err);
+                                      });
+
+                                    activeWorkers.push(worker);
+                                  }
+
+                                  // 等待任何一个工作线程完成
+                                  if (activeWorkers.length > 0) {
+                                    await Promise.race(activeWorkers);
+
+                                    // 移除已完成的工作线程
+                                    const newActiveWorkers = [];
+                                    for (const worker of activeWorkers) {
+                                      if (worker.status !== 'resolved') {
+                                        newActiveWorkers.push(worker);
+                                      }
+                                    }
+                                    activeWorkers.length = 0;
+                                    activeWorkers.push(...newActiveWorkers);
+                                  }
+                                }
+
+                                // 完成所有请求
+                                elements.statusMessage.textContent =
+                            `请求完成 (${totalCount}/${totalCount})`;
+                            elements.status.statusMessage.className = 'text-sm font-medium text-success';
+
+                                // 更新分页
+                            updatePagination();
+
+                            } catch (error) {
+        console.error('批量请求失败:', error);
+        elements.statusMessage.textContent = `
+                            错误: $
+                            {
+                                error.message
+                            }
+                            `;
+        elements.statusMessage.className = 'text-sm font-medium text-danger';
+      } finally {
+        isRunning = false;
+        elements.startButton.disabled = false;
+        elements.stopButton.disabled = true;
+      }
+    }
+
+    // 添加结果到表格
+    function addResultToTable(result) {
+      // 只在当前页显示新结果
+      const isVisible = shouldShowResult(result);
+
+      if (isVisible && (results.length <= itemsPerPage || currentPage === 1)) {
+        const row = createResultRow(result);
+        elements.resultsTableBody.appendChild(row);
+      }
+    }
+
+    // 创建结果行
+    function createResultRow(result) {
+      const row = document.createElement('tr');
+      row.className = result.error || (result.status >= 400 && result.status < 600) ? 'bg-red-50' : 'hover:bg-gray-50';
+
+      // 序号
+      const indexCell = document.createElement('td');
+      indexCell.className = 'px-6 py-3 whitespace-nowrap text-sm text-gray-900';
+      indexCell.textContent = result.index;
+      row.appendChild(indexCell);
+
+      // 参数
+      const paramsCell = document.createElement('td');
+      paramsCell.className = 'px-6 py-3 whitespace-nowrap text-sm text-gray-500';
+      paramsCell.textContent = `
+                            groupId: $
+                            {
+                                result.groupId
+                            }
+                        ,
+                            supplierId: $
+                            {
+                                result.supplierId
+                            }
+                            `;
+      row.appendChild(paramsCell);
+
+      // 状态码
+      const statusCell = document.createElement('td');
+      statusCell.className = 'px-6 py-3 whitespace-nowrap text-sm';
+
+      const statusBadge = document.createElement('span');
+      if (result.error) {
+        statusBadge.className = 'px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800';
+        statusBadge.textContent = '错误';
+      } else if (result.status >= 200 && result.status < 300) {
+        statusBadge.className = 'px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800';
+        statusBadge.textContent = result.status;
+      } else {
+        statusBadge.className = 'px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800';
+        statusBadge.textContent = result.status;
+      }
+
+      statusCell.appendChild(statusBadge);
+      row.appendChild(statusCell);
+
+      // 响应时间
+      const timeCell = document.createElement('td');
+      timeCell.className = 'px-6 py-3 whitespace-nowrap text-sm text-gray-500';
+      timeCell.textContent = result.responseTime !== null ? `
+                            $
+                            {
+                                result.responseTime
+                            }
+                            ms` : '-';
+      row.appendChild(timeCell);
+
+      // 结果
+      const resultCell = document.createElement('td');
+      resultCell.className = 'px-6 py-3 whitespace-nowrap text-sm';
+
+      const resultButton = document.createElement('button');
+      resultButton.className = 'text-primary hover:text-blue-700 font-medium';
+      resultButton.textContent = result.error ? '查看错误' : '查看详情';
+      resultButton.addEventListener('click', () => showResultDetail(result));
+
+      resultCell.appendChild(resultButton);
+      row.appendChild(resultCell);
+
+      return row;
+    }
+
+    // 显示结果详情
+    function showResultDetail(result) {
+      elements.detailUrl.textContent = result.url;
+      elements.detailMethod.textContent = result.method;
+      elements.detailHeaders.textContent = JSON.stringify(result.headers, null, 2);
+      elements.detailBody.textContent = JSON.stringify(result.body, null, 2);
+
+      if (result.error) {
+        elements.detailStatus.innerHTML = ` < span
+
+                            class
+
+                            = "text-red-600 font-medium" > 错误 < /span>: ${result.error}`;
+                        }
+                else
+                    {
+                        const statusClass = result.status >= 200 && result.status < 300 ? 'text-green-600' : 'text-yellow-600';
+                        elements.detailStatus.innerHTML = `<span class="${statusClass} font-medium">${result.status}</span> ${result.statusText}`;
+                    }
+
+                    elements.detailTime.textContent = result.responseTime !== null ? `${result.responseTime}ms` : '-';
+
+                    if (typeof result.response === 'string') {
+                        elements.detailResponse.textContent = result.response;
+                    } else {
+                        elements.detailResponse.textContent = JSON.stringify(result.response, null, 2);
+                    }
+
+                    elements.detailModal.classList.remove('hidden');
+                }
+
+                // 关闭详情模态框
+                function closeDetailModal() {
+                    elements.detailModal.classList.add('hidden');
+                }
+
+                // 过滤结果
+                function filterResults() {
+                    currentPage = 1;
+                    renderResults();
+                }
+
+                // 判断结果是否应该显示
+                function shouldShowResult(result) {
+                    const filter = elements.resultFilter.value;
+
+                    if (filter === 'all') return true;
+                    if (filter === 'success') return !result.error && result.status >= 200 && result.status < 300;
+                    if (filter === 'error') return result.error || (result.status >= 400 && result.status < 600);
+
+                    return true;
+                }
+
+                // 渲染结果
+                function renderResults() {
+                    const filteredResults = results.filter(shouldShowResult);
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const endIndex = startIndex + itemsPerPage;
+                    const pageResults = filteredResults.slice(startIndex, endIndex);
+
+                    // 清空表格
+                    elements.resultsTableBody.innerHTML = '';
+
+                    if (pageResults.length === 0) {
+                        const row = document.createElement('tr');
+                        const cell = document.createElement('td');
+                        cell.className = 'px-6 py-4 text-center text-sm text-gray-500';
+                        cell.colSpan = 5;
+                        cell.textContent = '没有匹配的结果';
+                        row.appendChild(cell);
+                        elements.resultsTableBody.appendChild(row);
+                    } else {
+                        pageResults.forEach(result => {
+                            const row = createResultRow(result);
+                            elements.resultsTableBody.appendChild(row);
+                        });
+                    }
+
+                    // 更新分页信息
+                    elements.displayedCount.textContent = filteredResults.length;
+                    elements.currentPage.textContent = currentPage;
+
+                    elements.prevPage.disabled = currentPage === 1;
+                    elements.nextPage.disabled = endIndex >= filteredResults.length;
+                }
+
+                // 更新分页
+                function updatePagination() {
+                    renderResults();
+                }
+
+                // 上一页
+                function prevPage() {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderResults();
+                    }
+                }
+
+                // 下一页
+                function nextPage() {
+                    const filteredResults = results.filter(shouldShowResult);
+                    const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
+
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderResults();
+                    }
+                }
+
+                // 导出结果
+                function exportResults() {
+                    if (results.length === 0) {
+                        alert('没有结果可导出');
+                        return;
+                    }
+
+                    const filteredResults = results.filter(shouldShowResult);
+                    const csvContent = convertToCSV(filteredResults);
+
+                    const blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', `api-results-${new Date().toISOString().slice(0, 10)}.csv`);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+
+                // 转换为CSV
+                function convertToCSV(results) {
+                    const headers = ['序号', 'URL', '方法', 'groupId', 'supplierId', '状态码', '响应时间(ms)', '错误信息'];
+
+                    let csv = headers.join(',') + '\n';
+
+                    results.forEach(result => {
+                        const row = [
+                            result.index,
+                            `"${result.url}"`,
+                            `"${result.method}"`,
+                            result.groupId,
+                            result.supplierId,
+                            result.error ? '错误' : result.status,
+                            result.responseTime || '',
+                            `"${result.error || ''}"`
+                        ];
+
+                        csv += row.join(',') + '\n';
+                    });
+
+                    return csv;
+                }
+
+                // 停止请求
+                function stopRequests() {
+                    if (abortController) {
+                        abortController.abort();
+                        elements.statusMessage.textContent = '请求已取消';
+                        elements.statusMessage.className = 'text-sm font-medium text-warning';
+                    }
+                }
+
+                // 事件监听
+                function setupEventListeners() {
+                    elements.startButton.addEventListener('click', sendBatchRequests);
+                    elements.stopButton.addEventListener('click', stopRequests);
+                    elements.resultFilter.addEventListener('change', filterResults);
+                    elements.exportResults.addEventListener('click', exportResults);
+                    elements.prevPage.addEventListener('click', prevPage);
+                    elements.nextPage.addEventListener('click', nextPage);
+                    elements.closeModal.addEventListener('click', closeDetailModal);
+
+                    // 点击模态框背景关闭
+                    elements.detailModal.addEventListener('click', (e) => {
+                        if (e.target === elements.detailModal) {
+                            closeDetailModal();
+                        }
+                    });
+                }
+
+                // 初始化
+                function init() {
+                    updateCurrentTime();
+                    setInterval(updateCurrentTime, 1000);
+                    initChart();
+                    setupEventListeners();
+                }
+
+                // 页面加载完成后初始化
+                document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

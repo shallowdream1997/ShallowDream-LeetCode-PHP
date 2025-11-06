@@ -3597,7 +3597,7 @@ class SyncCurlController
     public function fixTranslationManagement()
     {
         $skuIdList = [
-            "f24090900ux1117",
+            "f25110300ux0528",
         ];
         $curlService = (new CurlService())->pro();
 
@@ -5501,10 +5501,181 @@ class SyncCurlController
     }
 
 
+    public function exportAmazonUsAttribute(){
+        $curlService = (new CurlService())->pro();
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/需导Amazon _us部分资料.xlsx");
+
+
+        if (sizeof($fileFitContent) > 0){
+            $skuIdList = array_column($fileFitContent, "SKUID");
+            $exportList = [];
+            foreach (array_chunk($skuIdList, 200) as $skuIds){
+
+                $list = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+                    "productId" => implode(",", $skuIds),
+                    "columns" => "productId,title,description,weight_net,attribute",
+                    "limit" => 200
+                ]));
+                foreach ($list as $info){
+                    $jinzhong = ($info['weight_net'] ?? 0) * 1000;
+
+                    $data = [];
+                    $data['skuId'] = $info['productId'];
+                    $data['jinzhong'] = $jinzhong;
+                    foreach ($info['attribute'] as $attr){
+                        if (in_array($attr['label'], [
+                            "title",
+                            "description",
+                            "Bullet_1",
+                            "Bullet_2",
+                            "Bullet_3",
+                            "Bullet_4",
+                            "Bullet_5",
+                            "item_length_width/length",
+                            "item_length_width/width",
+                            "item_height",
+                            "Color",
+                            "material"
+                        ]) && $attr['channel'] == "amazon_us"){
+                            $data[$attr['label']] = $attr['value'];
+                        }
+                    }
+                    if (!isset($data['title']) || !$data['title']){
+                        $data['title'] = $info['title'];
+                    }
+                    if (!isset($data['description']) || !$data['description']){
+                        $data['description'] = $info['description'];
+                    }
+                    //字段重新排序
+                    $lastData = [];
+                    foreach (['skuId','title','description','Bullet_1','Bullet_2','Bullet_3','Bullet_4','Bullet_5','item_length_width/length','item_length_width/width','item_height','Color','material','jinzhong'] as $field){
+                        $lastData[$field] = $data[$field] ?? "";
+                    }
+                    $exportList[] = $lastData;
+                    $this->redis->hSet("exportAmazonUsAttr", $data['skuId'], json_encode($lastData, JSON_UNESCAPED_UNICODE));
+                }
+
+            }
+
+        }
+
+        if (sizeof($exportList) > 0){
+            $excelUtils = new ExcelUtils();
+            $filePath = $excelUtils->downloadXlsx([
+                "SKUID",
+                "标题",
+                "描述",
+                "Bullet_1",
+                "Bullet_2",
+                "Bullet_3",
+                "Bullet_4",
+                "Bullet_5",
+                "item_length_width/length",
+                "item_length_width/width",
+                "item_height",
+                "Color",
+                "material",
+                "净重(g)"
+            ], $exportList, "AmazonUS属性和净重_" . date("YmdHis") . ".xlsx");
+        }
+
+
+
+    }
+
+    public function exportBusinessModules()
+    {
+
+        $curlService = (new CurlService())->pro();
+
+        $list = DataUtils::getPageList($curlService->ux168()->get("business_modules/queryPage", [
+            "vertical" => "PA",
+            "activeStatus"=>1,
+            "limit" => 1000,
+            "page" => 1
+        ]));
+        if (sizeof($list) > 0){
+
+            $exportList = [];
+            foreach ($list as $info){
+                $exportList[] = [
+                    "groupId" => $info['groupId'],
+                    "supplierId" => $info['supplierId'],
+                ];
+            }
+
+
+            $excelUtils = new ExcelUtils();
+            $filePath = $excelUtils->downloadXlsx([
+                "groupId",
+                "supplierId",
+            ], $exportList, "test寄卖商PA_" . date("YmdHis") . ".xlsx");
+        }
+
+
+    }
+
+
+
+    public function syncBusinessModulesToTest()
+    {
+
+        $curlService = (new CurlService())->pro();
+
+        $list = DataUtils::getPageList($curlService->ux168()->get("business_modules/queryPage", [
+            "vertical" => "PA",
+            "activeStatus"=>1,
+            "limit" => 1000,
+            "page" => 1
+        ]));
+        if (sizeof($list) > 0){
+
+            $proListMap = [];
+            foreach ($list as $info){
+                $proListMap[$info['groupId'].$info['supplierId']] = $info;
+            }
+
+            $curlServicet = (new CurlService())->test();
+            $testList = DataUtils::getPageList($curlServicet->ux168()->get("business_modules/queryPage", [
+                "vertical" => "PA",
+                "activeStatus"=>1,
+                "limit" => 1000,
+                "page" => 1
+            ]));
+            if (sizeof($testList) > 0){
+                $testListMap = [];
+                foreach ($testList as $info){
+                    $testListMap[$info['groupId'].$info['supplierId']] = $info;
+                }
+
+                foreach ($proListMap as $key => $info){
+                    if (!isset($testListMap[$key])){
+                        $curlServicet->ux168()->post("business_modules", $info);
+                    }else{
+                        $curlServicet->ux168()->delete("business_modules/{$testListMap[$key]['_id']}");
+                        $curlServicet->ux168()->post("business_modules", $info);
+                    }
+
+
+                }
+
+            }
+
+
+
+
+        }
+
+
+    }
 
 }
 
 $curlController = new SyncCurlController();
+//$curlController->exportAmazonUsAttribute();
+//$curlController->syncBusinessModulesToTest();
+//$curlController->exportBusinessModules();
 //$curlController->deleteTranslationManagementEbaySku();
 //$curlController->getProductSku();
 //$curlController->deleteSpmoDetails();
@@ -5528,7 +5699,7 @@ $curlController = new SyncCurlController();
 //$curlController->exportBeforeSkuMaterial();
 //$curlController->getRepeatSkuMaterialByAliSls();
 //$curlController->getRepeatSkuMaterial();
-//$curlController->fixTranslationManagement();
+$curlController->fixTranslationManagement();
 //$curlController->fixPaSkuMaterialList();
 //$curlController->bindSgu();
 //$curlController->fixCeMaterialS();
@@ -5541,7 +5712,7 @@ $curlController = new SyncCurlController();
 //$curlController->downloadPaSkuMaterialSP();
 //$curlController->test();
 //$curlController->fix();
-$curlController->syncSkuMaterialToAudit();
+//$curlController->syncSkuMaterialToAudit();
 //$curlController->fixPaSkuPhotoGress();
 //$curlController->updateSkuMaterial();
 //$curlController->syncPaSkuMaterial();
