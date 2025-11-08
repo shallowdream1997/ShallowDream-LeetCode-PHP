@@ -197,6 +197,28 @@ class DataUtils
     }
 
     /**
+     * 根据条件查询数组的下标以及下标所在的数据
+     * @param array $array 数组
+     * @param array $conditions 查询条件
+     * @return array
+     */
+    public static function findIndexDataInArray(array $array,array $conditions)
+    {
+        // 使用array_filter根据多个条件过滤数组
+        return array_filter($array, function ($item) use ($conditions) {
+            foreach ($conditions as $key => $value) {
+                if (!isset($item[$key])){
+                    return [];
+                }
+                if ($item[$key] !== $value) {
+                    return [];
+                }
+            }
+            return true;
+        });
+    }
+
+    /**
      * 检查数组里面是否存在该字段且等于指定值，存在则true，不存在则false
      * @param array $array 数组
      * @param string $field 字段名称

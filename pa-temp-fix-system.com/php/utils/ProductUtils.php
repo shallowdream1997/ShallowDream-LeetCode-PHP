@@ -97,4 +97,31 @@ class ProductUtils
 
 
 
+    public static function deleteProductAttributeByArrV2(&$attribute, $deleteLabelChannelValue)
+    {
+        if (empty($attribute) || empty($deleteLabelChannelValue)) {
+            return; // 空数组直接返回，避免无效循环
+        }
+
+        // 构建查询条件映射表，提高查找效率
+        $deleteMap = [];
+        foreach ($deleteLabelChannelValue as $info) {
+            $key = $info['label'] . '|' . $info['channel'];
+            $deleteMap[$key] = true;
+        }
+
+        // 一次遍历完成筛选，减少数组操作次数
+        $filtered = [];
+        foreach ($attribute as $item) {
+            $currentKey = $item['label'] . '|' . $item['channel'];
+            // 不在删除列表中的元素保留
+            if (!isset($deleteMap[$currentKey])) {
+                $filtered[] = $item;
+            }
+        }
+
+        // 直接替换原数组，避免多次splice操作
+        $attribute = $filtered;
+    }
+
 }

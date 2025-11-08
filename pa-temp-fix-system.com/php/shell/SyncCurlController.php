@@ -5636,7 +5636,7 @@ class SyncCurlController
                 $proListMap[$info['groupId'].$info['supplierId']] = $info;
             }
 
-            $curlServicet = (new CurlService())->test();
+            $curlServicet = (new CurlService())->uat();
             $testList = DataUtils::getPageList($curlServicet->ux168()->get("business_modules/queryPage", [
                 "vertical" => "PA",
                 "activeStatus"=>1,
@@ -5670,9 +5670,121 @@ class SyncCurlController
 
     }
 
+
+    public function fixProductSkuCurrent()
+    {
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/product_sku存在币种属性值为false的.xlsx");
+
+
+        if (sizeof($fileFitContent) > 0) {
+            $skuIdList = array_unique(array_column($fileFitContent, "productid"));
+
+//            $skuIdList = [
+//
+//                "a20112600ux0155",
+//
+//                "a20112600ux0156",
+//
+////                "a20112600ux0158",
+////
+////                "a20112600ux0159",
+////
+////                "a20112600ux0161",
+////
+////                "a20112600ux0162",
+////
+////                "a20112600ux0164",
+////
+////                "a20112600ux0165",
+////
+////                "a20112600ux0167",
+////
+////                "a20112600ux0168",
+//            ];
+            $curlService = (new CurlService())->pro();
+
+            $productIdMap = [];
+            foreach (array_chunk($skuIdList,100) as $chunk){
+                $productSkuList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+                    "productId" => implode(",",$chunk),
+                    "limit" => count($chunk)
+                ]));
+                if ($productSkuList){
+                    foreach ($productSkuList as $info){
+                        $productIdMap[$info['productId']] = $info;
+                    }
+                }
+            }
+
+
+            $export = [];
+            foreach ($skuIdList as $sku){
+                if (isset($productIdMap[$sku])){
+                    $productInfo = $productIdMap[$sku];
+
+                    $deleteMap = [];
+                    foreach ($productInfo['attribute'] as $info){
+                        if (in_array($info['label'],[
+                            'MSRPWithTax_currency',
+                                'MSRP_currency',
+//                                'MSRP',
+//                                'MSRPWithTax'
+                            ]) && $info['value'] == "false"){
+                            $this->log($sku . "渠道：{$info['channel']} {$info['label']} 值为: " . $info['value']);
+                            $export[] = [
+                                "skuId" => $sku,
+                                "channel" => $info['channel'],
+                                "MSRPWithTax_currency" => $info['value']
+                            ];
+                            $key = $info['label'] . '|' . $info['channel'];
+                            $deleteMap[$key] = true;
+                        }
+                    }
+
+                    if (count($deleteMap) == 0){
+                        $this->log($sku . "不存在币种属性值为false的");
+                        continue;
+                    }
+                    $filtered = [];
+                    foreach ($productInfo['attribute'] as $item) {
+                        $currentKey = $item['label'] . '|' . $item['channel'];
+                        // 不在删除列表中的元素保留
+                        if (!isset($deleteMap[$currentKey])) {
+                            $filtered[] = $item;
+                        }
+                    }
+                    $productInfo['attribute'] = $filtered;
+
+                    $productInfo['userName'] = "system(zhouangang)";
+                    $productInfo['action'] = "修复币种不一导致上架失败问题";
+                    //$this->log(json_encode($productInfo['attribute'],JSON_UNESCAPED_UNICODE));
+                    $this->log($sku . "该删");
+                    $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
+                    $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+                }
+            }
+
+//            if (sizeof($export) > 0){
+//                $excelUtils = new ExcelUtils();
+//                $filePath = $excelUtils->downloadXlsx([
+//                    "skuId",
+//                    "channel",
+//                    "MSRPWithTax_currency"
+//                ], $export, "币种修复_" . date("YmdHis") . ".xlsx");
+//            }
+
+
+        }
+
+
+    }
+
+
+
 }
 
 $curlController = new SyncCurlController();
+$curlController->fixProductSkuCurrent();
 //$curlController->exportAmazonUsAttribute();
 //$curlController->syncBusinessModulesToTest();
 //$curlController->exportBusinessModules();
@@ -5699,7 +5811,7 @@ $curlController = new SyncCurlController();
 //$curlController->exportBeforeSkuMaterial();
 //$curlController->getRepeatSkuMaterialByAliSls();
 //$curlController->getRepeatSkuMaterial();
-$curlController->fixTranslationManagement();
+//$curlController->fixTranslationManagement();
 //$curlController->fixPaSkuMaterialList();
 //$curlController->bindSgu();
 //$curlController->fixCeMaterialS();
