@@ -1896,67 +1896,50 @@ class SyncCurlController
 
     }
     public function updateSkuMaterial(){
-        $curlService = new CurlService();
+        $curlService = (new CurlService())->pro();
         $list = [];
 
 //        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/CEB.xlsx");
-//        $fitmentSkuMap = [];
-//        if (sizeof($fileFitContent) > 0) {
-//            foreach ($fileFitContent as $item){
-//
-//                $resp = DataUtils::getPageDocList($curlService->pro()->s3044()->get("pa_ce_materials/queryPage", [
-//                    "limit" => 1,
-//                    "ceBillNo" => $item['ce_bill_no'],
-//                ]));
-//                if (count($resp) > 0) {
-//                    $this->log("{$item['ce_bill_no']}");
-//                    $info = $resp[0];
-//                    if (count($info['skuIdList']) > 0){
-//                        $sku = $info['skuIdList'][0];
-//                        $productInfo = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("product-skus/queryPage",[
-//                            "productId" => $sku
-//                        ]));
-//
-//                        if ($productInfo){
-//                            $this->log("修改CE数据：原运营：{$info['saleName']} -> 新运营：{$productInfo['salesUserName']}");
-//                            $info['saleName'] = $productInfo['salesUserName'];
-//                            $curlService->pro()->s3044()->put("pa_ce_materials/{$info['_id']}",$info);
-//                        }
-//                    }
-//
-//                }
-//
-//
-//            }
-//        }
+        $fitmentSkuMap = [];
+        $fileFitContent = [['ce_bill_no' => 'CE202510150095']];
+        if (sizeof($fileFitContent) > 0) {
+            foreach ($fileFitContent as $item){
 
-//        foreach ($ceMap as $item => $ss){
-//            $resp = DataUtils::getPageList($curlService->pro()->s3044()->get("pa_ce_materials/680dfa081eb855713a10b8bd",[]));
-//            if (count($resp) > 0) {
-//                $resp['ceBillNo'] = "CE202504280011";
-//                $resp['ceDate'] = "2025-04-28T00:00:00.000Z";
-//
-//                $curlService->pro()->s3044()->put("pa_ce_materials/{$resp['_id']}",$resp);
-//            }else{
-//
-//
-//            }
 
-//            $resp = DataUtils::getPageList($curlService->pro()->s3044()->get("pa_sku_materials/680dfa0951c9ac303c17fe33",[]));
-//            if (count($resp) > 0) {
-//                $resp['ceBillNo'] = "CE202504280011";
-//
-//                $curlService->pro()->s3044()->put("pa_sku_materials/{$resp['_id']}",$resp);
-//            }else{
-//
-//
-//            }
-//
-//
-//
-//
-//        }
+                $main = DataUtils::getPageDocListInFirstDataV1($curlService->s3044()->get("pa_ce_materials/queryPage", [
+                    "limit" => 1,
+                    "ceBillNo" => $item['ce_bill_no'],
+                ]));
+                if (count($main) > 0) {
+                    $this->log("{$item['ce_bill_no']}");
+                    $main['status'] = 'materialComplete';
+                    $curlService->s3044()->put("pa_ce_materials/{$main['_id']}",$main);
 
+                    if (count($main['skuIdList']) > 0){
+                        foreach ($main['skuIdList'] as $sku){
+
+                            $detail = DataUtils::getPageDocListInFirstDataV1($curlService->s3044()->get("pa_sku_materials/queryPage", [
+                                "limit" => 1,
+                                "page" => 1,
+                                "skuId" => $sku,
+                                "ceBillNo" => $main['ceBillNo'],
+                            ]));
+                            if ($detail){
+                                $detail['status'] = "materialComplete";
+                                $curlService->s3044()->put("pa_sku_materials/{$detail['_id']}",$detail);
+                            }
+                        }
+
+                    }
+
+                }
+
+
+            }
+
+
+
+        }
 
 
     }
@@ -5779,12 +5762,155 @@ class SyncCurlController
 
     }
 
+    public function updatePaSkuMaterialV2()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/1.xlsx");
+
+        if (count($fileFitContent) > 0){
+            $ceBillNoSalesMap = [];
+            foreach ($fileFitContent as $info){
+                $ceBillNoSalesMap[$info['CE单']] = [
+                    "old" => $info['原负责人'],
+                    "new" => $info['新负责人'],
+                ];
+            }
+
+            foreach ($ceBillNoSalesMap as $ceBillNo => $salesName){
+                $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
+                    "limit" => 1,
+                    "page" => 1,
+                    "ceBillNo" => $ceBillNo
+                ]));
+                if (count($l) == 0){
+                    continue;
+                }
+
+                foreach ($l as $item){
+                    if (isset($ceBillNoSalesMap[$item['ceBillNo']])){
+                        if ($item['saleName'] == $ceBillNoSalesMap[$item['ceBillNo']]['old']){
+                            $item['saleName'] = $ceBillNoSalesMap[$item['ceBillNo']]['new'];
+                        }
+                        if ($item['ebayTraceMan'] == $ceBillNoSalesMap[$item['ceBillNo']]['old']){
+                            $item['ebayTraceMan'] = $ceBillNoSalesMap[$item['ceBillNo']]['new'];
+                        }
 
 
+                        // 根据条件替换
+                        if (isset($item['saleNameList']) && is_array($item['saleNameList'])) {
+                            foreach ($item['saleNameList'] as $key => $value) {
+                                if ($value == $ceBillNoSalesMap[$item['ceBillNo']]['old']) {
+                                    $item['saleNameList'][$key] = $ceBillNoSalesMap[$item['ceBillNo']]['new'];
+                                }
+                            }
+                            $item['saleNameList'] = array_unique($item['saleNameList']);
+                        }
+                        if (isset($item['ebayTraceManList']) && is_array($item['ebayTraceManList'])) {
+                            foreach ($item['ebayTraceManList'] as $key => $value) {
+                                if ($value == $ceBillNoSalesMap[$item['ceBillNo']]['old']) {
+                                    $item['ebayTraceManList'][$key] = $ceBillNoSalesMap[$item['ceBillNo']]['new'];
+                                }
+                            }
+                            $item['ebayTraceManList'] = array_unique($item['ebayTraceManList']);
+                        }
+                        $curlService->s3044()->put("pa_ce_materials/{$item['_id']}",$item);
+
+                        $this->log("修改{$item['ceBillNo']}的负责人为：{$item['saleName']}");
+                        $this->log(json_encode($item['saleNameList'],JSON_UNESCAPED_UNICODE));
+                        $this->log(json_encode($item['ebayTraceManList'],JSON_UNESCAPED_UNICODE));
+                    }else{
+                        $this->log("{$item['ceBillNo']}没有数据");
+                    }
+                }
+
+            }
+
+        }else{
+            $this->log("没有可以修改的数据");
+        }
+    }
+
+
+    public function consignmentQD($params){
+        $curlService = new CurlService();
+        $curlService = $curlService->gateway();
+        $env = $curlService->environment;
+        $params['qdList'] = [
+            "QD202510270009",
+            "QD202511060015",
+            "QD202511060013",
+            "QD202511060012",
+            "QD202511060006"
+        ];
+
+        $curlService->getModule("pa");
+        $createResp = DataUtils::getResultData($curlService->getWayPost($curlService->module . "/scms/consignment/workflow/v1/autoHandleWaitAssign", $params['qdList']));
+        if ($createResp){
+
+            $this->log(json_encode($createResp,JSON_UNESCAPED_UNICODE));
+        }
+
+
+    }
+
+
+    public function fixProductSkuCategory(){
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/2006个SGU需要帮忙导入中文分类.xlsx");
+        $fitmentSkuMap = [];
+        if (sizeof($fileFitContent) > 0) {
+
+
+            $request = new RequestUtils('pro');
+            $categoryIdInfo = $request->getCategoryIdInfoV2(30980);
+            $curlService = (new CurlService())->pro();
+
+            $list = array_unique(array_column($fileFitContent,"SGU"));
+            $map = [];
+            foreach (array_chunk($list,120) as $chunkList){
+                $infoList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+                    "productId" => implode(",",$chunkList),
+                    "limit" => 120
+                ]));
+                if ($infoList){
+                    foreach ($infoList as $info){
+                        $map[$info['productId']] = $info;
+                    }
+                }
+            }
+
+
+            foreach ($fileFitContent as $info){
+
+                if (isset($map[$info['SGU']])){
+                    $productInfo = $map[$info['SGU']];
+
+                    $productInfo['category'] = $categoryIdInfo['categoryId'];
+                    $productInfo['categoryPaths'] = $categoryIdInfo['categoryIds'];
+                    $productInfo['cn_Category'] = $categoryIdInfo['cnCategoryFullPath'];
+
+
+                    $productInfo['action'] = "业务需要导入中文分类";
+                    $productInfo['userName'] = "system(zhouangang)";
+
+                    $this->log(json_encode($productInfo,JSON_UNESCAPED_UNICODE));
+                    $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
+                    if ($resp){
+
+                    }
+                }
+            }
+        }
+
+
+    }
 }
 
 $curlController = new SyncCurlController();
-$curlController->fixProductSkuCurrent();
+//$curlController->fixProductSkuCategory();
+//$curlController->consignmentQD(null);
+//$curlController->fixProductSkuCurrent();
 //$curlController->exportAmazonUsAttribute();
 //$curlController->syncBusinessModulesToTest();
 //$curlController->exportBusinessModules();
@@ -5821,12 +5947,13 @@ $curlController->fixProductSkuCurrent();
 //$curlController->updateEuSharedWarehouseFlowTypePriority();
 //$curlController->getCEBillNo();
 //$curlController->updatePaSkuMaterial();
+//$curlController->updatePaSkuMaterialV2();
 //$curlController->downloadPaSkuMaterialSP();
 //$curlController->test();
 //$curlController->fix();
 //$curlController->syncSkuMaterialToAudit();
 //$curlController->fixPaSkuPhotoGress();
-//$curlController->updateSkuMaterial();
+$curlController->updateSkuMaterial();
 //$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();
 //$curlController->updatePaGoodsSourceManage();
