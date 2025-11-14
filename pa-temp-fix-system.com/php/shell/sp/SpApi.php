@@ -422,6 +422,22 @@ class SpApi
         return $adInfo;
     }
 
+    public function listProductV2($sellerId,$adIds)
+    {
+        $condition = [
+            "adIdFilter" => $adIds,
+        ];
+        $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/productAds/getProductAds/{$sellerId}", $condition));
+        $adListInfo = [];
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+            foreach ($resp['data'] as $item) {
+                $adListInfo[$item['adId']] = $item['state'];
+            }
+        }
+        return $adListInfo;
+    }
+
+
     public function enabledProduct($sellerId,$campaignId,$adGroupId,$sku)
     {
         $returnMessage = DataUtils::getResultData($this->curlService->phphk()->post("amazon/ad/productAds/postProductAds/{$sellerId}", [[
@@ -439,17 +455,52 @@ class SpApi
         }
     }
 
+
     public function pausedProduct($sellerId,$pausedArr)
     {
         $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/productAds/putProductAds/{$sellerId}", $pausedArr));
         $this->log(json_encode($returnMessage,JSON_UNESCAPED_UNICODE));
-        if ($returnMessage['status'] == 'success' && count($returnMessage['data']) > 0 && $returnMessage['data'][0]['code'] == "SUCCESS") {
-            //关停成功
-            return true;
-        }else{
-            $this->log("关停product失败：{$sellerId} " . json_encode($pausedArr,JSON_UNESCAPED_UNICODE));
-            return false;
+        $pausedAdIdResult = [];
+        $adListInfo = [];
+        if (count($returnMessage['data']) > 0) {
+            foreach ($returnMessage['data'] as $item){
+                if ($item['code'] == "SUCCESS"){
+                    $adListInfo[$item['adId']] = $item['code'];
+                }
+            }
         }
+        foreach ($pausedArr as $item){
+            if (isset($adListInfo[$item['adId']]) && $adListInfo[$item['adId']] == "SUCCESS"){
+                $this->log("暂停product成功：{$sellerId} {$item['adId']}");
+                $pausedAdIdResult['success'][] = $item['adId'];
+            }else{
+                $this->log("暂停product失败：{$sellerId} {$item['adId']}");
+                $pausedAdIdResult['error'][] = $item['adId'];
+            }
+        }
+
+        return $pausedAdIdResult;
+    }
+
+
+    public function pausedProductV2($sellerId,$pausedArr)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/productAds/putProductAds/{$sellerId}", $pausedArr));
+        $this->log(json_encode($returnMessage,JSON_UNESCAPED_UNICODE));
+
+        $adIds = array_column($pausedArr,'adId');
+        $adListInfo = $this->listProductV2($sellerId, implode(",",$adIds));
+        $pausedAdIdResult = [];
+        foreach ($pausedArr as $item){
+            if (isset($adListInfo[$item['adId']]) && $adListInfo[$item['adId']] == "paused"){
+                $this->log("暂停product成功：{$sellerId} {$item['adId']}");
+                $pausedAdIdResult['success'][] = $item['adId'];
+            }else{
+                $this->log("暂停product失败：{$sellerId} {$item['adId']}");
+                $pausedAdIdResult['error'][] = $item['adId'];
+            }
+        }
+        return $pausedAdIdResult;
     }
 
     //=============================Product end==============================================///

@@ -377,24 +377,21 @@ class SyncCurlController
 
     public function deleteCeMaterial()
     {
-        foreach ([
-                     "QD202411190013",
-                     "QD202412030020",
-                     "QD202412030021"
-                 ] as $batchName) {
-            $mainInfo = $this->commonFindOneByParams("s3044", "pa_ce_materials", ["batchName" => $batchName], "pro");
-            if ($mainInfo) {
-                $list = $this->commonFindByParams("s3044", "pa_sku_materials", ["ceBillNo" => $batchName], "pro");
-                if ($list) {
-                    foreach ($list as $detail) {
-                        $this->commonDelete("s3044", "pa_sku_materials", $detail['_id'], "pro");
-                        $this->log("删除" . $detail['skuId']);
-                    }
+        $curlService = (new CurlService())->pro();
+        $mainList = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
+            "limit" => 1000,
+            "batchName" => "QD202510160019",
+        ]));
+        if (count($mainList) > 0) {
+
+            foreach ($mainList as $index => $main){
+                if ($index == 1){
+                    continue;
                 }
-                $this->commonDelete("s3044", "pa_ce_materials", $mainInfo['_id'], "pro");
-                $this->log("删除" . $mainInfo['batchName'] . "完毕");
+                $curlService->s3044()->delete("pa_ce_materials/{$main['_id']}");
             }
         }
+
 
     }
 
@@ -5953,7 +5950,8 @@ $curlController = new SyncCurlController();
 //$curlController->fix();
 //$curlController->syncSkuMaterialToAudit();
 //$curlController->fixPaSkuPhotoGress();
-$curlController->updateSkuMaterial();
+//$curlController->updateSkuMaterial();
+$curlController->deleteCeMaterial();
 //$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();
 //$curlController->updatePaGoodsSourceManage();

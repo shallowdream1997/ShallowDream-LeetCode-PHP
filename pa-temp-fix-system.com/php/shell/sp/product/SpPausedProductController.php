@@ -46,16 +46,18 @@ class SpPausedProductController
         $redisService = new RedisService();
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("/xp/www/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/export/sp/关停products_2.xlsx");
+            $contentList = $excelUtils->getXlsxData("/xp/www/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/export/sp/关停products_4.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
         if (count($contentList) > 0) {
             $sellerIdAdId = [];
             foreach ($contentList as $item){
-                $sellerIdAdId[$item['seller_id']][] = $item['adid'];
+                if (!empty($item['adid'])){
+                    $sellerIdAdId[$item['seller_id']][] = $item['adid'];
+                }
             }
-
+            $exportList = [];
             foreach ($sellerIdAdId as $sellerId => $adIds){
                 $sellerAdList = $redisService->hGetAll("spProduct_{$sellerId}");
                 $this->log("{$sellerId} 数量: " . count($sellerAdList) . "个");
@@ -75,6 +77,7 @@ class SpPausedProductController
 
                 foreach (array_chunk($lastIds,200) as $chunk){
                     $list = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_products/queryPage", [
+                        "channel" => $sellerId,
                         "adId_in" => implode(',', $chunk),
                         "limit" => 200
                     ]));
@@ -91,20 +94,39 @@ class SpPausedProductController
                 if (count($idWithAdId) > 0){
                     foreach (array_chunk($idWithAdId,200) as $chunk){
                         $this->log(json_encode($chunk, JSON_UNESCAPED_UNICODE));
-                        $boolean = $spApi->pausedProduct($sellerId,$chunk);
-                        if ($boolean){
-                            $this->log("{$sellerId} 关停成功: " . count($chunk) . "个");
-                            foreach ($chunk as $item){
-                                if (isset($sellerAdList[$item['adId']]) && $sellerAdList[$item['adId']]){
-                                    $_id = $sellerAdList[$item['adId']];
-                                    $spApi->mongoUpdateProduct($_id, $item['adId'], "paused");
+                        $pausedAdIdResult = $spApi->pausedProduct($sellerId,$chunk);
+                        if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0){
+                            //成功的adId；
+                            $this->log("{$sellerId} 关停成功: " . count($pausedAdIdResult['success']) . "个");
+                            foreach ($pausedAdIdResult['success'] as $adId){
+                                if (isset($sellerAdList[$adId]) && $sellerAdList[$adId]){
+                                    $_id = $sellerAdList[$adId];
+                                    $spApi->mongoUpdateProduct($_id, $adId, "paused");
                                 }
                             }
                         }
+                        if (isset($pausedAdIdResult['error']) && count($pausedAdIdResult['error']) > 0){
+                            //失败的adId
+                            $this->log("{$sellerId} 关停失败: " . count($pausedAdIdResult['error']) . "个");
+                            foreach ($pausedAdIdResult['error'] as $adId){
+                                $exportList[] = [
+                                    "sellerId" => $sellerId,
+                                    "adId" => "'" . $adId,
+                                ];
+                            }
+                        }
+
 
                     }
                 }
+            }
 
+            if (count($exportList) > 0){
+                $excelUtils = new ExcelUtils("sp/");
+                $filePath = $excelUtils->downloadXlsx([
+                    "seller_id",
+                    "adid",
+                ], $exportList, "关停失败的adId_" . date("YmdHis") . ".xlsx");
             }
 
         }
