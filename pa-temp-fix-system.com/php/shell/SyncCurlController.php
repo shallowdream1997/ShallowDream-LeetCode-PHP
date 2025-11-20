@@ -997,7 +997,7 @@ class SyncCurlController
 
         $data = [
             "prePurchaseBillNo" => "DPMO250804004",
-            "ceBillNo" => "CE202508060170",
+            "ceBillNo" => "CE202511060163",
             "operatorName" => "system(PA-CE回写)"
         ];
         $curlService1 = new CurlService();
@@ -1898,7 +1898,8 @@ class SyncCurlController
 
 //        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/CEB.xlsx");
         $fitmentSkuMap = [];
-        $fileFitContent = [['ce_bill_no' => 'CE202510150095']];
+
+        $fileFitContent = [['ce_bill_no' => 'CE202511070020']];
         if (sizeof($fileFitContent) > 0) {
             foreach ($fileFitContent as $item){
 
@@ -2960,16 +2961,75 @@ class SyncCurlController
 
     public function getCEBillNo()
     {
-        $curlSsl = (new CurlService())->pro();
-        $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/ce_bill_no/v1/getCeDetailBySkuIdList", [
-            "skuIdList" => ["a25050500ux1594"],
-            "orderBy" => "",
-            "pageNumber" => 1,
-            "entriesPerPage" => 500
-        ]));
-        if ($getKeyResp && count($getKeyResp) > 0){
-            print_r($getKeyResp);
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/无ce单的自营sku数据_2025.xlsx");
+
+        if(sizeof($fileFitContent) > 0){
+            $list = array_unique(array_column($fileFitContent,"sku_id"));
+
+
+            $curlSsl = (new CurlService())->pro();
+            $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/ce_bill_no/v1/getCeDetailBySkuIdList", [
+                "skuIdList" => $list,
+                "orderBy" => "",
+                "pageNumber" => 1,
+                "entriesPerPage" => 500
+            ]));
+            if ($getKeyResp && count($getKeyResp) > 0){
+
+                $skuIdCeMap = [];
+                foreach ($getKeyResp as $item){
+                    $skuIdCeMap[$item['skuId']] = $item['ceBillNo'];
+                }
+
+                $curlSsl = (new CurlService())->pro();
+                $getKeyResp1 = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
+                    "skuIdList" => $list,
+                    "attrCodeList" => [
+                        "custom-skuInfo-skuId",
+                        "custom-prePurchase-prePurchaseBillNo"
+                    ]
+                ]));
+                $map = [];
+                if ($getKeyResp1){
+                    foreach ($getKeyResp1 as $item){
+                        $ceBillNo = "";
+                        if (isset($skuIdCeMap[$item['custom-skuInfo-skuId']])){
+                            $ceBillNo = $skuIdCeMap[$item['custom-skuInfo-skuId']];
+                        }
+                        if(!empty($ceBillNo)){
+                            $map[$item['custom-prePurchase-prePurchaseBillNo']][$ceBillNo][] = $item['custom-skuInfo-skuId'];
+                        }
+                    }
+                }
+
+                if ($map){
+                    foreach ($map as $prePurchaseBillNo => $ceBillNoMap){
+                        foreach ($ceBillNoMap as $ceBillNo => $skuIds){
+                            $this->log("{$prePurchaseBillNo} 开始回写: {$ceBillNo}". json_encode($skuIds,JSON_UNESCAPED_UNICODE));
+                            $data = [
+                                "prePurchaseBillNo" => $prePurchaseBillNo,
+                                "ceBillNo" => $ceBillNo,
+                                "operatorName" => "system(PA-CE回写)"
+                            ];
+                            $curlService1 = (new CurlService())->pro();
+                            $curlService1->gateway()->getModule('pa');
+                            $resp3 = DataUtils::getNewResultData($curlService1->getWayPost($curlService1->module . "/scms/ce_bill_no/v1/writeBackAutarkyCeSkuToPrePurchase", $data));
+                            if ($resp3){
+                                $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
+                            }
+                            sleep(3);
+                        }
+                    }
+                }
+
+
+
+            }
+
+
         }
+
+
 
 
     }
@@ -5950,8 +6010,8 @@ $curlController = new SyncCurlController();
 //$curlController->fix();
 //$curlController->syncSkuMaterialToAudit();
 //$curlController->fixPaSkuPhotoGress();
-//$curlController->updateSkuMaterial();
-$curlController->deleteCeMaterial();
+$curlController->updateSkuMaterial();
+//$curlController->deleteCeMaterial();
 //$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();
 //$curlController->updatePaGoodsSourceManage();
