@@ -625,6 +625,103 @@ class SpApi
     //=================================keyword end===========================================///
 
 
+    public function pausedNegativeKeyword($sellerId,$pausedArr)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/negativeKeywords/putNegativeKeywords/{$sellerId}", $pausedArr));
+        $this->log(json_encode($returnMessage,JSON_UNESCAPED_UNICODE));
+        $pausedAdIdResult = [];
+        $adListInfo = [];
+        if (count($returnMessage['data']) > 0) {
+            foreach ($returnMessage['data'] as $item){
+                if ($item['code'] == "SUCCESS"){
+                    $adListInfo[$item['keywordId']] = $item['code'];
+                }
+            }
+        }
+        foreach ($pausedArr as $item){
+            if (isset($adListInfo[$item['keywordId']]) && $adListInfo[$item['keywordId']] == "SUCCESS"){
+                $this->log("暂停negativeKeyword成功：{$sellerId} {$item['keywordId']}");
+                $pausedAdIdResult['success'][] = $item['keywordId'];
+            }else{
+                $this->log("暂停negativeKeyword失败：{$sellerId} {$item['keywordId']}");
+                $pausedAdIdResult['error'][] = $item['keywordId'];
+            }
+        }
+
+        return $pausedAdIdResult;
+    }
+
+    public function mongoUpdateNegativeKeyword($_id,$keywordId,$state)
+    {
+        $resp = $this->curlService->s3023()->post("amazon_sp_negativeKeywords/updateNegativeKeywords", [
+            "id" => $_id,
+            "isPassNotification" => "false",
+            "from" => $this->messages,
+            "updateParams" => [
+                "keywordId" => $keywordId,
+                "state" => $state,
+                "modifiedBy" => $this->messages,
+                "modifiedOn" => date("Y-m-d H:i:s",time())."Z",
+                "status" => "2",
+                "messages" => $this->messages
+            ],
+        ]);
+        if ($resp['result'] && isset($resp['result']['keyword']) && count($resp['result']['keyword']) > 0) {
+            $this->log("updateNegativeKeyword：成功：{$resp['result']['keyword']['channel']} - {$resp['result']['keyword']['keywordText']}");
+        }else{
+            $this->log("updateNegativeKeyword：失败：{$resp['result']['keyword']['channel']} - {$resp['result']['keyword']['keywordText']}");
+        }
+    }
+
+
+    public function pausedNegativeTarget($sellerId,$pausedArr)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/negativeProductTargeting/putNegativeTargets/{$sellerId}", $pausedArr));
+        $this->log(json_encode($returnMessage,JSON_UNESCAPED_UNICODE));
+        $pausedAdIdResult = [];
+        $adListInfo = [];
+        if (count($returnMessage['data']) > 0) {
+            foreach ($returnMessage['data'] as $item){
+                if ($item['code'] == "SUCCESS"){
+                    $adListInfo[$item['targetId']] = $item['code'];
+                }
+            }
+        }
+        foreach ($pausedArr as $item){
+            if (isset($adListInfo[$item['targetId']]) && $adListInfo[$item['targetId']] == "SUCCESS"){
+                $this->log("暂停negativeTarget成功：{$sellerId} {$item['targetId']}");
+                $pausedAdIdResult['success'][] = $item['targetId'];
+            }else{
+                $this->log("暂停negativeTarget失败：{$sellerId} {$item['targetId']}");
+                $pausedAdIdResult['error'][] = $item['targetId'];
+            }
+        }
+
+        return $pausedAdIdResult;
+    }
+
+    public function mongoUpdateNegativeTarget($_id,$targetId,$state)
+    {
+        $resp = $this->curlService->s3023()->post("amazon_sp_negative_targets/updateBiddableNegativeTargets", [
+            "id" => $_id,
+            "isPassNotification" => "false",
+            "from" => $this->messages,
+            "updateParams" => [
+                "targetId" => $targetId,
+                "state" => $state,
+                "modifiedBy" => $this->messages,
+                "modifiedOn" => date("Y-m-d H:i:s",time())."Z",
+                "status" => "2",
+                "remark" => $this->messages
+            ],
+        ]);
+        if ($resp['result'] && isset($resp['result']['target']) && count($resp['result']['target']) > 0) {
+            $this->log("mongoUpdateNegativeTarget：成功：{$resp['result']['target']['channel']} - {$resp['result']['target']['targetName']}");
+        }else{
+            $this->log("mongoUpdateNegativeTarget：失败：{$resp['result']['target']['channel']} - {$resp['result']['target']['targetName']}");
+        }
+    }
+
     public function specialSellerIdConver($sellerId){
         return ($sellerId == 'amazon') ? 'amazon_us' : $sellerId;
     }
