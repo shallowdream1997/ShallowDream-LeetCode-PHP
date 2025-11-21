@@ -1899,7 +1899,9 @@ class SyncCurlController
 //        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/CEB.xlsx");
         $fitmentSkuMap = [];
 
-        $fileFitContent = [['ce_bill_no' => 'CE202511070020']];
+        $fileFitContent = [
+            ['ce_bill_no' => 'CE202511060195'],
+        ];
         if (sizeof($fileFitContent) > 0) {
             foreach ($fileFitContent as $item){
 
