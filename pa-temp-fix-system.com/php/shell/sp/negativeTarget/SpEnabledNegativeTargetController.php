@@ -6,7 +6,7 @@ require_once(dirname(__FILE__) . "/../../../../php/curl/CurlService.php");
 require_once(dirname(__FILE__) . "/../../../../php/utils/RequestUtils.php");
 require_once(dirname(__FILE__) . "/../SpApi.php");
 
-class SpPausedNegativeKeywordController
+class SpEnabledNegativeTargetController
 {
     private $log;
 
@@ -28,11 +28,11 @@ class SpPausedNegativeKeywordController
         $postData = array(
             'userType' => 'userName',
             'userIdList' => "zhouangang",
-            'title' => "【否定词广告写入暂停完毕】提醒",
+            'title' => "【否定target广告写入暂停完毕】提醒",
             'msg' => [
                 [
                     "key" => "",
-                    "value" => "{$datetime} 否定词广告写入暂停完毕"
+                    "value" => "{$datetime} 否定target广告写入暂停完毕"
                 ]
             ]
         );
@@ -40,27 +40,27 @@ class SpPausedNegativeKeywordController
         return $this;
     }
 
-    public function pausedNegativeKeywords(){
+    public function enabledNegativeTarget(){
         $excelUtils = new ExcelUtils();
         $curlService = (new CurlService())->pro();
         $redisService = new RedisService();
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("/xp/www/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/export/sp/negativeKeyword/否定keyword记录.xlsx");
+            $contentList = $excelUtils->getXlsxData("/xp/www/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/export/sp/negativeTarget/11-25开广告target.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
         if (count($contentList) > 0) {
             $sellerIdAdId = [];
             foreach ($contentList as $item){
-                if (!empty($item['keywordid'])){
+                if (!empty($item['targetid'])){
                     $sellerId = $spApi->specialSellerIdReverseConver($item['channel']);
-                    $sellerIdAdId[$sellerId][] = $item['keywordid'];
+                    $sellerIdAdId[$sellerId][] = $item['targetid'];
                 }
             }
             $exportList = [];
             foreach ($sellerIdAdId as $sellerId => $adIds){
-                $sellerAdList = $redisService->hGetAll("spNegativeKeyword_{$sellerId}");
+                $sellerAdList = $redisService->hGetAll("spNegativeTarget_{$sellerId}");
                 $this->log("{$sellerId} 数量: " . count($sellerAdList) . "个");
 
                 $lastIds = [];
@@ -70,23 +70,23 @@ class SpPausedNegativeKeywordController
                         $lastIds[] = $adId;
                     }
                     $idWithAdId[] = [
-                        "keywordId" => $adId,
-                        "state" => "paused"
+                        "targetId" => $adId,
+                        "state" => "enabled"
                     ];
                 }
 
 
                 foreach (array_chunk($lastIds,200) as $chunk){
-                    $list = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_negativeKeywords/queryPage", [
+                    $list = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_negative_targets/queryPage", [
                         "channel" => $spApi->specialSellerIdConver($sellerId),
-                        "keywordId_in" => implode(',', $chunk),
+                        "targetId_in" => implode(',', $chunk),
                         "limit" => 200
                     ]));
                     if (count($list) > 0){
                         foreach ($list as &$info){
                             $seller = $spApi->specialSellerIdReverseConver($info['channel']);
-                            $redisService->hSet("spNegativeKeyword_{$seller}",$info['keywordId'],$info['_id']);
-                            $sellerAdList[$info['keywordId']] = $info['_id'];
+                            $redisService->hSet("spNegativeTarget_{$seller}",$info['targetId'],$info['_id']);
+                            $sellerAdList[$info['targetId']] = $info['_id'];
                         }
                     }
                 }
@@ -95,24 +95,24 @@ class SpPausedNegativeKeywordController
                 if (count($idWithAdId) > 0){
                     foreach (array_chunk($idWithAdId,200) as $chunk){
                         $this->log(json_encode($chunk, JSON_UNESCAPED_UNICODE));
-                        $pausedAdIdResult = $spApi->updateNegativeKeyword($sellerId,$chunk);
+                        $pausedAdIdResult = $spApi->updateNegativeTarget($sellerId,$chunk);
                         if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0){
                             //成功的adId；
-                            $this->log("{$sellerId} 关停成功: " . count($pausedAdIdResult['success']) . "个");
-                            foreach ($pausedAdIdResult['success'] as $keywordId){
-                                if (isset($sellerAdList[$keywordId]) && $sellerAdList[$keywordId]){
-                                    $_id = $sellerAdList[$keywordId];
-                                    $spApi->mongoUpdateNegativeKeyword($_id, $keywordId, "paused");
+                            $this->log("{$sellerId} 开启成功: " . count($pausedAdIdResult['success']) . "个");
+                            foreach ($pausedAdIdResult['success'] as $targetId){
+                                if (isset($sellerAdList[$targetId]) && $sellerAdList[$targetId]){
+                                    $_id = $sellerAdList[$targetId];
+                                    $spApi->mongoUpdateNegativeTarget($_id, $targetId, "enabled");
                                 }
                             }
                         }
                         if (isset($pausedAdIdResult['error']) && count($pausedAdIdResult['error']) > 0){
                             //失败的adId
-                            $this->log("{$sellerId} 关停失败: " . count($pausedAdIdResult['error']) . "个");
-                            foreach ($pausedAdIdResult['error'] as $keywordId){
+                            $this->log("{$sellerId} 开启失败: " . count($pausedAdIdResult['error']) . "个");
+                            foreach ($pausedAdIdResult['error'] as $targetId){
                                 $exportList[] = [
                                     "sellerId" => $sellerId,
-                                    "keywordId" => "'" . $keywordId,
+                                    "targetId" => "'" . $targetId,
                                 ];
                             }
                         }
@@ -126,8 +126,8 @@ class SpPausedNegativeKeywordController
                 $excelUtils = new ExcelUtils("sp/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
-                    "keywordId",
-                ], $exportList, "关停失败的keywordId_" . date("YmdHis") . ".xlsx");
+                    "targetId",
+                ], $exportList, "开启失败的targetId_" . date("YmdHis") . ".xlsx");
             }
 
         }
@@ -138,5 +138,5 @@ class SpPausedNegativeKeywordController
 
 }
 
-$con = new SpPausedNegativeKeywordController();
-$con->pausedNegativeKeywords();
+$con = new SpEnabledNegativeTargetController();
+$con->enabledNegativeTarget();

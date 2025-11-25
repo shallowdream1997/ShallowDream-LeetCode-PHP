@@ -380,7 +380,7 @@ class SyncCurlController
         $curlService = (new CurlService())->pro();
         $mainList = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
             "limit" => 1000,
-            "batchName" => "QD202510160019",
+            "batchName" => "QD202508040008",
         ]));
         if (count($mainList) > 0) {
 
@@ -5964,9 +5964,99 @@ class SyncCurlController
 
 
     }
+
+
+    public function fallBackQD()
+    {
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/要改的单.xlsx");
+        if (sizeof($fileFitContent) > 0) {
+
+            $list = [];
+            foreach ($fileFitContent as $item){
+                if (!empty($item['产品序号'])){
+                    $list[] = $item['产品序号'];
+                }
+            }
+//            $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+//            $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
+//                "skuIdList" => $list,
+//                "attrCodeList" => [
+//                    "custom-skuInfo-supplierId",
+//                    "custom-skuInfo-factoryId",
+//                    "custom-skuInfo-supplierType",
+//                    "custom-prePurchase-prePurchaseMainId",
+//                    "custom-prePurchase-prePurchaseBillNo"
+//                ]
+//            ]));
+//            $map  =[];
+//            if ($getKeyResp){
+//                foreach ($getKeyResp as $item){
+//                    $map[$item['custom-skuInfo-skuId']] = $item;
+//                }
+//            }
+
+            $fix30List = [];
+
+            foreach ($fileFitContent as $item){
+
+                $fix30List[] = [
+                    "tempSkuId" => $item['产品序号'],
+                    "skuAttrList" => [
+                        [
+                            "name" => "custom-skuInfo-supplierId",
+                            "value" => 0
+                        ],
+                        [
+                            "name" => "custom-skuInfo-factoryId",
+                            "value" => 0
+                        ],
+                        [
+                            "name" => "custom-skuInfo-supplierType",
+                            "value" => "consignment"
+                        ],
+                        [
+                            "name" => "custom-prePurchase-prePurchaseMainId",
+                            "value" => "1988592639574650880"
+                        ],
+                        [
+                            "name" => "custom-prePurchase-prePurchaseBillNo",
+                            "value" => "QD202511120017"
+                        ],
+                        [
+                            "name" => "custom-common-qdBillNo",
+                            "value" => "QD202511120017"
+                        ]
+                    ]
+                ];
+
+            }
+
+            if ($fix30List){
+                foreach (array_chunk($fix30List,200) as $chunkFix30List){
+                    $curlSsll = (new CurlService())->pro()->gateway()->getModule("pa");
+                    $getKeyResp = DataUtils::getNewResultData($curlSsll->getWayPost($curlSsll->module . "/ppms/product_dev/sku/v1/directUpdateBatch", [
+                        "operator" => "zhouangang",
+                        "skuList" => $chunkFix30List
+                    ]));
+                }
+            }
+
+
+        }
+
+
+
+
+
+    }
+
+
+
 }
 
 $curlController = new SyncCurlController();
+$curlController->fallBackQD();
 //$curlController->fixProductSkuCategory();
 //$curlController->consignmentQD(null);
 //$curlController->fixProductSkuCurrent();
@@ -6012,7 +6102,7 @@ $curlController = new SyncCurlController();
 //$curlController->fix();
 //$curlController->syncSkuMaterialToAudit();
 //$curlController->fixPaSkuPhotoGress();
-$curlController->updateSkuMaterial();
+//$curlController->updateSkuMaterial();
 //$curlController->deleteCeMaterial();
 //$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();

@@ -95,7 +95,7 @@ class SpPausedNegativeTargetController
                 if (count($idWithAdId) > 0){
                     foreach (array_chunk($idWithAdId,200) as $chunk){
                         $this->log(json_encode($chunk, JSON_UNESCAPED_UNICODE));
-                        $pausedAdIdResult = $spApi->pausedNegativeTarget($sellerId,$chunk);
+                        $pausedAdIdResult = $spApi->updateNegativeTarget($sellerId,$chunk);
                         if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0){
                             //成功的adId；
                             $this->log("{$sellerId} 关停成功: " . count($pausedAdIdResult['success']) . "个");

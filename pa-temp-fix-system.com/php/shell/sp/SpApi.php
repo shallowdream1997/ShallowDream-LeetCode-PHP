@@ -625,7 +625,27 @@ class SpApi
     //=================================keyword end===========================================///
 
 
-    public function pausedNegativeKeyword($sellerId,$pausedArr)
+    public function listNegativeKeyword($sellerId,$campaignId,$adGroupId,$state)
+    {
+        $condition = [];
+        if ($campaignId){
+            $condition['campaignIdFilter'] = implode(",",$campaignId);
+        }
+        if ($adGroupId){
+            $condition['adGroupIdFilter'] = implode(",",$adGroupId);
+        }
+        if ($state){
+            $condition['stateFilter'] = $state;
+        }
+        $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/negativeKeywords/getNegativeKeywordsExtend/{$sellerId}", $condition));
+        $list = [];
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+            $list = $resp['data'];
+        }
+        return $list;
+    }
+
+    public function updateNegativeKeyword($sellerId,$pausedArr)
     {
         $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/negativeKeywords/putNegativeKeywords/{$sellerId}", $pausedArr));
         $this->log(json_encode($returnMessage,JSON_UNESCAPED_UNICODE));
@@ -640,10 +660,10 @@ class SpApi
         }
         foreach ($pausedArr as $item){
             if (isset($adListInfo[$item['keywordId']]) && $adListInfo[$item['keywordId']] == "SUCCESS"){
-                $this->log("暂停negativeKeyword成功：{$sellerId} {$item['keywordId']}");
+                $this->log("处理negativeKeyword成功：{$sellerId} {$item['keywordId']}");
                 $pausedAdIdResult['success'][] = $item['keywordId'];
             }else{
-                $this->log("暂停negativeKeyword失败：{$sellerId} {$item['keywordId']}");
+                $this->log("处理negativeKeyword失败：{$sellerId} {$item['keywordId']}");
                 $pausedAdIdResult['error'][] = $item['keywordId'];
             }
         }
@@ -674,7 +694,7 @@ class SpApi
     }
 
 
-    public function pausedNegativeTarget($sellerId,$pausedArr)
+    public function updateNegativeTarget($sellerId,$pausedArr)
     {
         $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/negativeProductTargeting/putNegativeTargets/{$sellerId}", $pausedArr));
         $this->log(json_encode($returnMessage,JSON_UNESCAPED_UNICODE));
@@ -689,10 +709,10 @@ class SpApi
         }
         foreach ($pausedArr as $item){
             if (isset($adListInfo[$item['targetId']]) && $adListInfo[$item['targetId']] == "SUCCESS"){
-                $this->log("暂停negativeTarget成功：{$sellerId} {$item['targetId']}");
+                $this->log("处理negativeTarget成功：{$sellerId} {$item['targetId']}");
                 $pausedAdIdResult['success'][] = $item['targetId'];
             }else{
-                $this->log("暂停negativeTarget失败：{$sellerId} {$item['targetId']}");
+                $this->log("处理negativeTarget失败：{$sellerId} {$item['targetId']}");
                 $pausedAdIdResult['error'][] = $item['targetId'];
             }
         }
@@ -720,6 +740,30 @@ class SpApi
         }else{
             $this->log("mongoUpdateNegativeTarget：失败：{$resp['result']['target']['channel']} - {$resp['result']['target']['targetName']}");
         }
+    }
+
+    public function listNegativeTarget($sellerId,$campaignId,$adGroupId,$targetIdList = "",$state = "")
+    {
+        $condition = [];
+        if ($campaignId){
+            $condition['campaignIdFilter'] = implode(",",$campaignId);
+        }
+        if ($adGroupId){
+            $condition['adGroupIdFilter'] = implode(",",$adGroupId);
+        }
+        if ($state){
+            $condition['stateFilter'] = $state;
+        }
+        if($targetIdList){
+            $condition["targetIdFilter"] = $targetIdList;
+        }
+
+        $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/negativeProductTargeting/getNegativeTargets/{$sellerId}", $condition));
+        $list = [];
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+            $list = $resp['data'];
+        }
+        return $list;
     }
 
     public function specialSellerIdConver($sellerId){

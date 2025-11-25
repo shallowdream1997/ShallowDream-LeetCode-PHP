@@ -6,7 +6,7 @@ require_once(dirname(__FILE__) . "/../../../../php/curl/CurlService.php");
 require_once(dirname(__FILE__) . "/../../../../php/utils/RequestUtils.php");
 require_once(dirname(__FILE__) . "/../SpApi.php");
 
-class SpPausedNegativeKeywordController
+class SpEnabledNegativeKeywordController
 {
     private $log;
 
@@ -28,11 +28,11 @@ class SpPausedNegativeKeywordController
         $postData = array(
             'userType' => 'userName',
             'userIdList' => "zhouangang",
-            'title' => "【否定词广告写入暂停完毕】提醒",
+            'title' => "【否定词广告写入开启完毕】提醒",
             'msg' => [
                 [
                     "key" => "",
-                    "value" => "{$datetime} 否定词广告写入暂停完毕"
+                    "value" => "{$datetime} 否定词广告写入开启完毕"
                 ]
             ]
         );
@@ -40,13 +40,13 @@ class SpPausedNegativeKeywordController
         return $this;
     }
 
-    public function pausedNegativeKeywords(){
+    public function enabledNegativeKeywords(){
         $excelUtils = new ExcelUtils();
         $curlService = (new CurlService())->pro();
         $redisService = new RedisService();
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("/xp/www/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/export/sp/negativeKeyword/否定keyword记录.xlsx");
+            $contentList = $excelUtils->getXlsxData("/xp/www/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/export/sp/negativeKeyword/11-25开广告keyword.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -71,7 +71,7 @@ class SpPausedNegativeKeywordController
                     }
                     $idWithAdId[] = [
                         "keywordId" => $adId,
-                        "state" => "paused"
+                        "state" => "enabled"
                     ];
                 }
 
@@ -98,17 +98,17 @@ class SpPausedNegativeKeywordController
                         $pausedAdIdResult = $spApi->updateNegativeKeyword($sellerId,$chunk);
                         if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0){
                             //成功的adId；
-                            $this->log("{$sellerId} 关停成功: " . count($pausedAdIdResult['success']) . "个");
+                            $this->log("{$sellerId} 开启成功: " . count($pausedAdIdResult['success']) . "个");
                             foreach ($pausedAdIdResult['success'] as $keywordId){
                                 if (isset($sellerAdList[$keywordId]) && $sellerAdList[$keywordId]){
                                     $_id = $sellerAdList[$keywordId];
-                                    $spApi->mongoUpdateNegativeKeyword($_id, $keywordId, "paused");
+                                    $spApi->mongoUpdateNegativeKeyword($_id, $keywordId, "enabled");
                                 }
                             }
                         }
                         if (isset($pausedAdIdResult['error']) && count($pausedAdIdResult['error']) > 0){
                             //失败的adId
-                            $this->log("{$sellerId} 关停失败: " . count($pausedAdIdResult['error']) . "个");
+                            $this->log("{$sellerId} 开启失败: " . count($pausedAdIdResult['error']) . "个");
                             foreach ($pausedAdIdResult['error'] as $keywordId){
                                 $exportList[] = [
                                     "sellerId" => $sellerId,
@@ -127,7 +127,7 @@ class SpPausedNegativeKeywordController
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "keywordId",
-                ], $exportList, "关停失败的keywordId_" . date("YmdHis") . ".xlsx");
+                ], $exportList, "开启失败的keywordId_" . date("YmdHis") . ".xlsx");
             }
 
         }
@@ -138,5 +138,5 @@ class SpPausedNegativeKeywordController
 
 }
 
-$con = new SpPausedNegativeKeywordController();
-$con->pausedNegativeKeywords();
+$con = new SpEnabledNegativeKeywordController();
+$con->enabledNegativeKeywords();
