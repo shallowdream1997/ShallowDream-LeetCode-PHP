@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修复翻译</title>
+    <link rel="stylesheet" href="/assets/css_js/bootstrap-5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css_js/own/lizi.css">
+    <script src="/assets/css_js/script/jquery-3.7.0.min.js"></script>
+    <script src="/assets/css_js/bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/css_js/script/vue.global.js"></script>
+    <script src="/assets/css_js/script/axios.min.js"></script>
+    <script src="/assets/css_js/script/qs.min.js"></script>
+</head>
+<body>
+<div class="container text-center" id="app">
+    <div style="margin-top: 20px" class="row">
+        <div class="col-5"><h3 style="color: yellow">{{message}} <br> <span :class="envBadgeClass">当前环境：{{envMsg}}</span></h3></div>
+        <div class="col-7">
+            <div class="mb-3">
+                <input type="text" v-model="title" class="form-control" placeholder="翻译标题">
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <button class="btn btn-primary" @click="searchTranslationManagement">查询标题</button>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-12" style="margin-top: 20px">
+            <table class="table table-dark table-striped align-middle" v-if="list && list.length > 0">
+                <thead>
+                <tr>
+                    <th scope="col">主键</th>
+                    <th scope="col">标题</th>
+                    <th scope="col">渠道</th>
+                    <th scope="col">状态</th>
+                    <th scope="col">sku数量</th>
+                    <th scope="col">处理进度</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="info in list" :key="info._id">
+                    <th scope="row">{{info._id}}</th>
+                    <td>{{info.title}}</td>
+                    <td>{{info.channel}}</td>
+                    <td>{{statusMap[info.status] || info.status}}</td>
+                    <td>{{info.skuIdList.length}}</td>
+                    <td style="color: red">{{info.isSuccess || ""}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <template v-if="list && list.length > 0">
+            <div class="col-4" style="color: deeppink">提示：回滚状态为主表，主表里的skuIdList的sku，以及子表的所有的状态</div>
+            <div class="col-8">
+                <div class="mb-3">
+                    <select class="form-select" aria-label="请选择" v-model="status" @change="changeStatus">
+                        <option value="">请选择</option>
+                        <option value="0">已选品</option>
+<!--                        <option value="1">待翻译</option>-->
+<!--                        <option value="2">翻译中</option>-->
+                        <option value="3">审核中</option>
+                        <option value="4">翻译完成</option>
+                        <option value="5">已作废</option>
+                    </select>
+                </div>
+
+                <template v-if="status == '3'">
+                    <div class="mb-3">
+                        <textarea v-model="skuIdString" class="form-control" placeholder="skuId,多个请换行" rows="5"/></textarea>
+                    </div>
+                </template>
+
+                <template v-if="status == '4'">
+                    <div class="mb-3">
+                        <div class="col-4" style="color: deeppink">提示：审核人请填写英文，日期示例如：2024-07-04 12:35:00Z</div>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" v-model="applyName" class="form-control" placeholder="审核人(英文)">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" v-model="applyTime" class="form-control" placeholder="审核日期">
+                    </div>
+                </template>
+
+                <div class="row">
+                    <div class="col-3">
+                        <button class="btn btn-primary" @click="fixTranslationManagement">回滚状态</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </template>
+
+        <div class="col-12">
+            <h5 style="color: red">{{loading}}</h5>
+        </div>
+        <div class="col-12">
+            <h4 style="color: red">{{errorMsg}}</h4>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
+<script src="/assets/css_js/own/lizi.js"></script>
+<script src="/assets/js/apiClient.js"></script>
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                message: '修改翻译状态',
+                title: '',
+                status: '',
+                applyName: '',
+                applyTime: '',
+                skuIdString: '',
+                list: [],
+                loading: '',
+                errorMsg: '',
+                successMsg: '',
+                env: '',
+                envMsg: '',
+                statusMap: {
+                    "0": "已选品",
+                    "1": "待翻译",
+                    "2": "翻译中",
+                    "3": "审核中",
+                    "4": "翻译完成",
+                    "5": "已作废"
+                }
+            };
+        },
+        computed: {
+            envBadgeClass() {
+                return resolveEnvClass(this.env);
+            }
+        },
+        mounted() {
+            this.initPage();
+        },
+        methods: {
+            normalizeSkuList() {
+                if (!this.skuIdString) return [];
+                return [...new Set(
+                    this.skuIdString
+                        .split('\n')
+                        .map(item => item.trim())
+                        .filter(Boolean)
+                )];
+            },
+            async initPage() {
+                this.errorMsg = '';
+                setLoading(this, '加载环境信息...');
+                try {
+                    const res = await searchApi('fixTranslationManagements');
+                    const payload = res.data || {};
+                    this.env = payload.env || '';
+                    this.envMsg = formatEnvLabel(this.env);
+                } catch (error) {
+                    handleRequestError(this, error, '初始化失败');
+                } finally {
+                    setLoading(this);
+                }
+            },
+            async searchTranslationManagement() {
+                if (!this.title.trim()) {
+                    this.errorMsg = '请输入翻译任务标题';
+                    return;
+                }
+                this.errorMsg = '';
+                setLoading(this, '正在查询，请稍候...');
+                try {
+                    const res = await searchApi('fixTranslationManagements', {
+                        title: this.title,
+                        status: this.status
+                    });
+                    const payload = res.data || {};
+                    this.list = payload.data || [];
+                    this.env = payload.env || this.env;
+                    this.envMsg = formatEnvLabel(this.env);
+                    if (this.list.length === 0) {
+                        this.errorMsg = '没有数据';
+                    }
+                } catch (error) {
+                    handleRequestError(this, error, '查询失败');
+                } finally {
+                    setLoading(this);
+                }
+            },
+            async fixTranslationManagement() {
+                if (!this.status) {
+                    this.errorMsg = '请选择状态';
+                    return;
+                }
+                if (!this.list.length) {
+                    this.errorMsg = '请先查询需要处理的数据';
+                    return;
+                }
+
+                const skuIdList = this.normalizeSkuList();
+                if (this.status !== '4') {
+                    this.applyName = '';
+                    this.applyTime = '';
+                }
+
+                this.errorMsg = '';
+                this.successMsg = '';
+                for (let index = 0; index < this.list.length; index++) {
+                    const item = this.list[index];
+                    if (item.status === '5') {
+                        this.list[index].isSuccess = '已作废，无需处理';
+                        continue;
+                    }
+                    this.list[index].isSuccess = '处理中...';
+                    setLoading(this, `正在处理第 ${index + 1} / ${this.list.length} 条`);
+                    try {
+                        const res = await updateApi('fixTranslationManagements', {
+                            title: item.title,
+                            status: this.status,
+                            applyName: this.applyName,
+                            applyTime: this.applyTime,
+                            skuIdList
+                        });
+                        if (res.status === 200 && res.data === true) {
+                            this.list[index].status = this.status;
+                            this.list[index].isSuccess = '完成';
+                        } else {
+                            this.list[index].isSuccess = '失败';
+                        }
+                    } catch (error) {
+                        this.list[index].isSuccess = '失败';
+                        console.error(error);
+                    }
+                }
+                setLoading(this);
+                this.successMsg = '处理完成，请确认结果';
+            },
+            changeStatus() {
+                if (this.status !== '4') {
+                    this.applyName = '';
+                    this.applyTime = '';
+                }
+            }
+        }
+    }).mount('#app');
+</script>

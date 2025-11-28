@@ -1,0 +1,1111 @@
+2025-11-24 11:13:14 - amazon 数量: 105222个
+2025-11-24 11:14:08 - amazon 数量: 105222个
+2025-11-24 11:14:22 - [{"keywordId":"353929811941871","state":"paused"},{"keywordId":"501261616787847","state":"paused"},{"keywordId":"325535557846202","state":"paused"},{"keywordId":"415703139301082","state":"paused"},{"keywordId":"287182785789710","state":"paused"},{"keywordId":"473902499754662","state":"paused"},{"keywordId":"447877965063698","state":"paused"},{"keywordId":"347582270815474","state":"paused"},{"keywordId":"560622162608765","state":"paused"},{"keywordId":"560622162608765","state":"paused"},{"keywordId":"406314144513790","state":"paused"},{"keywordId":"303276516557970","state":"paused"},{"keywordId":"544187405217302","state":"paused"},{"keywordId":"331484704802441","state":"paused"},{"keywordId":"388204278367986","state":"paused"},{"keywordId":"512758553945167","state":"paused"},{"keywordId":"358108115409265","state":"paused"},{"keywordId":"395041071291347","state":"paused"},{"keywordId":"395041071291347","state":"paused"},{"keywordId":"403981254050979","state":"paused"},{"keywordId":"341005750724315","state":"paused"},{"keywordId":"495611437714215","state":"paused"},{"keywordId":"495611437714215","state":"paused"},{"keywordId":"486555669235906","state":"paused"},{"keywordId":"472790843686460","state":"paused"},{"keywordId":"408777840861029","state":"paused"},{"keywordId":"405661005151311","state":"paused"},{"keywordId":"497037123566380","state":"paused"},{"keywordId":"350414022160754","state":"paused"},{"keywordId":"421332166269710","state":"paused"},{"keywordId":"503490589374105","state":"paused"},{"keywordId":"409496263686747","state":"paused"},{"keywordId":"560872698708734","state":"paused"},{"keywordId":"300837921227743","state":"paused"},{"keywordId":"511214779899882","state":"paused"},{"keywordId":"306143916236179","state":"paused"},{"keywordId":"333316207112885","state":"paused"},{"keywordId":"514997632917979","state":"paused"},{"keywordId":"342605325185580","state":"paused"},{"keywordId":"327902467631720","state":"paused"},{"keywordId":"331977513903505","state":"paused"},{"keywordId":"410518522193856","state":"paused"},{"keywordId":"511508281809353","state":"paused"},{"keywordId":"523470261268762","state":"paused"},{"keywordId":"490367326781701","state":"paused"},{"keywordId":"386938052630160","state":"paused"},{"keywordId":"386938052630160","state":"paused"},{"keywordId":"397550533122938","state":"paused"},{"keywordId":"308735382993516","state":"paused"},{"keywordId":"412345252340117","state":"paused"},{"keywordId":"418434382454459","state":"paused"},{"keywordId":"432137767774580","state":"paused"},{"keywordId":"517016394120938","state":"paused"},{"keywordId":"517016394120938","state":"paused"},{"keywordId":"529731365442454","state":"paused"},{"keywordId":"323353391027527","state":"paused"},{"keywordId":"445185922135365","state":"paused"},{"keywordId":"401987342180442","state":"paused"},{"keywordId":"503474615379418","state":"paused"},{"keywordId":"524434310257207","state":"paused"},{"keywordId":"437801413576358","state":"paused"},{"keywordId":"286344364881237","state":"paused"},{"keywordId":"481553454080359","state":"paused"},{"keywordId":"514316117872587","state":"paused"},{"keywordId":"555119587358035","state":"paused"},{"keywordId":"467524585975408","state":"paused"},{"keywordId":"341039376787120","state":"paused"},{"keywordId":"503869314787146","state":"paused"},{"keywordId":"504991133232514","state":"paused"},{"keywordId":"405905775795161","state":"paused"},{"keywordId":"405905775795161","state":"paused"},{"keywordId":"294970881185056","state":"paused"},{"keywordId":"447626147327223","state":"paused"},{"keywordId":"555777573388815","state":"paused"},{"keywordId":"547728503065264","state":"paused"},{"keywordId":"388266580279094","state":"paused"},{"keywordId":"388266580279094","state":"paused"},{"keywordId":"355087797618306","state":"paused"},{"keywordId":"548286283904327","state":"paused"},{"keywordId":"511054804718653","state":"paused"},{"keywordId":"282033233311970","state":"paused"},{"keywordId":"470759538047683","state":"paused"},{"keywordId":"470759538047683","state":"paused"},{"keywordId":"504069746458014","state":"paused"},{"keywordId":"459279653830253","state":"paused"},{"keywordId":"303231592117182","state":"paused"},{"keywordId":"518532736489801","state":"paused"},{"keywordId":"348019702963470","state":"paused"},{"keywordId":"331597095224776","state":"paused"},{"keywordId":"557174705045881","state":"paused"},{"keywordId":"492539114640947","state":"paused"},{"keywordId":"532190130486868","state":"paused"},{"keywordId":"372506781688661","state":"paused"},{"keywordId":"555383591164300","state":"paused"},{"keywordId":"442724394024889","state":"paused"},{"keywordId":"321429911214423","state":"paused"},{"keywordId":"518053344058481","state":"paused"},{"keywordId":"493226322477932","state":"paused"},{"keywordId":"365063000201528","state":"paused"},{"keywordId":"328672261171049","state":"paused"},{"keywordId":"445851636711375","state":"paused"},{"keywordId":"364486210098111","state":"paused"},{"keywordId":"291871184282217","state":"paused"},{"keywordId":"321957873051663","state":"paused"},{"keywordId":"552711041389449","state":"paused"},{"keywordId":"536370065752872","state":"paused"},{"keywordId":"438838005002599","state":"paused"},{"keywordId":"387313514597399","state":"paused"},{"keywordId":"387313514597399","state":"paused"}]
+2025-11-24 11:14:24 - {"status":"success","message":"success","data":[{"keywordId":353929811941871,"code":"SUCCESS"},{"keywordId":501261616787847,"code":"SUCCESS"},{"keywordId":325535557846202,"code":"SUCCESS"},{"keywordId":415703139301082,"code":"SUCCESS"},{"keywordId":287182785789710,"code":"SUCCESS"},{"keywordId":473902499754662,"code":"SUCCESS"},{"keywordId":447877965063698,"code":"SUCCESS"},{"keywordId":347582270815474,"code":"SUCCESS"},{"keywordId":560622162608765,"code":"SUCCESS"},{"keywordId":406314144513790,"code":"SUCCESS"},{"keywordId":303276516557970,"code":"SUCCESS"},{"keywordId":331484704802441,"code":"SUCCESS"},{"keywordId":388204278367986,"code":"SUCCESS"},{"keywordId":512758553945167,"code":"SUCCESS"},{"keywordId":358108115409265,"code":"SUCCESS"},{"keywordId":395041071291347,"code":"SUCCESS"},{"keywordId":341005750724315,"code":"SUCCESS"},{"keywordId":495611437714215,"code":"SUCCESS"},{"keywordId":486555669235906,"code":"SUCCESS"},{"keywordId":472790843686460,"code":"SUCCESS"},{"keywordId":408777840861029,"code":"SUCCESS"},{"keywordId":405661005151311,"code":"SUCCESS"},{"keywordId":497037123566380,"code":"SUCCESS"},{"keywordId":350414022160754,"code":"SUCCESS"},{"keywordId":421332166269710,"code":"SUCCESS"},{"keywordId":503490589374105,"code":"SUCCESS"},{"keywordId":409496263686747,"code":"SUCCESS"},{"keywordId":560872698708734,"code":"SUCCESS"},{"keywordId":300837921227743,"code":"SUCCESS"},{"keywordId":511214779899882,"code":"SUCCESS"},{"keywordId":306143916236179,"code":"SUCCESS"},{"keywordId":333316207112885,"code":"SUCCESS"},{"keywordId":342605325185580,"code":"SUCCESS"},{"keywordId":327902467631720,"code":"SUCCESS"},{"keywordId":331977513903505,"code":"SUCCESS"},{"keywordId":410518522193856,"code":"SUCCESS"},{"keywordId":511508281809353,"code":"SUCCESS"},{"keywordId":523470261268762,"code":"SUCCESS"},{"keywordId":490367326781701,"code":"SUCCESS"},{"keywordId":386938052630160,"code":"SUCCESS"},{"keywordId":397550533122938,"code":"SUCCESS"},{"keywordId":308735382993516,"code":"SUCCESS"},{"keywordId":412345252340117,"code":"SUCCESS"},{"keywordId":418434382454459,"code":"SUCCESS"},{"keywordId":432137767774580,"code":"SUCCESS"},{"keywordId":517016394120938,"code":"SUCCESS"},{"keywordId":529731365442454,"code":"SUCCESS"},{"keywordId":323353391027527,"code":"SUCCESS"},{"keywordId":445185922135365,"code":"SUCCESS"},{"keywordId":401987342180442,"code":"SUCCESS"},{"keywordId":503474615379418,"code":"SUCCESS"},{"keywordId":524434310257207,"code":"SUCCESS"},{"keywordId":437801413576358,"code":"SUCCESS"},{"keywordId":286344364881237,"code":"SUCCESS"},{"keywordId":481553454080359,"code":"SUCCESS"},{"keywordId":514316117872587,"code":"SUCCESS"},{"keywordId":555119587358035,"code":"SUCCESS"},{"keywordId":467524585975408,"code":"SUCCESS"},{"keywordId":341039376787120,"code":"SUCCESS"},{"keywordId":503869314787146,"code":"SUCCESS"},{"keywordId":504991133232514,"code":"SUCCESS"},{"keywordId":405905775795161,"code":"SUCCESS"},{"keywordId":294970881185056,"code":"SUCCESS"},{"keywordId":447626147327223,"code":"SUCCESS"},{"keywordId":555777573388815,"code":"SUCCESS"},{"keywordId":547728503065264,"code":"SUCCESS"},{"keywordId":388266580279094,"code":"SUCCESS"},{"keywordId":355087797618306,"code":"SUCCESS"},{"keywordId":548286283904327,"code":"SUCCESS"},{"keywordId":511054804718653,"code":"SUCCESS"},{"keywordId":282033233311970,"code":"SUCCESS"},{"keywordId":470759538047683,"code":"SUCCESS"},{"keywordId":504069746458014,"code":"SUCCESS"},{"keywordId":459279653830253,"code":"SUCCESS"},{"keywordId":303231592117182,"code":"SUCCESS"},{"keywordId":518532736489801,"code":"SUCCESS"},{"keywordId":348019702963470,"code":"SUCCESS"},{"keywordId":331597095224776,"code":"SUCCESS"},{"keywordId":557174705045881,"code":"SUCCESS"},{"keywordId":492539114640947,"code":"SUCCESS"},{"keywordId":532190130486868,"code":"SUCCESS"},{"keywordId":372506781688661,"code":"SUCCESS"},{"keywordId":555383591164300,"code":"SUCCESS"},{"keywordId":442724394024889,"code":"SUCCESS"},{"keywordId":321429911214423,"code":"SUCCESS"},{"keywordId":518053344058481,"code":"SUCCESS"},{"keywordId":493226322477932,"code":"SUCCESS"},{"keywordId":365063000201528,"code":"SUCCESS"},{"keywordId":328672261171049,"code":"SUCCESS"},{"keywordId":445851636711375,"code":"SUCCESS"},{"keywordId":364486210098111,"code":"SUCCESS"},{"keywordId":291871184282217,"code":"SUCCESS"},{"keywordId":321957873051663,"code":"SUCCESS"},{"keywordId":552711041389449,"code":"SUCCESS"},{"keywordId":536370065752872,"code":"SUCCESS"},{"keywordId":438838005002599,"code":"SUCCESS"},{"keywordId":387313514597399,"code":"SUCCESS"},[{"description":"duplicates in entity id","code":"DUPLICATE_VALUE"},{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"duplicates in entity id","code":"DUPLICATE_VALUE"},{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"duplicates in entity id","code":"DUPLICATE_VALUE"},{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"duplicates in entity id","code":"DUPLICATE_VALUE"},{"description":"duplicates in entity id","code":"DUPLICATE_VALUE"},{"description":"duplicates in entity id","code":"DUPLICATE_VALUE"},{"description":"duplicates in entity id","code":"DUPLICATE_VALUE"},{"description":"duplicates in entity id","code":"DUPLICATE_VALUE"},{"description":"duplicates in entity id","code":"DUPLICATE_VALUE"}]]}
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 353929811941871
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 501261616787847
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 325535557846202
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 415703139301082
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 287182785789710
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 473902499754662
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 447877965063698
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 347582270815474
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 560622162608765
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 560622162608765
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 406314144513790
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 303276516557970
+2025-11-24 11:14:24 - 暂停negativeKeyword失败：amazon 544187405217302
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 331484704802441
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 388204278367986
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 512758553945167
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 358108115409265
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 395041071291347
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 395041071291347
+2025-11-24 11:14:24 - 暂停negativeKeyword失败：amazon 403981254050979
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 341005750724315
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 495611437714215
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 495611437714215
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 486555669235906
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 472790843686460
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 408777840861029
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 405661005151311
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 497037123566380
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 350414022160754
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 421332166269710
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 503490589374105
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 409496263686747
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 560872698708734
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 300837921227743
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 511214779899882
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 306143916236179
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 333316207112885
+2025-11-24 11:14:24 - 暂停negativeKeyword失败：amazon 514997632917979
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 342605325185580
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 327902467631720
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 331977513903505
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 410518522193856
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 511508281809353
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 523470261268762
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 490367326781701
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 386938052630160
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 386938052630160
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 397550533122938
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 308735382993516
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 412345252340117
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 418434382454459
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 432137767774580
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 517016394120938
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 517016394120938
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 529731365442454
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 323353391027527
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 445185922135365
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 401987342180442
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 503474615379418
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 524434310257207
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 437801413576358
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 286344364881237
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 481553454080359
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 514316117872587
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 555119587358035
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 467524585975408
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 341039376787120
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 503869314787146
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 504991133232514
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 405905775795161
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 405905775795161
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 294970881185056
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 447626147327223
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 555777573388815
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 547728503065264
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 388266580279094
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 388266580279094
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 355087797618306
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 548286283904327
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 511054804718653
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 282033233311970
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 470759538047683
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 470759538047683
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 504069746458014
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 459279653830253
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 303231592117182
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 518532736489801
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 348019702963470
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 331597095224776
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 557174705045881
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 492539114640947
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 532190130486868
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 372506781688661
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 555383591164300
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 442724394024889
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 321429911214423
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 518053344058481
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 493226322477932
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 365063000201528
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 328672261171049
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 445851636711375
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 364486210098111
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 291871184282217
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 321957873051663
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 552711041389449
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 536370065752872
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 438838005002599
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 387313514597399
+2025-11-24 11:14:24 - 暂停negativeKeyword成功：amazon 387313514597399
+2025-11-24 11:14:33 - amazon 关停成功: 106个
+2025-11-24 11:14:33 - amazon 关停失败: 3个
+2025-11-24 11:14:33 - amazon_us_aqd 数量: 0个
+2025-11-24 11:14:34 - [{"keywordId":"499721895516722","state":"paused"},{"keywordId":"317944878715985","state":"paused"},{"keywordId":"524852025869790","state":"paused"},{"keywordId":"295062749945239","state":"paused"},{"keywordId":"402008546871668","state":"paused"},{"keywordId":"368004415217770","state":"paused"},{"keywordId":"296753711161032","state":"paused"},{"keywordId":"314642170778011","state":"paused"},{"keywordId":"507215950185266","state":"paused"},{"keywordId":"519155256127327","state":"paused"},{"keywordId":"511876743096458","state":"paused"},{"keywordId":"552811022380210","state":"paused"},{"keywordId":"559188960151936","state":"paused"},{"keywordId":"482254297399806","state":"paused"},{"keywordId":"463278218065050","state":"paused"},{"keywordId":"390446071485412","state":"paused"},{"keywordId":"488802595809973","state":"paused"}]
+2025-11-24 11:14:36 - {"status":"success","message":"success","data":[{"keywordId":499721895516722,"code":"SUCCESS"},{"keywordId":317944878715985,"code":"SUCCESS"},{"keywordId":524852025869790,"code":"SUCCESS"},{"keywordId":295062749945239,"code":"SUCCESS"},{"keywordId":402008546871668,"code":"SUCCESS"},{"keywordId":368004415217770,"code":"SUCCESS"},{"keywordId":296753711161032,"code":"SUCCESS"},{"keywordId":314642170778011,"code":"SUCCESS"},{"keywordId":507215950185266,"code":"SUCCESS"},{"keywordId":519155256127327,"code":"SUCCESS"},{"keywordId":511876743096458,"code":"SUCCESS"},{"keywordId":552811022380210,"code":"SUCCESS"},{"keywordId":559188960151936,"code":"SUCCESS"},{"keywordId":482254297399806,"code":"SUCCESS"},{"keywordId":463278218065050,"code":"SUCCESS"},{"keywordId":390446071485412,"code":"SUCCESS"},{"keywordId":488802595809973,"code":"SUCCESS"}]}
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 499721895516722
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 317944878715985
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 524852025869790
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 295062749945239
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 402008546871668
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 368004415217770
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 296753711161032
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 314642170778011
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 507215950185266
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 519155256127327
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 511876743096458
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 552811022380210
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 559188960151936
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 482254297399806
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 463278218065050
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 390446071485412
+2025-11-24 11:14:36 - 暂停negativeKeyword成功：amazon_us_aqd 488802595809973
+2025-11-24 11:14:39 - amazon_us_aqd 关停成功: 17个
+2025-11-24 11:14:40 - updateNegativeKeyword：成功：amazon_us_aqd - slate rock
+2025-11-24 11:14:40 - updateNegativeKeyword：成功：amazon_us_aqd - small fish tank light
+2025-11-24 11:14:40 - updateNegativeKeyword：成功：amazon_us_aqd - aquarium floating plant corral
+2025-11-24 11:14:40 - updateNegativeKeyword：成功：amazon_us_aqd - fish tank bubbler
+2025-11-24 11:14:40 - updateNegativeKeyword：成功：amazon_us_aqd - slate rocks for reptiles
+2025-11-24 11:14:40 - updateNegativeKeyword：成功：amazon_us_aqd - long aquarium tweezers
+2025-11-24 11:14:40 - updateNegativeKeyword：成功：amazon_us_aqd - aquarium mat
+2025-11-24 11:14:40 - updateNegativeKeyword：成功：amazon_us_aqd - feeding tongs
+2025-11-24 11:14:40 - updateNegativeKeyword：成功：amazon_us_aqd - turtle basking platform
+2025-11-24 11:14:40 - updateNegativeKeyword：成功：amazon_us_aqd - aquarium plants
+2025-11-24 11:14:41 - updateNegativeKeyword：成功：amazon_us_aqd - fish tank light
+2025-11-24 11:14:41 - updateNegativeKeyword：成功：amazon_us_aqd - tortoise habitat accessories
+2025-11-24 11:14:41 - updateNegativeKeyword：成功：amazon_us_aqd - aquarium decor
+2025-11-24 11:14:41 - updateNegativeKeyword：成功：amazon_us_aqd - floating plant corral
+2025-11-24 11:14:41 - updateNegativeKeyword：成功：amazon_us_aqd - small aquarium light
+2025-11-24 11:14:41 - updateNegativeKeyword：成功：amazon_us_aqd - snake water bowl
+2025-11-24 11:14:41 - updateNegativeKeyword：成功：amazon_us_aqd - fish tank decorations
+2025-11-24 11:14:41 - amazon_us_hope 数量: 0个
+2025-11-24 11:14:43 - [{"keywordId":"523322880679725","state":"paused"},{"keywordId":"476131206448271","state":"paused"},{"keywordId":"435469843441196","state":"paused"},{"keywordId":"535394527931409","state":"paused"},{"keywordId":"495213259142434","state":"paused"},{"keywordId":"282155652263695","state":"paused"},{"keywordId":"304613089538121","state":"paused"},{"keywordId":"364581914769893","state":"paused"},{"keywordId":"361152190758853","state":"paused"},{"keywordId":"433716757764511","state":"paused"},{"keywordId":"539184478130209","state":"paused"},{"keywordId":"294970014472615","state":"paused"},{"keywordId":"410451955922272","state":"paused"},{"keywordId":"291024694851342","state":"paused"}]
+2025-11-24 11:14:45 - {"status":"success","message":"success","data":[{"keywordId":495213259142434,"code":"SUCCESS"},{"keywordId":304613089538121,"code":"SUCCESS"},{"keywordId":364581914769893,"code":"SUCCESS"},{"keywordId":361152190758853,"code":"SUCCESS"},{"keywordId":410451955922272,"code":"SUCCESS"},[{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"}]]}
+2025-11-24 11:14:45 - 暂停negativeKeyword失败：amazon_us_hope 523322880679725
+2025-11-24 11:14:45 - 暂停negativeKeyword失败：amazon_us_hope 476131206448271
+2025-11-24 11:14:45 - 暂停negativeKeyword失败：amazon_us_hope 435469843441196
+2025-11-24 11:14:45 - 暂停negativeKeyword失败：amazon_us_hope 535394527931409
+2025-11-24 11:14:45 - 暂停negativeKeyword成功：amazon_us_hope 495213259142434
+2025-11-24 11:14:45 - 暂停negativeKeyword失败：amazon_us_hope 282155652263695
+2025-11-24 11:14:45 - 暂停negativeKeyword成功：amazon_us_hope 304613089538121
+2025-11-24 11:14:45 - 暂停negativeKeyword成功：amazon_us_hope 364581914769893
+2025-11-24 11:14:45 - 暂停negativeKeyword成功：amazon_us_hope 361152190758853
+2025-11-24 11:14:45 - 暂停negativeKeyword失败：amazon_us_hope 433716757764511
+2025-11-24 11:14:45 - 暂停negativeKeyword失败：amazon_us_hope 539184478130209
+2025-11-24 11:14:45 - 暂停negativeKeyword失败：amazon_us_hope 294970014472615
+2025-11-24 11:14:45 - 暂停negativeKeyword成功：amazon_us_hope 410451955922272
+2025-11-24 11:14:45 - 暂停negativeKeyword失败：amazon_us_hope 291024694851342
+2025-11-24 11:14:45 - amazon_us_hope 关停成功: 5个
+2025-11-24 11:14:45 - updateNegativeKeyword：成功：amazon_us_hope - 2001 dodge ram pillar post trim
+2025-11-24 11:14:45 - updateNegativeKeyword：成功：amazon_us_hope - 10mm wrench
+2025-11-24 11:14:45 - updateNegativeKeyword：成功：amazon_us_hope - boat throttle cable
+2025-11-24 11:14:45 - updateNegativeKeyword：成功：amazon_us_hope - gear shift knob
+2025-11-24 11:14:45 - updateNegativeKeyword：成功：amazon_us_hope - jeep wrangler door handle covers
+2025-11-24 11:14:45 - amazon_us_hope 关停失败: 9个
+2025-11-24 11:14:45 - amazon_us_tuto 数量: 0个
+2025-11-24 11:14:45 - [{"keywordId":"406356357168596","state":"paused"},{"keywordId":"531081661003588","state":"paused"},{"keywordId":"475036722425857","state":"paused"},{"keywordId":"354309812272512","state":"paused"},{"keywordId":"469347124595330","state":"paused"},{"keywordId":"492393454871400","state":"paused"},{"keywordId":"311376071072597","state":"paused"},{"keywordId":"445351379135252","state":"paused"},{"keywordId":"553303335481670","state":"paused"},{"keywordId":"474833893653828","state":"paused"},{"keywordId":"527766498542662","state":"paused"},{"keywordId":"397378364279166","state":"paused"},{"keywordId":"353881680363173","state":"paused"},{"keywordId":"325264487187177","state":"paused"},{"keywordId":"364296937917075","state":"paused"},{"keywordId":"488448927722290","state":"paused"},{"keywordId":"496566296868860","state":"paused"},{"keywordId":"315371113144753","state":"paused"},{"keywordId":"472209038239134","state":"paused"},{"keywordId":"546819038710883","state":"paused"},{"keywordId":"349736776240931","state":"paused"},{"keywordId":"500063921646224","state":"paused"},{"keywordId":"388942150236196","state":"paused"},{"keywordId":"441186523437500","state":"paused"},{"keywordId":"511534142975711","state":"paused"},{"keywordId":"468770564822879","state":"paused"},{"keywordId":"422153396207489","state":"paused"},{"keywordId":"358599713401301","state":"paused"},{"keywordId":"379956829583862","state":"paused"},{"keywordId":"441724697970757","state":"paused"},{"keywordId":"364596554674430","state":"paused"},{"keywordId":"514175846100364","state":"paused"},{"keywordId":"377149834621316","state":"paused"},{"keywordId":"352045191587351","state":"paused"}]
+2025-11-24 11:14:47 - {"status":"success","message":"success","data":[{"keywordId":406356357168596,"code":"SUCCESS"},{"keywordId":531081661003588,"code":"SUCCESS"},{"keywordId":475036722425857,"code":"SUCCESS"},{"keywordId":354309812272512,"code":"SUCCESS"},{"keywordId":469347124595330,"code":"SUCCESS"},{"keywordId":492393454871400,"code":"SUCCESS"},{"keywordId":311376071072597,"code":"SUCCESS"},{"keywordId":445351379135252,"code":"SUCCESS"},{"keywordId":553303335481670,"code":"SUCCESS"},{"keywordId":474833893653828,"code":"SUCCESS"},{"keywordId":527766498542662,"code":"SUCCESS"},{"keywordId":397378364279166,"code":"SUCCESS"},{"keywordId":353881680363173,"code":"SUCCESS"},{"keywordId":325264487187177,"code":"SUCCESS"},{"keywordId":364296937917075,"code":"SUCCESS"},{"keywordId":488448927722290,"code":"SUCCESS"},{"keywordId":496566296868860,"code":"SUCCESS"},{"keywordId":315371113144753,"code":"SUCCESS"},{"keywordId":472209038239134,"code":"SUCCESS"},{"keywordId":546819038710883,"code":"SUCCESS"},{"keywordId":349736776240931,"code":"SUCCESS"},{"keywordId":500063921646224,"code":"SUCCESS"},{"keywordId":388942150236196,"code":"SUCCESS"},{"keywordId":441186523437500,"code":"SUCCESS"},{"keywordId":511534142975711,"code":"SUCCESS"},{"keywordId":468770564822879,"code":"SUCCESS"},{"keywordId":422153396207489,"code":"SUCCESS"},{"keywordId":358599713401301,"code":"SUCCESS"},{"keywordId":379956829583862,"code":"SUCCESS"},{"keywordId":441724697970757,"code":"SUCCESS"},{"keywordId":364596554674430,"code":"SUCCESS"},{"keywordId":514175846100364,"code":"SUCCESS"},{"keywordId":377149834621316,"code":"SUCCESS"},{"keywordId":352045191587351,"code":"SUCCESS"}]}
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 406356357168596
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 531081661003588
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 475036722425857
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 354309812272512
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 469347124595330
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 492393454871400
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 311376071072597
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 445351379135252
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 553303335481670
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 474833893653828
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 527766498542662
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 397378364279166
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 353881680363173
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 325264487187177
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 364296937917075
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 488448927722290
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 496566296868860
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 315371113144753
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 472209038239134
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 546819038710883
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 349736776240931
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 500063921646224
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 388942150236196
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 441186523437500
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 511534142975711
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 468770564822879
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 422153396207489
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 358599713401301
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 379956829583862
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 441724697970757
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 364596554674430
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 514175846100364
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 377149834621316
+2025-11-24 11:14:47 - 暂停negativeKeyword成功：amazon_us_tuto 352045191587351
+2025-11-24 11:14:47 - amazon_us_tuto 关停成功: 34个
+2025-11-24 11:14:48 - updateNegativeKeyword：成功：amazon_us_tuto - harley fuel petcock
+2025-11-24 11:14:48 - updateNegativeKeyword：成功：amazon_us_tuto - ignition coil connector
+2025-11-24 11:14:48 - updateNegativeKeyword：成功：amazon_us_tuto - car door protector edge guards
+2025-11-24 11:14:48 - updateNegativeKeyword：成功：amazon_us_tuto - spare tire winch
+2025-11-24 11:14:48 - updateNegativeKeyword：成功：amazon_us_tuto - heater hose connector
+2025-11-24 11:14:48 - updateNegativeKeyword：成功：amazon_us_tuto - car hooks
+2025-11-24 11:14:48 - updateNegativeKeyword：成功：amazon_us_tuto - bmw 550i radiator hose
+2025-11-24 11:14:48 - updateNegativeKeyword：成功：amazon_us_tuto - air intake tube
+2025-11-24 11:14:48 - updateNegativeKeyword：成功：amazon_us_tuto - air filter hose
+2025-11-24 11:14:49 - updateNegativeKeyword：成功：amazon_us_tuto - nissan thermostat
+2025-11-24 11:14:49 - updateNegativeKeyword：成功：amazon_us_tuto - toyota corolla 2014
+2025-11-24 11:14:49 - updateNegativeKeyword：成功：amazon_us_tuto - intake hose
+2025-11-24 11:14:49 - updateNegativeKeyword：成功：amazon_us_tuto - left rear wheel speed sensor
+2025-11-24 11:14:49 - updateNegativeKeyword：成功：amazon_us_tuto - brass valve stem extension
+2025-11-24 11:14:49 - updateNegativeKeyword：成功：amazon_us_tuto - motorcycle license plate bolts
+2025-11-24 11:14:49 - updateNegativeKeyword：成功：amazon_us_tuto - 3  16 vacuum hose automotive
+2025-11-24 11:14:49 - updateNegativeKeyword：成功：amazon_us_tuto - tire lock lug nut key
+2025-11-24 11:14:49 - updateNegativeKeyword：成功：amazon_us_tuto - 68mm center caps
+2025-11-24 11:14:50 - updateNegativeKeyword：成功：amazon_us_tuto - large blind spot mirror
+2025-11-24 11:14:50 - updateNegativeKeyword：成功：amazon_us_tuto - 1k0122291h
+2025-11-24 11:14:50 - updateNegativeKeyword：成功：amazon_us_tuto - dirt bike seat cover
+2025-11-24 11:14:50 - updateNegativeKeyword：成功：amazon_us_tuto - toyota sequoia seat covers
+2025-11-24 11:14:50 - updateNegativeKeyword：成功：amazon_us_tuto - grease gun hose 24 inch
+2025-11-24 11:14:50 - updateNegativeKeyword：成功：amazon_us_tuto - car door edge guards
+2025-11-24 11:14:50 - updateNegativeKeyword：成功：amazon_us_tuto - suede headliner fabric
+2025-11-24 11:14:50 - updateNegativeKeyword：成功：amazon_us_tuto - automotive interior accessories
+2025-11-24 11:14:50 - updateNegativeKeyword：成功：amazon_us_tuto - shark fin antenna
+2025-11-24 11:14:50 - updateNegativeKeyword：成功：amazon_us_tuto - 2010 honda accord air intake hose
+2025-11-24 11:14:50 - updateNegativeKeyword：成功：amazon_us_tuto - wheel lock key
+2025-11-24 11:14:51 - updateNegativeKeyword：成功：amazon_us_tuto - fuel pressure regulator
+2025-11-24 11:14:51 - updateNegativeKeyword：成功：amazon_us_tuto - 2009 toyota corolla radiator hose
+2025-11-24 11:14:51 - updateNegativeKeyword：成功：amazon_us_tuto - gear shift cover
+2025-11-24 11:14:51 - updateNegativeKeyword：成功：amazon_us_tuto - car door edge guards
+2025-11-24 11:14:51 - updateNegativeKeyword：成功：amazon_us_tuto - 14 inch wheel covers set of 4
+2025-11-24 11:14:51 - amazon_us_find 数量: 0个
+2025-11-24 11:14:52 - [{"keywordId":"438282639498823","state":"paused"},{"keywordId":"463955258813544","state":"paused"},{"keywordId":"315972689384075","state":"paused"},{"keywordId":"403002558154045","state":"paused"},{"keywordId":"471240518462291","state":"paused"},{"keywordId":"449915651462359","state":"paused"},{"keywordId":"425103055840073","state":"paused"},{"keywordId":"470182203071838","state":"paused"},{"keywordId":"441160534503906","state":"paused"},{"keywordId":"311877333154613","state":"paused"},{"keywordId":"497625418867027","state":"paused"},{"keywordId":"451920884772051","state":"paused"},{"keywordId":"406955516070005","state":"paused"},{"keywordId":"433575401526617","state":"paused"},{"keywordId":"555952156138706","state":"paused"},{"keywordId":"404999409927969","state":"paused"},{"keywordId":"499518930328606","state":"paused"},{"keywordId":"442213458280411","state":"paused"},{"keywordId":"458730000953277","state":"paused"},{"keywordId":"442892609855952","state":"paused"},{"keywordId":"423606339573111","state":"paused"},{"keywordId":"470347107900667","state":"paused"},{"keywordId":"355978263633450","state":"paused"},{"keywordId":"541075394176957","state":"paused"},{"keywordId":"514799498867446","state":"paused"},{"keywordId":"518901349583335","state":"paused"},{"keywordId":"318451774632989","state":"paused"},{"keywordId":"326962194010229","state":"paused"},{"keywordId":"557445790569037","state":"paused"},{"keywordId":"460266017307553","state":"paused"},{"keywordId":"558416824473842","state":"paused"},{"keywordId":"309437424712606","state":"paused"},{"keywordId":"447519661685710","state":"paused"},{"keywordId":"531158390369584","state":"paused"},{"keywordId":"499835644863256","state":"paused"},{"keywordId":"439624505712200","state":"paused"},{"keywordId":"331779513189416","state":"paused"},{"keywordId":"362665809260776","state":"paused"},{"keywordId":"342815517055383","state":"paused"},{"keywordId":"396419816720934","state":"paused"},{"keywordId":"436451628025587","state":"paused"},{"keywordId":"360492913822651","state":"paused"},{"keywordId":"479537064151731","state":"paused"},{"keywordId":"311970549200800","state":"paused"},{"keywordId":"496167325246040","state":"paused"},{"keywordId":"497002161936978","state":"paused"},{"keywordId":"464981680205822","state":"paused"},{"keywordId":"456902942892646","state":"paused"},{"keywordId":"353820946300032","state":"paused"},{"keywordId":"484011518710705","state":"paused"},{"keywordId":"311536571295877","state":"paused"},{"keywordId":"431376700227706","state":"paused"},{"keywordId":"401366072167845","state":"paused"},{"keywordId":"520809001146945","state":"paused"},{"keywordId":"441915999896031","state":"paused"},{"keywordId":"322964971287665","state":"paused"},{"keywordId":"554558522528141","state":"paused"},{"keywordId":"479892528167258","state":"paused"},{"keywordId":"487796858175203","state":"paused"},{"keywordId":"525428281257213","state":"paused"},{"keywordId":"508112037943729","state":"paused"},{"keywordId":"409919548646037","state":"paused"},{"keywordId":"344698381620952","state":"paused"},{"keywordId":"302417920346452","state":"paused"},{"keywordId":"359823283080881","state":"paused"},{"keywordId":"336760184355899","state":"paused"},{"keywordId":"298204983386468","state":"paused"},{"keywordId":"288198228813518","state":"paused"},{"keywordId":"440166950983729","state":"paused"},{"keywordId":"371430163023522","state":"paused"},{"keywordId":"516609787643941","state":"paused"},{"keywordId":"502464383009571","state":"paused"},{"keywordId":"401611035184373","state":"paused"},{"keywordId":"421966754916435","state":"paused"},{"keywordId":"526072800568284","state":"paused"},{"keywordId":"441683719695303","state":"paused"},{"keywordId":"529337580607534","state":"paused"},{"keywordId":"357071139513853","state":"paused"},{"keywordId":"412689047993613","state":"paused"},{"keywordId":"511111667909010","state":"paused"},{"keywordId":"412552255957988","state":"paused"},{"keywordId":"334078856887785","state":"paused"},{"keywordId":"550035768171571","state":"paused"},{"keywordId":"477740491586821","state":"paused"},{"keywordId":"471254728169176","state":"paused"},{"keywordId":"330947135518952","state":"paused"},{"keywordId":"489955995138241","state":"paused"},{"keywordId":"326513419707552","state":"paused"},{"keywordId":"517959270053894","state":"paused"},{"keywordId":"406739274198923","state":"paused"},{"keywordId":"302358964024030","state":"paused"},{"keywordId":"543715489360040","state":"paused"},{"keywordId":"540689866116869","state":"paused"},{"keywordId":"341028765509120","state":"paused"},{"keywordId":"371721715146008","state":"paused"},{"keywordId":"402935270970331","state":"paused"},{"keywordId":"414535832857025","state":"paused"},{"keywordId":"471414797356531","state":"paused"},{"keywordId":"323382423014887","state":"paused"},{"keywordId":"361333681030979","state":"paused"},{"keywordId":"437154263012668","state":"paused"}]
+2025-11-24 11:14:54 - {"status":"success","message":"success","data":[{"keywordId":438282639498823,"code":"SUCCESS"},{"keywordId":463955258813544,"code":"SUCCESS"},{"keywordId":315972689384075,"code":"SUCCESS"},{"keywordId":403002558154045,"code":"SUCCESS"},{"keywordId":471240518462291,"code":"SUCCESS"},{"keywordId":449915651462359,"code":"SUCCESS"},{"keywordId":425103055840073,"code":"SUCCESS"},{"keywordId":470182203071838,"code":"SUCCESS"},{"keywordId":441160534503906,"code":"SUCCESS"},{"keywordId":311877333154613,"code":"SUCCESS"},{"keywordId":497625418867027,"code":"SUCCESS"},{"keywordId":451920884772051,"code":"SUCCESS"},{"keywordId":406955516070005,"code":"SUCCESS"},{"keywordId":433575401526617,"code":"SUCCESS"},{"keywordId":555952156138706,"code":"SUCCESS"},{"keywordId":404999409927969,"code":"SUCCESS"},{"keywordId":499518930328606,"code":"SUCCESS"},{"keywordId":442213458280411,"code":"SUCCESS"},{"keywordId":458730000953277,"code":"SUCCESS"},{"keywordId":442892609855952,"code":"SUCCESS"},{"keywordId":423606339573111,"code":"SUCCESS"},{"keywordId":470347107900667,"code":"SUCCESS"},{"keywordId":355978263633450,"code":"SUCCESS"},{"keywordId":541075394176957,"code":"SUCCESS"},{"keywordId":514799498867446,"code":"SUCCESS"},{"keywordId":518901349583335,"code":"SUCCESS"},{"keywordId":318451774632989,"code":"SUCCESS"},{"keywordId":326962194010229,"code":"SUCCESS"},{"keywordId":557445790569037,"code":"SUCCESS"},{"keywordId":460266017307553,"code":"SUCCESS"},{"keywordId":558416824473842,"code":"SUCCESS"},{"keywordId":309437424712606,"code":"SUCCESS"},{"keywordId":447519661685710,"code":"SUCCESS"},{"keywordId":531158390369584,"code":"SUCCESS"},{"keywordId":499835644863256,"code":"SUCCESS"},{"keywordId":439624505712200,"code":"SUCCESS"},{"keywordId":331779513189416,"code":"SUCCESS"},{"keywordId":362665809260776,"code":"SUCCESS"},{"keywordId":342815517055383,"code":"SUCCESS"},{"keywordId":396419816720934,"code":"SUCCESS"},{"keywordId":436451628025587,"code":"SUCCESS"},{"keywordId":360492913822651,"code":"SUCCESS"},{"keywordId":479537064151731,"code":"SUCCESS"},{"keywordId":311970549200800,"code":"SUCCESS"},{"keywordId":496167325246040,"code":"SUCCESS"},{"keywordId":497002161936978,"code":"SUCCESS"},{"keywordId":464981680205822,"code":"SUCCESS"},{"keywordId":456902942892646,"code":"SUCCESS"},{"keywordId":353820946300032,"code":"SUCCESS"},{"keywordId":484011518710705,"code":"SUCCESS"},{"keywordId":311536571295877,"code":"SUCCESS"},{"keywordId":431376700227706,"code":"SUCCESS"},{"keywordId":401366072167845,"code":"SUCCESS"},{"keywordId":520809001146945,"code":"SUCCESS"},{"keywordId":441915999896031,"code":"SUCCESS"},{"keywordId":322964971287665,"code":"SUCCESS"},{"keywordId":554558522528141,"code":"SUCCESS"},{"keywordId":479892528167258,"code":"SUCCESS"},{"keywordId":487796858175203,"code":"SUCCESS"},{"keywordId":525428281257213,"code":"SUCCESS"},{"keywordId":508112037943729,"code":"SUCCESS"},{"keywordId":409919548646037,"code":"SUCCESS"},{"keywordId":344698381620952,"code":"SUCCESS"},{"keywordId":302417920346452,"code":"SUCCESS"},{"keywordId":359823283080881,"code":"SUCCESS"},{"keywordId":336760184355899,"code":"SUCCESS"},{"keywordId":298204983386468,"code":"SUCCESS"},{"keywordId":288198228813518,"code":"SUCCESS"},{"keywordId":440166950983729,"code":"SUCCESS"},{"keywordId":371430163023522,"code":"SUCCESS"},{"keywordId":516609787643941,"code":"SUCCESS"},{"keywordId":502464383009571,"code":"SUCCESS"},{"keywordId":401611035184373,"code":"SUCCESS"},{"keywordId":421966754916435,"code":"SUCCESS"},{"keywordId":526072800568284,"code":"SUCCESS"},{"keywordId":441683719695303,"code":"SUCCESS"},{"keywordId":529337580607534,"code":"SUCCESS"},{"keywordId":357071139513853,"code":"SUCCESS"},{"keywordId":412689047993613,"code":"SUCCESS"},{"keywordId":511111667909010,"code":"SUCCESS"},{"keywordId":412552255957988,"code":"SUCCESS"},{"keywordId":334078856887785,"code":"SUCCESS"},{"keywordId":550035768171571,"code":"SUCCESS"},{"keywordId":477740491586821,"code":"SUCCESS"},{"keywordId":471254728169176,"code":"SUCCESS"},{"keywordId":330947135518952,"code":"SUCCESS"},{"keywordId":489955995138241,"code":"SUCCESS"},{"keywordId":326513419707552,"code":"SUCCESS"},{"keywordId":517959270053894,"code":"SUCCESS"},{"keywordId":406739274198923,"code":"SUCCESS"},{"keywordId":302358964024030,"code":"SUCCESS"},{"keywordId":543715489360040,"code":"SUCCESS"},{"keywordId":540689866116869,"code":"SUCCESS"},{"keywordId":341028765509120,"code":"SUCCESS"},{"keywordId":371721715146008,"code":"SUCCESS"},{"keywordId":402935270970331,"code":"SUCCESS"},{"keywordId":414535832857025,"code":"SUCCESS"},{"keywordId":471414797356531,"code":"SUCCESS"},{"keywordId":323382423014887,"code":"SUCCESS"},{"keywordId":361333681030979,"code":"SUCCESS"},{"keywordId":437154263012668,"code":"SUCCESS"}]}
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 438282639498823
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 463955258813544
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 315972689384075
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 403002558154045
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 471240518462291
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 449915651462359
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 425103055840073
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 470182203071838
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 441160534503906
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 311877333154613
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 497625418867027
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 451920884772051
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 406955516070005
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 433575401526617
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 555952156138706
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 404999409927969
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 499518930328606
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 442213458280411
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 458730000953277
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 442892609855952
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 423606339573111
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 470347107900667
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 355978263633450
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 541075394176957
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 514799498867446
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 518901349583335
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 318451774632989
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 326962194010229
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 557445790569037
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 460266017307553
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 558416824473842
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 309437424712606
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 447519661685710
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 531158390369584
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 499835644863256
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 439624505712200
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 331779513189416
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 362665809260776
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 342815517055383
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 396419816720934
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 436451628025587
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 360492913822651
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 479537064151731
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 311970549200800
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 496167325246040
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 497002161936978
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 464981680205822
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 456902942892646
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 353820946300032
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 484011518710705
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 311536571295877
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 431376700227706
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 401366072167845
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 520809001146945
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 441915999896031
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 322964971287665
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 554558522528141
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 479892528167258
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 487796858175203
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 525428281257213
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 508112037943729
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 409919548646037
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 344698381620952
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 302417920346452
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 359823283080881
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 336760184355899
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 298204983386468
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 288198228813518
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 440166950983729
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 371430163023522
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 516609787643941
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 502464383009571
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 401611035184373
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 421966754916435
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 526072800568284
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 441683719695303
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 529337580607534
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 357071139513853
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 412689047993613
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 511111667909010
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 412552255957988
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 334078856887785
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 550035768171571
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 477740491586821
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 471254728169176
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 330947135518952
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 489955995138241
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 326513419707552
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 517959270053894
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 406739274198923
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 302358964024030
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 543715489360040
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 540689866116869
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 341028765509120
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 371721715146008
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 402935270970331
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 414535832857025
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 471414797356531
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 323382423014887
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 361333681030979
+2025-11-24 11:14:54 - 暂停negativeKeyword成功：amazon_us_find 437154263012668
+2025-11-24 11:14:54 - amazon_us_find 关停成功: 101个
+2025-11-24 11:14:54 - updateNegativeKeyword：成功：amazon_us_find - ignition starter switch
+2025-11-24 11:14:54 - updateNegativeKeyword：成功：amazon_us_find - ignition switch with key
+2025-11-24 11:14:54 - updateNegativeKeyword：成功：amazon_us_find - automatic shift knob
+2025-11-24 11:14:54 - updateNegativeKeyword：成功：amazon_us_find - infiniti key fob cover
+2025-11-24 11:14:54 - updateNegativeKeyword：成功：amazon_us_find - automatic gear shift knob
+2025-11-24 11:14:54 - updateNegativeKeyword：成功：amazon_us_find - manual gear shift knob
+2025-11-24 11:14:54 - updateNegativeKeyword：成功：amazon_us_find - automatic gear shift knob
+2025-11-24 11:14:55 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tips 2.5 inlet
+2025-11-24 11:14:55 - updateNegativeKeyword：成功：amazon_us_find - oil feed line turbo
+2025-11-24 11:14:55 - updateNegativeKeyword：成功：amazon_us_find - reflective car stickers
+2025-11-24 11:14:55 - updateNegativeKeyword：成功：amazon_us_find - shift knob
+2025-11-24 11:14:55 - updateNegativeKeyword：成功：amazon_us_find - flexible exhaust pipe
+2025-11-24 11:14:55 - updateNegativeKeyword：成功：amazon_us_find - coolant reservoir tank hose
+2025-11-24 11:14:55 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tip
+2025-11-24 11:14:55 - updateNegativeKeyword：成功：amazon_us_find - headlight lens cover replacement
+2025-11-24 11:14:55 - updateNegativeKeyword：成功：amazon_us_find - black exhaust tips
+2025-11-24 11:14:56 - updateNegativeKeyword：成功：amazon_us_find - shifter knobs
+2025-11-24 11:14:56 - updateNegativeKeyword：成功：amazon_us_find - ijdmtoy 2 oem h11 h8 female adapters wiring harness sockets
+2025-11-24 11:14:56 - updateNegativeKeyword：成功：amazon_us_find - pink car accessories
+2025-11-24 11:14:56 - updateNegativeKeyword：成功：amazon_us_find - front main seal
+2025-11-24 11:14:56 - updateNegativeKeyword：成功：amazon_us_find - mitsubishi outlander accessories
+2025-11-24 11:14:56 - updateNegativeKeyword：成功：amazon_us_find - bike spokes
+2025-11-24 11:14:56 - updateNegativeKeyword：成功：amazon_us_find - mazda key fob cover
+2025-11-24 11:14:56 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tips
+2025-11-24 11:14:56 - updateNegativeKeyword：成功：amazon_us_find - reflective stickers
+2025-11-24 11:14:56 - updateNegativeKeyword：成功：amazon_us_find - toyota rav4 accessories
+2025-11-24 11:14:56 - updateNegativeKeyword：成功：amazon_us_find - gear shift knob
+2025-11-24 11:14:57 - updateNegativeKeyword：成功：amazon_us_find - pressure washer hose
+2025-11-24 11:14:57 - updateNegativeKeyword：成功：amazon_us_find - headliner fabric
+2025-11-24 11:14:57 - updateNegativeKeyword：成功：amazon_us_find - 3 exhaust tip
+2025-11-24 11:14:57 - updateNegativeKeyword：成功：amazon_us_find - dual tip exhaust
+2025-11-24 11:14:57 - updateNegativeKeyword：成功：amazon_us_find - throttle body
+2025-11-24 11:14:57 - updateNegativeKeyword：成功：amazon_us_find - bicycle spokes
+2025-11-24 11:14:57 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tips
+2025-11-24 11:14:57 - updateNegativeKeyword：成功：amazon_us_find - fiat 500 key fob cover
+2025-11-24 11:14:57 - updateNegativeKeyword：成功：amazon_us_find - 2018 honda accord key fob cover
+2025-11-24 11:14:58 - updateNegativeKeyword：成功：amazon_us_find - shark fin antenna cover
+2025-11-24 11:14:58 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tips
+2025-11-24 11:14:58 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tips
+2025-11-24 11:14:58 - updateNegativeKeyword：成功：amazon_us_find - transmission range sensor
+2025-11-24 11:14:58 - updateNegativeKeyword：成功：amazon_us_find - h7 to h11 adapter
+2025-11-24 11:14:58 - updateNegativeKeyword：成功：amazon_us_find - 48mm air filter
+2025-11-24 11:14:58 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tip
+2025-11-24 11:14:59 - updateNegativeKeyword：成功：amazon_us_find - gear shift knob
+2025-11-24 11:14:59 - updateNegativeKeyword：成功：amazon_us_find - marine battery cable covers
+2025-11-24 11:14:59 - updateNegativeKeyword：成功：amazon_us_find - reflective stickers for clothing
+2025-11-24 11:14:59 - updateNegativeKeyword：成功：amazon_us_find - faizjunben dual exhaust tips
+2025-11-24 11:14:59 - updateNegativeKeyword：成功：amazon_us_find - mazda 3 accessories
+2025-11-24 11:14:59 - updateNegativeKeyword：成功：amazon_us_find - black dual exhaust tips
+2025-11-24 11:14:59 - updateNegativeKeyword：成功：amazon_us_find - dashboard cover
+2025-11-24 11:14:59 - updateNegativeKeyword：成功：amazon_us_find - carbon fiber muffler tips
+2025-11-24 11:14:59 - updateNegativeKeyword：成功：amazon_us_find - window door regulator glass channel clips
+2025-11-24 11:14:59 - updateNegativeKeyword：成功：amazon_us_find - cadillac key fob cover
+2025-11-24 11:15:00 - updateNegativeKeyword：成功：amazon_us_find - fender bracket
+2025-11-24 11:15:00 - updateNegativeKeyword：成功：amazon_us_find - shift knob
+2025-11-24 11:15:00 - updateNegativeKeyword：成功：amazon_us_find - curved exhaust tip
+2025-11-24 11:15:00 - updateNegativeKeyword：成功：amazon_us_find - 5 pin relay 12v
+2025-11-24 11:15:00 - updateNegativeKeyword：成功：amazon_us_find - shift knob
+2025-11-24 11:15:00 - updateNegativeKeyword：成功：amazon_us_find - mitsubishi outlander key fob
+2025-11-24 11:15:00 - updateNegativeKeyword：成功：amazon_us_find - 2019 ford f150 front bumper
+2025-11-24 11:15:00 - updateNegativeKeyword：成功：amazon_us_find - car door edge guards clear
+2025-11-24 11:15:00 - updateNegativeKeyword：成功：amazon_us_find - turbo oil return line
+2025-11-24 11:15:01 - updateNegativeKeyword：成功：amazon_us_find - volvo xc60 key fob cover
+2025-11-24 11:15:01 - updateNegativeKeyword：成功：amazon_us_find - key fob cover
+2025-11-24 11:15:01 - updateNegativeKeyword：成功：amazon_us_find - square exhaust tips
+2025-11-24 11:15:01 - updateNegativeKeyword：成功：amazon_us_find - car center console cover
+2025-11-24 11:15:01 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tip
+2025-11-24 11:15:01 - updateNegativeKeyword：成功：amazon_us_find - ford f150 front bumper
+2025-11-24 11:15:01 - updateNegativeKeyword：成功：amazon_us_find - dash board cover mat
+2025-11-24 11:15:01 - updateNegativeKeyword：成功：amazon_us_find - reflective sticker
+2025-11-24 11:15:01 - updateNegativeKeyword：成功：amazon_us_find - top post battery terminal covers
+2025-11-24 11:15:01 - updateNegativeKeyword：成功：amazon_us_find - flex pipe exhaust
+2025-11-24 11:15:02 - updateNegativeKeyword：成功：amazon_us_find - exhaust tip
+2025-11-24 11:15:02 - updateNegativeKeyword：成功：amazon_us_find - exhaust tips
+2025-11-24 11:15:02 - updateNegativeKeyword：成功：amazon_us_find - 2006 dodge ram 1500 grill
+2025-11-24 11:15:02 - updateNegativeKeyword：成功：amazon_us_find - fuel injection pressure regulator
+2025-11-24 11:15:02 - updateNegativeKeyword：成功：amazon_us_find - timing chain kit
+2025-11-24 11:15:02 - updateNegativeKeyword：成功：amazon_us_find - cadillac xt5 dash cover
+2025-11-24 11:15:02 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tip
+2025-11-24 11:15:02 - updateNegativeKeyword：成功：amazon_us_find - auto door edge guards
+2025-11-24 11:15:02 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tip
+2025-11-24 11:15:02 - updateNegativeKeyword：成功：amazon_us_find - door edge guard black
+2025-11-24 11:15:02 - updateNegativeKeyword：成功：amazon_us_find - power steering pump
+2025-11-24 11:15:03 - updateNegativeKeyword：成功：amazon_us_find - h11 wire connector
+2025-11-24 11:15:03 - updateNegativeKeyword：成功：amazon_us_find - automotive replacement oil pan gasket sets
+2025-11-24 11:15:03 - updateNegativeKeyword：成功：amazon_us_find - manual shift stick
+2025-11-24 11:15:03 - updateNegativeKeyword：成功：amazon_us_find - key fob cover
+2025-11-24 11:15:03 - updateNegativeKeyword：成功：amazon_us_find - exhaust tip
+2025-11-24 11:15:03 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tips
+2025-11-24 11:15:03 - updateNegativeKeyword：成功：amazon_us_find - car door edge guards red
+2025-11-24 11:15:03 - updateNegativeKeyword：成功：amazon_us_find - windshield rubber seal strip
+2025-11-24 11:15:03 - updateNegativeKeyword：成功：amazon_us_find - focus st
+2025-11-24 11:15:04 - updateNegativeKeyword：成功：amazon_us_find - 2018 ford f150 front bumper
+2025-11-24 11:15:04 - updateNegativeKeyword：成功：amazon_us_find - volkswagen key fob cover
+2025-11-24 11:15:04 - updateNegativeKeyword：成功：amazon_us_find - tow hook golden screw in
+2025-11-24 11:15:04 - updateNegativeKeyword：成功：amazon_us_find - fuel tank filler neck
+2025-11-24 11:15:04 - updateNegativeKeyword：成功：amazon_us_find - front bumper
+2025-11-24 11:15:04 - updateNegativeKeyword：成功：amazon_us_find - fiat 500 key fob cover
+2025-11-24 11:15:04 - updateNegativeKeyword：成功：amazon_us_find - battery cable ends
+2025-11-24 11:15:20 - updateNegativeKeyword：成功：amazon_us_find - dual exhaust tips
+2025-11-24 11:15:20 - updateNegativeKeyword：成功：amazon_us_find - carburetor hose
+2025-11-24 11:15:20 - amazon_us_voco 数量: 0个
+2025-11-24 11:15:20 - [{"keywordId":"336411696291100","state":"paused"},{"keywordId":"339184729367509","state":"paused"},{"keywordId":"496483662278549","state":"paused"},{"keywordId":"366290727878615","state":"paused"},{"keywordId":"362986752712082","state":"paused"},{"keywordId":"295440475429363","state":"paused"},{"keywordId":"419574465506630","state":"paused"},{"keywordId":"345599974616377","state":"paused"},{"keywordId":"514692975902519","state":"paused"},{"keywordId":"464084997059462","state":"paused"},{"keywordId":"475216356944604","state":"paused"},{"keywordId":"444869592914395","state":"paused"},{"keywordId":"478216030494264","state":"paused"},{"keywordId":"414052281022822","state":"paused"},{"keywordId":"439809001816508","state":"paused"},{"keywordId":"470641370779971","state":"paused"},{"keywordId":"546652247443998","state":"paused"},{"keywordId":"454492277788244","state":"paused"},{"keywordId":"283731166228623","state":"paused"},{"keywordId":"539223345106868","state":"paused"},{"keywordId":"349574160112421","state":"paused"},{"keywordId":"553480115981906","state":"paused"},{"keywordId":"462149773248099","state":"paused"},{"keywordId":"368112850035672","state":"paused"},{"keywordId":"517747859053665","state":"paused"},{"keywordId":"433944171910380","state":"paused"},{"keywordId":"378935207846006","state":"paused"},{"keywordId":"390107247228364","state":"paused"},{"keywordId":"393329363432063","state":"paused"},{"keywordId":"423810602197277","state":"paused"},{"keywordId":"560461960411750","state":"paused"},{"keywordId":"398561538840560","state":"paused"},{"keywordId":"435525909337086","state":"paused"},{"keywordId":"551261315238939","state":"paused"},{"keywordId":"546224748094597","state":"paused"},{"keywordId":"420320293485238","state":"paused"},{"keywordId":"553208432217153","state":"paused"},{"keywordId":"561020163205643","state":"paused"},{"keywordId":"468649907422654","state":"paused"},{"keywordId":"330131565066465","state":"paused"},{"keywordId":"425504912987533","state":"paused"},{"keywordId":"296870473614926","state":"paused"},{"keywordId":"496903650480742","state":"paused"},{"keywordId":"438994482320692","state":"paused"},{"keywordId":"342526804804127","state":"paused"},{"keywordId":"497306797531475","state":"paused"},{"keywordId":"326165583246729","state":"paused"},{"keywordId":"314239265723800","state":"paused"},{"keywordId":"549616609851294","state":"paused"},{"keywordId":"491243979496724","state":"paused"},{"keywordId":"343577640460616","state":"paused"},{"keywordId":"414754144447121","state":"paused"},{"keywordId":"291776867911557","state":"paused"},{"keywordId":"523670678397193","state":"paused"},{"keywordId":"405213355234842","state":"paused"},{"keywordId":"379704338980198","state":"paused"},{"keywordId":"488575127142122","state":"paused"},{"keywordId":"492324474223801","state":"paused"},{"keywordId":"476178503157717","state":"paused"},{"keywordId":"331299808128597","state":"paused"},{"keywordId":"420779117475603","state":"paused"},{"keywordId":"381029370070582","state":"paused"},{"keywordId":"429057807256823","state":"paused"},{"keywordId":"514408572709159","state":"paused"},{"keywordId":"387871551004745","state":"paused"},{"keywordId":"458516511852439","state":"paused"},{"keywordId":"286827326344167","state":"paused"},{"keywordId":"342086591033211","state":"paused"},{"keywordId":"529639593800266","state":"paused"},{"keywordId":"428079060787080","state":"paused"},{"keywordId":"428599525559068","state":"paused"},{"keywordId":"417915961349668","state":"paused"},{"keywordId":"333859635811622","state":"paused"},{"keywordId":"343284426357944","state":"paused"},{"keywordId":"521901583851543","state":"paused"},{"keywordId":"458474026363589","state":"paused"},{"keywordId":"319270821309783","state":"paused"},{"keywordId":"325324679787509","state":"paused"},{"keywordId":"520591813511540","state":"paused"},{"keywordId":"381192681255895","state":"paused"},{"keywordId":"369851584980638","state":"paused"},{"keywordId":"349060210377083","state":"paused"},{"keywordId":"392458452118111","state":"paused"},{"keywordId":"344512778099955","state":"paused"},{"keywordId":"510740097767207","state":"paused"},{"keywordId":"478228534076299","state":"paused"}]
+2025-11-24 11:15:23 - {"status":"success","message":"success","data":[{"keywordId":336411696291100,"code":"SUCCESS"},{"keywordId":339184729367509,"code":"SUCCESS"},{"keywordId":496483662278549,"code":"SUCCESS"},{"keywordId":366290727878615,"code":"SUCCESS"},{"keywordId":362986752712082,"code":"SUCCESS"},{"keywordId":295440475429363,"code":"SUCCESS"},{"keywordId":419574465506630,"code":"SUCCESS"},{"keywordId":345599974616377,"code":"SUCCESS"},{"keywordId":514692975902519,"code":"SUCCESS"},{"keywordId":464084997059462,"code":"SUCCESS"},{"keywordId":475216356944604,"code":"SUCCESS"},{"keywordId":444869592914395,"code":"SUCCESS"},{"keywordId":478216030494264,"code":"SUCCESS"},{"keywordId":414052281022822,"code":"SUCCESS"},{"keywordId":439809001816508,"code":"SUCCESS"},{"keywordId":470641370779971,"code":"SUCCESS"},{"keywordId":546652247443998,"code":"SUCCESS"},{"keywordId":454492277788244,"code":"SUCCESS"},{"keywordId":283731166228623,"code":"SUCCESS"},{"keywordId":539223345106868,"code":"SUCCESS"},{"keywordId":349574160112421,"code":"SUCCESS"},{"keywordId":553480115981906,"code":"SUCCESS"},{"keywordId":462149773248099,"code":"SUCCESS"},{"keywordId":368112850035672,"code":"SUCCESS"},{"keywordId":517747859053665,"code":"SUCCESS"},{"keywordId":433944171910380,"code":"SUCCESS"},{"keywordId":378935207846006,"code":"SUCCESS"},{"keywordId":390107247228364,"code":"SUCCESS"},{"keywordId":393329363432063,"code":"SUCCESS"},{"keywordId":423810602197277,"code":"SUCCESS"},{"keywordId":560461960411750,"code":"SUCCESS"},{"keywordId":398561538840560,"code":"SUCCESS"},{"keywordId":435525909337086,"code":"SUCCESS"},{"keywordId":551261315238939,"code":"SUCCESS"},{"keywordId":546224748094597,"code":"SUCCESS"},{"keywordId":420320293485238,"code":"SUCCESS"},{"keywordId":553208432217153,"code":"SUCCESS"},{"keywordId":561020163205643,"code":"SUCCESS"},{"keywordId":468649907422654,"code":"SUCCESS"},{"keywordId":330131565066465,"code":"SUCCESS"},{"keywordId":425504912987533,"code":"SUCCESS"},{"keywordId":296870473614926,"code":"SUCCESS"},{"keywordId":496903650480742,"code":"SUCCESS"},{"keywordId":438994482320692,"code":"SUCCESS"},{"keywordId":342526804804127,"code":"SUCCESS"},{"keywordId":497306797531475,"code":"SUCCESS"},{"keywordId":326165583246729,"code":"SUCCESS"},{"keywordId":314239265723800,"code":"SUCCESS"},{"keywordId":549616609851294,"code":"SUCCESS"},{"keywordId":491243979496724,"code":"SUCCESS"},{"keywordId":343577640460616,"code":"SUCCESS"},{"keywordId":414754144447121,"code":"SUCCESS"},{"keywordId":291776867911557,"code":"SUCCESS"},{"keywordId":523670678397193,"code":"SUCCESS"},{"keywordId":405213355234842,"code":"SUCCESS"},{"keywordId":379704338980198,"code":"SUCCESS"},{"keywordId":488575127142122,"code":"SUCCESS"},{"keywordId":492324474223801,"code":"SUCCESS"},{"keywordId":476178503157717,"code":"SUCCESS"},{"keywordId":331299808128597,"code":"SUCCESS"},{"keywordId":420779117475603,"code":"SUCCESS"},{"keywordId":381029370070582,"code":"SUCCESS"},{"keywordId":429057807256823,"code":"SUCCESS"},{"keywordId":514408572709159,"code":"SUCCESS"},{"keywordId":387871551004745,"code":"SUCCESS"},{"keywordId":458516511852439,"code":"SUCCESS"},{"keywordId":286827326344167,"code":"SUCCESS"},{"keywordId":342086591033211,"code":"SUCCESS"},{"keywordId":529639593800266,"code":"SUCCESS"},{"keywordId":428079060787080,"code":"SUCCESS"},{"keywordId":428599525559068,"code":"SUCCESS"},{"keywordId":417915961349668,"code":"SUCCESS"},{"keywordId":333859635811622,"code":"SUCCESS"},{"keywordId":343284426357944,"code":"SUCCESS"},{"keywordId":521901583851543,"code":"SUCCESS"},{"keywordId":458474026363589,"code":"SUCCESS"},{"keywordId":319270821309783,"code":"SUCCESS"},{"keywordId":325324679787509,"code":"SUCCESS"},{"keywordId":520591813511540,"code":"SUCCESS"},{"keywordId":381192681255895,"code":"SUCCESS"},{"keywordId":369851584980638,"code":"SUCCESS"},{"keywordId":349060210377083,"code":"SUCCESS"},{"keywordId":392458452118111,"code":"SUCCESS"},{"keywordId":344512778099955,"code":"SUCCESS"},{"keywordId":510740097767207,"code":"SUCCESS"},{"keywordId":478228534076299,"code":"SUCCESS"}]}
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 336411696291100
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 339184729367509
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 496483662278549
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 366290727878615
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 362986752712082
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 295440475429363
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 419574465506630
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 345599974616377
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 514692975902519
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 464084997059462
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 475216356944604
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 444869592914395
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 478216030494264
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 414052281022822
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 439809001816508
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 470641370779971
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 546652247443998
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 454492277788244
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 283731166228623
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 539223345106868
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 349574160112421
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 553480115981906
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 462149773248099
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 368112850035672
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 517747859053665
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 433944171910380
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 378935207846006
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 390107247228364
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 393329363432063
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 423810602197277
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 560461960411750
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 398561538840560
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 435525909337086
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 551261315238939
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 546224748094597
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 420320293485238
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 553208432217153
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 561020163205643
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 468649907422654
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 330131565066465
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 425504912987533
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 296870473614926
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 496903650480742
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 438994482320692
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 342526804804127
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 497306797531475
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 326165583246729
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 314239265723800
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 549616609851294
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 491243979496724
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 343577640460616
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 414754144447121
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 291776867911557
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 523670678397193
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 405213355234842
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 379704338980198
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 488575127142122
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 492324474223801
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 476178503157717
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 331299808128597
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 420779117475603
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 381029370070582
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 429057807256823
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 514408572709159
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 387871551004745
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 458516511852439
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 286827326344167
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 342086591033211
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 529639593800266
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 428079060787080
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 428599525559068
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 417915961349668
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 333859635811622
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 343284426357944
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 521901583851543
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 458474026363589
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 319270821309783
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 325324679787509
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 520591813511540
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 381192681255895
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 369851584980638
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 349060210377083
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 392458452118111
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 344512778099955
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 510740097767207
+2025-11-24 11:15:23 - 暂停negativeKeyword成功：amazon_us_voco 478228534076299
+2025-11-24 11:15:23 - amazon_us_voco 关停成功: 86个
+2025-11-24 11:15:23 - updateNegativeKeyword：成功：amazon_us_voco - rhinestone headband
+2025-11-24 11:15:23 - updateNegativeKeyword：成功：amazon_us_voco - extra wide headbands for women
+2025-11-24 11:15:24 - updateNegativeKeyword：成功：amazon_us_voco - mini hair brush
+2025-11-24 11:15:24 - updateNegativeKeyword：成功：amazon_us_voco - extra wide headbands for women
+2025-11-24 11:15:24 - updateNegativeKeyword：成功：amazon_us_voco - wide headbands for women
+2025-11-24 11:15:24 - updateNegativeKeyword：成功：amazon_us_voco - detangling comb
+2025-11-24 11:15:24 - updateNegativeKeyword：成功：amazon_us_voco - hair accessories for women
+2025-11-24 11:15:24 - updateNegativeKeyword：成功：amazon_us_voco - hair combs for women accessories
+2025-11-24 11:15:24 - updateNegativeKeyword：成功：amazon_us_voco - bluecoco fish tank decorations
+2025-11-24 11:15:25 - updateNegativeKeyword：成功：amazon_us_voco - hair clips
+2025-11-24 11:15:25 - updateNegativeKeyword：成功：amazon_us_voco - blue headbands for women
+2025-11-24 11:15:25 - updateNegativeKeyword：成功：amazon_us_voco - artificial aquarium plants
+2025-11-24 11:15:25 - updateNegativeKeyword：成功：amazon_us_voco - vent hair brushes for women
+2025-11-24 11:15:25 - updateNegativeKeyword：成功：amazon_us_voco - picks for hair
+2025-11-24 11:15:25 - updateNegativeKeyword：成功：amazon_us_voco - travel comb for women
+2025-11-24 11:15:25 - updateNegativeKeyword：成功：amazon_us_voco - brush
+2025-11-24 11:15:26 - updateNegativeKeyword：成功：amazon_us_voco - travel hair brush
+2025-11-24 11:15:26 - updateNegativeKeyword：成功：amazon_us_voco - detangling comb
+2025-11-24 11:15:26 - updateNegativeKeyword：成功：amazon_us_voco - compact mirror
+2025-11-24 11:15:26 - updateNegativeKeyword：成功：amazon_us_voco - knotted headband for women
+2025-11-24 11:15:26 - updateNegativeKeyword：成功：amazon_us_voco - head bands for women s hair
+2025-11-24 11:15:26 - updateNegativeKeyword：成功：amazon_us_voco - car accessories
+2025-11-24 11:15:26 - updateNegativeKeyword：成功：amazon_us_voco - aquarium
+2025-11-24 11:15:26 - updateNegativeKeyword：成功：amazon_us_voco - hair picks for curly hair
+2025-11-24 11:15:26 - updateNegativeKeyword：成功：amazon_us_voco - yellow claw clip
+2025-11-24 11:15:26 - updateNegativeKeyword：成功：amazon_us_voco - headband
+2025-11-24 11:15:27 - updateNegativeKeyword：成功：amazon_us_voco - detangling comb
+2025-11-24 11:15:27 - updateNegativeKeyword：成功：amazon_us_voco - toothbrush case for traveling
+2025-11-24 11:15:27 - updateNegativeKeyword：成功：amazon_us_voco - vent brush for blow drying
+2025-11-24 11:15:27 - updateNegativeKeyword：成功：amazon_us_voco - pick for hair
+2025-11-24 11:15:27 - updateNegativeKeyword：成功：amazon_us_voco - flat claw clips for women thin hair
+2025-11-24 11:15:27 - updateNegativeKeyword：成功：amazon_us_voco - pipe fitting
+2025-11-24 11:15:27 - updateNegativeKeyword：成功：amazon_us_voco - comb wide tooth
+2025-11-24 11:15:27 - updateNegativeKeyword：成功：amazon_us_voco - rhinestone headband
+2025-11-24 11:15:27 - updateNegativeKeyword：成功：amazon_us_voco - headbands for women
+2025-11-24 11:15:28 - updateNegativeKeyword：成功：amazon_us_voco - toothbrush travel case
+2025-11-24 11:15:28 - updateNegativeKeyword：成功：amazon_us_voco - umbrella
+2025-11-24 11:15:28 - updateNegativeKeyword：成功：amazon_us_voco - red headband
+2025-11-24 11:15:28 - updateNegativeKeyword：成功：amazon_us_voco - wide headbands for women
+2025-11-24 11:15:28 - updateNegativeKeyword：成功：amazon_us_voco - hair drying cap
+2025-11-24 11:15:28 - updateNegativeKeyword：成功：amazon_us_voco - red rhinestone headband
+2025-11-24 11:15:28 - updateNegativeKeyword：成功：amazon_us_voco - knotted headband for women
+2025-11-24 11:15:28 - updateNegativeKeyword：成功：amazon_us_voco - headbands for women
+2025-11-24 11:15:28 - updateNegativeKeyword：成功：amazon_us_voco - headbands
+2025-11-24 11:15:29 - updateNegativeKeyword：成功：amazon_us_voco - pearl headbands for women
+2025-11-24 11:15:29 - updateNegativeKeyword：成功：amazon_us_voco - hand rest for nails tech
+2025-11-24 11:15:29 - updateNegativeKeyword：成功：amazon_us_voco - home storage
+2025-11-24 11:15:29 - updateNegativeKeyword：成功：amazon_us_voco - wide headbands for women
+2025-11-24 11:15:29 - updateNegativeKeyword：成功：amazon_us_voco - wide tooth comb
+2025-11-24 11:15:29 - updateNegativeKeyword：成功：amazon_us_voco - headbands for women
+2025-11-24 11:15:29 - updateNegativeKeyword：成功：amazon_us_voco - fashion accessories
+2025-11-24 11:15:29 - updateNegativeKeyword：成功：amazon_us_voco - butterfly hair clips
+2025-11-24 11:15:29 - updateNegativeKeyword：成功：amazon_us_voco - glowing fish tank decorations
+2025-11-24 11:15:29 - updateNegativeKeyword：成功：amazon_us_voco - rhinestone headband women
+2025-11-24 11:15:30 - updateNegativeKeyword：成功：amazon_us_voco - royal blue headband
+2025-11-24 11:15:30 - updateNegativeKeyword：成功：amazon_us_voco - navy blue headband for women
+2025-11-24 11:15:30 - updateNegativeKeyword：成功：amazon_us_voco - nail tech must haves
+2025-11-24 11:15:30 - updateNegativeKeyword：成功：amazon_us_voco - tweed headbands for women
+2025-11-24 11:15:30 - updateNegativeKeyword：成功：amazon_us_voco - hand rest for nails tech
+2025-11-24 11:15:30 - updateNegativeKeyword：成功：amazon_us_voco - glow fish tank decorations
+2025-11-24 11:15:30 - updateNegativeKeyword：成功：amazon_us_voco - hair combs for styling
+2025-11-24 11:15:30 - updateNegativeKeyword：成功：amazon_us_voco - make up organizer
+2025-11-24 11:15:30 - updateNegativeKeyword：成功：amazon_us_voco - toothbrush covers
+2025-11-24 11:15:31 - updateNegativeKeyword：成功：amazon_us_voco - hair pick
+2025-11-24 11:15:31 - updateNegativeKeyword：成功：amazon_us_voco - pink knot headband
+2025-11-24 11:15:31 - updateNegativeKeyword：成功：amazon_us_voco - nail dust collector
+2025-11-24 11:15:31 - updateNegativeKeyword：成功：amazon_us_voco - navy blue headband
+2025-11-24 11:15:31 - updateNegativeKeyword：成功：amazon_us_voco - black and white headband
+2025-11-24 11:15:31 - updateNegativeKeyword：成功：amazon_us_voco - hair bands
+2025-11-24 11:15:32 - updateNegativeKeyword：成功：amazon_us_voco - arm rest for nails tech
+2025-11-24 11:15:32 - updateNegativeKeyword：成功：amazon_us_voco - rhinestone hair comb
+2025-11-24 11:15:32 - updateNegativeKeyword：成功：amazon_us_voco - coffin makeup brush holder
+2025-11-24 11:15:32 - updateNegativeKeyword：成功：amazon_us_voco - girl headbands
+2025-11-24 11:15:32 - updateNegativeKeyword：成功：amazon_us_voco - conair detangling comb
+2025-11-24 11:15:32 - updateNegativeKeyword：成功：amazon_us_voco - hair brush
+2025-11-24 11:15:32 - updateNegativeKeyword：成功：amazon_us_voco - pearl headband
+2025-11-24 11:15:32 - updateNegativeKeyword：成功：amazon_us_voco - large tooth comb
+2025-11-24 11:15:32 - updateNegativeKeyword：成功：amazon_us_voco - fish tank decorations
+2025-11-24 11:15:32 - updateNegativeKeyword：成功：amazon_us_voco - headbands for women
+2025-11-24 11:15:33 - updateNegativeKeyword：成功：amazon_us_voco - fish tank decorations
+2025-11-24 11:15:33 - updateNegativeKeyword：成功：amazon_us_voco - hand mirror
+2025-11-24 11:15:33 - updateNegativeKeyword：成功：amazon_us_voco - decorative hair combs
+2025-11-24 11:15:33 - updateNegativeKeyword：成功：amazon_us_voco - nail arm rest
+2025-11-24 11:15:33 - updateNegativeKeyword：成功：amazon_us_voco - high ponytail holder
+2025-11-24 11:15:33 - updateNegativeKeyword：成功：amazon_us_voco - blue headband
+2025-11-24 11:15:33 - updateNegativeKeyword：成功：amazon_us_voco - motorcycle
+2025-11-24 11:15:33 - amazon_us_rock 数量: 0个
+2025-11-24 11:15:33 - [{"keywordId":"510861242214716","state":"paused"},{"keywordId":"387902863631838","state":"paused"},{"keywordId":"427978204662182","state":"paused"},{"keywordId":"395684683580267","state":"paused"},{"keywordId":"359470776830736","state":"paused"},{"keywordId":"294967865070367","state":"paused"},{"keywordId":"350114311756218","state":"paused"},{"keywordId":"318473275268423","state":"paused"},{"keywordId":"291816902842574","state":"paused"},{"keywordId":"531480339809899","state":"paused"},{"keywordId":"536980198687440","state":"paused"},{"keywordId":"316014055284856","state":"paused"},{"keywordId":"542730530712408","state":"paused"},{"keywordId":"390473132203089","state":"paused"},{"keywordId":"324587993440061","state":"paused"},{"keywordId":"377412689481492","state":"paused"},{"keywordId":"406933860637899","state":"paused"},{"keywordId":"487780982621319","state":"paused"}]
+2025-11-24 11:15:35 - {"status":"success","message":"success","data":[{"keywordId":510861242214716,"code":"SUCCESS"},{"keywordId":387902863631838,"code":"SUCCESS"},{"keywordId":427978204662182,"code":"SUCCESS"},{"keywordId":395684683580267,"code":"SUCCESS"},{"keywordId":359470776830736,"code":"SUCCESS"},{"keywordId":294967865070367,"code":"SUCCESS"},{"keywordId":350114311756218,"code":"SUCCESS"},{"keywordId":318473275268423,"code":"SUCCESS"},{"keywordId":291816902842574,"code":"SUCCESS"},{"keywordId":531480339809899,"code":"SUCCESS"},{"keywordId":536980198687440,"code":"SUCCESS"},{"keywordId":316014055284856,"code":"SUCCESS"},{"keywordId":542730530712408,"code":"SUCCESS"},{"keywordId":390473132203089,"code":"SUCCESS"},{"keywordId":324587993440061,"code":"SUCCESS"},{"keywordId":377412689481492,"code":"SUCCESS"},{"keywordId":406933860637899,"code":"SUCCESS"},{"keywordId":487780982621319,"code":"SUCCESS"}]}
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 510861242214716
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 387902863631838
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 427978204662182
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 395684683580267
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 359470776830736
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 294967865070367
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 350114311756218
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 318473275268423
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 291816902842574
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 531480339809899
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 536980198687440
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 316014055284856
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 542730530712408
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 390473132203089
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 324587993440061
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 377412689481492
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 406933860637899
+2025-11-24 11:15:35 - 暂停negativeKeyword成功：amazon_us_rock 487780982621319
+2025-11-24 11:15:35 - amazon_us_rock 关停成功: 18个
+2025-11-24 11:15:35 - updateNegativeKeyword：成功：amazon_us_rock - dual exhaust tips
+2025-11-24 11:15:35 - updateNegativeKeyword：成功：amazon_us_rock - bike triangle frame bag
+2025-11-24 11:15:35 - updateNegativeKeyword：成功：amazon_us_rock - motorcycle saddlebags
+2025-11-24 11:15:36 - updateNegativeKeyword：成功：amazon_us_rock - backup camera extension cable
+2025-11-24 11:15:36 - updateNegativeKeyword：成功：amazon_us_rock - yiyuanyi 4l60e stand alone controller
+2025-11-24 11:15:36 - updateNegativeKeyword：成功：amazon_us_rock - exhaust heat shield
+2025-11-24 11:15:36 - updateNegativeKeyword：成功：amazon_us_rock - radiator fan switch
+2025-11-24 11:15:36 - updateNegativeKeyword：成功：amazon_us_rock - exhaust donut gasket
+2025-11-24 11:15:36 - updateNegativeKeyword：成功：amazon_us_rock - led trailer lights
+2025-11-24 11:15:36 - updateNegativeKeyword：成功：amazon_us_rock - motorcycle reflectors
+2025-11-24 11:15:36 - updateNegativeKeyword：成功：amazon_us_rock - dual exhaust tip
+2025-11-24 11:15:37 - updateNegativeKeyword：成功：amazon_us_rock - handlebar end caps
+2025-11-24 11:15:37 - updateNegativeKeyword：成功：amazon_us_rock - throttle position sensor
+2025-11-24 11:15:37 - updateNegativeKeyword：成功：amazon_us_rock - gear shift knob
+2025-11-24 11:15:37 - updateNegativeKeyword：成功：amazon_us_rock - exhaust tip
+2025-11-24 11:15:37 - updateNegativeKeyword：成功：amazon_us_rock - gear shift knob adapter
+2025-11-24 11:15:37 - updateNegativeKeyword：成功：amazon_us_rock - handlebar end plugs
+2025-11-24 11:15:37 - updateNegativeKeyword：成功：amazon_us_rock - gear shift knob
+2025-11-24 11:15:37 - amazon_us_luux 数量: 0个
+2025-11-24 11:15:38 - [{"keywordId":"388018758756570","state":"paused"},{"keywordId":"355476876211336","state":"paused"},{"keywordId":"326216360856995","state":"paused"},{"keywordId":"409483600442347","state":"paused"},{"keywordId":"422059301243938","state":"paused"},{"keywordId":"511781946838828","state":"paused"},{"keywordId":"531004938179474","state":"paused"},{"keywordId":"302002472427011","state":"paused"},{"keywordId":"551089249633787","state":"paused"},{"keywordId":"428984392879552","state":"paused"},{"keywordId":"433475521817908","state":"paused"},{"keywordId":"474742535364028","state":"paused"},{"keywordId":"301951816558513","state":"paused"},{"keywordId":"301807372605037","state":"paused"},{"keywordId":"284845658858020","state":"paused"},{"keywordId":"455421853671057","state":"paused"},{"keywordId":"522258990014583","state":"paused"},{"keywordId":"387650191407334","state":"paused"},{"keywordId":"412997026578374","state":"paused"},{"keywordId":"430972377405553","state":"paused"},{"keywordId":"346665824607130","state":"paused"},{"keywordId":"463037377980784","state":"paused"},{"keywordId":"416200900000177","state":"paused"},{"keywordId":"312818173664238","state":"paused"},{"keywordId":"380924365005583","state":"paused"},{"keywordId":"499058121825068","state":"paused"},{"keywordId":"423324398141858","state":"paused"},{"keywordId":"350945954629844","state":"paused"},{"keywordId":"520047673352578","state":"paused"},{"keywordId":"289105099479144","state":"paused"},{"keywordId":"377906165389441","state":"paused"},{"keywordId":"416280464922085","state":"paused"},{"keywordId":"543958276916729","state":"paused"},{"keywordId":"294061773114215","state":"paused"},{"keywordId":"334080443258285","state":"paused"},{"keywordId":"485731961758254","state":"paused"},{"keywordId":"534061218390148","state":"paused"},{"keywordId":"418559715237564","state":"paused"}]
+2025-11-24 11:15:40 - {"status":"success","message":"success","data":[{"keywordId":388018758756570,"code":"SUCCESS"},{"keywordId":355476876211336,"code":"SUCCESS"},{"keywordId":326216360856995,"code":"SUCCESS"},{"keywordId":409483600442347,"code":"SUCCESS"},{"keywordId":422059301243938,"code":"SUCCESS"},{"keywordId":511781946838828,"code":"SUCCESS"},{"keywordId":531004938179474,"code":"SUCCESS"},{"keywordId":302002472427011,"code":"SUCCESS"},{"keywordId":551089249633787,"code":"SUCCESS"},{"keywordId":428984392879552,"code":"SUCCESS"},{"keywordId":433475521817908,"code":"SUCCESS"},{"keywordId":474742535364028,"code":"SUCCESS"},{"keywordId":301951816558513,"code":"SUCCESS"},{"keywordId":301807372605037,"code":"SUCCESS"},{"keywordId":284845658858020,"code":"SUCCESS"},{"keywordId":455421853671057,"code":"SUCCESS"},{"keywordId":522258990014583,"code":"SUCCESS"},{"keywordId":387650191407334,"code":"SUCCESS"},{"keywordId":412997026578374,"code":"SUCCESS"},{"keywordId":430972377405553,"code":"SUCCESS"},{"keywordId":346665824607130,"code":"SUCCESS"},{"keywordId":463037377980784,"code":"SUCCESS"},{"keywordId":416200900000177,"code":"SUCCESS"},{"keywordId":312818173664238,"code":"SUCCESS"},{"keywordId":380924365005583,"code":"SUCCESS"},{"keywordId":499058121825068,"code":"SUCCESS"},{"keywordId":423324398141858,"code":"SUCCESS"},{"keywordId":350945954629844,"code":"SUCCESS"},{"keywordId":520047673352578,"code":"SUCCESS"},{"keywordId":289105099479144,"code":"SUCCESS"},{"keywordId":377906165389441,"code":"SUCCESS"},{"keywordId":416280464922085,"code":"SUCCESS"},{"keywordId":543958276916729,"code":"SUCCESS"},{"keywordId":294061773114215,"code":"SUCCESS"},{"keywordId":334080443258285,"code":"SUCCESS"},{"keywordId":485731961758254,"code":"SUCCESS"},{"keywordId":534061218390148,"code":"SUCCESS"},{"keywordId":418559715237564,"code":"SUCCESS"}]}
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 388018758756570
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 355476876211336
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 326216360856995
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 409483600442347
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 422059301243938
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 511781946838828
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 531004938179474
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 302002472427011
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 551089249633787
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 428984392879552
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 433475521817908
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 474742535364028
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 301951816558513
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 301807372605037
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 284845658858020
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 455421853671057
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 522258990014583
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 387650191407334
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 412997026578374
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 430972377405553
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 346665824607130
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 463037377980784
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 416200900000177
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 312818173664238
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 380924365005583
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 499058121825068
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 423324398141858
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 350945954629844
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 520047673352578
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 289105099479144
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 377906165389441
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 416280464922085
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 543958276916729
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 294061773114215
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 334080443258285
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 485731961758254
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 534061218390148
+2025-11-24 11:15:40 - 暂停negativeKeyword成功：amazon_us_luux 418559715237564
+2025-11-24 11:15:40 - amazon_us_luux 关停成功: 38个
+2025-11-24 11:15:40 - updateNegativeKeyword：成功：amazon_us_luux - automotive interior accessories
+2025-11-24 11:15:40 - updateNegativeKeyword：成功：amazon_us_luux - lower control arm bolts
+2025-11-24 11:15:40 - updateNegativeKeyword：成功：amazon_us_luux - windshield washer pump
+2025-11-24 11:15:40 - updateNegativeKeyword：成功：amazon_us_luux - automotive interior accessories
+2025-11-24 11:15:40 - updateNegativeKeyword：成功：amazon_us_luux - 95039027
+2025-11-24 11:15:40 - updateNegativeKeyword：成功：amazon_us_luux - hood bumper stop rubber
+2025-11-24 11:15:40 - updateNegativeKeyword：成功：amazon_us_luux - bike lock
+2025-11-24 11:15:41 - updateNegativeKeyword：成功：amazon_us_luux - motorcycle muffler heat shield
+2025-11-24 11:15:41 - updateNegativeKeyword：成功：amazon_us_luux - oil sensor
+2025-11-24 11:15:41 - updateNegativeKeyword：成功：amazon_us_luux - fuel funnel for capless gas tanks
+2025-11-24 11:15:41 - updateNegativeKeyword：成功：amazon_us_luux - hood cable replacement
+2025-11-24 11:15:41 - updateNegativeKeyword：成功：amazon_us_luux - vw beetle flower vase for car
+2025-11-24 11:15:41 - updateNegativeKeyword：成功：amazon_us_luux - tire repair kit
+2025-11-24 11:15:41 - updateNegativeKeyword：成功：amazon_us_luux - sliding door cable
+2025-11-24 11:15:41 - updateNegativeKeyword：成功：amazon_us_luux - silicone steering wheel cover
+2025-11-24 11:15:41 - updateNegativeKeyword：成功：amazon_us_luux - variable valve lift solenoid
+2025-11-24 11:15:41 - updateNegativeKeyword：成功：amazon_us_luux - 1.5 exhaust clamp
+2025-11-24 11:15:42 - updateNegativeKeyword：成功：amazon_us_luux - cigarette lighter outlet
+2025-11-24 11:15:42 - updateNegativeKeyword：成功：amazon_us_luux - automotive replacement windshield washer pumps
+2025-11-24 11:15:42 - updateNegativeKeyword：成功：amazon_us_luux - f77z9g512aa
+2025-11-24 11:15:42 - updateNegativeKeyword：成功：amazon_us_luux - hood latch
+2025-11-24 11:15:42 - updateNegativeKeyword：成功：amazon_us_luux - fuel filter housing
+2025-11-24 11:15:42 - updateNegativeKeyword：成功：amazon_us_luux - transmission pressure sensor
+2025-11-24 11:15:42 - updateNegativeKeyword：成功：amazon_us_luux - volkswagen beetle flower vase
+2025-11-24 11:15:42 - updateNegativeKeyword：成功：amazon_us_luux - hood release cable
+2025-11-24 11:15:42 - updateNegativeKeyword：成功：amazon_us_luux - automotive replacement transmission oil pressure sensors
+2025-11-24 11:15:42 - updateNegativeKeyword：成功：amazon_us_luux - roof rack caps
+2025-11-24 11:15:43 - updateNegativeKeyword：成功：amazon_us_luux - truck tire inflator
+2025-11-24 11:15:43 - updateNegativeKeyword：成功：amazon_us_luux - volkswagen passat
+2025-11-24 11:15:43 - updateNegativeKeyword：成功：amazon_us_luux - sliding door roller
+2025-11-24 11:15:43 - updateNegativeKeyword：成功：amazon_us_luux - plunger and socket trailer door holder
+2025-11-24 11:15:43 - updateNegativeKeyword：成功：amazon_us_luux - transmission oil pressure sensor
+2025-11-24 11:15:43 - updateNegativeKeyword：成功：amazon_us_luux - dodge challenger accessories
+2025-11-24 11:15:43 - updateNegativeKeyword：成功：amazon_us_luux - stick shift knob
+2025-11-24 11:15:43 - updateNegativeKeyword：成功：amazon_us_luux - mini cooper shift knob
+2025-11-24 11:15:43 - updateNegativeKeyword：成功：amazon_us_luux - 30531aa220
+2025-11-24 11:15:43 - updateNegativeKeyword：成功：amazon_us_luux - roof rack cover
+2025-11-24 11:15:44 - updateNegativeKeyword：成功：amazon_us_luux - 7 pin trailer wiring harness
+2025-11-24 11:15:44 - amazon_us_tuc 数量: 0个
+2025-11-24 11:15:44 - [{"keywordId":"283552660759361","state":"paused"},{"keywordId":"305343703597746","state":"paused"},{"keywordId":"467556552050903","state":"paused"},{"keywordId":"441675873872588","state":"paused"},{"keywordId":"344137892179304","state":"paused"},{"keywordId":"384897619418787","state":"paused"},{"keywordId":"389116359056541","state":"paused"},{"keywordId":"557177645367083","state":"paused"},{"keywordId":"548658079275951","state":"paused"},{"keywordId":"330470417701419","state":"paused"},{"keywordId":"520950540466063","state":"paused"},{"keywordId":"443331728601694","state":"paused"},{"keywordId":"412351084472586","state":"paused"},{"keywordId":"337520082362243","state":"paused"},{"keywordId":"433121099497706","state":"paused"},{"keywordId":"480915298913039","state":"paused"},{"keywordId":"502102202430778","state":"paused"},{"keywordId":"452510732909118","state":"paused"},{"keywordId":"487936414124860","state":"paused"},{"keywordId":"452845730119422","state":"paused"},{"keywordId":"460661579491656","state":"paused"},{"keywordId":"552300798976153","state":"paused"},{"keywordId":"301053240575819","state":"paused"},{"keywordId":"424692368540044","state":"paused"},{"keywordId":"433921599716681","state":"paused"},{"keywordId":"406262024211101","state":"paused"},{"keywordId":"537964010133689","state":"paused"},{"keywordId":"542659943639647","state":"paused"},{"keywordId":"467588488838152","state":"paused"},{"keywordId":"345064380701937","state":"paused"},{"keywordId":"546794701962445","state":"paused"},{"keywordId":"304086524459471","state":"paused"},{"keywordId":"526063429133017","state":"paused"},{"keywordId":"424566223756649","state":"paused"},{"keywordId":"533537618022950","state":"paused"},{"keywordId":"349631968533367","state":"paused"},{"keywordId":"409326234855775","state":"paused"}]
+2025-11-24 11:15:46 - {"status":"success","message":"success","data":[{"keywordId":283552660759361,"code":"SUCCESS"},{"keywordId":305343703597746,"code":"SUCCESS"},{"keywordId":467556552050903,"code":"SUCCESS"},{"keywordId":441675873872588,"code":"SUCCESS"},{"keywordId":344137892179304,"code":"SUCCESS"},{"keywordId":384897619418787,"code":"SUCCESS"},{"keywordId":389116359056541,"code":"SUCCESS"},{"keywordId":557177645367083,"code":"SUCCESS"},{"keywordId":548658079275951,"code":"SUCCESS"},{"keywordId":330470417701419,"code":"SUCCESS"},{"keywordId":520950540466063,"code":"SUCCESS"},{"keywordId":443331728601694,"code":"SUCCESS"},{"keywordId":412351084472586,"code":"SUCCESS"},{"keywordId":337520082362243,"code":"SUCCESS"},{"keywordId":433121099497706,"code":"SUCCESS"},{"keywordId":480915298913039,"code":"SUCCESS"},{"keywordId":502102202430778,"code":"SUCCESS"},{"keywordId":452510732909118,"code":"SUCCESS"},{"keywordId":487936414124860,"code":"SUCCESS"},{"keywordId":452845730119422,"code":"SUCCESS"},{"keywordId":460661579491656,"code":"SUCCESS"},{"keywordId":552300798976153,"code":"SUCCESS"},{"keywordId":301053240575819,"code":"SUCCESS"},{"keywordId":424692368540044,"code":"SUCCESS"},{"keywordId":433921599716681,"code":"SUCCESS"},{"keywordId":406262024211101,"code":"SUCCESS"},{"keywordId":537964010133689,"code":"SUCCESS"},{"keywordId":542659943639647,"code":"SUCCESS"},{"keywordId":467588488838152,"code":"SUCCESS"},{"keywordId":345064380701937,"code":"SUCCESS"},{"keywordId":546794701962445,"code":"SUCCESS"},{"keywordId":304086524459471,"code":"SUCCESS"},{"keywordId":526063429133017,"code":"SUCCESS"},{"keywordId":424566223756649,"code":"SUCCESS"},{"keywordId":533537618022950,"code":"SUCCESS"},{"keywordId":349631968533367,"code":"SUCCESS"},{"keywordId":409326234855775,"code":"SUCCESS"}]}
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 283552660759361
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 305343703597746
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 467556552050903
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 441675873872588
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 344137892179304
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 384897619418787
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 389116359056541
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 557177645367083
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 548658079275951
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 330470417701419
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 520950540466063
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 443331728601694
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 412351084472586
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 337520082362243
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 433121099497706
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 480915298913039
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 502102202430778
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 452510732909118
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 487936414124860
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 452845730119422
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 460661579491656
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 552300798976153
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 301053240575819
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 424692368540044
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 433921599716681
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 406262024211101
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 537964010133689
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 542659943639647
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 467588488838152
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 345064380701937
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 546794701962445
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 304086524459471
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 526063429133017
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 424566223756649
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 533537618022950
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 349631968533367
+2025-11-24 11:15:46 - 暂停negativeKeyword成功：amazon_us_tuc 409326234855775
+2025-11-24 11:15:46 - amazon_us_tuc 关停成功: 37个
+2025-11-24 11:15:46 - updateNegativeKeyword：成功：amazon_us_tuc - honda odyssey accessories
+2025-11-24 11:15:46 - updateNegativeKeyword：成功：amazon_us_tuc - bike spokes
+2025-11-24 11:15:46 - updateNegativeKeyword：成功：amazon_us_tuc - gear shifter knob
+2025-11-24 11:15:46 - updateNegativeKeyword：成功：amazon_us_tuc - kia optima power seat switch
+2025-11-24 11:15:46 - updateNegativeKeyword：成功：amazon_us_tuc - steering wheel ball
+2025-11-24 11:15:46 - updateNegativeKeyword：成功：amazon_us_tuc - dash cover
+2025-11-24 11:15:46 - updateNegativeKeyword：成功：amazon_us_tuc - lexus shift knob
+2025-11-24 11:15:47 - updateNegativeKeyword：成功：amazon_us_tuc - bike spokes
+2025-11-24 11:15:47 - updateNegativeKeyword：成功：amazon_us_tuc - air cleaner grommet
+2025-11-24 11:15:47 - updateNegativeKeyword：成功：amazon_us_tuc - stick shift knob
+2025-11-24 11:15:47 - updateNegativeKeyword：成功：amazon_us_tuc - bicycle spokes
+2025-11-24 11:15:47 - updateNegativeKeyword：成功：amazon_us_tuc - led marker lights trailer
+2025-11-24 11:15:47 - updateNegativeKeyword：成功：amazon_us_tuc - bicycle spokes
+2025-11-24 11:15:47 - updateNegativeKeyword：成功：amazon_us_tuc - door pillar trim
+2025-11-24 11:15:47 - updateNegativeKeyword：成功：amazon_us_tuc - gear shift hoodie
+2025-11-24 11:15:47 - updateNegativeKeyword：成功：amazon_us_tuc - infiniti g37 accessories
+2025-11-24 11:15:48 - updateNegativeKeyword：成功：amazon_us_tuc - honda odyssey accessories
+2025-11-24 11:15:48 - updateNegativeKeyword：成功：amazon_us_tuc - mitsubishi outlander accessories
+2025-11-24 11:15:48 - updateNegativeKeyword：成功：amazon_us_tuc - gear shift hoodie
+2025-11-24 11:15:48 - updateNegativeKeyword：成功：amazon_us_tuc - 350z door check
+2025-11-24 11:15:48 - updateNegativeKeyword：成功：amazon_us_tuc - motorcycle tire pressure sensor
+2025-11-24 11:15:48 - updateNegativeKeyword：成功：amazon_us_tuc - trailer lights
+2025-11-24 11:15:48 - updateNegativeKeyword：成功：amazon_us_tuc - gear shift knob
+2025-11-24 11:15:48 - updateNegativeKeyword：成功：amazon_us_tuc - hood struts lift support for 2024 toyota rav4
+2025-11-24 11:15:48 - updateNegativeKeyword：成功：amazon_us_tuc - bicycle spokes
+2025-11-24 11:15:49 - updateNegativeKeyword：成功：amazon_us_tuc - push to start button cover
+2025-11-24 11:15:49 - updateNegativeKeyword：成功：amazon_us_tuc - purple shift knob
+2025-11-24 11:15:49 - updateNegativeKeyword：成功：amazon_us_tuc - pink lug nut covers
+2025-11-24 11:15:49 - updateNegativeKeyword：成功：amazon_us_tuc - toyota tacoma door check
+2025-11-24 11:15:49 - updateNegativeKeyword：成功：amazon_us_tuc - shifter knobs
+2025-11-24 11:15:49 - updateNegativeKeyword：成功：amazon_us_tuc - phenolic carburetor spacer
+2025-11-24 11:15:49 - updateNegativeKeyword：成功：amazon_us_tuc - 2017 bmw x3 rear bumper reflector left
+2025-11-24 11:15:49 - updateNegativeKeyword：成功：amazon_us_tuc - gear shift knob
+2025-11-24 11:15:49 - updateNegativeKeyword：成功：amazon_us_tuc - bike spokes
+2025-11-24 11:15:50 - updateNegativeKeyword：成功：amazon_us_tuc - distributor cap and rotor kit
+2025-11-24 11:15:50 - updateNegativeKeyword：成功：amazon_us_tuc - led trailer lights
+2025-11-24 11:15:50 - updateNegativeKeyword：成功：amazon_us_tuc - scion xb dash cover
+2025-11-24 11:15:50 - amazon_us_sopro 数量: 0个
+2025-11-24 11:15:50 - [{"keywordId":"418281060966659","state":"paused"},{"keywordId":"298001773594570","state":"paused"},{"keywordId":"402792549017267","state":"paused"},{"keywordId":"311468176645720","state":"paused"},{"keywordId":"438500987289206","state":"paused"},{"keywordId":"545432644620502","state":"paused"},{"keywordId":"404097789241649","state":"paused"},{"keywordId":"386278807214051","state":"paused"},{"keywordId":"312727297154656","state":"paused"},{"keywordId":"442292158814730","state":"paused"},{"keywordId":"445404926191261","state":"paused"},{"keywordId":"509508863037444","state":"paused"},{"keywordId":"366367597920564","state":"paused"},{"keywordId":"322481290822098","state":"paused"},{"keywordId":"303582385963594","state":"paused"},{"keywordId":"506522132373016","state":"paused"},{"keywordId":"353362129233311","state":"paused"},{"keywordId":"531781046880963","state":"paused"},{"keywordId":"449779779136997","state":"paused"},{"keywordId":"320121026915880","state":"paused"},{"keywordId":"388043721918864","state":"paused"},{"keywordId":"393343238922037","state":"paused"},{"keywordId":"376483227179767","state":"paused"},{"keywordId":"449214394845840","state":"paused"},{"keywordId":"514306234090352","state":"paused"},{"keywordId":"483992362819950","state":"paused"},{"keywordId":"522893357616147","state":"paused"},{"keywordId":"510981493997129","state":"paused"},{"keywordId":"359775851784667","state":"paused"},{"keywordId":"501737416644307","state":"paused"},{"keywordId":"288981485500511","state":"paused"},{"keywordId":"346433706504583","state":"paused"},{"keywordId":"448764660761727","state":"paused"},{"keywordId":"418320342990241","state":"paused"},{"keywordId":"345744663960750","state":"paused"},{"keywordId":"516304029493892","state":"paused"},{"keywordId":"487937918715156","state":"paused"},{"keywordId":"509611681116459","state":"paused"},{"keywordId":"294066661138794","state":"paused"},{"keywordId":"534940876003218","state":"paused"},{"keywordId":"397917544435119","state":"paused"},{"keywordId":"550649497484959","state":"paused"},{"keywordId":"501766735053174","state":"paused"},{"keywordId":"341082847469342","state":"paused"},{"keywordId":"454032759405602","state":"paused"},{"keywordId":"412058802009014","state":"paused"},{"keywordId":"513412877003671","state":"paused"},{"keywordId":"405691400139583","state":"paused"},{"keywordId":"435980804137087","state":"paused"},{"keywordId":"519569129964224","state":"paused"},{"keywordId":"461162959452608","state":"paused"},{"keywordId":"368204758818013","state":"paused"},{"keywordId":"322432817810116","state":"paused"},{"keywordId":"310635534127990","state":"paused"},{"keywordId":"523223789256996","state":"paused"},{"keywordId":"356665483225652","state":"paused"},{"keywordId":"406728548907451","state":"paused"},{"keywordId":"389506853917819","state":"paused"}]
+2025-11-24 11:15:53 - {"status":"success","message":"success","data":[{"keywordId":418281060966659,"code":"SUCCESS"},{"keywordId":298001773594570,"code":"SUCCESS"},{"keywordId":402792549017267,"code":"SUCCESS"},{"keywordId":311468176645720,"code":"SUCCESS"},{"keywordId":545432644620502,"code":"SUCCESS"},{"keywordId":404097789241649,"code":"SUCCESS"},{"keywordId":386278807214051,"code":"SUCCESS"},{"keywordId":312727297154656,"code":"SUCCESS"},{"keywordId":442292158814730,"code":"SUCCESS"},{"keywordId":445404926191261,"code":"SUCCESS"},{"keywordId":509508863037444,"code":"SUCCESS"},{"keywordId":366367597920564,"code":"SUCCESS"},{"keywordId":322481290822098,"code":"SUCCESS"},{"keywordId":303582385963594,"code":"SUCCESS"},{"keywordId":506522132373016,"code":"SUCCESS"},{"keywordId":353362129233311,"code":"SUCCESS"},{"keywordId":531781046880963,"code":"SUCCESS"},{"keywordId":449779779136997,"code":"SUCCESS"},{"keywordId":320121026915880,"code":"SUCCESS"},{"keywordId":388043721918864,"code":"SUCCESS"},{"keywordId":393343238922037,"code":"SUCCESS"},{"keywordId":376483227179767,"code":"SUCCESS"},{"keywordId":449214394845840,"code":"SUCCESS"},{"keywordId":514306234090352,"code":"SUCCESS"},{"keywordId":483992362819950,"code":"SUCCESS"},{"keywordId":522893357616147,"code":"SUCCESS"},{"keywordId":510981493997129,"code":"SUCCESS"},{"keywordId":359775851784667,"code":"SUCCESS"},{"keywordId":501737416644307,"code":"SUCCESS"},{"keywordId":288981485500511,"code":"SUCCESS"},{"keywordId":346433706504583,"code":"SUCCESS"},{"keywordId":448764660761727,"code":"SUCCESS"},{"keywordId":418320342990241,"code":"SUCCESS"},{"keywordId":345744663960750,"code":"SUCCESS"},{"keywordId":516304029493892,"code":"SUCCESS"},{"keywordId":487937918715156,"code":"SUCCESS"},{"keywordId":509611681116459,"code":"SUCCESS"},{"keywordId":294066661138794,"code":"SUCCESS"},{"keywordId":534940876003218,"code":"SUCCESS"},{"keywordId":397917544435119,"code":"SUCCESS"},{"keywordId":550649497484959,"code":"SUCCESS"},{"keywordId":501766735053174,"code":"SUCCESS"},{"keywordId":341082847469342,"code":"SUCCESS"},{"keywordId":454032759405602,"code":"SUCCESS"},{"keywordId":412058802009014,"code":"SUCCESS"},{"keywordId":513412877003671,"code":"SUCCESS"},{"keywordId":405691400139583,"code":"SUCCESS"},{"keywordId":435980804137087,"code":"SUCCESS"},{"keywordId":519569129964224,"code":"SUCCESS"},{"keywordId":461162959452608,"code":"SUCCESS"},{"keywordId":368204758818013,"code":"SUCCESS"},{"keywordId":322432817810116,"code":"SUCCESS"},{"keywordId":310635534127990,"code":"SUCCESS"},{"keywordId":523223789256996,"code":"SUCCESS"},{"keywordId":356665483225652,"code":"SUCCESS"},{"keywordId":406728548907451,"code":"SUCCESS"},{"keywordId":389506853917819,"code":"SUCCESS"},[{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"}]]}
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 418281060966659
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 298001773594570
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 402792549017267
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 311468176645720
+2025-11-24 11:15:53 - 暂停negativeKeyword失败：amazon_us_sopro 438500987289206
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 545432644620502
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 404097789241649
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 386278807214051
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 312727297154656
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 442292158814730
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 445404926191261
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 509508863037444
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 366367597920564
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 322481290822098
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 303582385963594
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 506522132373016
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 353362129233311
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 531781046880963
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 449779779136997
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 320121026915880
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 388043721918864
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 393343238922037
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 376483227179767
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 449214394845840
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 514306234090352
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 483992362819950
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 522893357616147
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 510981493997129
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 359775851784667
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 501737416644307
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 288981485500511
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 346433706504583
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 448764660761727
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 418320342990241
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 345744663960750
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 516304029493892
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 487937918715156
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 509611681116459
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 294066661138794
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 534940876003218
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 397917544435119
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 550649497484959
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 501766735053174
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 341082847469342
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 454032759405602
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 412058802009014
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 513412877003671
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 405691400139583
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 435980804137087
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 519569129964224
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 461162959452608
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 368204758818013
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 322432817810116
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 310635534127990
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 523223789256996
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 356665483225652
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 406728548907451
+2025-11-24 11:15:53 - 暂停negativeKeyword成功：amazon_us_sopro 389506853917819
+2025-11-24 11:15:53 - amazon_us_sopro 关停成功: 57个
+2025-11-24 11:15:53 - updateNegativeKeyword：成功：amazon_us_sopro - 2011 nissan rogue radiator
+2025-11-24 11:15:53 - updateNegativeKeyword：成功：amazon_us_sopro - ba9s socket
+2025-11-24 11:15:53 - updateNegativeKeyword：成功：amazon_us_sopro - pink car seat covers
+2025-11-24 11:15:53 - updateNegativeKeyword：成功：amazon_us_sopro - trash can for car
+2025-11-24 11:15:53 - updateNegativeKeyword：成功：amazon_us_sopro - car trash can
+2025-11-24 11:15:53 - updateNegativeKeyword：成功：amazon_us_sopro - door panel cover
+2025-11-24 11:15:53 - updateNegativeKeyword：成功：amazon_us_sopro - chameleon tint
+2025-11-24 11:15:53 - updateNegativeKeyword：成功：amazon_us_sopro - steering wheel cover
+2025-11-24 11:15:54 - updateNegativeKeyword：成功：amazon_us_sopro - toyota battery hold down
+2025-11-24 11:15:54 - updateNegativeKeyword：成功：amazon_us_sopro - 2020 toyota tacoma shift knob
+2025-11-24 11:15:54 - updateNegativeKeyword：成功：amazon_us_sopro - steering wheel cover
+2025-11-24 11:15:54 - updateNegativeKeyword：成功：amazon_us_sopro - mustang start button cover
+2025-11-24 11:15:54 - updateNegativeKeyword：成功：amazon_us_sopro - jeep grand cherokee knob covers
+2025-11-24 11:15:54 - updateNegativeKeyword：成功：amazon_us_sopro - subaru forester window switch
+2025-11-24 11:15:54 - updateNegativeKeyword：成功：amazon_us_sopro - 350z seat switch
+2025-11-24 11:15:54 - updateNegativeKeyword：成功：amazon_us_sopro - pcv valve grommet
+2025-11-24 11:15:55 - updateNegativeKeyword：成功：amazon_us_sopro - exhaust whistle turbo sound
+2025-11-24 11:15:55 - updateNegativeKeyword：成功：amazon_us_sopro - car trash can
+2025-11-24 11:15:55 - updateNegativeKeyword：成功：amazon_us_sopro - shift boot cover
+2025-11-24 11:15:55 - updateNegativeKeyword：成功：amazon_us_sopro - car trash
+2025-11-24 11:15:55 - updateNegativeKeyword：成功：amazon_us_sopro - tire valve caps
+2025-11-24 11:15:55 - updateNegativeKeyword：成功：amazon_us_sopro - gear shift cover
+2025-11-24 11:15:55 - updateNegativeKeyword：成功：amazon_us_sopro - 2007 gmc yukon 5.3 timing chain
+2025-11-24 11:15:55 - updateNegativeKeyword：成功：amazon_us_sopro - car door protector edge guards
+2025-11-24 11:15:55 - updateNegativeKeyword：成功：amazon_us_sopro - car garbage can
+2025-11-24 11:15:55 - updateNegativeKeyword：成功：amazon_us_sopro - front license plate bracket
+2025-11-24 11:15:55 - updateNegativeKeyword：成功：amazon_us_sopro - trash can for car
+2025-11-24 11:16:01 - updateNegativeKeyword：成功：amazon_us_sopro - radiator rubber mount bushings
+2025-11-24 11:16:01 - updateNegativeKeyword：成功：amazon_us_sopro - gear shift cover
+2025-11-24 11:16:01 - updateNegativeKeyword：成功：amazon_us_sopro - dodge challenger side marker lights
+2025-11-24 11:16:01 - updateNegativeKeyword：成功：amazon_us_sopro - trash can for cars suv
+2025-11-24 11:16:01 - updateNegativeKeyword：成功：amazon_us_sopro - ev charger
+2025-11-24 11:16:01 - updateNegativeKeyword：成功：amazon_us_sopro - cv joint boot kit
+2025-11-24 11:16:01 - updateNegativeKeyword：成功：amazon_us_sopro - car air mattress
+2025-11-24 11:16:01 - updateNegativeKeyword：成功：amazon_us_sopro - cadillac xt5 accessories
+2025-11-24 11:16:02 - updateNegativeKeyword：成功：amazon_us_sopro - gear shift cover
+2025-11-24 11:16:02 - updateNegativeKeyword：成功：amazon_us_sopro - volvo vnl window switch
+2025-11-24 11:16:02 - updateNegativeKeyword：成功：amazon_us_sopro - suede shift boot
+2025-11-24 11:16:02 - updateNegativeKeyword：成功：amazon_us_sopro - wheel speed sensors front and rear
+2025-11-24 11:16:02 - updateNegativeKeyword：成功：amazon_us_sopro - led side marker lights
+2025-11-24 11:16:02 - updateNegativeKeyword：成功：amazon_us_sopro - h7 led headlight bulb
+2025-11-24 11:16:02 - updateNegativeKeyword：成功：amazon_us_sopro - rear led tail light module for toyota
+2025-11-24 11:16:02 - updateNegativeKeyword：成功：amazon_us_sopro - car door edge guards
+2025-11-24 11:16:02 - updateNegativeKeyword：成功：amazon_us_sopro - valve stem caps
+2025-11-24 11:16:02 - updateNegativeKeyword：成功：amazon_us_sopro - bike spokes
+2025-11-24 11:16:03 - updateNegativeKeyword：成功：amazon_us_sopro - hyundai tucson window switch
+2025-11-24 11:16:03 - updateNegativeKeyword：成功：amazon_us_sopro - tire inflator extension tube
+2025-11-24 11:16:03 - updateNegativeKeyword：成功：amazon_us_sopro - rear led tail light module
+2025-11-24 11:16:03 - updateNegativeKeyword：成功：amazon_us_sopro - automotive license plate light assemblies
+2025-11-24 11:16:03 - updateNegativeKeyword：成功：amazon_us_sopro - banjo fittings
+2025-11-24 11:16:03 - updateNegativeKeyword：成功：amazon_us_sopro - 2007 lexus is250 alignment camber arm
+2025-11-24 11:16:03 - updateNegativeKeyword：成功：amazon_us_sopro - heart shaped exhaust tip
+2025-11-24 11:16:03 - updateNegativeKeyword：成功：amazon_us_sopro - motorcycle frame sliders
+2025-11-24 11:16:03 - updateNegativeKeyword：成功：amazon_us_sopro - hrv tail light
+2025-11-24 11:16:03 - updateNegativeKeyword：成功：amazon_us_sopro - car trash
+2025-11-24 11:16:03 - updateNegativeKeyword：成功：amazon_us_sopro - 2021 cadillac xt5 accessories
+2025-11-24 11:16:03 - amazon_us_sopro 关停失败: 1个
+2025-11-24 11:16:03 - amazon_us_lift 数量: 0个
+2025-11-24 11:16:04 - [{"keywordId":"333586478961497","state":"paused"},{"keywordId":"449036005019196","state":"paused"},{"keywordId":"321917535304804","state":"paused"},{"keywordId":"428731737733146","state":"paused"}]
+2025-11-24 11:16:05 - {"status":"success","message":"success","data":[{"keywordId":333586478961497,"code":"SUCCESS"},{"keywordId":449036005019196,"code":"SUCCESS"},{"keywordId":321917535304804,"code":"SUCCESS"},{"keywordId":428731737733146,"code":"SUCCESS"}]}
+2025-11-24 11:16:05 - 暂停negativeKeyword成功：amazon_us_lift 333586478961497
+2025-11-24 11:16:05 - 暂停negativeKeyword成功：amazon_us_lift 449036005019196
+2025-11-24 11:16:05 - 暂停negativeKeyword成功：amazon_us_lift 321917535304804
+2025-11-24 11:16:05 - 暂停negativeKeyword成功：amazon_us_lift 428731737733146
+2025-11-24 11:16:05 - amazon_us_lift 关停成功: 4个
+2025-11-24 11:16:06 - updateNegativeKeyword：成功：amazon_us_lift - jeep jk hood struts
+2025-11-24 11:16:06 - updateNegativeKeyword：成功：amazon_us_lift - jeep jk hood struts
+2025-11-24 11:16:06 - updateNegativeKeyword：成功：amazon_us_lift - mustang hood struts
+2025-11-24 11:16:06 - updateNegativeKeyword：成功：amazon_us_lift - tailgate assist
+2025-11-24 11:16:06 - amazon_us_rrc 数量: 0个
+2025-11-24 11:16:06 - [{"keywordId":"381325309021911","state":"paused"},{"keywordId":"509351210585279","state":"paused"},{"keywordId":"375895089937796","state":"paused"},{"keywordId":"314418932755570","state":"paused"},{"keywordId":"362465208410922","state":"paused"}]
+2025-11-24 11:16:07 - {"status":"success","message":"success","data":[{"keywordId":381325309021911,"code":"SUCCESS"},{"keywordId":509351210585279,"code":"SUCCESS"},{"keywordId":375895089937796,"code":"SUCCESS"},{"keywordId":314418932755570,"code":"SUCCESS"},{"keywordId":362465208410922,"code":"SUCCESS"}]}
+2025-11-24 11:16:07 - 暂停negativeKeyword成功：amazon_us_rrc 381325309021911
+2025-11-24 11:16:07 - 暂停negativeKeyword成功：amazon_us_rrc 509351210585279
+2025-11-24 11:16:07 - 暂停negativeKeyword成功：amazon_us_rrc 375895089937796
+2025-11-24 11:16:07 - 暂停negativeKeyword成功：amazon_us_rrc 314418932755570
+2025-11-24 11:16:07 - 暂停negativeKeyword成功：amazon_us_rrc 362465208410922
+2025-11-24 11:16:07 - amazon_us_rrc 关停成功: 5个
+2025-11-24 11:16:08 - updateNegativeKeyword：成功：amazon_us_rrc - car pendant for rear view mirror
+2025-11-24 11:16:08 - updateNegativeKeyword：成功：amazon_us_rrc - speaker spacer
+2025-11-24 11:16:08 - updateNegativeKeyword：成功：amazon_us_rrc - 2005 buick lacrosse dash cover
+2025-11-24 11:16:08 - updateNegativeKeyword：成功：amazon_us_rrc - toyota wheel lock key
+2025-11-24 11:16:08 - updateNegativeKeyword：成功：amazon_us_rrc - toyota lug nut key
+2025-11-24 11:16:08 - amazon_us_hero 数量: 0个
+2025-11-24 11:16:08 - [{"keywordId":"527775353038876","state":"paused"},{"keywordId":"354549377145112","state":"paused"},{"keywordId":"343860361103611","state":"paused"},{"keywordId":"509000594323604","state":"paused"},{"keywordId":"329638797948654","state":"paused"},{"keywordId":"545115472130389","state":"paused"},{"keywordId":"360843652770488","state":"paused"},{"keywordId":"546549648025394","state":"paused"},{"keywordId":"442976872813887","state":"paused"},{"keywordId":"382076599767428","state":"paused"},{"keywordId":"368363392016976","state":"paused"},{"keywordId":"377586348504560","state":"paused"},{"keywordId":"545728684708384","state":"paused"},{"keywordId":"424701491012336","state":"paused"},{"keywordId":"427306183059486","state":"paused"},{"keywordId":"405549947554383","state":"paused"},{"keywordId":"378537026227513","state":"paused"},{"keywordId":"516488690639590","state":"paused"}]
+2025-11-24 11:16:10 - {"status":"success","message":"success","data":[{"keywordId":527775353038876,"code":"SUCCESS"},{"keywordId":354549377145112,"code":"SUCCESS"},{"keywordId":343860361103611,"code":"SUCCESS"},{"keywordId":509000594323604,"code":"SUCCESS"},{"keywordId":329638797948654,"code":"SUCCESS"},{"keywordId":545115472130389,"code":"SUCCESS"},{"keywordId":360843652770488,"code":"SUCCESS"},{"keywordId":546549648025394,"code":"SUCCESS"},{"keywordId":442976872813887,"code":"SUCCESS"},{"keywordId":382076599767428,"code":"SUCCESS"},{"keywordId":368363392016976,"code":"SUCCESS"},{"keywordId":377586348504560,"code":"SUCCESS"},{"keywordId":545728684708384,"code":"SUCCESS"},{"keywordId":424701491012336,"code":"SUCCESS"},{"keywordId":427306183059486,"code":"SUCCESS"},{"keywordId":405549947554383,"code":"SUCCESS"},{"keywordId":378537026227513,"code":"SUCCESS"},{"keywordId":516488690639590,"code":"SUCCESS"}]}
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 527775353038876
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 354549377145112
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 343860361103611
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 509000594323604
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 329638797948654
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 545115472130389
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 360843652770488
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 546549648025394
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 442976872813887
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 382076599767428
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 368363392016976
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 377586348504560
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 545728684708384
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 424701491012336
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 427306183059486
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 405549947554383
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 378537026227513
+2025-11-24 11:16:10 - 暂停negativeKeyword成功：amazon_us_hero 516488690639590
+2025-11-24 11:16:10 - amazon_us_hero 关停成功: 18个
+2025-11-24 11:16:10 - updateNegativeKeyword：成功：amazon_us_hero - car sunglass holder
+2025-11-24 11:16:10 - updateNegativeKeyword：成功：amazon_us_hero - gear shift hoodie
+2025-11-24 11:16:10 - updateNegativeKeyword：成功：amazon_us_hero - sunglass holder for car
+2025-11-24 11:16:11 - updateNegativeKeyword：成功：amazon_us_hero - 2016 bmw 740i upper radiator hose
+2025-11-24 11:16:11 - updateNegativeKeyword：成功：amazon_us_hero - sway bar bushings
+2025-11-24 11:16:11 - updateNegativeKeyword：成功：amazon_us_hero - mazda cx 5 oil drain plug
+2025-11-24 11:16:11 - updateNegativeKeyword：成功：amazon_us_hero - headrest hooks for car
+2025-11-24 11:16:11 - updateNegativeKeyword：成功：amazon_us_hero - exhaust pipe flange gasket
+2025-11-24 11:16:11 - updateNegativeKeyword：成功：amazon_us_hero - shift boot cover
+2025-11-24 11:16:11 - updateNegativeKeyword：成功：amazon_us_hero - dodge charger mirror caps
+2025-11-24 11:16:11 - updateNegativeKeyword：成功：amazon_us_hero - headrest hooks for car
+2025-11-24 11:16:11 - updateNegativeKeyword：成功：amazon_us_hero - lower radiator hose
+2025-11-24 11:16:12 - updateNegativeKeyword：成功：amazon_us_hero - car trash can
+2025-11-24 11:16:12 - updateNegativeKeyword：成功：amazon_us_hero - pink car accessories
+2025-11-24 11:16:12 - updateNegativeKeyword：成功：amazon_us_hero - 2010 toyota sienna radiator filler neck
+2025-11-24 11:16:12 - updateNegativeKeyword：成功：amazon_us_hero - car sunglass holder
+2025-11-24 11:16:12 - updateNegativeKeyword：成功：amazon_us_hero - sunglass holder for car
+2025-11-24 11:16:12 - updateNegativeKeyword：成功：amazon_us_hero - trash can for car
+2025-11-24 11:16:12 - amazon_us_renew 数量: 0个
+2025-11-24 11:16:12 - [{"keywordId":"435787068548451","state":"paused"},{"keywordId":"461371502862896","state":"paused"},{"keywordId":"321397650124567","state":"paused"},{"keywordId":"386306385008788","state":"paused"}]
+2025-11-24 11:16:14 - {"status":"success","message":"success","data":[{"keywordId":435787068548451,"code":"SUCCESS"},{"keywordId":461371502862896,"code":"SUCCESS"},{"keywordId":321397650124567,"code":"SUCCESS"},{"keywordId":386306385008788,"code":"SUCCESS"}]}
+2025-11-24 11:16:14 - 暂停negativeKeyword成功：amazon_us_renew 435787068548451
+2025-11-24 11:16:14 - 暂停negativeKeyword成功：amazon_us_renew 461371502862896
+2025-11-24 11:16:14 - 暂停negativeKeyword成功：amazon_us_renew 321397650124567
+2025-11-24 11:16:14 - 暂停negativeKeyword成功：amazon_us_renew 386306385008788
+2025-11-24 11:16:14 - amazon_us_renew 关停成功: 4个
+2025-11-24 11:16:14 - updateNegativeKeyword：成功：amazon_us_renew - dog muzzle
+2025-11-24 11:16:14 - updateNegativeKeyword：成功：amazon_us_renew - hummingbird feeder replacement parts
+2025-11-24 11:16:14 - updateNegativeKeyword：成功：amazon_us_renew - dog grooming scissors
+2025-11-24 11:16:14 - updateNegativeKeyword：成功：amazon_us_renew - chicken swing
+2025-11-24 11:16:14 - amazon_us_ifn 数量: 0个
+2025-11-24 11:16:14 - [{"keywordId":"505601634136900","state":"paused"},{"keywordId":"432133999420915","state":"paused"},{"keywordId":"304716249743274","state":"paused"},{"keywordId":"304706006047595","state":"paused"},{"keywordId":"380148599339704","state":"paused"},{"keywordId":"341668932662566","state":"paused"},{"keywordId":"351604983740235","state":"paused"},{"keywordId":"459476114048915","state":"paused"},{"keywordId":"467672665331733","state":"paused"},{"keywordId":"393880322470855","state":"paused"},{"keywordId":"540915043813552","state":"paused"},{"keywordId":"516742515697496","state":"paused"},{"keywordId":"479556746816994","state":"paused"},{"keywordId":"555631521680531","state":"paused"},{"keywordId":"530807946503661","state":"paused"},{"keywordId":"288950323685380","state":"paused"},{"keywordId":"449858848640395","state":"paused"}]
+2025-11-24 11:16:17 - {"status":"success","message":"success","data":[{"keywordId":505601634136900,"code":"SUCCESS"},{"keywordId":432133999420915,"code":"SUCCESS"},{"keywordId":304716249743274,"code":"SUCCESS"},{"keywordId":304706006047595,"code":"SUCCESS"},{"keywordId":380148599339704,"code":"SUCCESS"},{"keywordId":341668932662566,"code":"SUCCESS"},{"keywordId":351604983740235,"code":"SUCCESS"},{"keywordId":459476114048915,"code":"SUCCESS"},{"keywordId":467672665331733,"code":"SUCCESS"},{"keywordId":393880322470855,"code":"SUCCESS"},{"keywordId":540915043813552,"code":"SUCCESS"},{"keywordId":516742515697496,"code":"SUCCESS"},{"keywordId":479556746816994,"code":"SUCCESS"},{"keywordId":555631521680531,"code":"SUCCESS"},{"keywordId":530807946503661,"code":"SUCCESS"},{"keywordId":288950323685380,"code":"SUCCESS"},{"keywordId":449858848640395,"code":"SUCCESS"}]}
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 505601634136900
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 432133999420915
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 304716249743274
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 304706006047595
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 380148599339704
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 341668932662566
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 351604983740235
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 459476114048915
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 467672665331733
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 393880322470855
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 540915043813552
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 516742515697496
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 479556746816994
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 555631521680531
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 530807946503661
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 288950323685380
+2025-11-24 11:16:17 - 暂停negativeKeyword成功：amazon_us_ifn 449858848640395
+2025-11-24 11:16:17 - amazon_us_ifn 关停成功: 17个
+2025-11-24 11:16:17 - updateNegativeKeyword：成功：amazon_us_ifn - centric hub rings
+2025-11-24 11:16:17 - updateNegativeKeyword：成功：amazon_us_ifn - dodge ignition module
+2025-11-24 11:16:17 - updateNegativeKeyword：成功：amazon_us_ifn - hub centric rings
+2025-11-24 11:16:17 - updateNegativeKeyword：成功：amazon_us_ifn - car door trash can
+2025-11-24 11:16:17 - updateNegativeKeyword：成功：amazon_us_ifn - coolant thermostat
+2025-11-24 11:16:17 - updateNegativeKeyword：成功：amazon_us_ifn - trash can for car
+2025-11-24 11:16:17 - updateNegativeKeyword：成功：amazon_us_ifn - car door handle scratch protector
+2025-11-24 11:16:17 - updateNegativeKeyword：成功：amazon_us_ifn - 19mm lug nut covers
+2025-11-24 11:16:17 - updateNegativeKeyword：成功：amazon_us_ifn - shift knob
+2025-11-24 11:16:18 - updateNegativeKeyword：成功：amazon_us_ifn - car hooks
+2025-11-24 11:16:18 - updateNegativeKeyword：成功：amazon_us_ifn - car trash can
+2025-11-24 11:16:18 - updateNegativeKeyword：成功：amazon_us_ifn - fabric for interior car roof
+2025-11-24 11:16:18 - updateNegativeKeyword：成功：amazon_us_ifn - car trash
+2025-11-24 11:16:18 - updateNegativeKeyword：成功：amazon_us_ifn - engine coolant thermostat
+2025-11-24 11:16:18 - updateNegativeKeyword：成功：amazon_us_ifn - fabric for car roof
+2025-11-24 11:16:18 - updateNegativeKeyword：成功：amazon_us_ifn - start button cover
+2025-11-24 11:16:18 - updateNegativeKeyword：成功：amazon_us_ifn - automatic shift knob
+2025-11-24 11:16:18 - amazon_us_glide 数量: 0个
+2025-11-24 11:16:19 - [{"keywordId":"296081005783311","state":"paused"},{"keywordId":"512044173298448","state":"paused"},{"keywordId":"517032812504017","state":"paused"},{"keywordId":"556287141759320","state":"paused"},{"keywordId":"336422887797585","state":"paused"},{"keywordId":"359174904662580","state":"paused"},{"keywordId":"307347710803346","state":"paused"},{"keywordId":"533758341355876","state":"paused"},{"keywordId":"414575429228710","state":"paused"},{"keywordId":"406797842019551","state":"paused"},{"keywordId":"464939431084807","state":"paused"},{"keywordId":"420512591496047","state":"paused"},{"keywordId":"466797840470968","state":"paused"},{"keywordId":"377465648648517","state":"paused"}]
+2025-11-24 11:16:20 - {"status":"success","message":"success","data":[{"keywordId":296081005783311,"code":"SUCCESS"},{"keywordId":512044173298448,"code":"SUCCESS"},{"keywordId":517032812504017,"code":"SUCCESS"},{"keywordId":556287141759320,"code":"SUCCESS"},{"keywordId":336422887797585,"code":"SUCCESS"},{"keywordId":359174904662580,"code":"SUCCESS"},{"keywordId":307347710803346,"code":"SUCCESS"},{"keywordId":533758341355876,"code":"SUCCESS"},{"keywordId":414575429228710,"code":"SUCCESS"},{"keywordId":406797842019551,"code":"SUCCESS"},{"keywordId":464939431084807,"code":"SUCCESS"},{"keywordId":420512591496047,"code":"SUCCESS"},[{"description":"Archived entity cannot be modified","code":"ARCHIVED_ENTITY_CANNOT_BE_MODIFIED"},{"description":"duplicates in entity name","code":"DUPLICATE_VALUE"}]]}
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 296081005783311
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 512044173298448
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 517032812504017
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 556287141759320
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 336422887797585
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 359174904662580
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 307347710803346
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 533758341355876
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 414575429228710
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 406797842019551
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 464939431084807
+2025-11-24 11:16:20 - 暂停negativeKeyword成功：amazon_us_glide 420512591496047
+2025-11-24 11:16:20 - 暂停negativeKeyword失败：amazon_us_glide 466797840470968
+2025-11-24 11:16:20 - 暂停negativeKeyword失败：amazon_us_glide 377465648648517
+2025-11-24 11:16:20 - amazon_us_glide 关停成功: 12个
+2025-11-24 11:16:20 - updateNegativeKeyword：成功：amazon_us_glide - dog net for suv
+2025-11-24 11:16:21 - updateNegativeKeyword：成功：amazon_us_glide - make up bag
+2025-11-24 11:16:21 - updateNegativeKeyword：成功：amazon_us_glide - pregnancy belt support
+2025-11-24 11:16:21 - updateNegativeKeyword：成功：amazon_us_glide - plus size belly band for pregnancy
+2025-11-24 11:16:21 - updateNegativeKeyword：成功：amazon_us_glide - pregnancy belly band xxxl
+2025-11-24 11:16:21 - updateNegativeKeyword：成功：amazon_us_glide - car net for dogs
+2025-11-24 11:16:21 - updateNegativeKeyword：成功：amazon_us_glide - pregnancy band
+2025-11-24 11:16:21 - updateNegativeKeyword：成功：amazon_us_glide - pregnancy belly band plus size
+2025-11-24 11:16:21 - updateNegativeKeyword：成功：amazon_us_glide - dog car barrier suv
+2025-11-24 11:16:21 - updateNegativeKeyword：成功：amazon_us_glide - toiletry bag for women
+2025-11-24 11:16:22 - updateNegativeKeyword：成功：amazon_us_glide - chongerfei pregnancy belly band
+2025-11-24 11:16:22 - updateNegativeKeyword：成功：amazon_us_glide - plus size pregnancy belly band
+2025-11-24 11:16:22 - amazon_us_glide 关停失败: 2个
+2025-11-24 11:16:22 - amazon_us_luck 数量: 0个
+2025-11-24 11:16:22 - [{"keywordId":"442609407998904","state":"paused"}]
+2025-11-24 11:16:23 - {"status":"success","message":"success","data":[{"keywordId":442609407998904,"code":"SUCCESS"}]}
+2025-11-24 11:16:23 - 暂停negativeKeyword成功：amazon_us_luck 442609407998904
+2025-11-24 11:16:23 - amazon_us_luck 关停成功: 1个
+2025-11-24 11:16:24 - updateNegativeKeyword：成功：amazon_us_luck - 50820t0th01
+2025-11-24 11:16:24 - amazon_us_kilo 数量: 0个
+2025-11-24 11:16:24 - [{"keywordId":"466221501268261","state":"paused"},{"keywordId":"407926359631096","state":"paused"},{"keywordId":"343474390012511","state":"paused"}]
+2025-11-24 11:16:25 - {"status":"success","message":"success","data":[{"keywordId":466221501268261,"code":"SUCCESS"},{"keywordId":407926359631096,"code":"SUCCESS"},{"keywordId":343474390012511,"code":"SUCCESS"}]}
+2025-11-24 11:16:25 - 暂停negativeKeyword成功：amazon_us_kilo 466221501268261
+2025-11-24 11:16:25 - 暂停negativeKeyword成功：amazon_us_kilo 407926359631096
+2025-11-24 11:16:25 - 暂停negativeKeyword成功：amazon_us_kilo 343474390012511
+2025-11-24 11:16:25 - amazon_us_kilo 关停成功: 3个
+2025-11-24 11:16:26 - updateNegativeKeyword：成功：amazon_us_kilo - motorcycle balance bar
+2025-11-24 11:16:26 - updateNegativeKeyword：成功：amazon_us_kilo - ford windshield washer nozzle
+2025-11-24 11:16:26 - updateNegativeKeyword：成功：amazon_us_kilo - ford windshield washer nozzle

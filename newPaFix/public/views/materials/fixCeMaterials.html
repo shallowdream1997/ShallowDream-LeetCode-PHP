@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>恢复CE资料呈现为已发布</title>
+    <link rel="stylesheet" href="/assets/css_js/bootstrap-5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css_js/own/lizi.css">
+    <script src="/assets/css_js/script/jquery-3.7.0.min.js"></script>
+    <script src="/assets/css_js/bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/css_js/script/vue.global.js"></script>
+    <script src="/assets/css_js/script/axios.min.js"></script>
+    <script src="/assets/css_js/script/qs.min.js"></script>
+</head>
+<body>
+<div class="container text-center" id="app">
+    <div style="margin-top: 20px" class="row">
+        <div class="col-5"><h3 style="color: yellow">{{message}} <br> <span :class="envBadgeClass">当前环境：{{envMsg}}</span></h3></div>
+        <div class="col-7">
+            <div class="mb-3">
+                <input type="text" v-model="title" class="form-control" placeholder="CE单">
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <button class="btn btn-primary" @click="search">查询CE单</button>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-12" style="margin-top: 20px">
+            <table class="table table-dark table-striped align-middle" v-if="list && list.length > 0">
+                <thead>
+                <tr>
+                    <th scope="col">主键</th>
+                    <th scope="col">CE单</th>
+                    <th scope="col">状态</th>
+                    <th scope="col">处理进度</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="info in list" :key="info._id">
+                    <th scope="row">{{ info._id }}</th>
+                    <td>{{ info.ceBillNo }}</td>
+                    <td>{{ statusMap[info.status] || info.status }}</td>
+                    <td style="color: red">{{ info.isSuccess || "" }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row" v-if="list && list.length > 0">
+            <div class="col-3">
+                <button class="btn btn-primary" @click="fix">恢复已发布</button>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <h5 style="color: red">{{loading}}</h5>
+        </div>
+        <div class="col-12">
+            <h4 style="color: red">{{errorMsg}}</h4>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
+<script src="/assets/css_js/own/lizi.js"></script>
+<script src="/assets/js/apiClient.js"></script>
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                message: '恢复CE资料呈现为已发布',
+                title: '',
+                errorMsg: '',
+                successMsg: '',
+                list: [],
+                loading: '',
+                env: '',
+                envMsg: '',
+                statusMap: {
+                    "new": "新建",
+                    "developerComplete": "开发资料完成",
+                    "saleComplete": "销售资料完成",
+                    "materialComplete": "资料发布",
+                    "deleted": "作废",
+                }
+            };
+        },
+        computed: {
+            envBadgeClass() {
+                return resolveEnvClass(this.env);
+            }
+        },
+        mounted() {
+            this.fetchEnv();
+        },
+        methods: {
+            async fetchEnv() {
+                this.errorMsg = '';
+                setLoading(this, '正在加载环境...');
+                try {
+                    const res = await searchApi('fixCeMaterials');
+                    const payload = res.data || {};
+                    this.env = payload.env || '';
+                    this.envMsg = formatEnvLabel(this.env);
+                } catch (error) {
+                    handleRequestError(this, error, '初始化失败');
+                } finally {
+                    setLoading(this);
+                }
+            },
+            async search() {
+                this.errorMsg = '';
+                this.successMsg = '';
+                if (!this.title.trim()) {
+                    this.errorMsg = '请先输入 CE 单号';
+                    return;
+                }
+                setLoading(this, '正在查询，请稍候...');
+                try {
+                    const res = await searchApi('fixCeMaterials', { title: this.title });
+                    const payload = res.data || {};
+                    this.list = payload.data || [];
+                    this.env = payload.env || this.env;
+                    this.envMsg = formatEnvLabel(this.env);
+                    if (this.list.length === 0) {
+                        this.errorMsg = '没有匹配的数据';
+                    }
+                } catch (error) {
+                    handleRequestError(this, error, '查询失败');
+                } finally {
+                    setLoading(this);
+                }
+            },
+            async fix() {
+                if (!this.list.length) {
+                    this.errorMsg = "请先查询需要恢复的CE单";
+                    return;
+                }
+                this.errorMsg = '';
+                this.successMsg = '';
+                for (let index = 0; index < this.list.length; index++) {
+                    const item = this.list[index];
+                    this.list[index].isSuccess = "处理中...";
+                    setLoading(this, `正在处理第 ${index + 1} / ${this.list.length} 个`);
+                    try {
+                        const res = await updateApi('fixCeMaterials', { _id: item._id });
+                        if (res.status === 200 && res.data === true) {
+                            this.list[index].status = "materialComplete";
+                            this.list[index].isSuccess = "完成";
+                        } else {
+                            this.list[index].isSuccess = "失败";
+                        }
+                    } catch (error) {
+                        this.list[index].isSuccess = "失败";
+                        console.error(error);
+                    }
+                }
+                setLoading(this);
+                this.successMsg = "处理完成，请确认结果";
+            }
+        }
+    }).mount('#app');
+</script>

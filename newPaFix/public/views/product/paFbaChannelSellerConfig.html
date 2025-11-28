@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FBA海外仓上架前移库申请渠道仓库配置</title>
+    <link rel="stylesheet" href="/assets/css_js/bootstrap-5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css_js/own/lizi.css">
+    <script src="/assets/css_js/script/jquery-3.7.0.min.js"></script>
+    <script src="/assets/css_js/bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/css_js/script/vue.global.js"></script>
+    <script src="/assets/css_js/script/axios.min.js"></script>
+    <script src="/assets/css_js/script/qs.min.js"></script>
+</head>
+<body>
+<div class="container text-center" id="app">
+    <div style="margin-top: 20px" class="row">
+        <div class="col-5"><h3 style="color: yellow">{{message}} <br>申请渠道仓库配置<br> <span :class="envBadgeClass">当前环境：{{envMsg}}</span></h3></div>
+        <div class="col-7">
+            <div class="row">
+                <div class="col-3">
+                    <button class="btn btn-primary" @click="search">查看配置</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-7" style="margin-top: 20px">
+            <table class="table table-dark table-striped align-middle" v-if="list && list.length > 0">
+                <thead>
+                <tr>
+                    <th scope="col">渠道</th>
+                    <th scope="col">支持的仓库</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="info in list" :key="info.channel">
+                    <td>{{info.channel}}</td>
+                    <td>
+                        <template v-for="detail in info.nowStocks">
+                            {{detail}}<br>
+                        </template>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-5">
+            <div class="mb-3">
+                <h5 style="color:white;">需要新增的渠道和仓库</h5>
+            </div>
+
+            <div class="mb-3">
+                <input type="text" v-model="channel" class="form-control" placeholder="渠道">
+            </div>
+            <div class="mb-3">
+                <textarea v-model="stocks" class="form-control" placeholder="仓库,多个请换行" rows="5"/>
+                </textarea>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <button class="btn btn-primary" @click="update">确认</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <h5 style="color: red">{{loading}}</h5>
+                <h4 style="color: red">{{errorMsg}}</h4>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+<script src="/assets/css_js/own/lizi.js"></script>
+<script src="/assets/js/apiClient.js"></script>
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                message: 'FBA海外仓上架前移库',
+                channel: '',
+                stocks: '',
+                errorMsg: '',
+                successMsg: '',
+                list: [],
+                loading: '',
+                env: '',
+                envMsg: ''
+            };
+        },
+        computed: {
+            envBadgeClass() {
+                return resolveEnvClass(this.env);
+            }
+        },
+        mounted() {
+            this.fetchData();
+        },
+        methods: {
+            normalizeStocks() {
+                return [...new Set(
+                    this.stocks
+                        .split('\n')
+                        .map(item => item.trim())
+                        .filter(Boolean)
+                )];
+            },
+            async fetchData() {
+                this.errorMsg = '';
+                setLoading(this, '正在加载配置...');
+                try {
+                    const res = await searchApi('paFbaChannelSellerConfig');
+                    const payload = res.data || {};
+                    this.list = payload.data || [];
+                    this.env = payload.env || '';
+                    this.envMsg = formatEnvLabel(this.env);
+                    if (this.list.length === 0) {
+                        this.errorMsg = '没有数据';
+                    }
+                } catch (error) {
+                    handleRequestError(this, error, '加载失败');
+                } finally {
+                    setLoading(this);
+                }
+            },
+            async update() {
+                this.errorMsg = '';
+                this.successMsg = '';
+                if (!this.channel.trim() || !this.stocks.trim()) {
+                    this.errorMsg = '请填写渠道以及对应的仓库';
+                    return;
+                }
+
+                const stocksList = this.normalizeStocks();
+                if (stocksList.length === 0) {
+                    this.errorMsg = '请输入有效的仓库';
+                    return;
+                }
+
+                setLoading(this, '正在提交，请稍候...');
+                try {
+                    const res = await updateApi('paFbaChannelSellerConfig', {
+                        channel: this.channel.trim(),
+                        stocksList
+                    });
+                    if (res.status === 200 && res.data === true) {
+                        this.successMsg = '更新成功，请刷新查看';
+                        this.fetchData();
+                    } else {
+                        this.errorMsg = '更新失败，请重试';
+                    }
+                } catch (error) {
+                    handleRequestError(this, error, '更新失败');
+                } finally {
+                    setLoading(this);
+                }
+            },
+            async search() {
+                await this.fetchData();
+            }
+        }
+    }).mount('#app');
+</script>

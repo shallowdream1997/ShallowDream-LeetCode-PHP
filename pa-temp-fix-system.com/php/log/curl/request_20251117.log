@@ -1,0 +1,18 @@
+2025-11-17 15:06:27 - 请求: GET：https://master-nodejs-poms-list-nest.ux168.cn/api/pa_ce_materials/queryPage?limit=1&ceBillNo=CE202511170071
+2025-11-17 15:06:27 - 参数：[]
+2025-11-17 15:06:28 - 请求: PUT：https://master-nodejs-poms-list-nest.ux168.cn/api/pa_ce_materials/69133b4d6d78692c0cbcbfad
+2025-11-17 15:06:28 - 参数：{"batchName":"QD202511060014","ceBillNo":"CE202511170071","ceDate":"2025-11-17T00:00:00.000Z","goodsType":"寄卖","developer":"liqianhai","saleName":"lixuehui","status":"materialComplete","eff":0.133,"skuIdList":["a25111700ux0319","a25111700ux0320","a25111700ux0321","a25111700ux0322","a25111700ux0323","a25111700ux0324"],"createdBy":"P3-CreateCeSkuMaterialJob","modifiedBy":"P3-CreateCeSkuMaterialJob","referSku":"","platform":"US","ebayTraceMan":"lixuehui","developerList":["liqianhai"],"saleNameList":["lixuehui"],"ebayTraceManList":["lixuehui"],"platformList":["US"],"productLevelList":["A级"],"_id":"69133b4d6d78692c0cbcbfad","createdOn":"2025-11-11T21:34:05.320Z","modifiedOn":"2025-11-17T11:17:02.251Z","log":[],"__v":1}
+2025-11-17 15:06:28 - 请求: GET：https://master-nodejs-poms-list-nest.ux168.cn/api/pa_sku_materials/queryPage?limit=1&page=1&skuId=a25111700ux0319&ceBillNo=CE202511170071
+2025-11-17 15:06:28 - 参数：[]
+2025-11-17 15:06:28 - 请求: PUT：https://master-nodejs-poms-list-nest.ux168.cn/api/pa_sku_materials/69133b4d9b73092bed9937a0
+2025-11-17 15:06:28 - 参数：{"skuId":"a25111700ux0319","basicInfo":"","categoryRelation":"","description":"","operationMonitor":"","status":"materialComplete","version":null,"ceBillNo":"CE202511170071","parentSkuId":"","saleBasicInfo":"","developerFile":"","saleFile":"","developerStartOn":"2025-11-11T21:34:05.000Z","developerStartBy":"liqianhai","developerEndOn":"2025-11-11T21:34:05.000Z","developerEndBy":"liqianhai","saleStartOn":null,"saleStartBy":"","saleEndOn":null,"saleEndBy":"","syncOn":null,"syncBy":"","publishOn":null,"publishBy":"","createdBy":"P3-CreateCeSkuMaterialJob","modifiedBy":"P3-CreateCeSkuMaterialJob","isConsult":"","competingId":"","oeNumber":[],"keywords":[],"cpAsin":[],"_id":"69133b4d9b73092bed9937a0","createdOn":"2025-11-11T21:34:05.519Z","modifiedOn":"2025-11-17T11:17:02.456Z","fitment":[],"__v":0}
+2025-11-17 15:06:28 - 请求: GET：https://master-nodejs-poms-list-nest.ux168.cn/api/pa_sku_materials/queryPage?limit=1&page=1&skuId=a25111700ux0320&ceBillNo=CE202511170071
+2025-11-17 15:06:28 - 参数：[]
+2025-11-17 15:06:28 - 请求: GET：https://master-nodejs-poms-list-nest.ux168.cn/api/pa_sku_materials/queryPage?limit=1&page=1&skuId=a25111700ux0321&ceBillNo=CE202511170071
+2025-11-17 15:06:28 - 参数：[]
+2025-11-17 15:06:28 - 请求: GET：https://master-nodejs-poms-list-nest.ux168.cn/api/pa_sku_materials/queryPage?limit=1&page=1&skuId=a25111700ux0322&ceBillNo=CE202511170071
+2025-11-17 15:06:28 - 参数：[]
+2025-11-17 15:06:28 - 请求: GET：https://master-nodejs-poms-list-nest.ux168.cn/api/pa_sku_materials/queryPage?limit=1&page=1&skuId=a25111700ux0323&ceBillNo=CE202511170071
+2025-11-17 15:06:28 - 参数：[]
+2025-11-17 15:06:28 - 请求: GET：https://master-nodejs-poms-list-nest.ux168.cn/api/pa_sku_materials/queryPage?limit=1&page=1&skuId=a25111700ux0324&ceBillNo=CE202511170071
+2025-11-17 15:06:28 - 参数：[]

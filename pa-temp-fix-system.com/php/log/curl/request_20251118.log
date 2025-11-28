@@ -1,0 +1,4 @@
+2025-11-18 01:53:05 - 请求: POST：https://gateway.ux168.cn/platform-wms-application/receive/sample/expect/v1/page
+2025-11-18 01:53:05 - 参数：{"skuIdIn":["a25102700ux0068"],"vertical":"PA","pageSize":500,"pageNum":1}
+2025-11-18 02:01:17 - 请求: POST：https://gateway.ux168.cn/platform-wms-application/receive/sample/expect/v1/page
+2025-11-18 02:01:17 - 参数：{"skuIdIn":["a25102700ux0068"],"vertical":"PA","pageSize":500,"pageNum":1}

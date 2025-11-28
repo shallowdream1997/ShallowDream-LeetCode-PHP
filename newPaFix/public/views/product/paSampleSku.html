@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PA sku预计留样标识查询或新增</title>
+    <link rel="stylesheet" href="/assets/css_js/bootstrap-5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css_js/own/lizi.css">
+    <script src="/assets/css_js/script/jquery-3.7.0.min.js"></script>
+    <script src="/assets/css_js/bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/css_js/script/vue.global.js"></script>
+    <script src="/assets/css_js/script/axios.min.js"></script>
+    <script src="/assets/css_js/script/qs.min.js"></script>
+</head>
+<body>
+<div class="container" id="app">
+    <div class="row mt-4">
+        <div class="col-5">
+            <h3 style="color: yellow">{{ message }}<br>查询或新增<br>
+                <span :class="envBadgeClass">当前环境：{{ envMsg }}</span>
+            </h3>
+        </div>
+        <div class="col-7">
+            <div class="mb-3">
+                <textarea v-model="skuIdString" class="form-control" placeholder="skuId,多个请换行" rows="5"></textarea>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <button class="btn btn-primary" @click="search">查询预计留样</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-8 mt-4">
+            <table class="table table-dark table-striped" v-if="list.length">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>sku / 是否预计留样 / 留样类型</th>
+                    <th>状态</th>
+                    <th>创建人 / 日期</th>
+                    <th>更新日期</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="info in list" :key="info.skuId + (info.id || '')">
+                    <td>{{ info.id || '-' }}</td>
+                    <td>
+                        <span :class="info.isSample === '未留样' ? 'text-danger fw-bold' : ''">
+                            {{ info.skuId }}
+                        </span>
+                        <br>
+                        <span>{{ info.category || '-' }}</span>
+                        <br>
+                        <span :class="info.isSample === '未留样' ? 'text-danger fw-bold' : ''">
+                            {{ info.isSample }}
+                        </span>
+                    </td>
+                    <td>{{ info.state }}</td>
+                    <td>{{ info.createBy }}<br>{{ info.createTime }}</td>
+                    <td>{{ info.updateTime }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div v-if="!list.length && successMsg" class="text-success fw-bold mt-3">{{ successMsg }}</div>
+        </div>
+
+        <div class="col-4">
+            <h5 class="text-white">处理打留样标识的sku</h5>
+            <div class="mb-3">
+                <textarea v-model="addSkuIdString" class="form-control" placeholder="skuId,多个请换行" rows="5"></textarea>
+            </div>
+            <div class="mb-3">
+                <select class="form-select" v-model="status" @change="changeStatus">
+                    <option value="">请选择</option>
+                    <option value="1">只改更新日期</option>
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <button class="btn btn-primary" @click="update">确定</button>
+                </div>
+            </div>
+            <div class="mt-3">
+                <h5 class="text-info">{{ loading }}</h5>
+                <h4 class="text-danger">{{ errorMsg }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/assets/css_js/own/lizi.js"></script>
+<script src="/assets/js/apiClient.js"></script>
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                message: 'PA sku预计留样标识',
+                skuIdString: '',
+                addSkuIdString: '',
+                status: '',
+                onlyUpdateTime: false,
+                errorMsg: '',
+                successMsg: '',
+                list: [],
+                loading: '',
+                env: '',
+                envMsg: ''
+            };
+        },
+        computed: {
+            envBadgeClass() {
+                return resolveEnvClass(this.env);
+            }
+        },
+        mounted() {
+            this.fetchEnv();
+        },
+        methods: {
+            normalizeInput(value) {
+                return [...new Set(
+                    value.split('\n').map(item => item.trim()).filter(Boolean)
+                )];
+            },
+            async fetchEnv() {
+                setLoading(this, '正在加载环境...');
+                try {
+                    const res = await searchApi('paSampleSku');
+                    const payload = res.data || {};
+                    this.env = payload.env || '';
+                    this.envMsg = formatEnvLabel(this.env);
+                } catch (error) {
+                    handleRequestError(this, error, '初始化失败');
+                } finally {
+                    setLoading(this);
+                }
+            },
+            async search() {
+                this.errorMsg = '';
+                this.successMsg = '';
+                this.list = [];
+
+                if (!this.skuIdString.trim()) {
+                    this.errorMsg = '请输入 SKU';
+                    return;
+                }
+
+                const skuIdList = this.normalizeInput(this.skuIdString);
+                if (skuIdList.length > 500) {
+                    this.errorMsg = 'SKU 查询过多，请不要超过 500 个';
+                    return;
+                }
+
+                setLoading(this, '正在查询，请稍候...');
+                try {
+                    const res = await searchApi('paSampleSku', { skuIdList });
+                    const payload = res.data || {};
+                    const returnList = payload.data || [];
+                    this.env = payload.env || this.env;
+                    this.envMsg = formatEnvLabel(this.env);
+
+                    const skuMap = {};
+                    returnList.forEach(item => {
+                        if (!skuMap[item.skuId]) skuMap[item.skuId] = [];
+                        skuMap[item.skuId].push(item);
+                    });
+
+                    skuIdList.forEach(sku => {
+                        if (skuMap[sku]) {
+                            skuMap[sku].forEach(item => {
+                                this.list.push({ ...item, isSample: '有留样' });
+                            });
+                        } else {
+                            this.list.push({
+                                id: null,
+                                skuId: sku,
+                                category: '',
+                                state: '',
+                                isSample: '未留样',
+                                createBy: '',
+                                createTime: '',
+                                updateTime: ''
+                            });
+                        }
+                    });
+
+                    if (!this.list.length) {
+                        this.errorMsg = '没有数据';
+                    }
+                } catch (error) {
+                    handleRequestError(this, error, '查询失败');
+                } finally {
+                    setLoading(this);
+                }
+            },
+            async update() {
+                this.errorMsg = '';
+                this.successMsg = '';
+
+                if (!this.addSkuIdString.trim()) {
+                    this.errorMsg = '请输入 SKU';
+                    return;
+                }
+                const addSkuIdList = this.normalizeInput(this.addSkuIdString);
+                if (!addSkuIdList.length) {
+                    this.errorMsg = '请输入有效 SKU';
+                    return;
+                }
+
+                setLoading(this, '正在处理，请稍候...');
+                try {
+                    const res = await updateApi('paSampleSku', {
+                        addskuIdList: addSkuIdList,
+                        onlyUpdateTime: this.onlyUpdateTime
+                    });
+                    if (res.status === 200 && res.data === true) {
+                        this.successMsg = '处理成功，可重新查询查看结果';
+                    } else {
+                        this.errorMsg = '处理失败，请重试';
+                    }
+                } catch (error) {
+                    handleRequestError(this, error, '处理失败');
+                } finally {
+                    setLoading(this);
+                }
+            },
+            changeStatus() {
+                this.onlyUpdateTime = this.status === '1';
+            }
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
+

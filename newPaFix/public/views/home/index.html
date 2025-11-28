@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>临时数据修复系统</title>
+    <link rel="stylesheet" href="/assets/css_js/bootstrap-5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css_js/own/lizi.css">
+    <link rel="stylesheet" href="/assets/css_js/own/collbtn.css">
+    <script src="/assets/css_js/script/jquery-3.7.0.min.js"></script>
+    <script src="/assets/css_js/bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/css_js/script/vue.global.js"></script>
+    <script src="/assets/css_js/script/axios.min.js"></script>
+    <script src="/assets/css_js/script/qs.min.js"></script>
+</head>
+<body>
+<div class="container text-center" id="app">
+    <div style="margin-top: 20px" class="row">
+        <div class="col-5"><h3 style="color: yellow">{{message}}</h3></div>
+        <div class="col-7"><h6 style="color: red">当前版本：v.1.3</h6></div>
+        <div class="col-12" style="margin-top: 20px">
+            <table class="table table-dark table-striped align-middle" v-if="list && list.length > 0">
+                <thead>
+                <tr>
+                    <th scope="col">系统名称</th>
+                    <th scope="col">页面链接</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="info in list" :key="info._id">
+                    <td>
+                        <b v-if="info.level == 2" style="color:red;">(☆新增功能☆)</b>{{info.title}}
+                        <b v-if="info.level == 3" style="color:yellow;">(☆待做功能☆)</b>
+                    </td>
+                    <td>
+                        <button v-if="info.level != 3"  @click="openNewTab(info.url)" class="coll-btn">进入</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+<script src="/assets/css_js/own/lizi.js"></script>
+<script>
+
+    const {createApp, ref} = Vue
+
+
+    createApp({
+
+        data() {
+            return {
+                message: '临时数据修复系统',
+                list: [
+                    { title: '修改翻译状态', level: 1, url: '/views/materials/fixTranslationManagements.html' },
+                    { title: '恢复CE资料呈现为已发布', level: 1, url: '/views/materials/fixCeMaterials.html' },
+                    { title: '修补SKU拍摄进度', level: 1, url: '/views/materials/skuPhotoFix.html' },
+                    { title: 'FBA海外仓上架前移库配置', level: 1, url: '/views/product/paFbaChannelSellerConfig.html' },
+                    { title: 'sku预计留样查询或新增', level: 1, url: '/views/product/paSampleSku.html' },
+                    { title: '登记个人IP', level: 1, url: '/views/system/registerIp.html' },
+                    { title: '寄卖商QD单处理', level: 1, url: '/views/consignment/consignmentQD.html' }
+                ],
+            }
+        },
+
+        methods: {
+            async openNewTab(url){
+                window.open(url, '_blank');
+            }
+        }
+
+    }).mount('#app')
+
+
+</script>

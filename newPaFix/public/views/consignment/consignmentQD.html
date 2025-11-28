@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PA 寄卖商新QD单处理</title>
+    <link rel="stylesheet" href="/assets/css_js/bootstrap-5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css_js/own/lizi.css">
+    <script src="/assets/css_js/script/jquery-3.7.0.min.js"></script>
+    <script src="/assets/css_js/bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/css_js/script/vue.global.js"></script>
+    <script src="/assets/css_js/script/axios.min.js"></script>
+    <script src="/assets/css_js/script/qs.min.js"></script>
+    <style>
+        body {
+            background-color: #f0f2f5;
+            padding: 20px 0;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 6px;
+        }
+        .btn-action {
+            width: 100%;
+            padding: 8px 0;
+            font-weight: bold;
+        }
+        .status-text {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .alert-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .publish-options {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .form-check {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <!-- 页面标题和环境信息 -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2>{{ message }}</h2>
+            <p class="text-muted">当前环境：<span :class="envBadgeClass">{{ envMsg }}</span></p>
+        </div>
+    </div>
+
+    <!-- QD单处理卡片 -->
+    <div class="card">
+        <div class="card-header">
+            QD单状态处理
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- QD单输入区域 -->
+                <div class="col-md-8 mb-3">
+                    <label for="qdInput" class="form-label fw-bold">QD单号（多个请换行）</label>
+                    <textarea v-model="qdString" class="form-control" id="qdInput"
+                              placeholder="请输入QD单号，多个单号请换行" rows="6"></textarea>
+                    <div class="form-text">系统会自动去除空行和重复的QD单号</div>
+                </div>
+
+                <!-- 状态选择和执行按钮 -->
+                <div class="col-md-4 mb-3 d-flex flex-column">
+                    <label for="statusSelect" class="form-label fw-bold">处理状态</label>
+                    <select v-model="selectedStatus" id="statusSelect" class="form-select mb-4">
+                        <option value="">请选择处理状态</option>
+                        <option value="to发布">to发布</option>
+                        <option value="to待分配">to待分配</option>
+                        <option value="to处理分配">to处理分配</option>
+                    </select>
+
+                    <!-- 自动发布选项 - 仅当选择to发布时显示 -->
+                    <div v-if="selectedStatus === 'to发布'" class="publish-options">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" v-model="autoRePublish" id="autoRePublish">
+                            <label class="form-check-label" for="autoRePublish">
+                                是否自动重新发布
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" v-model="autoPublish" id="autoPublish">
+                            <label class="form-check-label" for="autoPublish">
+                                是否自动发布
+                            </label>
+                        </div>
+                    </div>
+
+                    <button @click="executeQdProcess" class="btn btn-primary btn-action mt-auto">
+                        <i class="bi bi-play-circle"></i> 执行处理
+                    </button>
+                </div>
+            </div>
+
+            <!-- 处理结果信息 -->
+            <div v-if="loading" class="alert-message alert alert-info">
+                <i class="bi bi-hourglass-split"></i> {{ loading }}
+            </div>
+            <div v-if="errorMsg" class="alert-message alert alert-danger">
+                <i class="bi bi-exclamation-circle"></i> {{ errorMsg }}
+            </div>
+            <div v-if="successMsg" class="alert-message alert alert-success">
+                <i class="bi bi-check-circle"></i> {{ successMsg }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../css_js/own/lizi.js"></script>
+<script src="/assets/css_js/own/lizi.js"></script>
+<script src="/assets/js/apiClient.js"></script>
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                message: 'PA 寄卖商新QD单处理',
+                qdString: '',
+                selectedStatus: '',
+                autoRePublish: false,
+                autoPublish: false,
+                errorMsg: '',
+                successMsg: '',
+                loading: '',
+                env: '',
+                envMsg: ''
+            };
+        },
+        computed: {
+            envBadgeClass() {
+                return resolveEnvClass(this.env);
+            }
+        },
+        mounted() {
+            this.initPage();
+        },
+        methods: {
+            async initPage() {
+                this.errorMsg = '';
+                setLoading(this, '正在获取环境...');
+                try {
+                    const res = await searchApi('consignmentQD');
+                    const payload = res.data || {};
+                    this.env = payload.env || '';
+                    this.envMsg = formatEnvLabel(this.env);
+                } catch (error) {
+                    handleRequestError(this, error, '初始化失败');
+                } finally {
+                    setLoading(this);
+                }
+            },
+            normalizeQdList() {
+                return [...new Set(
+                    this.qdString
+                        .split('\n')
+                        .map(item => item.trim())
+                        .filter(Boolean)
+                )];
+            },
+            async executeQdProcess() {
+                this.errorMsg = '';
+                this.successMsg = '';
+
+                if (!this.qdString.trim()) {
+                    this.errorMsg = "请输入QD单号";
+                    return;
+                }
+                if (!this.selectedStatus) {
+                    this.errorMsg = "请选择处理状态";
+                    return;
+                }
+
+                const qdList = this.normalizeQdList();
+                if (qdList.length === 0) {
+                    this.errorMsg = "未找到有效的QD单号";
+                    return;
+                }
+
+                setLoading(this, "正在处理QD单，请稍候...");
+                try {
+                    const params = {
+                        qdList,
+                        status: this.selectedStatus
+                    };
+                    if (this.selectedStatus === 'to发布') {
+                        params.autoRePublish = this.autoRePublish;
+                        params.autoPublish = this.autoPublish;
+                    }
+
+                    const res = await updateApi('consignmentQD', params);
+                    const result = res.data?.data;
+                    if (result === true || result?.data === true) {
+                        this.successMsg = "执行成功，请至清单列表确认";
+                    } else if (result?.state?.message) {
+                        this.errorMsg = result.state.message;
+                    } else {
+                        this.errorMsg = "处理失败，请重试";
+                    }
+                } catch (error) {
+                    handleRequestError(this, error, "网络错误，无法连接到服务器");
+                } finally {
+                    setLoading(this);
+                }
+            }
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
