@@ -3,7 +3,7 @@ require_once(dirname(__FILE__) . "/../../php/class/Logger.php");
 require_once(dirname(__FILE__) . "/../../php/utils/DataUtils.php");
 require_once(dirname(__FILE__) . "/../../php/curl/CurlService.php");
 require_once(dirname(__FILE__) . "/../../php/utils/RequestUtils.php");
-
+require_once dirname(__FILE__) . '/../shell/ProductSkuController.php';
 /**
  * 仅限用于同步生产数据到测试环境数据mongo的增删改查，其中delete和create只有test环境有，而find查询是pro和test有
  * Class SyncCurlController
@@ -1900,7 +1900,7 @@ class SyncCurlController
         $fitmentSkuMap = [];
 
         $fileFitContent = [
-            ['ce_bill_no' => 'CE202511060195'],
+            ['ce_bill_no' => 'CE202511240053'],
         ];
         if (sizeof($fileFitContent) > 0) {
             foreach ($fileFitContent as $item){
@@ -1912,7 +1912,7 @@ class SyncCurlController
                 ]));
                 if (count($main) > 0) {
                     $this->log("{$item['ce_bill_no']}");
-                    $main['status'] = 'materialComplete';
+                    $main['status'] = 'developerComplete';
                     $curlService->s3044()->put("pa_ce_materials/{$main['_id']}",$main);
 
                     if (count($main['skuIdList']) > 0){
@@ -1925,7 +1925,7 @@ class SyncCurlController
                                 "ceBillNo" => $main['ceBillNo'],
                             ]));
                             if ($detail){
-                                $detail['status'] = "materialComplete";
+                                $detail['status'] = "developerComplete";
                                 $curlService->s3044()->put("pa_sku_materials/{$detail['_id']}",$detail);
                             }
                         }
@@ -6028,10 +6028,10 @@ class SyncCurlController
 
         $status = "4";
         $applyName = "shaoanlin";
-        $applyTime = "2025-11-27 12:30:00Z";
+        $applyTime = "2025-11-28 12:30:00Z";
         $skuIdList = [];
         $params = [
-            "title" => "2025 W45 MRO EU4 AI翻译 FCU IT 61",
+            "title" => "2025 W46 MRO PAT AI翻译 SKU ES 30",
         ];
         if (DataUtils::checkArrFilesIsExist($params, "title")) {
 
@@ -6124,10 +6124,32 @@ class SyncCurlController
         }
     }
 
+    public function getSkuPhotoProgress()
+    {
+        $c = new ProductSkuController();
+        $curlService = (new CurlService())->pro();
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/未写入的图片拍摄.xlsx");
+        if (sizeof($fileFitContent) > 0) {
+            $skuIdList = array_column($fileFitContent,"productid");
+            $preList = $c->getSkuPhotoProgress($skuIdList,"pro");
+            $batch = [];
+            foreach ($preList as $info){
+                if ($info['isExist'] == "可修补"){
+                    $batch[] = $info;
+                }
+            }
+            if (count($batch) > 0){
+                $curlService->s3015()->post("sku_photography_progresss/createBatch",$batch);
+            }
+        }
+    }
+
+
 
 }
 
 $curlController = new SyncCurlController();
+$curlController->getSkuPhotoProgress();
 //$curlController->fallBackQD();
 //$curlController->fixProductSkuCategory();
 //$curlController->consignmentQD(null);
@@ -6158,7 +6180,7 @@ $curlController = new SyncCurlController();
 //$curlController->exportBeforeSkuMaterial();
 //$curlController->getRepeatSkuMaterialByAliSls();
 //$curlController->getRepeatSkuMaterial();
-$curlController->fixTranslationManagement();
+//$curlController->fixTranslationManagement();
 //$curlController->fixPaSkuMaterialList();
 //$curlController->bindSgu();
 //$curlController->fixCeMaterialS();

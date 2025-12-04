@@ -763,6 +763,63 @@ class CurlService
         );
     }
 
+
+
+    public function specialRequest($postData)
+    {
+        $url = 'https://sls.console.aliyun.com/console/logs/getLogs.json';
+
+        $headers = [
+            'accept: application/json',
+            'accept-language: zh-CN,zh;q=0.9,sq;q=0.8',
+            'b3: 5dd9801f38e3bd5061d10bbfcf53db5e-138b673bba4932b8-1',
+            'bx-v: 2.5.31',
+            'content-type: application/x-www-form-urlencoded',
+            'origin: https://sls.console.aliyun.com',
+            'referer: https://sls.console.aliyun.com/lognext/project/aliyun-hn1-all-log/logsearch/pa-biz-application-new?slsRegion=cn-shenzhen',
+            'sec-ch-ua: "Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"',
+            'sec-ch-ua-mobile: ?0',
+            'sec-ch-ua-platform: "Linux"',
+            'sec-fetch-dest: empty',
+            'sec-fetch-mode: cors',
+            'sec-fetch-site: same-origin',
+            'traceparent: 00-5dd9801f38e3bd5061d10bbfcf53db5e-138b673bba4932b8-01',
+            'uber-trace-id: 5dd9801f38e3bd5061d10bbfcf53db5e:138b673bba4932b8:0:1',
+            'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+            'x-csrf-token: 81a8b0a4'
+        ];
+
+        $cookies = 'cna=NaHqIBsy20oCAQ6Rk5/H14em; currentRegionId=cn-shenzhen; aliyun_country=CN; aliyun_lang=zh; aliyun_site=CN; login_aliyunid_csrf=_csrf_tk_1494864752144647; login_aliyunid_pk=1196618798442729; login_current_pk=292058973591134045; login_aliyunid="16363354792682515 @ 1196618798442729"; login_aliyunid_ticket=3SAW2yxnMCnjYw2452ZLYAoA.1118cfDKtg6hLjb878CZeuMgy4gQTTfA2kMYgc9Hz3DJtD9215ahaKtqbj33ss2utjBYKJT2PzLruHUkFW8ZnzkQssbXMASsxrbzDLreB5ZSXAdR2whMubzCxyHDUkyiaCZfdue2XNq4woftxq6td8E1BHADNrui9tJRhc8sCFUVNGEzdVC.2mWNaj27Bon6ExheGXKQfr4ckPqS1s8YRYzRUFYc7L6kTYD2WNy6wJXhU2XheJKX6R; login_aliyunid_sc=3R5H3e3HY2c8gwLZuY5GmS7K.1113jDbBUu5tqGuBTLkDcVJkYZxMtvjtVmchYriLfAS1bk8mfJ2XxaKttvdoppGxGtTanB.2mWNaj2oLZxrwwsgKLHqFLvoyqJ1tNbNQxgBRYi1SxLGuGRCNt5DvYKenBesJJ84R6; tfstk=gC-tyM2FpzX1fCVaBI0noOdUYJH3y2jwQnR_mojcs2OdOKS0jKGwMEpXTiYMhVkxDdvRoZGNjndpTBRGoArchBp2n1vmQfWX9IABIRXMnHev9tQsQIADvxdCfZ8Gi1fADKR-KbmoqdJN0MGoZ0qNyZQOftZ15sMfATX-KOtuZpFl0iGotyqf70I26sttzZ9IptX4cOOfGJsCh66_fOOfOw65E5sfcIMdAtB81R1f1MNCTtsfGIsjpM1FHi1XGiMpdXN-B6y1BoLZtUUopYuXXhtdBNCWp4P8NYQTZMp19oZf6NbTSd1LcotBkp1AusnQws-BMgsfy8c9QML2wTAiAldJhL8fJnFIM1tMCBQkWbE9wCWXHtOt48CBXKKd7e2u2pQvSCBWs4GkNaLkPwKq4lJOz6SdLncUfsLBlhbN05GAgHpBfEIyP3xJgMPlwt4spvU4uN6UDaCKQBj5EIXdZA__ur7cL9Copb44uN9Op_D1przVk0C..; isg=BDw80UvCef8RK0z2w8Z9imB9DdPuNeBfnupktRatMCdn4fVrG0y67ykXwQmZqRi3';
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_COOKIE, $cookies);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 生产环境建议开启
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            $error = 'cURL error: ' . curl_error($ch);
+            curl_close($ch);
+            throw new Exception($error);
+        }
+
+        curl_close($ch);
+
+        // 尝试解析 JSON
+        $data = json_decode($response, true);
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $data; // 成功解析为数组
+        } else {
+            return $response; // 返回原始字符串（可能是错误页面或非 JSON 响应）
+        }
+
+    }
 }
 
 
