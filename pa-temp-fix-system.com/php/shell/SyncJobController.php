@@ -44,7 +44,7 @@ class SyncJobController
             'LogStoreName'      => 'pa-biz-application-new',
             'from'              => 1764777600,
             'query'             => 'content: uploadPurchaseCertificate  | with_pack_meta',
-            'to'                => 1764814200,
+            'to'                => 1764816494,
             'Page'              => 1,
             'Size'              => 100,
             'Reverse'           => 'true',

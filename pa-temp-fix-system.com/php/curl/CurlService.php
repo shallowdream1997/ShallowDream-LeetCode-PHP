@@ -767,12 +767,14 @@ class CurlService
 
     public function specialRequest($postData)
     {
+        // ✅ 正确的 URL
         $url = 'https://sls.console.aliyun.com/console/logs/getLogs.json';
 
+        // ✅ 最新 Headers（含 b3、traceparent、x-csrf-token 等）
         $headers = [
             'accept: application/json',
             'accept-language: zh-CN,zh;q=0.9,sq;q=0.8',
-            'b3: 5dd9801f38e3bd5061d10bbfcf53db5e-138b673bba4932b8-1',
+            'b3: 7958f1adfb631427929b7389ffdaab2f-b96a644f4ec6bd58-1',
             'bx-v: 2.5.31',
             'content-type: application/x-www-form-urlencoded',
             'origin: https://sls.console.aliyun.com',
@@ -783,13 +785,14 @@ class CurlService
             'sec-fetch-dest: empty',
             'sec-fetch-mode: cors',
             'sec-fetch-site: same-origin',
-            'traceparent: 00-5dd9801f38e3bd5061d10bbfcf53db5e-138b673bba4932b8-01',
-            'uber-trace-id: 5dd9801f38e3bd5061d10bbfcf53db5e:138b673bba4932b8:0:1',
+            'traceparent: 00-7958f1adfb631427929b7389ffdaab2f-b96a644f4ec6bd58-01',
+            'uber-trace-id: 7958f1adfb631427929b7389ffdaab2f:b96a644f4ec6bd58:0:1',
             'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
-            'x-csrf-token: 81a8b0a4'
+            'x-csrf-token: c345f390' // ✅ 与 cookie 中 csrf 一致
         ];
 
-        $cookies = 'cna=NaHqIBsy20oCAQ6Rk5/H14em; currentRegionId=cn-shenzhen; aliyun_country=CN; aliyun_lang=zh; aliyun_site=CN; login_aliyunid_csrf=_csrf_tk_1494864752144647; login_aliyunid_pk=1196618798442729; login_current_pk=292058973591134045; login_aliyunid="16363354792682515 @ 1196618798442729"; login_aliyunid_ticket=3SAW2yxnMCnjYw2452ZLYAoA.1118cfDKtg6hLjb878CZeuMgy4gQTTfA2kMYgc9Hz3DJtD9215ahaKtqbj33ss2utjBYKJT2PzLruHUkFW8ZnzkQssbXMASsxrbzDLreB5ZSXAdR2whMubzCxyHDUkyiaCZfdue2XNq4woftxq6td8E1BHADNrui9tJRhc8sCFUVNGEzdVC.2mWNaj27Bon6ExheGXKQfr4ckPqS1s8YRYzRUFYc7L6kTYD2WNy6wJXhU2XheJKX6R; login_aliyunid_sc=3R5H3e3HY2c8gwLZuY5GmS7K.1113jDbBUu5tqGuBTLkDcVJkYZxMtvjtVmchYriLfAS1bk8mfJ2XxaKttvdoppGxGtTanB.2mWNaj2oLZxrwwsgKLHqFLvoyqJ1tNbNQxgBRYi1SxLGuGRCNt5DvYKenBesJJ84R6; tfstk=gC-tyM2FpzX1fCVaBI0noOdUYJH3y2jwQnR_mojcs2OdOKS0jKGwMEpXTiYMhVkxDdvRoZGNjndpTBRGoArchBp2n1vmQfWX9IABIRXMnHev9tQsQIADvxdCfZ8Gi1fADKR-KbmoqdJN0MGoZ0qNyZQOftZ15sMfATX-KOtuZpFl0iGotyqf70I26sttzZ9IptX4cOOfGJsCh66_fOOfOw65E5sfcIMdAtB81R1f1MNCTtsfGIsjpM1FHi1XGiMpdXN-B6y1BoLZtUUopYuXXhtdBNCWp4P8NYQTZMp19oZf6NbTSd1LcotBkp1AusnQws-BMgsfy8c9QML2wTAiAldJhL8fJnFIM1tMCBQkWbE9wCWXHtOt48CBXKKd7e2u2pQvSCBWs4GkNaLkPwKq4lJOz6SdLncUfsLBlhbN05GAgHpBfEIyP3xJgMPlwt4spvU4uN6UDaCKQBj5EIXdZA__ur7cL9Copb44uN9Op_D1przVk0C..; isg=BDw80UvCef8RK0z2w8Z9imB9DdPuNeBfnupktRatMCdn4fVrG0y67ykXwQmZqRi3';
+        // ✅ 最新 Cookies（完整复制你提供的）
+        $cookies = 'cna=NaHqIBsy20oCAQ6Rk5/H14em; currentRegionId=cn-shenzhen; aliyun_country=CN; aliyun_lang=zh; aliyun_site=CN; login_aliyunid_pk=1196618798442729; login_current_pk=292058973591134045; login_aliyunid_csrf=4c30595991944660bb5e3ada61f3e09b; login_aliyunid="16363354792682515 @ 1196618798442729"; login_aliyunid_ticket=3SAW2yxnMCnjh5CCTX4bamPn.1118UkfUMcuYEraQfG6TNsrgxnbbErczXizSE2HhYQiVbmn5DvFZFjgJEwX8dTyC8qBvzHcmptsXRpmf4FdQA2Cu7GaUmcVVa9y5dWS2hdTL9YxeG3MhNmGtUHZWhRHLfnbs3GwsYQj7TbqpQbfDT3geUEDmRzGcYcohGaFqzLwj2TFirUa.2mWNaj2JF4NdyosWnc7a5gh7HBmZjDqARFscxXPvraEz3knwYexFKWTahgPNJEjfZr; login_aliyunid_sc=3R5H3e3HY2c8q5WiJ2aXp2hw.1113f6jMjXPatwNEC8RGu5Ud7tJ7QHFBHJEG8CHJCmWEHQsi1prrAhCc5xmjQCDfReFuQX.2mWNaj33VASFhtjxuZ9tu2Wt7tEcx7QyjmfHSHaQxZQiN58DBaEVM7HR2A8XHm2cBP; tfstk=g63iyagRkgfbSjQ1jI46jTTV8e-dRPajuxQYHre2YJyCWretg-DmKjwTkCG4oIDtsGExgdMmoJkUBAhv1sP4LjPYBmd_nSyEnrhOX5nm-AML_l-sHI0ndvM0cCwY3-DxgcdpyUhs1ra4oLLJyAVRxYH0gRrw8IPYZSRLb43Ztgz2eLLdv6r6BrlT3WH7LXyQiN740xrUYSPzu5yabB2Ui7sVQxz2tBV4iOyV7llUY7Ngu-k4uBcUdS44_xz2tXyQgfrGb83q42Jf9l76D5jqu5qgUfyZ6XgFNkssgJbVu2m3j888KZ7q-5lmoX0R8EyrVvoEb0fNJoUQKvFihU__7omqWyuwLEzqYA3uiqOPm-qm5y2nEU7bOcki8o0pGUcLSSD7ZxY5cXZ4ZAaZ7pBgoyV7DmD9dZytqXk322BdyzoSKqqzzg5VYg8wcZNeM2SfclPQt83mMxGMqerj1BAh2jZaO7wJtBjfTlPQtxRHtgn8bWNyY; isg=BLa2mCfywzGJR7YAVWRXFL5_B-W41_oRsCi-4yCc8Bk2Y179jW5FIYRVez8PS_Ip';
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
