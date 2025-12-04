@@ -4,6 +4,7 @@ require dirname(__FILE__) . '/../../vendor/autoload.php';
 require_once dirname(__FILE__) . '/../requiredfile/requiredChorm.php';
 require_once dirname(__FILE__) . '/EnvironmentConfig.php';
 require_once dirname(__FILE__) . '/../shell/ProductSkuController.php';
+require_once dirname(__FILE__) . '/cookieLogin.php';
 
 /**
  * 更新接口
@@ -776,16 +777,79 @@ class update
     {
         $curlService = $this->envService;
         $env = $curlService->environment;
-
-
         $redisService = new RedisService();
+        $ipMap = [];
+        $dbDataList = $redisService->hGetAll(REDIS_USERNAME_IP_KEY . "_{$env}");
+        if (count($dbDataList) > 0){
+            foreach ($dbDataList as $key => $keyInfo){
+                $old = json_decode($keyInfo,true);
+                $ipMap[$old['ip']] = $old['name'] ?: "";
+            }
+        }
+        $ip = $_SERVER['REMOTE_ADDR'];
 
-        $ip = $_SERVER['REMOTE_ADDR'];;
-        $dbData = [
-            "name" => $params['userName'],
-            "ip" => $ip
-        ];
-        $redisService->hSet(REDIS_USERNAME_IP_KEY . "_{$env}", $ip,json_encode($dbData,JSON_UNESCAPED_UNICODE));
+        $needRegister = false;
+        if (!isset($ipMap[$ip]) || $ipMap[$ip] == '新用户'){
+            $needRegister = true;
+            if (!isset($params['username']) || !$params['username'] || !isset($params['pwd']) || !$params['pwd']){
+                return [
+                    "env" => $env,
+                    "messages" => "新的ip，请输入ucCenter账号密码，确认你的姓名",
+                    "data" => []
+                ];
+            }
+        }
+
+        $userCnName = "";
+        $errorList = [];
+        $ucToken = "";
+        if ($needRegister && isset($params['username']) && $params['username'] && isset($params['pwd']) && $params['pwd']){
+            $client = new CookieLogin();
+
+            // 使用你的账号密码
+            $success = $client->performLogin($params['username'], $params['pwd']);
+
+            if ($success) {
+                // 获取登录后的 Cookie（可用于后续 API 调用）
+                $cookieData = $client->getFinalCookies();
+                $ucToken = $client->extractCookieValue($cookieData,'uc_token_production');
+
+                if ($ucToken) {
+
+                } else {
+                    $errorList[] = "获取token失败,登录ucCenter失败，请检查账号密码是否正确喔~";
+                }
+
+            } else {
+                $errorList[] = "请输入ucCenter失败，请检查账号密码是否正确喔~";
+            }
+        }
+
+        if ($ucToken){
+            $resp = DataUtils::getNewResultData($curlService->getUcToken($ucToken)->gateway()->getWayPost( "/authrization-service/token/v1/getUser", [
+                "token" => $ucToken
+            ]));
+            if ($resp){
+                $userCnName = $resp['userCnName'];
+            }
+        }
+
+
+        if ($errorList){
+            return [
+                "env" => $env,
+                "messages" => implode(",",$errorList),
+                "data" => []
+            ];
+        }
+
+        if ($userCnName){
+            $dbData = [
+                "name" => $userCnName,
+                "ip" => $ip
+            ];
+            $redisService->hSet(REDIS_USERNAME_IP_KEY . "_{$env}", $ip,json_encode($dbData,JSON_UNESCAPED_UNICODE));
+        }
 
         $list = [];
         $dbDataList = $redisService->hGetAll(REDIS_USERNAME_IP_KEY . "_{$env}");
@@ -794,10 +858,10 @@ class update
                 $list[] = json_decode($keyInfo,true);
             }
         }
-
         return [
             "env" => $env,
-            "data" => $list
+            "data" => $list,
+            "ucToken" => $ucToken,
         ];
     }
 

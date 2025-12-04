@@ -53,7 +53,7 @@ class EnvironmentConfig
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "registerIp":
-                $this->curlService = (new CurlService())->test();
+                $this->curlService = (new CurlService())->pro();
                 break;
             case "fixFcuProductLine":
                 $this->curlService = (new CurlService())->pro();

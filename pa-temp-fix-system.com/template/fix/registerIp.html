@@ -18,7 +18,10 @@
         <div class="col-5"><h3 style="color: yellow">{{message}} <br> <span style="color: red">当前环境：{{envMsg}}</span></h3></div>
         <div class="col-7">
             <div class="mb-3">
-                <input type="text" v-model="userName" class="form-control" placeholder="你的姓名">
+                <input type="text" v-model="userName" class="form-control" placeholder="登录账号">
+            </div>
+            <div class="mb-3">
+                <input type="password" v-model="pwd" class="form-control" placeholder="登录密码">
             </div>
             <div class="row">
                 <div class="col-3">
@@ -73,6 +76,7 @@
             return {
                 message: '登记个人IP',
                 userName: '',
+                pwd: '',
                 errorMsg: '',
                 successMsg: '',
                 list: [],
@@ -125,17 +129,17 @@
                 const data = {
                     action: "registerIp",
                     params: {
-                        userName: this.userName
+                        username: this.userName,
+                        pwd: this.pwd
                     },
                 };
-
                 let res = await axios.post(`${this.url}/update.php`, data,this.header).catch(function (error) {
                     this.errorMsg = "网络错误";
                 });
                 console.log(res)
                 if (res.status === 200) {
                     if (res.data.data.length === 0) {
-                        this.errorMsg = "没有数据";
+                        this.errorMsg = res.data.messages;
                     } else {
                         this.list = res.data.data;
                         console.log(this.list)

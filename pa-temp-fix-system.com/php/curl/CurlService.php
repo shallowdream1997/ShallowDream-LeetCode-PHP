@@ -26,6 +26,10 @@ class CurlService
     public $module = "pa-biz-application";
 
     private $log;
+    /**
+     * @var mixed
+     */
+    private $ucToken;
 
     public function __construct() {
         $this->setHeader();
@@ -257,6 +261,11 @@ class CurlService
         return $this;
     }
 
+    public function getUcToken($ucToken)
+    {
+        $this->ucToken = $ucToken;
+        return $this;
+    }
 
     public function gateway(): CurlService
     {
@@ -269,6 +278,9 @@ class CurlService
             $requestKey = "bearer b96217aa-ed4f-4fcd-9d66-bbe2728f600e";
         }elseif ($this->environment == 'pro'){
             $requestKey = "bearer dd63d1ec-3b31-4a15-a05a-1ea5daa5aeb0";
+        }
+        if ($this->ucToken != null){
+            $requestKey = "bearer " . $this->ucToken;
         }
         $this->setHeader(['Authorization: ' . $requestKey]);
 
