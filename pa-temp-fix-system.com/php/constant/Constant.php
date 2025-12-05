@@ -1,9 +1,9 @@
 <?php
 
 // constants.php
-define('REDIS_HOST', '127.0.0.1');
+define('REDIS_HOST', 'gz-redis-test.ux168.cn');
 define('REDIS_PORT', 6379);
-define('REDIS_PWD', "dzAJvWuCKUQ=");
+define('REDIS_PWD', "dste@dus_jd12");
 
 define('REDIS_USER_NAME_KEY', "username");
 define('REDIS_CATEGORY_ID_KEY', "category_info");
@@ -17,7 +17,7 @@ define('REDIS_MATERIAL_REPT_KEY', "materialRept");
 define('REDIS_MATERIAL_REPT_CORRET_KEY', "materialReptCorret");
 
 
-define("CR201706060001","CR201706060001");
-define("CR201706080001","CR201706080001");
-define("CR201706260001","CR201706260001");
-define("CR201706080003","CR201706080003");
+define("CR201706060001", "CR201706060001");
+define("CR201706080001", "CR201706080001");
+define("CR201706260001", "CR201706260001");
+define("CR201706080003", "CR201706080003");
