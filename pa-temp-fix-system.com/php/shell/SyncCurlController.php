@@ -1900,7 +1900,7 @@ class SyncCurlController
         $fitmentSkuMap = [];
 
         $fileFitContent = [
-            ['ce_bill_no' => 'CE202511240053'],
+            ['ce_bill_no' => 'CE202511070026'],
         ];
         if (sizeof($fileFitContent) > 0) {
             foreach ($fileFitContent as $item){
@@ -1912,7 +1912,7 @@ class SyncCurlController
                 ]));
                 if (count($main) > 0) {
                     $this->log("{$item['ce_bill_no']}");
-                    $main['status'] = 'developerComplete';
+                    $main['status'] = 'materialComplete';
                     $curlService->s3044()->put("pa_ce_materials/{$main['_id']}",$main);
 
                     if (count($main['skuIdList']) > 0){
@@ -1925,7 +1925,7 @@ class SyncCurlController
                                 "ceBillNo" => $main['ceBillNo'],
                             ]));
                             if ($detail){
-                                $detail['status'] = "developerComplete";
+                                $detail['status'] = "materialComplete";
                                 $curlService->s3044()->put("pa_sku_materials/{$detail['_id']}",$detail);
                             }
                         }
@@ -2318,11 +2318,24 @@ class SyncCurlController
     public function createPmo(){
         ///scms/pmo_plan/v1/createPmo
 
-        $curlService = (new CurlService())->test();
+        $curlService = (new CurlService())->pro();
         $curlService->gateway();
         $curlService->getModule('pa');
         $ids = [
-            "1927266115552874496",
+            "1995855479292080128",
+            "1996202792271745024",
+            "1996565180330409984",
+            "1996565180775006208",
+            "1996565181248962560",
+            "1996565181689364480",
+            "1996565182133960704",
+            "1996565182670831616",
+            "1996565183220285440",
+            "1996565183576801280",
+            "1996565183979454464",
+            "1996580252532473856",
+            "1996580260438736896",
+            "1996580262074515456",
         ];
 
         foreach ($ids as $id){
@@ -2339,7 +2352,7 @@ class SyncCurlController
             $pmoArr = [
                 "id" => $id,
             ];
-            $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/scms/pre_purchase/info/v1/createConsignmentCeBill", $pmoArr));
+            $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/scms/pmo_plan/v1/createPmo", $pmoArr));
             if ($resp){
 
             }
@@ -6146,10 +6159,93 @@ class SyncCurlController
 
 
 
+    public function findPaCeSkuMaterialStatusNotSync()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+
+        $ceMap = [];
+        $page = 1;
+        do {
+            $this->log($page);
+            $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
+                "limit" => 1000,
+                "page" => $page,
+//                "status" => "developerComplete",
+                "orderBy" => "-_id"
+            ]));
+            if (count($l) == 0) {
+                break;
+            }
+            foreach ($l as $info) {
+                if (preg_match('/^(QD|DPMO)/', $info['batchName'])){
+                    $ceMap[$info['ceBillNo']] = $info['status'];
+                }else{
+                    $this->log("结束了");
+                    break 2;
+                }
+            }
+            $page++;
+        } while (true);
+
+
+        if (count($ceMap) > 0){
+            $curlService = new CurlService();
+            $curlService = $curlService->pro();
+
+            $ceList = array_keys($ceMap);
+
+            $ceSkuMap = [];
+            foreach (array_chunk($ceList,200) as $chunkBatchNameList){
+                $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
+                    "limit" => 1000,
+                    "page" => 1,
+                    "ceBillNo_in" => implode(",",$chunkBatchNameList)
+                ]));
+                if (count($l) == 0){
+                    continue;
+                }
+                foreach ($l as $item) {
+                    $ceSkuMap[$item['ceBillNo']][$item['status']] = 1;
+                }
+            }
+
+            $list = [];
+            foreach ($ceMap as $ceBillNo => $status){
+                if (isset($ceSkuMap[$ceBillNo])){
+
+                    $ceSkuStatus = implode(",",array_keys($ceSkuMap[$ceBillNo]));
+                    if ($ceSkuStatus != $status){
+                        $list[] = [
+                            "ceBillNo" => $ceBillNo,
+                            "mainStatus" => $status,
+                            "detailStatus" => implode(",",array_keys($ceSkuMap[$ceBillNo]))
+                        ];
+                    }
+                }
+            }
+
+            if ($list){
+                $excelUtils = new ExcelUtils();
+                $filePath = $excelUtils->downloadXlsx([
+                    "ceBillNo",
+                    "主状态",
+                    "明细状态",
+                ], $list, "CE单状态不一致的数据_" . date("YmdHis") . ".xlsx");
+            }
+
+
+        }else{
+            $this->log("没有可以修改的数据");
+        }
+    }
+
 }
 
 $curlController = new SyncCurlController();
-$curlController->getSkuPhotoProgress();
+$curlController->findPaCeSkuMaterialStatusNotSync();
+//$curlController->getSkuPhotoProgress();
 //$curlController->fallBackQD();
 //$curlController->fixProductSkuCategory();
 //$curlController->consignmentQD(null);
@@ -6197,6 +6293,7 @@ $curlController->getSkuPhotoProgress();
 //$curlController->syncSkuMaterialToAudit();
 //$curlController->fixPaSkuPhotoGress();
 //$curlController->updateSkuMaterial();
+//CE但资料同步
 //$curlController->deleteCeMaterial();
 //$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();

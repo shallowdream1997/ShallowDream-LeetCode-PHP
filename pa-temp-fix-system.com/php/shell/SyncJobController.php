@@ -173,7 +173,87 @@ class SyncJobController
         return array_column($grouped, 'body');
     }
 
+
+
+
+    public function pyIp()
+    {
+
+        (new RequestUtils("pro"))->getEmployeeByCompanySequenceId("CR201706060001");
+        (new RequestUtils("pro"))->getEmployeeByCompanySequenceId("CR201706080003");
+
+        $redisService = new RedisService();
+        $allList = $redisService->hGetAll(REDIS_USER_NAME_KEY);
+        if ($allList){
+
+            foreach ($allList as $username => $item){
+                if (!in_array($username, [
+                    'chenya',
+                    'liushili',
+                    'linqinxiang',
+                    'ganjianfei',
+                    'xiaoan',
+                    'caiguowei',
+                    'zhangwendi',
+                    'luojian',
+                    'yuanpengfeng',
+                    'hezhemou',
+                    'panxiuxiu',
+                    'yinliang',
+                    'tanjianpeng'
+                ])) {
+                    $this->log("不要这个");
+                    continue;
+                }
+                $this->log("开始处理");
+                $curl = new CurlService();
+                $params = [
+                    'ProjectName'       => 'aliyun-hn1-all-log',
+                    'LogStoreName'      => 'api_nodejs_access_log_new',
+                    'from'              => 1764777600,
+                    'query'             => "FullUrl: {$username} and FullUrl: user_menus and FullUrl: getMenuManages",
+                    'to'                => 1764845819,
+                    'Page'              => 1,
+                    'Size'              => 100,
+                    'Reverse'           => 'true',
+                    'pSql'              => 'false',
+                    'fullComplete'      => 'false',
+                    'schemaFree'        => 'false',
+                    'needHighlight'     => 'true',
+                ];
+                $postData = http_build_query($params);
+                try {
+                    $data = $curl->specialRequest($postData);
+                    if ($data && is_array($data['data']) && count($data['data']) > 0){
+                        $ip = $data['data'][0]['ClientIp'] ?? "";
+                        if ($ip){
+                            $userData = json_decode($item,true);
+                            $dbData = [
+                                "name" => $userData['cName'],
+                                "ip" => $ip
+                            ];
+                            $redisService->hSet(REDIS_USERNAME_IP_KEY . "_pro", $ip,json_encode($dbData,JSON_UNESCAPED_UNICODE));
+                        }
+
+
+                    }
+
+
+                } catch (Exception $e) {
+                    $this->log($e->getMessage());
+                }
+                sleep(1);
+            }
+
+
+        }
+
+
+    }
+
+
+
 }
 
-//$curlController = new SyncJobController();
-//$curlController->fixQdCertificate();
+$curlController = new SyncJobController();
+$curlController->pyIp();
