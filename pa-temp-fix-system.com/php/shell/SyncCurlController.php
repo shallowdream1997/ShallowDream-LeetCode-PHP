@@ -4540,7 +4540,7 @@ class SyncCurlController
                     $productInfo = $map[$info['skuId']];
                     ProductUtils::deleteProductAttributeByArr($productInfo['attribute'], $deleteAttributeArray);
 
-                    $productInfo['action'] = "system(删除错误的attribute)251016";
+                    $productInfo['action'] = "system(删除错误的attribute)251212";
                     $productInfo['userName'] = "system(zhouangang)";
 
                     $this->log(json_encode($productInfo,JSON_UNESCAPED_UNICODE));
@@ -6039,102 +6039,142 @@ class SyncCurlController
     {
         $curlService = (new CurlService())->pro();
 
-        $status = "4";
-        $applyName = "shaoanlin";
-        $applyTime = "2025-11-28 12:30:00Z";
-        $skuIdList = [];
-        $params = [
-            "title" => "2025 W46 MRO PAT AI翻译 SKU ES 30",
-        ];
-        if (DataUtils::checkArrFilesIsExist($params, "title")) {
 
-            if (!empty($skuIdList)) {
-                $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_managements/queryPage", [
-                    "limit" => 100,
-                    "page" => 1,
-                    "title_in" => $params['title'],
-                ]));
-                if ($mainInfo['status'] != "5") {
-                    foreach (array_chunk($skuIdList, 200) as $chunk) {
-                        $detailList = DataUtils::getPageList($curlService->s3015()->get("translation_management_skus/queryPage", [
-                            "limit" => 1000,
-                            "skuId_in" => implode(",", $chunk),
-                            "translationMainId" => $mainInfo['_id']
+        foreach ([
+                     [
+                         "titleList" => [
+                             "2025 W49 MRO pat 人工翻译 SKU JP 0",
+                             "(新) 2025 W49 MRO ux AI翻译 SKU JP 3",
+                             "(新) 2025 W49 MRO ux AI翻译 SKU JP 23",
+                             "(新) 2025 W49 MRO ux AI翻译 SKU JP 61",
+                             "(新) 2025 W49 MRO ux AI翻译 SKU JP 46"
+                         ],
+                         "status" => "4",
+                         "applyName" => "huangannan",
+                         "applyTime" => "2025-12-22 12:30:00Z"],
+                     [
+                         "titleList" => [
+                             "2025 W45 MRO EU4 AI翻译 SKU FR 65",
+                             "2025 W46 MRO PAT AI翻译 SKU DE 31",
+                         ],
+                         "status" => "4",
+                         "applyName" => "shaoanlin",
+                         "applyTime" => "2025-12-26 12:30:00Z"
+                     ]
+                 ] as $info) {
+
+            $status = $info['status'];
+            $applyName = $info['applyName'];
+            $applyTime = $info['applyTime'];
+            $skuIdList = [];
+
+
+            foreach ($info['titleList'] as $title){
+
+
+                $params = [
+                    "title" => $title,
+                ];
+
+                if (DataUtils::checkArrFilesIsExist($params, "title")) {
+
+                    if (!empty($skuIdList)) {
+                        $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_managements/queryPage", [
+                            "limit" => 100,
+                            "page" => 1,
+                            "title_in" => $params['title'],
                         ]));
-                        if ($detailList) {
-                            foreach ($detailList as $detail) {
-                                if ($detail['status'] != "5") {
-                                    $detail['status'] = $status;
+                        if ($mainInfo['status'] != "5") {
+                            foreach (array_chunk($skuIdList, 200) as $chunk) {
+                                $detailList = DataUtils::getPageList($curlService->s3015()->get("translation_management_skus/queryPage", [
+                                    "limit" => 1000,
+                                    "skuId_in" => implode(",", $chunk),
+                                    "translationMainId" => $mainInfo['_id']
+                                ]));
+                                if ($detailList) {
+                                    foreach ($detailList as $detail) {
+                                        if ($detail['status'] != "5") {
+                                            $detail['status'] = $status;
 
-                                    DataUtils::getResultData($curlService->s3015()->put("translation_management_skus/{$detail['_id']}", $detail));
+                                            DataUtils::getResultData($curlService->s3015()->put("translation_management_skus/{$detail['_id']}", $detail));
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }
 
 
-                    foreach ($mainInfo['skuIdList'] as &$detailInfo) {
-                        if (in_array($detailInfo['skuId'],$skuIdList)){
-                            $detailInfo['status'] = $status;
-                        }
-                    }
-
-                    $mainInfo['status'] = $status;
-                    if ($status == '4' && !empty($applyName) && !empty($applyTime)) {
-                        //翻译完成的需要审核人
-                        $mainInfo['applyUserName'] = $applyName;
-                        $mainInfo['applyTime'] = $applyTime;
-                    }
-
-                    $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
-                    $this->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
-
-
-                }
-                return true;
-            } else {
-                //全sku的逻辑
-
-                $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_managements/queryPage", [
-                    "limit" => 100,
-                    "page" => 1,
-                    "title_in" => $params['title'],
-                ]));
-                if ($mainInfo['status'] != "5") {
-                    $mainInfo['status'] = $status;
-                    foreach ($mainInfo['skuIdList'] as &$detailInfo) {
-                        $detailInfo['status'] = $status;
-                    }
-                    if ($status == '4' && !empty($applyName) && !empty($applyTime)) {
-                        //翻译完成的需要审核人
-                        $mainInfo['applyUserName'] = $applyName;
-                        $mainInfo['applyTime'] = $applyTime;
-                    }
-                    $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
-                    $this->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
-
-                    $detailList = DataUtils::getPageList($curlService->s3015()->get("translation_management_skus/queryPage", [
-                        "limit" => 1000,
-                        "translationMainId" => $mainInfo['_id']
-                    ]));
-                    if ($detailList) {
-                        foreach ($detailList as $detail) {
-                            if ($detail['status'] != "5") {
-                                $detail['status'] = $status;
-
-                                DataUtils::getResultData($curlService->s3015()->put("translation_management_skus/{$detail['_id']}", $detail));
+                            foreach ($mainInfo['skuIdList'] as &$detailInfo) {
+                                if (in_array($detailInfo['skuId'],$skuIdList)){
+                                    $detailInfo['status'] = $status;
+                                }
                             }
+
+                            $mainInfo['status'] = $status;
+                            if ($status == '4' && !empty($applyName) && !empty($applyTime)) {
+                                //翻译完成的需要审核人
+                                $mainInfo['applyUserName'] = $applyName;
+                                $mainInfo['applyTime'] = $applyTime;
+                            }
+
+                            $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
+                            $this->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
+
+
                         }
+
+                    } else {
+                        //全sku的逻辑
+
+                        $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_managements/queryPage", [
+                            "limit" => 100,
+                            "page" => 1,
+                            "title_in" => $params['title'],
+                        ]));
+                        if ($mainInfo['status'] != "5") {
+                            $mainInfo['status'] = $status;
+                            foreach ($mainInfo['skuIdList'] as &$detailInfo) {
+                                $detailInfo['status'] = $status;
+                            }
+                            if ($status == '4' && !empty($applyName) && !empty($applyTime)) {
+                                //翻译完成的需要审核人
+                                $mainInfo['applyUserName'] = $applyName;
+                                $mainInfo['applyTime'] = $applyTime;
+                            }
+                            $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_managements/{$mainInfo['_id']}", $mainInfo));
+                            $this->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
+
+                            $detailList = DataUtils::getPageList($curlService->s3015()->get("translation_management_skus/queryPage", [
+                                "limit" => 1000,
+                                "translationMainId" => $mainInfo['_id']
+                            ]));
+                            if ($detailList) {
+                                foreach ($detailList as $detail) {
+                                    if ($detail['status'] != "5") {
+                                        $detail['status'] = $status;
+
+                                        DataUtils::getResultData($curlService->s3015()->put("translation_management_skus/{$detail['_id']}", $detail));
+                                    }
+                                }
+                            }
+
+                        }
+
+
+
                     }
+                } else {
 
                 }
 
 
-                return true;
+
             }
-        } else {
-            return false;
+
+
         }
+
+
+
     }
 
     public function getSkuPhotoProgress()
@@ -6241,10 +6281,188 @@ class SyncCurlController
         }
     }
 
+    public function deleteProductSku()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+        $list = [
+
+            "a25120900ux0039",
+            "a25120900ux0040",
+            "a25120900ux0041",
+            "a25120900ux0042",
+            "a25120900ux0044",
+            "a25120900ux0045",
+            "a25120900ux0047",
+            "a25120900ux0048",
+            "a25120900ux0050",
+            "a25120900ux0051",
+            "a25120900ux0053",
+            "a25120900ux0054",
+            "a25120900ux0056",
+            "a25120900ux0057",
+            "a25120900ux0059",
+            "a25120900ux0060",
+            "a25120900ux0062",
+            "a25120900ux0063",
+            "a25120900ux0065",
+            "a25120900ux0066",
+            "a25120900ux0068",
+            "a25120900ux0069",
+            "a25120900ux0071",
+            "a25120900ux0072",
+            "a25120900ux0074",
+            "a25120900ux0075",
+            "a25120900ux0076",
+            "a25120900ux0078",
+            "a25120900ux0080",
+            "a25120900ux0081",
+
+        ];
+
+        $dataLIst = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+            "limit" => 1000,
+            "page" => 1,
+            "productId" => implode(",",$list)
+        ]));
+        if($dataLIst){
+            foreach ($dataLIst as $info){
+                $curlService->s3015()->delete("product-skus/{$info['_id']}");
+            }
+        }
+
+        $dataLIst1 = DataUtils::getPageList($curlService->s3015()->get("product_base_infos/queryPage",[
+            "limit" => 1000,
+            "page" => 1,
+            "productId_in" => implode(",",$list)
+        ]));
+        if($dataLIst1){
+            foreach ($dataLIst1 as $info){
+                $curlService->s3015()->delete("product_base_infos/{$info['_id']}");
+            }
+        }
+
+        $dataLIst12 = DataUtils::getQueryList($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
+            "skuScuId_in" => implode(",",$list),
+            "limit" => 1000,
+        ]));
+        if ($dataLIst12){
+            foreach ($dataLIst12 as $sguInfo){
+                $curlService->s3015()->delete("sgu-sku-scu-maps/{$sguInfo['_id']}");
+            }
+        }
+
+    }
+
+
+
+    public function createSkuConsignmentCe(){
+
+        $list = [
+            "QD202512170017"
+        ];
+        foreach ($list as $qdBillNo){
+
+            $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+            $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/scms/pre_purchase/info/v1/createConsignmentCeBillByQdBillNo", [
+                "isCreateNewCeBillNo" => false,
+                "isDelOldCeBillNo" => true,
+                "qdBillNo"=>$qdBillNo,
+                "updateBy" => "system(zhouangang)"
+            ]));
+            $map  =[];
+            if ($getKeyResp){
+                $this->log(json_encode($getKeyResp));
+            }
+        }
+
+    }
+
+
+    public function deleteCeSku(){
+
+        $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+        $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/scms/ce_bill_no/v1/deleteCeDetailByCeBillNo", [
+            "ceBillNo" => "CE202512220038",
+            "operatorName" => "system(zhouangang)",
+            "reason"=>"删除重复CE单"
+        ]));
+        $map  =[];
+        if ($getKeyResp){
+            $this->log(json_encode($getKeyResp));
+        }
+
+        $skuList = [
+            "a25122200ux0258",
+            "a25122200ux0261",
+            "a25122200ux0264",
+            "a25122200ux0267",
+            "a25122200ux0270",
+            "a25122200ux0273",
+            "a25122200ux0276",
+            "a25122200ux0279",
+            "a25122200ux0282",
+            "a25122200ux0285",
+            "a25122200ux0288",
+            "a25122200ux0291",
+            "a25122200ux0294",
+            "a25122200ux0297",
+            "a25122200ux0300",
+            "a25122200ux0303",
+            "a25122200ux0306",
+            "a25122200ux0309",
+            "a25122200ux0312",
+            "a25122200ux0315",
+            "a25122200ux0318",
+            "a25122200ux0321"
+        ];
+
+        $curlService = (new CurlService())->pro();
+        $infoList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+            "productId" => implode(",",$skuList),
+            "limit" => 500
+        ]));
+        $map = [];
+        if ($infoList){
+            foreach ($infoList as $info){
+                $map[$info['productId']] = $info;
+            }
+        }
+
+        foreach ($skuList as $sku){
+
+            if (isset($map[$sku])){
+                $productInfo = [
+                    "status" => "retired",
+                    "userName" => "system(zhouangang)",
+                    "action" => "system(删除重复CE号sku)260106",
+                    "modifiedOn" => $map[$sku]['modifiedOn'],
+                    "modifiedBy" => "system(zhouangang)",
+                    "_id" => $map[$sku]['_id'],
+                ];
+                $this->log(json_encode($productInfo,JSON_UNESCAPED_UNICODE));
+                $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
+                if ($resp){
+
+                }
+            }
+        }
+
+    }
+
+    public function testDing()
+    {
+        (new RequestUtils("pro"))->dingTalk("测试钉钉通知是否正常");
+    }
 }
 
 $curlController = new SyncCurlController();
-$curlController->findPaCeSkuMaterialStatusNotSync();
+//$curlController->testDing();
+//$curlController->createSkuConsignmentCe();
+$curlController->deleteCeSku();
+//$curlController->deleteProductSku();
+//$curlController->findPaCeSkuMaterialStatusNotSync();
 //$curlController->getSkuPhotoProgress();
 //$curlController->fallBackQD();
 //$curlController->fixProductSkuCategory();

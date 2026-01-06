@@ -472,7 +472,7 @@ class RequestUtils
      * @return $this
      */
     public function dingTalk($title = "",$msg = array()){
-        $ali = $this->curlService->test()->phpali();
+        $ali = $this->curlService->phpali();
 
         $datetime = date("Y-m-d H:i:s",time());
 
@@ -487,11 +487,12 @@ class RequestUtils
         }
         $postData = array(
             'userType' => 'userName',
-            'userIdList' => "zhouangang",
+            'userIdList' => "liuzhenni",
             'title' => $title,
             'msg' => $msgArray
         );
-        $ali->post("dingding/sendOaNotice",$postData);
+        $res = $ali->post("dingding/sendOaNotice",$postData);
+        echo json_encode($res,JSON_UNESCAPED_UNICODE);
         return $this;
     }
 

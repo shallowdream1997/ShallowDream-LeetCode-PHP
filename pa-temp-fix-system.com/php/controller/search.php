@@ -13,9 +13,6 @@ class search
 {
 
     public $logger;
-
-    private $module = "pa-biz-application";
-
     /**
      * @var CurlService
      */
@@ -24,19 +21,6 @@ class search
     public function __construct()
     {
         $this->logger = new MyLogger("option/searchLog");
-    }
-
-    public function getModule($modlue){
-        switch ($modlue){
-            case "wms":
-                $this->module = "platform-wms-application";
-                break;
-            case "pa":
-                $this->module = "pa-biz-application";
-                break;
-        }
-
-        return $this;
     }
 
 
@@ -414,17 +398,6 @@ class search
         return ["env" => $env, "data" => $returnMsg];
     }
 
-    public function textDiff($params){
-        $curlService = $this->envService;
-        $env = $curlService->environment;
-        $curlService->gateway();
-        $this->getModule('pa');
-        $resp = DataUtils::getNewResultData($curlService->getWayPost( "/sms/sku/material/changed_doc/v1/textDiff", $params));
-
-
-        return ["env" => $env, "data" => $resp['value']];
-    }
-
 
     public function configPage($params){
         $curlService = $this->envService;
@@ -493,6 +466,32 @@ class search
         }
         return ["env" => $env, "data" => $preList];
     }
+
+
+    public function skuChannelUpdate($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+
+        $preList = [];
+        if (isset($params['skuList']) && !empty($params['skuList']) &&
+            isset($params['channel']) && !empty($params['channel'])){
+
+            foreach (array_chunk($params['skuList'],150) as $chunk){
+               $list = DataUtils::getPageList( $curlService->s3015()->get("product-sku/queryPage",[
+                    "productId" => implode(",",$chunk),
+                    "limit" => 150
+                ]));
+               if ($list && count($list) > 0){
+
+               }
+            }
+
+
+        }
+        return ["env" => $env, "data" => $preList];
+    }
+
+
 }
 
 
@@ -575,6 +574,10 @@ switch ($data['action']) {
     case "skuPhotoFix":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->skuPhotoFix($params);
+        break;
+    case "skuChannelUpdate":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->skuChannelUpdate($params);
         break;
 }
 

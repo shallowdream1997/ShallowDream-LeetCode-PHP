@@ -70,6 +70,9 @@ class EnvironmentConfig
             case "skuPhotoFix":
                 $this->curlService = (new CurlService())->pro();
                 break;
+            case "skuChannelUpdate":
+                $this->curlService = (new CurlService())->test();
+                break;
         }
         return $this;
     }
