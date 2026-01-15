@@ -996,8 +996,8 @@ class SyncCurlController
         $env = "pro";
 
         $data = [
-            "prePurchaseBillNo" => "DPMO250804004",
-            "ceBillNo" => "CE202511060163",
+            "prePurchaseBillNo" => "DPMO251231003",
+            "ceBillNo" => "CE202601050017",
             "operatorName" => "system(PA-CE回写)"
         ];
         $curlService1 = new CurlService();
@@ -1008,7 +1008,7 @@ class SyncCurlController
         }
         die(1111);
         $pmoList = [
-            "DPMO250804004-陈炜佳",
+            "DPMO251231005-黎乾海",
         ];
         $curlService = new CurlService();
         foreach ($pmoList as $pmoBillNo){
@@ -1900,7 +1900,7 @@ class SyncCurlController
         $fitmentSkuMap = [];
 
         $fileFitContent = [
-            ['ce_bill_no' => 'CE202511070026'],
+            ['ce_bill_no' => 'CE202512260065'],
         ];
         if (sizeof($fileFitContent) > 0) {
             foreach ($fileFitContent as $item){
@@ -1983,6 +1983,46 @@ class SyncCurlController
 
         }
     }
+
+    public function skuMaterialSyncToProductSku(){
+        $curlService = (new CurlService())->pro();
+        $curlService->gateway();
+        $curlService->getModule('pa');
+
+        $resp1 = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/sms/sku/material/changed_doc/v1/page", [
+            "pageNum" => 1,
+            "pageSize" => 500,
+            "applyStatus" => 30
+        ]));
+
+        $batchNameList = [];
+        if ($resp1 && count($resp1['list']) > 0){
+            foreach ($resp1['list'] as $info){
+//                if ($info['afterChangedTranslationAttributeValue'] == "<p></p>\n"){
+//                    $batchNameList[] = $info['docNumber'];
+//                }
+                $batchNameList[] = $info['docNumber'];
+            }
+        }
+//        $batchNameList = [
+//            "2025080700056",
+//        ];
+        if (count($batchNameList) > 0) {
+            $this->log("一共：".count($batchNameList)."个单据翻译失败，");
+            $this->log(json_encode($batchNameList,JSON_UNESCAPED_UNICODE));
+            foreach ($batchNameList as $item){
+                $postParams = [
+                    "docNumbers" => [$item],
+                    "operatorName" => "P3-fixTranslationFail"
+                ];
+                $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/material/changed_doc/v1/skuMaterialSyncToProductSku", $postParams));
+
+                $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+            }
+
+        }
+    }
+
 
     public function copyNewChannel(){
         $curlService = (new CurlService())->pro();
@@ -4414,52 +4454,142 @@ class SyncCurlController
     {
         $curlService = (new CurlService())->pro();
 
-        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/修复SGU号_陈启莲.xlsx");
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/g号修复_2.xlsx");
         if (sizeof($fileFitContent) > 0) {
 
 
-            $list = [];
+            $listMap = [];
             foreach ($fileFitContent as $item){
-                if (!empty($item['skuId'])){
-                    $list[] = $item['skuId'];
+                if (!empty($item['sku_id'])){
+                    $listMap[$item['original_product_dev_main_id']][] = $item['sku_id'];
                 }
             }
-            $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
-            $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
-                "skuIdList" => $list,
-                "attrCodeList" => [
-                    "custom-skuInfo-skuId",
-                    "custom-common-batchNo",
-                    "custom-sguInfo-sguId",
-                    "custom-sguInfo-groupTag",
-                    "custom-sguInfo-channel",
-                    "custom-skuInfo-tempSkuId"
-                ]
-            ]));
-            $map  =[];
-            if ($getKeyResp){
-                foreach ($getKeyResp as $item){
-                    $map[$item['custom-skuInfo-skuId']] = $item;
-                }
-            }
-
-
-            foreach ($fileFitContent as $item){
-                $sguId = "";
-                $fix30List[] = [
-                    "tempSkuId" => $item['产品序号'],
-                    "skuAttrList" => [
-                        [
-                            "name" => "custom-sguInfo-sguId",
-                            "value" => $item['修复SGU号']
-                        ],
-                        [
-                            "name" => "custom-sguInfo-groupTag",
-                            "value" => "sgu_4"
-                        ]
+            foreach ($listMap as $mainid => $list){
+                $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+                $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
+                    "skuIdList" => $list,
+                    "attrCodeList" => [
+                        "custom-skuInfo-skuId",
+                        "custom-skuInfo-tempSkuId",
+                        "custom-sguInfo-channel"
                     ]
-                ];
+                ]));
+                $map  =[];
+                if ($getKeyResp){
+                    foreach ($getKeyResp as $item){
+                        $map[$item['custom-skuInfo-skuId']] = $item;
+                    }
+                }
+
+                foreach ($list as $sku){
+                    if (isset($map[$sku])){
+                        $skuAttrData = $map[$sku];
+
+
+                            $sguKey = "sgu_init_{$mainid}";
+                            $this->log("{$sguKey}");
+                            $sguId = $this->redis->hGet("sgu_fix_redis", $sguKey);
+                            if (!$sguId){
+                                //当前key重新创建sgu
+                                $sguId = $this->createSguInfo();
+
+                                $this->log("{$sku} 绑定 {$sguId}");
+
+                                $this->redis->hSet("sgu_fix_redis", $sguKey, $sguId);
+                                //$qdScmsPrePurchaseMap[$sguKey] = $sguId;
+                            }
+
+                            if (!empty($sguId)){
+
+                                $this->log("{$sguKey} 生成 {$sguId}");
+
+                                $sguInfo = DataUtils::getQueryListInFirstDataV3($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
+                                    "skuScuId" => $sku,
+                                    "limit" => 1,
+                                ]));
+                                if ($sguInfo){
+
+                                    $sguInfo['sguId'] = $sguId;
+                                    $sguInfo['modifiedBy'] = "system(zhouangang)";
+                                    $curlService->s3015()->put("sgu-sku-scu-maps/{$sguInfo['_id']}", $sguInfo);
+
+                                }else{
+                                    //创建
+
+                                    $channelList = explode(",",$skuAttrData['custom-sguInfo-channel']);
+                                    $channelListData = [];
+                                    foreach ($channelList as $ch){
+                                        $channelListData[] = [
+                                            "groupName" => "",
+                                            "groupAttrName" => [],
+                                            "groupAttrValue" => [],
+                                            "channel" => $ch,
+                                            "modifiedBy" => "system(zhouangang)",
+                                            "modifiedOn" => date("Y-m-d H:i:s",time ())."Z"
+                                        ];
+                                    }
+                                    $create = [
+                                        "createdBy" => "system(zhouangang)",
+                                        "modifiedBy" => "system(zhouangang)",
+                                        "skuScuId" => $sku,
+                                        "sguId" => $sguId,
+                                        "remark" => "sgu自动绑定和初始化",
+                                        "channel" => $channelListData,
+                                        "createdOn" => date("Y-m-d H:i:s",time ())."Z",
+                                        "modifiedOn" => date("Y-m-d H:i:s",time ())."Z"
+                                    ];
+                                    $curlService->s3015()->post("/sgu-sku-scu-maps",$create);
+
+                                }
+
+                                $fix30List[] = [
+                                    "tempSkuId" => $skuAttrData['custom-skuInfo-tempSkuId'],
+                                    "skuAttrList" => [
+                                        [
+                                            "name" => "custom-sguInfo-sguId",
+                                            "value" => $sguId
+                                        ]
+                                    ]
+                                ];
+
+                                if(!isset($hasSguInit[$sguId])){
+                                    $this->log("{$sguId} 开始初始化");
+                                    $sssinof = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
+                                        "limit" => 1,
+                                        "productId" => $sguId
+                                    ]));
+                                    if (!$sssinof){
+                                        $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+                                        $resp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/sms/sku/info/init/v1/initSkuInfo", [
+                                            "initSkuId" => $sku,
+                                            "operatorName" => "system(修复sgu初始化)",
+                                            "productType" => "SGU",
+                                            "sguId" => $sguId
+                                        ]));
+                                        $hasSguInit[$sguId] = 1;
+                                    }else{
+                                        $hasSguInit[$sguId] = 1;
+                                    }
+                                    $this->log("{$sguId} 结束初始化");
+                                }
+
+
+
+                            }else{
+                                $this->log("{$sguKey} 生成g号失败");
+                            }
+
+
+                    }
+                }
+
+
+
+
+
+
             }
+
 
 
 
@@ -6455,12 +6585,123 @@ class SyncCurlController
     {
         (new RequestUtils("pro"))->dingTalk("测试钉钉通知是否正常");
     }
+
+
+
+    public function downloadPaSkuMaterialSpData()
+    {
+        $curlService = new CurlService();
+        $curlService = $curlService->pro();
+
+
+        $list = [];
+        $page = 1;
+        do {
+            $this->log($page);
+            $ll = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
+                "limit" => 1500,
+                "status_in" => "new,developerComplete,saleComplete,materialComplete",
+                "page" => $page
+            ]));
+            if (count($ll) == 0) {
+                break;
+            }
+            foreach ($ll as $info){
+                if (!isset($list[$info['skuId']]) && (!empty($info['keywords']) || !empty($info['cpAsin']) || !empty($info['fitment']))){
+                    $list[$info['skuId']] = [
+                        "skuId" => $info['skuId'],
+                        "keywords" => $info['keywords'],
+                        "cpAsin" => $info['cpAsin'],
+                        "fitment" => $info['fitment'],
+                    ];
+                }
+            }
+            $page++;
+        } while (true);
+
+
+        if (count($list) > 0){
+
+            $exportList1 = [];
+            $exportList2 = [];
+            foreach ($list as $sku => $info){
+                $fitmentDataList = [];
+
+                if (!empty($info['fitment'])){
+                    foreach ($info['fitment'] as $fitment){
+                        $fitmentData = "{$fitment['make']} {$fitment['model']}";
+                        $fitmentDataList[] = $fitmentData;
+                    }
+                }
+                $cpAsinList = [];
+                if (!empty($info['cpAsin'])){
+                    $cpAsinList = implode("/",$info['cpAsin']);
+                }
+                $keywordsList = [];
+                if (!empty($info['keywords'])){
+                    $keywordsList = $info['keywords'];
+                }
+                $exportList1[] = [
+                    "skuid" => $sku,
+                    "fitment" => implode("\n",$fitmentDataList),
+                    "cpAsin" => $cpAsinList,
+                ];
+
+                foreach ($keywordsList as $keywords){
+                    $exportList2[] = [
+                        "skuid" => $sku,
+                        "keywords" => $keywords,
+                    ];
+                }
+
+
+            }
+
+            if (count($exportList1) > 0){
+
+                $excelUtils = new ExcelUtils();
+                $filePath = $excelUtils->downloadXlsx([
+                    "skuid",
+                    "热销车型",
+                    "CPasin",
+                ], $exportList1, "sku热销车型和cpasin迁移数据导出_" . date("YmdHis") . ".xlsx");
+                $this->log("sku热销车型和cpasin迁移数据导出_");
+            }else{
+                $this->log("没有sku热销车型和cpasin迁移数据导出_");
+            }
+
+
+            if (count($exportList2) > 0){
+
+                $excelUtils = new ExcelUtils();
+                $filePath = $excelUtils->downloadXlsx([
+                    "skuid",
+                    "keyword"
+                ], $exportList2, "sku-keyword迁移数据导出_" . date("YmdHis") . ".xlsx");
+                $this->log("sku-keyword迁移数据导出_");
+            }else{
+                $this->log("没有sku-keyword迁移数据导出_");
+            }
+
+        }
+
+
+
+
+
+
+
+    }
+
+
+
 }
 
 $curlController = new SyncCurlController();
 //$curlController->testDing();
+//$curlController->downloadPaSkuMaterialSpData();
 //$curlController->createSkuConsignmentCe();
-$curlController->deleteCeSku();
+//$curlController->deleteCeSku();
 //$curlController->deleteProductSku();
 //$curlController->findPaCeSkuMaterialStatusNotSync();
 //$curlController->getSkuPhotoProgress();
@@ -6528,7 +6769,7 @@ $curlController->deleteCeSku();
 //$curlController->updateFcuProductLine();
 //$curlController->getPaSkuMaterial();
 //$curlController->syncAllVerticalMonthlTargets();
-//$curlController->ceWrite();
+$curlController->ceWrite();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
 //$curlController->writeProductBaseFba();

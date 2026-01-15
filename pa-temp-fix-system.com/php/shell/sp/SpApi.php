@@ -774,4 +774,20 @@ class SpApi
     }
 
 
+
+    public function getMongoSellerRuleList()
+    {
+        $res = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_sellers/queryPage",[
+            "company" => "CR201706060001",
+            "limit" => 1000
+        ]));
+        return $res;
+    }
+
+    public function updateMongoSellerRule($info)
+    {
+        $res = DataUtils::getResultData($this->curlService->s3023()->put("amazon_sp_sellers/{$info['_id']}",$info));
+        return $res;
+    }
+
 }
