@@ -353,6 +353,21 @@ class CurlService
     }
 
     /**
+     * 新架构post form-data请求
+     * @param string $module 模块
+     * @param array $params 参数
+     * @return array|null
+     */
+    public function getWayFormDataPost($module,$params = array()): ?array
+    {
+        $resp = null;
+        if ($this->port != null){
+            $resp = $this->curlRequestFormData($this->port,$module,$params,"POST",true);
+        }
+        return $resp;
+    }
+
+    /**
      * 新架构get请求
      * @param string $module 模块
      * @param array $params 参数
@@ -776,6 +791,123 @@ class CurlService
         );
     }
 
+
+    /**
+     * 使用 multipart/form-data 方式发起 HTTP 请求（适用于文件上传或表单提交）
+     *
+     * @param string $port      对象属性名，如 'baseUrl'，值为完整主机地址（如 https://example.com）
+     * @param string $module    API 路径，如 '/upload'
+     * @param array  $params    表单数据，支持普通字段和文件（使用 CURLFile 或 '@' 前缀）
+     * @param string $method    请求方法，默认 POST
+     * @param bool   $isNew     是否不加 /api 前缀
+     * @param int    $timeout   超时时间（秒）
+     * @param int    $tryTimes  重试次数
+     * @return array            返回 [httpCode, header, result]
+     */
+    private function curlRequestFormData(
+        string $port,
+        string $module,
+        array $params = [],
+        string $method = "POST",
+        bool $isNew = false,
+        int $timeout = 30,
+        int $tryTimes = 1
+    ): array {
+        // 标准化 module 路径
+        if (stripos($module, "/") !== 0 && !empty($module)) {
+            $module = "/" . $module;
+        }
+
+        // 构建 URL
+        if (!$isNew) {
+            $url = $this->$port . '/api' . $module;
+        } else {
+            $url = $this->$port . $module;
+        }
+
+        $result = $httpCode = $headerResponse = $body = "";
+        $t = 1;
+
+        do {
+            try {
+                $connection = curl_init();
+                curl_setopt($connection, CURLOPT_URL, $url);
+
+                // 注意：不要手动设置 Content-Type！cURL 会自动设置 multipart/form-data 和 boundary
+                // 所以这里只保留其他自定义头（如 Authorization 等），但移除可能存在的 Content-Type
+                $headers = $this->header ?? [];
+                // 过滤掉 Content-Type，避免干扰 multipart
+                $filteredHeaders = array_filter($headers, function ($header) {
+                    return stripos($header, 'content-type') === false;
+                });
+                curl_setopt($connection, CURLOPT_HTTPHEADER, $filteredHeaders);
+
+                curl_setopt($connection, CURLOPT_HEADER, true);
+                curl_setopt($connection, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($connection, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($connection, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($connection, CURLOPT_TIMEOUT, $timeout);
+                curl_setopt($connection, CURLOPT_REFERER, 'https://poms-ssl.ux168.cn/  ');
+                curl_setopt($connection, CURLOPT_USERAGENT, 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36');
+
+                // 强制使用 POST（multipart/form-data 通常用于 POST）
+                $method = strtoupper(trim($method));
+                if ($method !== 'POST') {
+                    // 虽然 RFC 不推荐，但某些服务端接受 POST 模拟 PUT/DELETE via _method
+                    // 若需严格支持其他方法，需确认服务端是否接受 multipart/form-data 非 POST
+                    // 这里建议仅支持 POST，或抛出警告
+                    // 为兼容性，仍允许，但底层仍用 POST + 可能加 _method 字段
+                    if (!in_array($method, ['POST', 'PUT', 'PATCH'])) {
+                        throw new \Exception("multipart/form-data 通常仅用于 POST、PUT、PATCH 请求");
+                    }
+                    // 可选：添加 _method 伪装（如果后端支持）
+                    // $params['_method'] = $method;
+                    // 但更安全的做法是只允许 POST
+                }
+
+                curl_setopt($connection, CURLOPT_POST, true);
+                curl_setopt($connection, CURLOPT_POSTFIELDS, $params); // 直接传数组
+
+                $this->log->log("请求 (form-data): {$method}：{$url}");
+                $this->log->log("表单参数：" . json_encode($params, JSON_UNESCAPED_UNICODE | JSON_PARTIAL_OUTPUT_ON_ERROR));
+
+                $result = curl_exec($connection);
+
+                if ($result === false) {
+                    $error = curl_error($connection);
+                    throw new \Exception("cURL error: " . $error);
+                }
+
+                $httpCode = intval(curl_getinfo($connection, CURLINFO_HTTP_CODE));
+                $headerSize = curl_getinfo($connection, CURLINFO_HEADER_SIZE);
+                $headerResponse = substr($result, 0, $headerSize);
+                $body = json_decode(substr($result, $headerSize), true);
+
+                // 判断是否成功（非 4xx/5xx，但排除 401/404/429 以外的错误）
+                if (!in_array($httpCode, [401, 404, 429]) && ($httpCode < 200 || $httpCode >= 300)) {
+                    throw new \Exception("HTTP {$httpCode}");
+                } else {
+                    break; // 成功，跳出重试
+                }
+
+            } catch (\Exception $e) {
+                $this->log->log("请求失败 (第 {$t} 次): " . $e->getMessage());
+                if ($t < $tryTimes) {
+                    sleep(3);
+                }
+            } finally {
+                if (isset($connection)) {
+                    curl_close($connection);
+                }
+            }
+        } while ($t++ < $tryTimes);
+
+        return [
+            "httpCode" => $httpCode,
+            "header" => $headerResponse,
+            "result" => $body,
+        ];
+    }
 
 
     public function specialRequest($postData)

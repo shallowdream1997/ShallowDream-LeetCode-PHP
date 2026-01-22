@@ -448,6 +448,354 @@ class DataUtils
         return $data;
     }
 
+
+
+    public static function parseAndTransformQdLogList($qdLogList) {
+        $actionMap = [
+            'DISABLE' => '作废',
+            'REPUBLISH' => '重新发布',
+            'REASSIGN' => '重新分配',
+            'PUBLISH_CREATE' => '清单发布',
+            'ASSIGN_SUPPLIER' => '清单指定',
+        ];
+
+        $result = [];
+
+        foreach ($qdLogList as $log) {
+            // === 1. 解析 opRemark 获取 action 和初始 reason ===
+            $opRemark = $log['opRemark'] ?? '';
+            $parts = explode(';', $opRemark, 2);
+            $rawAction = trim($parts[0] ?? '');
+            $reason = isset($parts[1]) ? trim($parts[1]) : '';
+
+            // === 2. 解析 opAfterContent 的变更项 ===
+            $opAfterContent = $log['opAfterContent'] ?? '';
+            $changes = [];
+
+            // 使用非贪婪正则，匹配：字段名:【旧值】->【新值】
+            // 支持中英文冒号，字段名允许任意字符（除冒号）
+            preg_match_all('/([^:：]+?)[：:]\s*【([^】]*?)】->【([^】]*?)】/', $opAfterContent, $matches, PREG_SET_ORDER);
+
+            foreach ($matches as $match) {
+                // 清理字段名：去除控制字符、零宽字符、多余空白
+                if (strpos($match[1],"寄卖清单发布竞标单主键ID") !== false){
+                    $field = "寄卖清单发布竞标单主键ID";
+                }else{
+                    $field = preg_replace('/[\x00-\x1f\x7f\p{C}]/u', '', $match[1]); // 移除控制/不可见字符
+                }
+                $field = trim($field);
+                $from = ($match[2] === 'null') ? null : $match[2];
+                $to   = ($match[3] === 'null') ? null : $match[3];
+
+                $changes[$field] = ['from' => $from, 'to' => $to];
+            }
+
+            // === 3. 特殊处理：若存在“QD单作废原因”且 to 非空，覆盖 reason ===
+            if (isset($changes['QD单作废原因']) && !empty($changes['QD单作废原因']['to'])) {
+                $reason = $changes['QD单作废原因']['to'];
+            }
+
+            // === 4. 映射 action ===
+            $action = $actionMap[$rawAction] ?? $rawAction;
+
+            // === 5. 安全提取特定字段（支持字段名模糊匹配）===
+            $getFieldValue = function ($fieldName, $key) use ($changes) {
+                // 精确匹配
+                if (isset($changes[$fieldName])) {
+                    return $changes[$fieldName][$key] ?? null;
+                }
+
+                // 模糊匹配：如果字段名包含关键词（应对可能的空格/不可见字符）
+                foreach ($changes as $f => $vals) {
+                    if (strpos($f, '集团id') !== false && strpos($fieldName, '集团id') !== false) {
+                        return $vals[$key] ?? null;
+                    }
+                    if (strpos($f, '供应商id') !== false && strpos($fieldName, '供应商id') !== false) {
+                        return $vals[$key] ?? null;
+                    }
+                    if (strpos($f, '竞标单号') !== false && strpos($fieldName, '竞标单号') !== false) {
+                        return $vals[$key] ?? null;
+                    }
+                    if (strpos($f, '竞标单主键ID') !== false && strpos($f, '竞标单主键ID') !== false) {
+                        // 匹配“最新轮次...主键ID”类字段
+                        if (strpos($fieldName, '竞标单主键ID') !== false) {
+                            return $vals[$key] ?? null;
+                        }
+                    }
+                }
+                return null;
+            };
+
+            // 提取各字段
+            $beforeGroupId                          = $getFieldValue('集团id', 'from');
+            $afterGroupId                           = $getFieldValue('集团id', 'to');
+            $beforeSupplierId                       = $getFieldValue('供应商id', 'from');
+            $afterSupplierId                        = $getFieldValue('供应商id', 'to');
+            $beforeBidBillNo                        = $getFieldValue('竞标单号', 'from');
+            $afterBidBillNo                         = $getFieldValue('竞标单号', 'to');
+            $beforeConsignmentQdPublishRecordId     = $getFieldValue('最新轮次的寄卖清单发布竞标单主键ID', 'from');
+            $afterConsignmentQdPublishRecordId      = $getFieldValue('最新轮次的寄卖清单发布竞标单主键ID', 'to');
+
+            // === 6. 转换 createTime（毫秒时间戳 → Y-m-d H:i:s）===
+            $createTimeMs = $log['createTime'] ?? 0;
+            $createTime = is_numeric($createTimeMs)
+                ? date('Y-m-d H:i:s', (int)($createTimeMs / 1000))
+                : null;
+
+            // === 7. 构建最终结果 ===
+            $result[] = [
+                'action'                                    => $action,
+                'remark'                                    => $reason,
+                'beforeGroupId'                             => $beforeGroupId,
+                'afterGroupId'                              => $afterGroupId,
+                'beforeSupplierId'                          => $beforeSupplierId,
+                'afterSupplierId'                           => $afterSupplierId,
+                'beforeBidBillNo'                           => $beforeBidBillNo,
+                'afterBidBillNo'                            => $afterBidBillNo,
+                'beforeConsignmentQdPublishRecordId'        => $beforeConsignmentQdPublishRecordId,
+                'afterConsignmentQdPublishRecordId'         => $afterConsignmentQdPublishRecordId,
+                'createBy'                                  => $log['createBy'] ?? null,
+                'createTime'                                => $createTime,
+            ];
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * 对已解析的日志列表进行二次整理
+     *
+     * @param array $logActionList 已结构化的日志列表（含 action, remark, createTime 等）
+     * @return array 整理后的日志列表
+     */
+    public static function refineLogActionList($logActionList) {
+        // 1. 按 createTime 升序排序（最早在前）
+        usort($logActionList, function ($a, $b) {
+            return strtotime($a['createTime']) <=> strtotime($b['createTime']);
+        });
+
+        $count = count($logActionList);
+
+        for ($i = 0; $i < $count; $i++) {
+            $current = &$logActionList[$i];
+
+            if ($current['action'] === '重新发布') {
+                if ($current['createBy'] === 'ConsignmentWorkFlow') {
+                    $current['remark'] = '因寄卖商未参与竞标且满足重新发布条件，清单自动发布';
+                } else {
+                    $current['remark'] = '操作了重新发布';
+                }
+
+            } elseif ($current['action'] === '作废') {
+                // 作废：只向前找 after... 上下文
+                $context = null;
+                for ($j = $i - 1; $j >= 0; $j--) {
+                    $prev = $logActionList[$j];
+                    if (
+                        !empty($prev['afterConsignmentQdPublishRecordId']) &&
+                        !empty($prev['afterBidBillNo'])
+                    ) {
+                        $context = $prev;
+                        break;
+                    }
+                }
+                if ($context) {
+                    $current['beforeConsignmentQdPublishRecordId'] = $context['afterConsignmentQdPublishRecordId'];
+                    $current['beforeBidBillNo'] = $context['afterBidBillNo'];
+                }
+
+            } elseif ($current['action'] === '重新分配') {
+                $filled = false;
+
+                // 第一步：向前找（历史）—— 使用 after...
+                for ($j = $i - 1; $j >= 0; $j--) {
+                    $prev = $logActionList[$j];
+                    if (
+                        !empty($prev['afterConsignmentQdPublishRecordId']) &&
+                        !empty($prev['afterBidBillNo'])
+                    ) {
+                        $current['beforeConsignmentQdPublishRecordId'] = $prev['afterConsignmentQdPublishRecordId'];
+                        $current['afterConsignmentQdPublishRecordId']  = $prev['afterConsignmentQdPublishRecordId'];
+                        $current['beforeBidBillNo'] = $prev['afterBidBillNo'];
+                        $current['afterBidBillNo']  = $prev['afterBidBillNo'];
+                        $current['remark'] = '操作了重新分配';
+                        $filled = true;
+                        break;
+                    }
+                }
+
+                // 第二步：如果没填上，向后找（未来）—— 使用 before...
+                if (!$filled) {
+                    for ($j = $i + 1; $j < $count; $j++) {
+                        $next = $logActionList[$j];
+                        if (
+                            !empty($next['beforeConsignmentQdPublishRecordId']) &&
+                            !empty($next['beforeBidBillNo'])
+                        ) {
+                            $current['beforeConsignmentQdPublishRecordId'] = $next['beforeConsignmentQdPublishRecordId'];
+                            $current['afterConsignmentQdPublishRecordId']  = $next['beforeConsignmentQdPublishRecordId'];
+                            $current['beforeBidBillNo'] = $next['beforeBidBillNo'];
+                            $current['afterBidBillNo']  = $next['beforeBidBillNo'];
+                            $current['remark'] = '操作了重新分配';
+                            break; // 找到最近的一条即可
+                        }
+                    }
+                }
+            }
+        }
+
+        return $logActionList;
+    }
+
+
+    public static function refineLogActionListV2($logActionList) {
+        // 1. 按 createTime 升序排序（最早在前）
+        usort($logActionList, function ($a, $b) {
+            return strtotime($a['createTime']) <=> strtotime($b['createTime']);
+        });
+
+        $count = count($logActionList);
+
+        // 2. 原有逻辑：处理 remark、重新分配、作废等
+        for ($i = 0; $i < $count; $i++) {
+            $current = &$logActionList[$i];
+
+            if ($current['action'] === '重新发布') {
+                if ($current['createBy'] === 'ConsignmentWorkFlow') {
+                    $current['remark'] = '因寄卖商未参与竞标且满足重新发布条件，清单自动发布';
+                } else {
+                    $current['remark'] = '操作了重新发布';
+                }
+
+            } elseif ($current['action'] === '作废') {
+                $context = null;
+                for ($j = $i - 1; $j >= 0; $j--) {
+                    $prev = $logActionList[$j];
+                    if (
+                        !empty($prev['afterConsignmentQdPublishRecordId']) &&
+                        !empty($prev['afterBidBillNo'])
+                    ) {
+                        $context = $prev;
+                        break;
+                    }
+                }
+                if ($context) {
+                    $current['beforeConsignmentQdPublishRecordId'] = $context['afterConsignmentQdPublishRecordId'];
+                    $current['beforeBidBillNo'] = $context['afterBidBillNo'];
+                }
+
+            } elseif ($current['action'] === '重新分配') {
+                $filled = false;
+
+                // 向前找
+                for ($j = $i - 1; $j >= 0; $j--) {
+                    $prev = $logActionList[$j];
+                    if (
+                        !empty($prev['afterConsignmentQdPublishRecordId']) &&
+                        !empty($prev['afterBidBillNo'])
+                    ) {
+                        $current['beforeConsignmentQdPublishRecordId'] = $prev['afterConsignmentQdPublishRecordId'];
+                        $current['afterConsignmentQdPublishRecordId']  = $prev['afterConsignmentQdPublishRecordId'];
+                        $current['beforeBidBillNo'] = $prev['afterBidBillNo'];
+                        $current['afterBidBillNo']  = $prev['afterBidBillNo'];
+                        $current['remark'] = '操作了重新分配';
+                        $filled = true;
+                        break;
+                    }
+                }
+
+                // 向后找
+                if (!$filled) {
+                    for ($j = $i + 1; $j < $count; $j++) {
+                        $next = $logActionList[$j];
+                        if (
+                            !empty($next['beforeConsignmentQdPublishRecordId']) &&
+                            !empty($next['beforeBidBillNo'])
+                        ) {
+                            $current['beforeConsignmentQdPublishRecordId'] = $next['beforeConsignmentQdPublishRecordId'];
+                            $current['afterConsignmentQdPublishRecordId']  = $next['beforeConsignmentQdPublishRecordId'];
+                            $current['beforeBidBillNo'] = $next['beforeBidBillNo'];
+                            $current['afterBidBillNo']  = $next['beforeBidBillNo'];
+                            $current['remark'] = '操作了重新分配';
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // ✅ 3. 【新增】修复所有 "重新发布" 记录的 before 字段，确保与上一条 after 一致
+        for ($i = 0; $i < $count; $i++) {
+
+            // 如果是第一条，无法取上一条，跳过（或可设为 null）
+            if ($i === 0) {
+                // 可选：强制设为 null 或保留原值
+                continue;
+            }
+
+            $prev = $logActionList[$i - 1];
+
+            // 强制同步：当前 before = 上一条 after
+            $logActionList[$i]['beforeGroupId'] = $prev['afterGroupId'] ?? null;
+            $logActionList[$i]['beforeSupplierId'] = $prev['afterSupplierId'] ?? null;
+
+        }
+
+        return $logActionList;
+    }
+
+    /**
+     * 过滤掉重复的“重新发布”日志
+     * 重复条件：action = "重新发布" 且 consignmentQdId + afterConsignmentQdPublishRecordId 相同
+     * 保留 createTime 最早的一条
+     *
+     * @param array $logActionList 已整理的日志列表
+     * @return array 去重后的日志列表
+     */
+    public static function removeDuplicateRepublishLogs($logActionList) {
+        $uniqueRepublishKeys = [];
+        $result = [];
+
+        // 先按 createTime 升序排序，确保遍历时先遇到最早的
+        usort($logActionList, function ($a, $b) {
+            return strtotime($a['createTime']) <=> strtotime($b['createTime']);
+        });
+
+        foreach ($logActionList as $log) {
+            // 如果不是“重新发布”，直接保留
+            if ($log['action'] !== '重新发布') {
+                $result[] = $log;
+                continue;
+            }
+
+            // 构造去重键：consignmentQdId + afterConsignmentQdPublishRecordId
+            $consignmentQdId = $log['consignmentQdId'] ?? '';
+            $publishId = $log['afterConsignmentQdPublishRecordId'] ?? '';
+
+            // 如果 publishId 为空，无法构成有效键，也保留（避免误删）
+            if ($publishId === '') {
+                $result[] = $log;
+                continue;
+            }
+
+            $key = $consignmentQdId . '_' . $publishId;
+
+            // 如果该键已存在，说明是重复，跳过
+            if (isset($uniqueRepublishKeys[$key])) {
+                continue;
+            }
+
+            // 首次出现，标记并保留
+            $uniqueRepublishKeys[$key] = true;
+            $result[] = $log;
+        }
+
+        // 可选：恢复原始时间顺序（如果需要）
+        // 如果你希望保持升序，可不做处理；否则可按原顺序（需额外字段）
+
+        return $result;
+    }
 }
 
 

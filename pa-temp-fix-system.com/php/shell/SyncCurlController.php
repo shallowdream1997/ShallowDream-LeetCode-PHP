@@ -6695,9 +6695,182 @@ class SyncCurlController
 
 
 
+    public function initQdActionLog()
+    {
+        $curlPaService = (new CurlService())->test()->getModule("pa")->gateway();
+        $curlLogService = (new CurlService())->test()->getModule('ux168log')->gateway();
+
+        $list = [];
+
+        $page = 1;
+        do{
+            $qdlist = DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignmentqdlist/v1/qdPageList", [
+                "pageNum" => $page,
+                "pageSize" => 100,
+                "qdBillNoList" => ["QD202510100065"]
+            ]));
+            if ($qdlist && isset($qdlist['list']) && $qdlist['list'] && count($qdlist['list']) > 0){
+                $list = array_merge($list,array_column($qdlist['list'],'consignmentQdId'));
+            }else{
+                break;
+            }
+            $page++;
+        }while(true);
+
+        if ($list){
+            //这里可以读表搞一个映射出来
+
+
+            foreach ($list as $qdId){
+                //记录日志步骤
+                //1. 首次发布; 读取第一个publish_record_id 的数据; 但是要根据寄卖商类型，达标供应商(自动发布的) 和 货源供应商(指定发布)
+                //操作了清单发布
+                $log = [];
+                $detailResp = DataUtils::getNewResultData($curlPaService->getWayFormDataPost($curlPaService->module . "/scms/consignmentqdlist/v1/getQdDetail",[
+                    "consignmentQdId" => $qdId
+                ]));
+
+
+                if ($detailResp){
+
+                    $logListResp = DataUtils::getNewResultData($curlLogService->getWayPost($curlLogService->module . "/log/v1/query",[
+                        "page" => [
+                            "pageNum" => 1,
+                            "pageSize" => 100,
+                        ],
+                        "condition" => [
+                            "opId" => $qdId,
+                            "logSource" => "pa-scms-service",
+                            "logType" => "consignment_qd_action"
+                        ]
+                    ]));
+                    $logActionList = [];
+                    $existPeoplePublishMap = [];
+                    if ($logListResp && isset($logListResp['list']) && $logListResp['list'] && count($logListResp['list']) > 0){
+                        //$this->log("有日志：{$info['_id']}");
+                        $logActionList = DataUtils::parseAndTransformQdLogList($logListResp['list']);
+                        foreach ($logActionList as &$item){
+                            $item['consignmentQdId'] = $qdId;
+                            $item['qdBillNo'] = $detailResp['qdBillNo'];
+                            if ($item['action'] == "清单发布"){
+                                $existPeoplePublishMap[$item['afterConsignmentQdPublishRecordId']] = 1;
+                            }
+                        }
+                    }
+
+
+                    if ($detailResp['consignmentPublishRecordDetailBOList']){
+                        $publishCountMap = [];
+                        foreach ($detailResp['consignmentPublishRecordDetailBOList'] as $index => $detail){
+                            $publishCountMap[$index] = $detail;
+                            if($index == 0){
+                                $log[] = [
+                                    "consignmentQdId" => $qdId,
+                                    "qdBillNo" => $detailResp['qdBillNo'],
+                                    "beforeConsignmentQdPublishRecordId" => null,
+                                    "afterConsignmentQdPublishRecordId" => $detail['consignmentQdPublishRecordId'],
+                                    "beforeBidBillNo" => null,
+                                    "afterBidBillNo" => $detail['bidBillNo'],
+                                    "beforeGroupId" => null,
+                                    "beforeSupplierId" => null,
+                                    "afterGroupId" => null,
+                                    "afterSupplierId" => null,
+                                    "action" => "首次发布",
+                                    "remark" => $detail['createBy'] === 'ConsignmentWorkFlow' ? "清单自动发布" : "操作了清单发布",
+                                    "createTime" => $detail['createTime'],
+                                    "createBy" => $detail['createBy'],
+                                ];
+                            }else{
+                                //>0 有多个清单轮次，这个轮次可以
+                                //拿到上一个轮次的数据
+                                if (isset($existPeoplePublishMap[$detail['consignmentQdPublishRecordId']])){
+                                    //有人工发布的就不需要认为是重新发布
+
+                                }else{
+                                    $beforeDetail = $publishCountMap[$index-1];
+                                    $log[] = [
+                                        "consignmentQdId" => $qdId,
+                                        "qdBillNo" => $detailResp['qdBillNo'],
+                                        "beforeConsignmentQdPublishRecordId" => $beforeDetail['consignmentQdPublishRecordId'],
+                                        "afterConsignmentQdPublishRecordId" => $detail['consignmentQdPublishRecordId'],
+                                        "beforeBidBillNo" => $beforeDetail['bidBillNo'],
+                                        "afterBidBillNo" => $detail['bidBillNo'],
+                                        "beforeGroupId" => null,
+                                        "beforeSupplierId" => null,
+                                        "afterGroupId" => null,
+                                        "afterSupplierId" => null,
+                                        "action" => "重新发布",
+                                        "remark" => $detail['createBy'] === 'ConsignmentWorkFlow' ? "因寄卖商未参与竞标且满足重新发布条件，清单自动发布" : "操作了重新发布",
+                                        "createTime" => $detail['createTime'],
+                                        "createBy" => $detail['createBy'],
+                                    ];
+                                }
+
+                            }
+
+
+
+                            if (count($detail['supplierQdApplyRecordDetailBOList']) > 0){
+                                usort($detail['supplierQdApplyRecordDetailBOList'], function ($a, $b) {
+                                    return $b['totalScore'] <=> $a['totalScore'];
+                                });
+                                $groupId = $detail['supplierQdApplyRecordDetailBOList'][0]['groupId'];
+                                $supplierId = $detail['supplierQdApplyRecordDetailBOList'][0]['supplierId'];
+
+                                $log[] = [
+                                    "consignmentQdId" => $qdId,
+                                    "qdBillNo" => $detailResp['qdBillNo'],
+                                    "beforeConsignmentQdPublishRecordId" => $detail['consignmentQdPublishRecordId'],
+                                    "afterConsignmentQdPublishRecordId" => $detail['consignmentQdPublishRecordId'],
+                                    "beforeBidBillNo" => $detail['bidBillNo'],
+                                    "afterBidBillNo" => $detail['bidBillNo'],
+                                    "beforeGroupId" => null,
+                                    "beforeSupplierId" => null,
+                                    "afterGroupId" => $groupId,
+                                    "afterSupplierId" => $supplierId,
+                                    "action" => "自动分配",
+                                    "remark" => "执行自动分配任务",
+                                    "createTime" => date('Y-m-d H:i:s', strtotime('+1 minute', strtotime($detail['createTime']))),
+                                    "createBy" => "ConsignmentWorkFlow",
+                                ];
+                            }
+                        }
+
+                        foreach ($logActionList as $logAction){
+                            $log[] = $logAction;
+                        }
+
+                        $log = DataUtils::removeDuplicateRepublishLogs($log);
+                        $log = DataUtils::refineLogActionListV2($log);
+                    }
+
+
+                    if ($log){
+
+
+
+                        $this->log(json_encode($log,JSON_UNESCAPED_UNICODE));
+                    }
+
+
+                }
+
+
+
+
+            }
+
+
+        }
+
+
+    }
+
+
 }
 
 $curlController = new SyncCurlController();
+$curlController->initQdActionLog();
 //$curlController->testDing();
 //$curlController->downloadPaSkuMaterialSpData();
 //$curlController->createSkuConsignmentCe();
@@ -6769,7 +6942,7 @@ $curlController = new SyncCurlController();
 //$curlController->updateFcuProductLine();
 //$curlController->getPaSkuMaterial();
 //$curlController->syncAllVerticalMonthlTargets();
-$curlController->ceWrite();
+//$curlController->ceWrite();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
 //$curlController->writeProductBaseFba();
