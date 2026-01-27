@@ -5453,18 +5453,17 @@ class SyncCurlController
 
         foreach (
             [
-                "2025 W36 PA ROCKCAR sku FR",
+                "2025 W49 MRO EU4 AI翻译 SKU IT 182",
+                "2025 W49 MRO EU4 AI翻译 SKU IT 212"
             ] as $title
         ) {
-
-
             $mainInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("translation_management_ebays/queryPage", [
                 "limit" => 1,
                 "page" => 1,
                 "batch_title" => $title,
             ]));
             if ($mainInfo['status'] != "5") {
-                $mainInfo['status'] = "2";
+                $mainInfo['status'] = "1";
                 $updateMainRes = DataUtils::getResultData($curlService->s3015()->put("translation_management_ebays/{$mainInfo['_id']}", $mainInfo));
                 $this->log("修改成功" . json_encode($updateMainRes, JSON_UNESCAPED_UNICODE));
 
@@ -5475,7 +5474,7 @@ class SyncCurlController
                 if ($detailList) {
                     foreach ($detailList as $detail) {
                         if ($detail['status'] != "5") {
-                            $detail['status'] = "2";
+                            $detail['status'] = "1";
                             DataUtils::getResultData($curlService->s3015()->put("translation_management_ebay_skus/{$detail['_id']}", $detail));
                         }
                     }
@@ -6707,7 +6706,7 @@ class SyncCurlController
             $qdlist = DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignmentqdlist/v1/qdPageList", [
                 "pageNum" => $page,
                 "pageSize" => 100,
-                "qdBillNoList" => ["QD202510100065"]
+//                "qdBillNoList" => ["QD202601050001"]
             ]));
             if ($qdlist && isset($qdlist['list']) && $qdlist['list'] && count($qdlist['list']) > 0){
                 $list = array_merge($list,array_column($qdlist['list'],'consignmentQdId'));
@@ -6850,6 +6849,8 @@ class SyncCurlController
 
 
                         $this->log(json_encode($log,JSON_UNESCAPED_UNICODE));
+
+                        DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignment/workflow/v1/batchInsertLog",$log));
                     }
 
 
@@ -6870,7 +6871,7 @@ class SyncCurlController
 }
 
 $curlController = new SyncCurlController();
-$curlController->initQdActionLog();
+//$curlController->initQdActionLog();
 //$curlController->testDing();
 //$curlController->downloadPaSkuMaterialSpData();
 //$curlController->createSkuConsignmentCe();
@@ -6889,7 +6890,7 @@ $curlController->initQdActionLog();
 //$curlController->getProductSku();
 //$curlController->deleteSpmoDetails();
 //$curlController->downloadChannelAmazonCategory();
-//$curlController->fixEbayTranslationMainSku();
+$curlController->fixEbayTranslationMainSku();
 //$curlController->fixLossSkuV2();
 //$curlController->fixLossSku();
 //$curlController->searchLossSku();
