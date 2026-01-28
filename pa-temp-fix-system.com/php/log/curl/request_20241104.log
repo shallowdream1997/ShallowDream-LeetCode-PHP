@@ -1,0 +1,6 @@
+2024-11-04 07:33:31 - 请求: POST：https://gateway.ux168.cn/platform-config-service/business/config/v1/getConfigByKey
+2024-11-04 07:33:31 - 参数：{"configKey":"PA_POMS_SKU_BRAND_INIT_CONFIG"}
+2024-11-04 07:33:32 - 请求: GET：http://172.16.10.62:30015/api/pa_products/queryPage?batchName_in=20240823+-+%E5%90%95%E6%B2%BB%E6%94%BF+-+6&limit=150
+2024-11-04 07:33:32 - 参数：[]
+2024-11-04 07:34:01 - 请求: GET：http://172.16.10.62:30015/api/pa_products/queryPage?batchName_in=20240823+-+%E5%90%95%E6%B2%BB%E6%94%BF+-+6&limit=150
+2024-11-04 07:34:01 - 参数：[]

@@ -1,0 +1,6 @@
+2024-10-23 08:04:28 - 请求: GET：http://172.16.10.62:30015/api/pa_products/queryPage?batchName_in=20240926+-+%E5%BC%A0%E9%9B%85%E5%A9%B7+-+1%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C%2C&limit=150
+2024-10-23 08:04:28 - 参数：[]
+2024-10-23 08:10:10 - 请求: GET：http://172.16.10.62:30015/api/product-skus/queryPage?productId=a24082200ux1265%2Ca24082200ux1264%2Ca24082200ux1230&limit=3
+2024-10-23 08:10:10 - 参数：[]
+2024-10-23 08:10:20 - 请求: GET：http://172.16.10.62:30015/api/product-skus/queryPage?productId=a24082200ux1265%2Ca24082200ux1264%2Ca24082200ux1230&limit=3
+2024-10-23 08:10:20 - 参数：[]
