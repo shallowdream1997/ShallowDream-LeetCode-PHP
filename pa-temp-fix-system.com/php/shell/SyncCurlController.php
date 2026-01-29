@@ -5833,27 +5833,16 @@ class SyncCurlController
         if (sizeof($fileFitContent) > 0) {
             $skuIdList = array_unique(array_column($fileFitContent, "productid"));
 
+            $channelSkuMap = [];
+            foreach ($fileFitContent as $info){
+                $channelSkuMap[$info['productid']] = $info['channel'];
+            }
 //            $skuIdList = [
 //
 //                "a20112600ux0155",
 //
 //                "a20112600ux0156",
 //
-////                "a20112600ux0158",
-////
-////                "a20112600ux0159",
-////
-////                "a20112600ux0161",
-////
-////                "a20112600ux0162",
-////
-////                "a20112600ux0164",
-////
-////                "a20112600ux0165",
-////
-////                "a20112600ux0167",
-////
-////                "a20112600ux0168",
 //            ];
             $curlService = (new CurlService())->pro();
 
@@ -5883,7 +5872,7 @@ class SyncCurlController
                                 'MSRP_currency',
 //                                'MSRP',
 //                                'MSRPWithTax'
-                            ]) && $info['value'] == "false"){
+                            ]) && isset($channelSkuMap[$productInfo['productId']]) && $info['channel'] == $channelSkuMap[$productInfo['productId']]){
                             $this->log($sku . "渠道：{$info['channel']} {$info['label']} 值为: " . $info['value']);
                             $export[] = [
                                 "skuId" => $sku,
@@ -5896,7 +5885,7 @@ class SyncCurlController
                     }
 
                     if (count($deleteMap) == 0){
-                        $this->log($sku . "不存在币种属性值为false的");
+                        $this->log($sku . "不存在币种属性值的");
                         continue;
                     }
                     $filtered = [];
@@ -5913,8 +5902,9 @@ class SyncCurlController
                     $productInfo['action'] = "修复币种不一导致上架失败问题";
                     //$this->log(json_encode($productInfo['attribute'],JSON_UNESCAPED_UNICODE));
                     $this->log($sku . "该删");
-                    $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
-                    $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+                    //$this->log(json_encode($productInfo,JSON_UNESCAPED_UNICODE));
+                    //$resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
+                    //$this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
                 }
             }
 
@@ -6882,7 +6872,7 @@ $curlController = new SyncCurlController();
 //$curlController->fallBackQD();
 //$curlController->fixProductSkuCategory();
 //$curlController->consignmentQD(null);
-//$curlController->fixProductSkuCurrent();
+$curlController->fixProductSkuCurrent();
 //$curlController->exportAmazonUsAttribute();
 //$curlController->syncBusinessModulesToTest();
 //$curlController->exportBusinessModules();
@@ -6890,7 +6880,7 @@ $curlController = new SyncCurlController();
 //$curlController->getProductSku();
 //$curlController->deleteSpmoDetails();
 //$curlController->downloadChannelAmazonCategory();
-$curlController->fixEbayTranslationMainSku();
+//$curlController->fixEbayTranslationMainSku();
 //$curlController->fixLossSkuV2();
 //$curlController->fixLossSku();
 //$curlController->searchLossSku();

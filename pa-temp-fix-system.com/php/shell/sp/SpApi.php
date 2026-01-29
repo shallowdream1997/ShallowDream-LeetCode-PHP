@@ -47,6 +47,24 @@ class SpApi
         }
         return $res;
     }
+    public function getMongoCampaignInfoV2($campaignId)
+    {
+        $str = $this->redis->hGet("campaignSpCampaignIdData",$campaignId);
+        $res = [];
+        if (!$str){
+            $res = DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_campaigns/queryPage",[
+                "campaignId" => $campaignId,
+                "limit" => 1
+            ]));
+            if ($res){
+                $this->redis->hSet("campaignSpCampaignIdData",$campaignId,json_encode($res,JSON_UNESCAPED_UNICODE));
+            }
+        }else{
+            $res = json_decode($str,true);
+        }
+        return $res;
+    }
+
     public function mongoCreateCampaignInfo($sellerId,$fixCampaign,$campaignId,$oldCampaignInfo)
     {
         $createCampaign = [
@@ -147,6 +165,19 @@ class SpApi
             $mongoTargetMap[$mongo['value']] = $mongo;
         }
         return $mongoTargetMap;
+    }
+
+    public function getMongoTargetAsinV2($sellerId,$campaignId,$adGroupId)
+    {
+
+        $mongoList = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_targets/queryPage",[
+            "companyId" => "CR201706060001",
+            "channel" => $this->specialSellerIdConver($sellerId),
+            "campaignId" => $campaignId,
+            "adGroupId" => $adGroupId,
+            "limit" => 1000
+        ]));
+        return $mongoList;
     }
     public function mongoCreateTargetAsin($sellerId, $campaignId, $adGroupId, $asin,$targetConfig)
     {
@@ -256,15 +287,22 @@ class SpApi
 
 
     //============================== AdGroup start==============================================///
-    public function getMongoAdGroupInfo($sellerId,$campaignId,$adGroupName)
+    public function getMongoAdGroupInfo($sellerId,$campaignId = '',$adGroupName = '',$adGroupId = '')
     {
-
-        return DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_adgroups/queryPage",[
+        $condition = [
             "channel" => $this->specialSellerIdConver($sellerId),
-            "campaignId" => $campaignId,
-            "adGroupName" => $adGroupName,
             "limit" => 1
-        ]));
+        ];
+        if ($campaignId){
+            $condition['campaignId'] = $campaignId;
+        }
+        if ($adGroupName){
+            $condition['adGroupName'] = $adGroupName;
+        }
+        if ($adGroupId){
+            $condition['adGroupId'] = $adGroupId;
+        }
+        return DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_adgroups/queryPage",$condition));
     }
     public function mongoCreateAdGroup($sellerId,$campaignId,$adGroupId,$adGroupName,$oldAdGroupInfo)
     {
@@ -351,19 +389,53 @@ class SpApi
         }
     }
 
+    /**
+     * 删除mongo中的adGroup
+     * @param $_id
+     * @return array
+     */
+    public function deleteMongoAdGroupInfo($_id)
+    {
+        return DataUtils::getResultData($this->curlService->s3023()->delete("amazon_sp_adgroups/{$_id}",[]));
+    }
+    public function archivedAdGroup($sellerId,$adGroupId,$adGroupName)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/adGroups/putAdGroups/{$sellerId}", [[
+            "adGroupId" => $adGroupId,
+            "state" => "archived"
+        ]]));
+
+        if ($returnMessage['status'] == 'success' && count($returnMessage['data']) > 0 && $returnMessage['data'][0]['code'] == "SUCCESS") {
+            //创建成功
+            return true;
+        }else{
+            $this->log("归档adGroup失败：{$sellerId} {$adGroupName}");
+            return false;
+        }
+    }
+
     //=============================AdGroup end==============================================///
 
 
     //============================== Product start==============================================///
-    public function getMongoProductInfo($sellerId,$campaignId,$adGroupId,$sku)
+    public function getMongoProductInfo($sellerId,$campaignId = '',$adGroupId = '',$sku = '',$limit = 1)
     {
-        return DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_products/queryPage",[
+        $condtion = [
             "channel" => $this->specialSellerIdConver($sellerId),
-            "campaignId" => $campaignId,
-            "adGroupId" => $adGroupId,
-            "sku" => $sku,
-            "limit" => 1
-        ]));
+            "limit" => $limit
+        ];
+
+
+        if ($campaignId) {
+            $condtion['campaignId'] = $campaignId;
+        }
+        if ($adGroupId){
+            $condtion['adGroupId'] = $adGroupId;
+        }
+        if ($sku){
+            $condtion['sku'] = $sku;
+        }
+        return DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_products/queryPage",$condtion));
     }
     public function mongoCreateProduct($sellerId,$campaignId,$adGroupId,$sku,$adId,$oldProductInfo)
     {
@@ -513,7 +585,7 @@ class SpApi
             "channel" => $this->specialSellerIdConver($sellerId),
             "campaignId" => $campaignId,
             "adGroupId" => $adGroupId,
-            "limit" => 500
+            "limit" => 1000
         ]));
         $keywordMap = [];
         if ($list){
@@ -523,6 +595,28 @@ class SpApi
             }
         }
         return $keywordMap;
+    }
+
+    public function getMongoKeywordInfoV2($sellerId,$campaignId,$adGroupId)
+    {
+        $list = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_keywords/queryPage",[
+            "channel" => $this->specialSellerIdConver($sellerId),
+            "campaignId" => $campaignId,
+            "adGroupId" => $adGroupId,
+            "limit" => 1000
+        ]));
+        return $list;
+    }
+
+    public function getMongoNegativeKeywordInfoV2($sellerId,$campaignId,$adGroupId)
+    {
+        $list = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_negativeKeywords/queryPage",[
+            "channel" => $this->specialSellerIdConver($sellerId),
+            "campaignId" => $campaignId,
+            "adGroupId" => $adGroupId,
+            "limit" => 1000
+        ]));
+        return $list;
     }
     public function mongoCreateKeyword($sellerId,$campaignId,$adGroupId,$kw,$ky,$keywordId,$oldAdGroupInfo)
     {
@@ -788,6 +882,60 @@ class SpApi
     {
         $res = DataUtils::getResultData($this->curlService->s3023()->put("amazon_sp_sellers/{$info['_id']}",$info));
         return $res;
+    }
+
+    public function pidScuMapAdGroupFindProductId($channel,$scuId)
+    {
+        return DataUtils::getPageListInFirstData($this->curlService->s3015()->get("pid-scu-maps/queryPage",[
+            "scuIdType" => "nonFba",
+            "scuIdStyle" => "sellerSku",
+            "scuId" => $scuId,
+            "channel" => $channel
+        ]));
+    }
+
+    public function pidScuMapProductIdFindScuId($channel,$scuId)
+    {
+        return DataUtils::getPageListInFirstData($this->curlService->s3015()->get("pid-scu-maps/queryPage",[
+            "scuIdType" => "fba",
+            "scuIdStyle" => "systemWithSelling",
+            "productId" => $scuId,
+            "channel" => $channel
+        ]));
+    }
+
+    public function sellerConfig($sellerId)
+    {
+        $key = "{$sellerId}";
+        $str = $this->redis->hGet("sellerMap", $key);
+        $channel = "";
+        if (!$str) {
+            $res = DataUtils::getPageListInFirstData($this->curlService->s3015()->get("seller-configs/queryPage", ["sellerId" => $sellerId]));
+            if ($res) {
+                $this->redis->hSet("sellerMap", $key, json_encode($res, JSON_UNESCAPED_UNICODE));
+                $channel = $res['channel'];
+            }
+        } else {
+            $res = json_decode($str,true);
+            $channel = $res['channel'];
+        }
+        return $channel;
+    }
+
+    public function combineSpData($channel,$sellerId,$targetingType,$campaignType,$scu)
+    {
+        $resp = DataUtils::getResultData($this->curlService->phphk()->post("amazonSpApi/combineSpData", [
+            "channel" => $channel,
+            "sellerId" => $sellerId,
+            "targetingType" => $targetingType,
+            "campaignType" => $campaignType,
+            "scu" => $scu,
+            "createdBy" => $this->messages,
+        ]));
+        $list = [];
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+            $list = $resp['data'];
+        }
     }
 
 }
