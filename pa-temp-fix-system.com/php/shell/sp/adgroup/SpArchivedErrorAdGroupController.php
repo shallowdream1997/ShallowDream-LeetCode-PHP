@@ -80,7 +80,14 @@ class SpArchivedErrorAdGroupController
                 $channel = $content['channel'];
 
 
-                $adGroupInfo = $spApi->getMongoAdGroupInfo($sellerId, '', '',$adGroupId);
+                $a = $this->redis->hGet("adGroupAdGroupId", $adGroupId);
+                $adGroupInfo = [];
+                if (!$a){
+                    $adGroupInfo = $spApi->getMongoAdGroupInfo($sellerId, '', '',$adGroupId);
+                    $this->redis->hSet("adGroupAdGroupId", $adGroupId, json_encode($adGroupInfo,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $adGroupInfo = json_decode($a,true);
+                }
                 if ($adGroupInfo){
                     $adGroupName = $adGroupInfo['adGroupName'];
                     $this->log("{$sellerId} {$adGroupInfo['campaignId']} {$adGroupName}");
@@ -102,6 +109,8 @@ class SpArchivedErrorAdGroupController
                     }
                     $this->log("product数量：" . count($products));
                     foreach ($products as $product){
+                        //该删还是要删
+                        $spApi->deleteMongoProductAdsInfo($product['_id']);
                         if (!$product['adId']){
                             $this->log("sku：{$product['sku']},没有adId");
                             continue;
@@ -119,6 +128,8 @@ class SpArchivedErrorAdGroupController
                     }
                     $this->log("keyword数量：" . count($keywords));
                     foreach ($keywords as $keyword){
+                        //该删还是要删
+                        $spApi->deleteMongoKeywordInfo($keyword['_id']);
                         if (!$keyword['keywordId']){
                             $this->log("matchType：{$keyword['matchType']}，keywordText：{$keyword['keywordText']},没有keywordId");
                             continue;
@@ -137,6 +148,8 @@ class SpArchivedErrorAdGroupController
                     }
                     $this->log("否定keyword数量：" . count($negativeKeywords));
                     foreach ($negativeKeywords as $keyword){
+                        //该删还是要删
+                        $spApi->deleteMongoNegativeKeywordInfo($keyword['_id']);
                         if (!$keyword['keywordId']){
                             $this->log("matchType：{$keyword['matchType']}，keywordText：{$keyword['keywordText']},没有keywordId");
                             continue;
@@ -154,6 +167,8 @@ class SpArchivedErrorAdGroupController
                     }
                     $this->log("target数量：" . count($targets));
                     foreach ($targets as $target){
+                        //该删还是要删
+                        $spApi->deleteMongoTargetInfo($target['_id']);
                         if (!$target['targetId']){
                             $this->log("type：{$target['type']}，value：{$target['value']},没有targetId");
                             continue;
@@ -161,11 +176,57 @@ class SpArchivedErrorAdGroupController
                         $this->log("type：{$target['type']}，value：{$target['value']},targetId：{$target['targetId']}");
                     }
 
+                    $spApi->deleteMongoAdGroupInfo($adGroupInfo['_id']);
 
+
+
+
+
+                }else{
+                    $this->log("没有adGroupInfo");
                 }
 
             }
 
+            $adGroupIds = [];
+            foreach ($contentList as $content){
+                if ($content['adgroupid']){
+                    $adGroupIds[$content['seller_id']][] = $content['adgroupid'];
+                }
+            }
+            if ($adGroupIds){
+                $exportList = [];
+                foreach ($adGroupIds as $sellerId=>$asgids){
+
+                    foreach (array_chunk($asgids,100) as $adGroupIdsChunk){
+                        $spApi = new SpApi();
+                        $last = $spApi->archivedAdGroup($sellerId,$adGroupIdsChunk);
+                        foreach ($last as $i){
+
+                            $exportList[] = [
+                                "sellerId" => $sellerId,
+                                "adGroupId" => "'" . $i['adGroupId'],
+                                "msg" => $i['msg'],
+                            ];
+
+
+                        }
+                    }
+                }
+
+
+
+                if (count($exportList) > 0){
+                    $excelUtils = new ExcelUtils("sp/");
+                    $filePath = $excelUtils->downloadXlsx([
+                        "sellerId",
+                        "adGroupId",
+                        "msg",
+                    ], $exportList, "归档adGroupId结果_" . date("YmdHis") . ".xlsx");
+                }
+
+
+            }
 
 
         }
@@ -173,9 +234,16 @@ class SpArchivedErrorAdGroupController
     }
 
 
+    public function archivedErrorAdGroupV2()
+    {
+        $spApi = new SpApi();
+        $last = $spApi->archivedAdGroup('amazon_us_sopro',['297566589454203']);
+        $this->log(json_encode($last,JSON_UNESCAPED_UNICODE));
+    }
 
 
 }
 
 $con = new SpArchivedErrorAdGroupController();
 $con->archivedErrorAdGroup();
+//$con->archivedErrorAdGroupV2();

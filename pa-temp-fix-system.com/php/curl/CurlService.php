@@ -418,6 +418,23 @@ class CurlService
     }
 
     /**
+     * delete请求(包含了body请求)
+     * @param string $module 模块
+     * @param string $id 删除主键_id
+     * @return array|null
+     */
+    public function deleteWithBodyData($module,$params = []): ?array
+    {
+        $resp = null;
+        if ($this->port != null){
+            $resp = $this->curlRequestMethod($this->port,$module,$params,"DELETE");
+        }
+        return $resp;
+    }
+
+
+
+    /**
      * 端口设置 入口 - local/test/uat/pro
      * @return $this
      */

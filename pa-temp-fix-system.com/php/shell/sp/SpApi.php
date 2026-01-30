@@ -398,19 +398,96 @@ class SpApi
     {
         return DataUtils::getResultData($this->curlService->s3023()->delete("amazon_sp_adgroups/{$_id}",[]));
     }
-    public function archivedAdGroup($sellerId,$adGroupId,$adGroupName)
-    {
-        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/adGroups/putAdGroups/{$sellerId}", [[
-            "adGroupId" => $adGroupId,
-            "state" => "archived"
-        ]]));
 
-        if ($returnMessage['status'] == 'success' && count($returnMessage['data']) > 0 && $returnMessage['data'][0]['code'] == "SUCCESS") {
+    /**
+     * 删除mongo中的campaign
+     * @param $_id
+     * @return array
+     */
+    public function deleteMongoCampaignInfo($_id)
+    {
+        return DataUtils::getResultData($this->curlService->s3023()->delete("amazon_sp_campaigns/{$_id}",[]));
+    }
+
+    /**
+     * 删除mongo中的ads
+     * @param $_id
+     * @return array
+     */
+    public function deleteMongoProductAdsInfo($_id)
+    {
+        return DataUtils::getResultData($this->curlService->s3023()->delete("amazon_sp_products/{$_id}",[]));
+    }
+    /**
+     * 删除mongo中的keyword
+     * @param $_id
+     * @return array
+     */
+    public function deleteMongoKeywordInfo($_id)
+    {
+        return DataUtils::getResultData($this->curlService->s3023()->delete("amazon_sp_keywords/{$_id}",[]));
+    }
+    /**
+     * 删除mongo中的negativeKeyword
+     * @param $_id
+     * @return array
+     */
+    public function deleteMongoNegativeKeywordInfo($_id)
+    {
+        return DataUtils::getResultData($this->curlService->s3023()->delete("amazon_sp_negativeKeywords/{$_id}",[]));
+    }
+
+    /**
+     * 删除mongo中的target
+     * @param $_id
+     * @return array
+     */
+    public function deleteMongoTargetInfo($_id)
+    {
+        return DataUtils::getResultData($this->curlService->s3023()->delete("amazon_sp_targets/{$_id}",[]));
+    }
+
+    /**
+     * 删除mongo中的negativeTarget
+     * @param $_id
+     * @return array
+     */
+    public function deleteMongoNegativeTargetInfo($_id)
+    {
+        return DataUtils::getResultData($this->curlService->s3023()->delete("amazon_sp_negative_targets/{$_id}",[]));
+    }
+
+
+
+    public function archivedAdGroup($sellerId,$adGroupIds)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->deleteWithBodyData("amazon/ad/adGroups/deleteAdGroups/{$sellerId}", [
+            "adGroupIdFilter" => [
+                "include" => $adGroupIds
+            ]
+        ]));
+        if ($returnMessage['status'] == 'success' && isset($returnMessage['data']) && isset($returnMessage['data']['adGroups'])) {
+            $result = [];
+            foreach ($returnMessage['data']['adGroups']['error'] as $item){
+                $errorMsg = $item['errors'][0]['errorType'];
+                $result[$item['index']] = $errorMsg;
+            }
+            foreach ($returnMessage['data']['adGroups']['success'] as $item){
+                $result[$item['index']] = "success";
+            }
+
+            $last = [];
+            foreach ($adGroupIds as $index => $adGroupId){
+                $last[] = [
+                    "adGroupId" => $adGroupId,
+                    "msg" => $result[$index]
+                ];
+            }
             //创建成功
-            return true;
+            return $last;
         }else{
-            $this->log("归档adGroup失败：{$sellerId} {$adGroupName}");
-            return false;
+            $this->log("归档adGroup失败：{$sellerId} " . json_encode($adGroupIds,JSON_UNESCAPED_UNICODE));
+            return [];
         }
     }
 
