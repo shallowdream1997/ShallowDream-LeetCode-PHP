@@ -5903,8 +5903,8 @@ class SyncCurlController
                     //$this->log(json_encode($productInfo['attribute'],JSON_UNESCAPED_UNICODE));
                     $this->log($sku . "该删");
                     //$this->log(json_encode($productInfo,JSON_UNESCAPED_UNICODE));
-                    //$resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
-                    //$this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+                    $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
+                    $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
                 }
             }
 

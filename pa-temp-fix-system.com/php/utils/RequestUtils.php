@@ -487,7 +487,7 @@ class RequestUtils
         }
         $postData = array(
             'userType' => 'userName',
-            'userIdList' => "liuzhenni",
+            'userIdList' => "zhouangang",
             'title' => $title,
             'msg' => $msgArray
         );

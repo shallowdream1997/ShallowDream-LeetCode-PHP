@@ -6,7 +6,7 @@ require_once(dirname(__FILE__) . "/../../../../php/curl/CurlService.php");
 require_once(dirname(__FILE__) . "/../../../../php/utils/RequestUtils.php");
 require_once(dirname(__FILE__) . "/../SpApi.php");
 
-class SpArchivedErrorAdGroupController
+class SpArchivedErrorAdGroupV2Controller
 {
     private $log;
 
@@ -23,42 +23,6 @@ class SpArchivedErrorAdGroupController
         $this->log->log2($string);
     }
 
-    private function isCategory($campaignName) {
-        // 转换为小写以便统一处理英文关键词
-        $lowerName = strtolower($campaignName);
-
-        // 检查是否包含 cate（这样也涵盖了 category）
-        if (strpos($lowerName, 'cate') !== false) {
-            return true;
-        }
-
-        // 检查是否包含中文“分类”
-        if (strpos($campaignName, '分类') !== false) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    private function isAsin($campaignName) {
-        // 转换为小写以便统一处理英文关键词
-        $lowerName = strtolower($campaignName);
-
-        // 检查是否包含 cate（这样也涵盖了 category）
-        if (strpos($lowerName, 'asin') !== false) {
-            return true;
-        }
-
-        // 检查是否包含中文“分类”
-        if (strpos($campaignName, '分类') !== false) {
-            return true;
-        }
-
-        return false;
-    }
-
-
 
     public function archivedErrorAdGroup(){
         $excelUtils = new ExcelUtils();
@@ -71,6 +35,18 @@ class SpArchivedErrorAdGroupController
             die($e->getLine() . " : " . $e->getMessage());
         }
         if (count($contentList) > 0) {
+            $adGroupIds = [];
+            foreach ($contentList as $content) {
+                if ($content["adgroupid"]) {
+                    $adGroupIds[] = $content["adgroupid"];
+                }
+            }
+            $adGroupIdInfoList = $spApi->getMongoAdGroups($adGroupIds);
+            foreach ($adGroupIdInfoList as $adGroupInfo){
+
+            }
+
+
             foreach ($contentList as $content){
                 if (!$content["adgroupid"]){
                     continue;
@@ -233,141 +209,6 @@ class SpArchivedErrorAdGroupController
 
     }
 
-    public function archivedErrorKeyword($channel){
-        $excelUtils = new ExcelUtils();
-        $curlService = (new CurlService())->pro();
-
-        $spApi = new SpApi();
-        try {
-            $contentList = $excelUtils->getXlsxData("./excel/3号到4号的所有广告.xlsx");
-        } catch (Exception $e) {
-            die($e->getLine() . " : " . $e->getMessage());
-        }
-        if (count($contentList) > 0) {
-            $masssdadads = [];
-            foreach ($contentList as $content){
-                if ($content['channel'] == $channel){
-                    $masssdadads[] = $content;
-                }
-            }
-
-            $keywordIds = [];
-            $enabledKeywords = [];
-            foreach ($masssdadads as $content){
-                if (!$content["adgroupid"]){
-                    continue;
-                }
-                $adGroupId = $content["adgroupid"];
-                $sellerId = $spApi->specialSellerIdReverseConver($content["seller_id"]);
-                $channel = $content['channel'];
-
-
-                $a = $this->redis->hGet("adGroupAdGroupId", $adGroupId);
-                $adGroupInfo = [];
-                if (!$a){
-                    $adGroupInfo = $spApi->getMongoAdGroupInfo($sellerId, '', '',$adGroupId);
-                    $this->redis->hSet("adGroupAdGroupId", $adGroupId, json_encode($adGroupInfo,JSON_UNESCAPED_UNICODE));
-                }else{
-                    $adGroupInfo = json_decode($a,true);
-                }
-                if ($adGroupInfo){
-                    $adGroupName = $adGroupInfo['adGroupName'];
-                    $this->log("{$sellerId} {$adGroupInfo['campaignId']} {$adGroupName}");
-
-                    $a2 = $this->redis->hGet("keywordAdGroupId", $adGroupId);
-
-                    //找到keyword
-                    $keywords = [];
-                    if (!$a2){
-                        $keywords = $spApi->getMongoKeywordInfoV2($sellerId, $adGroupInfo['campaignId'], $adGroupInfo['adGroupId']);
-                        $this->redis->hSet("keywordAdGroupId", $adGroupId, json_encode($keywords,JSON_UNESCAPED_UNICODE));
-                    }else{
-                        $keywords = json_decode($a2,true);
-                    }
-                    $this->log("keyword数量：" . count($keywords));
-                    foreach ($keywords as $keyword){
-                        if (in_array($keyword['createdBy'],[
-                            "pa-nsq",
-//                            "system(zhouangang)"
-                        ])){
-                            //只归档自动投放的那些错误数据，部分数据创建是人工投放的
-                            //该删还是要删
-                            $spApi->deleteMongoKeywordInfo($keyword['_id']);
-                            if (!$keyword['keywordId']){
-                                $this->log("matchType：{$keyword['matchType']}，keywordText：{$keyword['keywordText']},没有keywordId");
-                                continue;
-                            }
-                            $this->log("matchType：{$keyword['matchType']}，keywordText：{$keyword['keywordText']},keywordId：{$keyword['keywordId']}");
-                            $keywordIds[$sellerId][] = $keyword['keywordId'];
-                        }else{
-                            $enabledKeywords[] = [
-                                "sellerId" => $sellerId,
-                                "keywordId" => "'{$keyword['keywordId']}",
-                                "keywordText" => $keyword['keywordText'],
-                                "matchType" => $keyword['matchType'],
-                                "createdBy" => $keyword['createdBy'],
-                            ];
-                        }
-
-                    }
-
-
-
-                }else{
-                    $this->log("没有adGroupInfo");
-                }
-
-            }
-
-
-            if ($keywordIds){
-                $exportList = [];
-                foreach ($keywordIds as $sellerId=>$asgids){
-
-                    foreach (array_chunk($asgids,100) as $adGroupIdsChunk){
-                        $spApi = new SpApi();
-                        $last = $spApi->archivedKeyword($sellerId,$adGroupIdsChunk);
-                        foreach ($last as $i){
-                            $exportList[] = [
-                                "sellerId" => $sellerId,
-                                "keywordId" => "'" . $i['keywordId'],
-                                "msg" => $i['msg'],
-                            ];
-                        }
-                    }
-                }
-
-
-
-                if (count($exportList) > 0){
-                    $excelUtils = new ExcelUtils("sp/");
-                    $filePath = $excelUtils->downloadXlsx([
-                        "sellerId",
-                        "keywordId",
-                        "msg",
-                    ], $exportList, "归档keywordId结果{$channel}_" . date("YmdHis") . ".xlsx");
-                }
-
-
-            }
-
-            if ($enabledKeywords){
-                $excelUtils = new ExcelUtils("sp/");
-                $filePath = $excelUtils->downloadXlsx([
-                    "sellerId",
-                    "keywordId",
-                    "keywordText",
-                    "matchType",
-                    "createdBy",
-                ], $enabledKeywords, "好像是人工投放的keyword合集{$channel}_" . date("YmdHis") . ".xlsx");
-            }
-
-            (new RequestUtils("test"))->dingTalk("归档keyword{$channel}结束");
-
-        }
-
-    }
-
 
     public function reloadEnabledAdGroup($channel)
     {
@@ -376,7 +217,7 @@ class SpArchivedErrorAdGroupController
 
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/要归档的adgroupid广告.xlsx");
+            $contentList = $excelUtils->getXlsxData("./excel/要归档的广告非US.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -413,44 +254,6 @@ class SpArchivedErrorAdGroupController
     }
 
 
-    public function reloadEnabledKeyword($channel)
-    {
-        $excelUtils = new ExcelUtils();
-        $curlService = (new CurlService())->pro();
-
-        $spApi = new SpApi();
-        try {
-            $contentList = $excelUtils->getXlsxData("./excel/3号到4号的所有广告.xlsx");
-        } catch (Exception $e) {
-            die($e->getLine() . " : " . $e->getMessage());
-        }
-        if (count($contentList) > 0) {
-
-            $placement = [];
-            foreach ($contentList as $content){
-                if ($content['channel'] === $channel){
-                    $placement[$content['channel']][$content['seller_id']][] = $content['scu_id'];
-                }
-            }
-
-            foreach ($placement as $channel => $data){
-                foreach ($data as $sellerId=>$scuIds){
-                    $scuIds = array_unique($scuIds);
-                    $this->log("channel: {$channel}，sellerId：{$sellerId}，scuIds：" . count($scuIds) . "个");
-
-                    foreach ($scuIds as $scuId){
-                        //keyword
-                        $spApi->paPlacementAmazonSp($channel, $sellerId, 2,'manual','keyword',$scuId);
-                    }
-                }
-
-
-            }
-            (new RequestUtils("test"))->dingTalk("重新投放keyword{$channel}结束");
-        }
-
-    }
-
     public function archivedErrorAdGroupV2()
     {
         $spApi = new SpApi();
@@ -467,9 +270,7 @@ $channel = "";
 if (isset($params['channel']) && trim($params['channel'] != '')) {
     $channel = $params['channel'];
 }
-$con = new SpArchivedErrorAdGroupController();
-//$con->archivedErrorAdGroup();
-$con->archivedErrorKeyword($channel);
-$con->reloadEnabledKeyword($channel);
+$con = new SpArchivedErrorAdGroupV2Controller();
+$con->archivedErrorAdGroup();
 //$con->reloadEnabledAdGroup($channel);
 //$con->archivedErrorAdGroupV2();

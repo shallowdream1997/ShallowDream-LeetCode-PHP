@@ -304,6 +304,14 @@ class SpApi
         }
         return DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_adgroups/queryPage",$condition));
     }
+    public function getMongoAdGroups($adGroupIds = [])
+    {
+        $condition = [
+            "adGroupId_in" => implode(",",$adGroupIds),
+            "limit" => count($adGroupIds)
+        ];
+        return DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_adgroups/queryPage",$condition));
+    }
     public function mongoCreateAdGroup($sellerId,$campaignId,$adGroupId,$adGroupName,$oldAdGroupInfo)
     {
         $createMongoAdGroup = [
@@ -487,6 +495,39 @@ class SpApi
             return $last;
         }else{
             $this->log("归档adGroup失败：{$sellerId} " . json_encode($adGroupIds,JSON_UNESCAPED_UNICODE));
+            return [];
+        }
+    }
+
+
+    public function archivedKeyword($sellerId,$keywordIds)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->deleteWithBodyData("amazon/ad/keywords/deleteKeywords/{$sellerId}", [
+            "keywordIdFilter" => [
+                "include" => $keywordIds
+            ]
+        ]));
+        if ($returnMessage['status'] == 'success' && isset($returnMessage['data']) && isset($returnMessage['data']['keywords'])) {
+            $result = [];
+            foreach ($returnMessage['data']['keywords']['error'] as $item){
+                $errorMsg = $item['errors'][0]['errorType'];
+                $result[$item['index']] = $errorMsg;
+            }
+            foreach ($returnMessage['data']['keywords']['success'] as $item){
+                $result[$item['index']] = "success";
+            }
+
+            $last = [];
+            foreach ($keywordIds as $index => $keywordId){
+                $last[] = [
+                    "keywordId" => $keywordId,
+                    "msg" => $result[$index]
+                ];
+            }
+            //创建成功
+            return $last;
+        }else{
+            $this->log("归档keyword失败：{$sellerId} " . json_encode($keywordIds,JSON_UNESCAPED_UNICODE));
             return [];
         }
     }
@@ -1008,6 +1049,29 @@ class SpApi
             "campaignType" => $campaignType,
             "scu" => $scu,
             "createdBy" => $this->messages,
+        ]));
+        $list = [];
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+            $list = $resp['data'];
+        }
+    }
+
+    public function paPlacementAmazonSp($channel,$sellerId,$type,$targetingType,$campaignType,$scuId)
+    {
+//        "1"=>"auto",
+//            "2"=>"keyword",
+//            "3"=>"asin",
+//            "4"=>"category",
+        $resp = DataUtils::getResultData($this->curlService->phphk()->post("amazonSpApi/paPlacementAmazonSp", [
+            "placementAction" => 1,
+            "placementType" => $type,
+            "targetingType" => $targetingType,
+            "campaignType" => $campaignType,
+            "channel" => $channel,
+            "sellerId" => $sellerId,
+            "scu" => $scuId,
+            "createdBy" => "system(zhouangang)",
+            "modifiedBy" => "system(zhouangang)"
         ]));
         $list = [];
         if ($resp && isset($resp['data']) && count($resp['data']) > 0){
