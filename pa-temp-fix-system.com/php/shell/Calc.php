@@ -54,6 +54,17 @@ class Calc
 
     }
 
+    public function test($batchName)
+    {
+        $prePurchaseBillNo = $batchName;
+        $position = strpos($batchName, '-');
+        if ($position !== false) {
+            // 从开始到 '-' 的位置截取字符串
+            $prePurchaseBillNo = substr($batchName, 0, $position);
+        }
+        echo $prePurchaseBillNo;
+    }
+
     public function calcProgress(){
         $redis = new RedisService();
 
@@ -66,5 +77,6 @@ class Calc
 }
 
 $calc = new Calc();
-$calc->calcSalary(168.5,31.5,12);
+//$calc->calcSalary(168.5,31.5,12);
+$calc->test("DPMO260205001-陈雅-吕治政");
 //$calc->calcProgress();

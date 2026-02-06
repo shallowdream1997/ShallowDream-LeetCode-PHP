@@ -532,6 +532,73 @@ class SpApi
         }
     }
 
+
+    public function archivedNegativeKeyword($sellerId,$keywordIds)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->deleteWithBodyData("amazon/ad/negativeKeywords/deleteNegativeKeywords/{$sellerId}", [
+            "negativeKeywordIdFilter" => [
+                "include" => $keywordIds
+            ]
+        ]));
+        if ($returnMessage['status'] == 'success' && isset($returnMessage['data']) && isset($returnMessage['data']['negativeKeywords'])) {
+            $result = [];
+            foreach ($returnMessage['data']['negativeKeywords']['error'] as $item){
+                $errorMsg = $item['errors'][0]['errorType'];
+                $result[$item['index']] = $errorMsg;
+            }
+            foreach ($returnMessage['data']['negativeKeywords']['success'] as $item){
+                $result[$item['index']] = "success";
+            }
+
+            $last = [];
+            foreach ($keywordIds as $index => $keywordId){
+                $last[] = [
+                    "keywordId" => $keywordId,
+                    "msg" => $result[$index]
+                ];
+            }
+            //创建成功
+            return $last;
+        }else{
+            $this->log("归档negativeKeyword失败：{$sellerId} " . json_encode($keywordIds,JSON_UNESCAPED_UNICODE));
+            return [];
+        }
+    }
+
+    public function archivedTarget($sellerId,$targetIds)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->deleteWithBodyData("amazon/ad/productTargeting/deleteTargets/{$sellerId}", [
+            "targetIdFilter" => [
+                "include" => $targetIds
+            ]
+        ]));
+        if ($returnMessage['status'] == 'success' && isset($returnMessage['data']) && isset($returnMessage['data']['targetingClauses'])) {
+            $result = [];
+            foreach ($returnMessage['data']['targetingClauses']['error'] as $item){
+                $errorMsg = $item['errors'][0]['errorType'];
+                $result[$item['index']] = $errorMsg;
+            }
+            foreach ($returnMessage['data']['targetingClauses']['success'] as $item){
+                $result[$item['index']] = "success";
+            }
+
+            $last = [];
+            foreach ($targetIds as $index => $targetId){
+                $last[] = [
+                    "targetId" => $targetId,
+                    "msg" => $result[$index]
+                ];
+            }
+            //创建成功
+            return $last;
+        }else{
+            $this->log("归档target失败：{$sellerId} " . json_encode($targetIds,JSON_UNESCAPED_UNICODE));
+            return [];
+        }
+    }
+
+
+
     //=============================AdGroup end==============================================///
 
 

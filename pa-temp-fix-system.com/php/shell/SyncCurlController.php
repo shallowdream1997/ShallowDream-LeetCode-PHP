@@ -6858,9 +6858,47 @@ class SyncCurlController
     }
 
 
+    public function deleltePlatformFees(){
+
+//        http://master-angular-nodejs-poms-list-manage.ux168.cn:60015/api/channel-platform-fees/queryPage
+
+        $curlService = (new CurlService())->pro();
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/US定价参数修改 20260206.xlsx");
+
+
+
+        $list = [];
+        if (sizeof($fileFitContent) > 0) {
+            foreach ($fileFitContent as $info){
+
+
+                $data = DataUtils::getResultData($curlService->s3015()->get("channel-platform-fees/{$info['_id']}",[]));
+                //$this->redis->hSet("channelPlatformFeeBak", $info['_id'], json_encode($data,JSON_UNESCAPED_UNICODE));
+
+                $this->log(json_encode($data));
+
+//                $da = $this->redis->hGet("channelPlatformFeeBak", $info['_id']);
+//
+//                if ($da){
+//                    $data = json_decode($da,true);
+//                    if ($data){
+//                        $curlService->s3015()->post("channel-platform-fees",$data);
+//                    }
+//
+//                }
+
+            }
+        }
+
+        //$this->log(json_encode($list,JSON_UNESCAPED_UNICODE));
+
+    }
+
+
 }
 
 $curlController = new SyncCurlController();
+$curlController->deleltePlatformFees();
 //$curlController->initQdActionLog();
 //$curlController->testDing();
 //$curlController->downloadPaSkuMaterialSpData();
@@ -6872,7 +6910,7 @@ $curlController = new SyncCurlController();
 //$curlController->fallBackQD();
 //$curlController->fixProductSkuCategory();
 //$curlController->consignmentQD(null);
-$curlController->fixProductSkuCurrent();
+//$curlController->fixProductSkuCurrent();
 //$curlController->exportAmazonUsAttribute();
 //$curlController->syncBusinessModulesToTest();
 //$curlController->exportBusinessModules();
