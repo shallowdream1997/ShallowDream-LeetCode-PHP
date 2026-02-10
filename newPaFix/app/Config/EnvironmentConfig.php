@@ -60,9 +60,6 @@ class EnvironmentConfig
             case "textDiff":
                 $this->curlService = (new CurlService())->local();
                 break;
-            case "configPage":
-                $this->curlService = (new CurlService())->test();
-                break;
             case "consignmentQD":
                 $this->curlService = (new CurlService())->pro();
                 break;

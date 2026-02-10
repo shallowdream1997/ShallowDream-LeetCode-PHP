@@ -15,9 +15,6 @@ class update
 
 
     public $logger;
-
-    private $module = "pa-biz-application";
-
     /**
      * @var CurlService
      */
@@ -25,72 +22,6 @@ class update
     public function __construct()
     {
         $this->logger = new MyLogger("option/updateLog");
-    }
-
-    public function getModule($modlue){
-        switch ($modlue){
-            case "wms":
-                $this->module = "platform-wms-application";
-                break;
-            case "pa":
-                $this->module = "pa-biz-application";
-                break;
-            case "pomsgoods":
-                $this->module = "platform-pomsgoods-service";
-                break;
-            case "config":
-                $this->module = "platform-config-mgmt-application";
-                break;
-        }
-
-        return $this;
-    }
-
-    /**
-     * 重复品豁免
-     * @param $params
-     * @return bool
-     */
-    public function pageSwitchConfig($params)
-    {
-        $curlService = $this->envService;
-
-        $env = $curlService->environment;
-
-        $batchNameList = $params['batchNameList'];
-        $batchNameList = array_unique($batchNameList);
-
-        $oldList = DataUtils::getPageList($curlService->s3015()->post("pa_products/queryPagePost", [
-                "limit" => count($batchNameList),
-                "page" => 1,
-                "batchName_in" => implode(",", $batchNameList)
-            ]
-        ));
-        $ids = [];
-        if (!empty($oldList)) {
-            $ids = array_column($oldList, "_id");
-        }
-        if (count($ids) > 0) {
-            $this->logger->log("准备修改：" . json_encode($batchNameList, JSON_UNESCAPED_UNICODE));
-            $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
-                "optionName" => "page_switch_config",
-                "limit" => 1
-            ]));
-            if ($info) {
-                $info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds'] = array_merge($info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds'], $ids);
-                $info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds'] = array_unique($info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds']);
-
-                $curlService->s3015()->put("option-val-lists/{$info['_id']}", $info);
-
-                return true;
-            } else {
-                return false;
-            }
-
-        } else {
-            return false;
-        }
-
     }
 
     /**
@@ -280,9 +211,8 @@ class update
             $addskuIdList = $params['addskuIdList'];
 
             foreach (array_chunk($addskuIdList,500) as $skuIdList){
-                $curlService->gateway();
-                $this->getModule('wms');
-                $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/page", [
+                $curlService->gateway()->getModule('wms');
+                $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/receive/sample/expect/v1/page", [
                     "skuIdIn" => $skuIdList,
                     "vertical" => "PA",
                     "category" => "dataTeam",
@@ -296,7 +226,7 @@ class update
                     if (DataUtils::checkArrFilesIsExist($resp, 'list')) {
                         foreach ($resp['list'] as &$item) {
                             $item['updateBy'] = "pa-fix-system";
-                            $createResp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/update", $item));
+                            $createResp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/receive/sample/expect/v1/update", $item));
                             if ($createResp && $createResp['value']) {
                                 $this->logger->log("更新日期成功...");
                             } else {
@@ -324,7 +254,7 @@ class update
 
                             $info['state'] = 10;
                             $info['updateBy'] = "pa-fix-system";
-                            $createResp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/update", $info));
+                            $createResp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/receive/sample/expect/v1/update", $info));
                             if ($createResp && $createResp['value']) {
                                 $this->logger->log("留样打标更新成功...");
                             } else {
@@ -345,7 +275,7 @@ class update
                             ];
                         }
                         if (count($needSampleSkuIdList) > 0) {
-                            $createResp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/receive/sample/expect/v1/batchCreate", $needSampleSkuIdList));
+                            $createResp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/receive/sample/expect/v1/batchCreate", $needSampleSkuIdList));
                             if ($createResp && $createResp['value']) {
                                 $this->logger->log("剩余sku：" . implode(',', array_column($needSampleSkuIdList, 'skuId')) . " 留样打标成功...");
                             } else {
@@ -366,65 +296,6 @@ class update
 
     }
 
-    public function paProductList($params){
-        $curlService = $this->envService;
-
-        if (isset($params['excel']) && $params['excel']) {
-            $env = $curlService->environment;
-            $requestUtils = new RequestUtils($env);
-            $productSkuController = new ProductSkuController($env);
-
-            //获取批次号
-            if (!$params['excel']['batchName']){
-                return [
-                    "updateSuccess" => false,
-                    "messages" => "批次号不存在"
-                ];
-            }
-            //读取品牌配置化
-            $brandMap = $productSkuController->getBrandAttributeByPaPomsSkuBrandInitConfig();
-
-            $paProductIdCollectorList = $requestUtils->getPaProductInfoByBatchNameList([$params['excel']['batchName']]);
-            if (count($paProductIdCollectorList) > 0) {
-
-                if (!DataUtils::checkArrFilesIsExist($paProductIdCollectorList, $params['excel']['batchName'])) {
-                    $this->logger->log("{$params['excel']['batchName']} 不存在清单列表");
-                    return [
-                        "updateSuccess" => false,
-                        "messages" => "{$params['excel']['batchName']} 不存在清单列表"
-                    ];
-                }
-                $batchInfo = $paProductIdCollectorList[$params['excel']['batchName']];
-                $updatePPMainBoolean = $productSkuController->updatePPMain($batchInfo['paProductInfo'], $params['excel'],false);
-                if (!$updatePPMainBoolean){
-                    return [
-                        "updateSuccess" => false,
-                        "messages" => "开发清单主表更新失败"
-                    ];
-                }
-
-                $updatePPDetailBoolean = $productSkuController->updatePPDetail($batchInfo['paProductDetailList'], $params['excel'],$brandMap);
-                if (!$updatePPDetailBoolean || !$updatePPDetailBoolean['code']){
-                    return [
-                        "updateSuccess" => false,
-                        "messages" => "开发清单明细或sku资料更新失败：" . json_encode($updatePPDetailBoolean['messages'],JSON_UNESCAPED_UNICODE)
-                    ];
-                }
-
-            }
-
-            return [
-                "updateSuccess" => true,
-                "messages" => "{$params['excel']['batchName']} 修改成功"
-            ];
-
-        }else{
-            return [
-                "updateSuccess" => false,
-                "messages" => "{$params['excel']['batchName']} 修改失败"
-            ];
-        }
-    }
 
     public function paFixProductLine($params){
         $curlService = $this->envService;
@@ -441,9 +312,8 @@ class update
         }
 
         if (isset($params['skuIdList']) && $params['skuIdList']) {
-            $curlService->gateway();
-            $this->getModule('pa');
-            $prePurchaseList = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/info/material/v1/findPrePurchaseBillWithSkuForSkuMaterialInfo", $prePurchaseBillNoList));
+            $curlService->gateway()->getModule('pa');
+            $prePurchaseList = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/sms/sku/info/material/v1/findPrePurchaseBillWithSkuForSkuMaterialInfo", $prePurchaseBillNoList));
             $productLineNameSkuIdList = [];
             if (count($prePurchaseList) > 0) {
                 foreach ($prePurchaseList as $mainList) {
@@ -604,76 +474,6 @@ class update
             "updateSuccess" => true,
             "messages" => "sku和产品线已添加成功"
         ];
-    }
-
-
-    /**
-     * 品牌前面增加for
-     * @param $params
-     * @return bool
-     */
-    public function addBrandFor($params)
-    {
-        $curlService = $this->envService;
-        $env = $curlService->environment;
-        $params['channelList'] = [
-            "amazon_us",
-            "amazon_uk",
-            "amazon_au",
-            "amazon_ca",
-            "amazon_es",
-            "amazon_it",
-            "amazon_fr",
-            "amazon_de",
-            "amazon_jp",
-            "ebay_de",
-            "ebay_fr",
-            "ebay_es",
-            "ebay_it",
-            "ebay_us",
-            "ebay_ca",
-            "ebay_uk",
-            "ebay_au",
-            "walmart_us",
-            "walmart_ca",
-            "walmart_dsv",
-            "wish_us",
-            "aliexpress_us",
-            "ebay_hk"
-        ];
-        if (isset($params['fieldsList']) && $params['fieldsList']) {
-            $channelList = $params['channelList'];
-            $fieldsList = $params['fieldsList'];
-
-            $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
-                "optionName" => "pa_amazon_attribute_forbidden",
-                "limit" => 1
-            ]));
-            if (!empty($info)) {
-                $this->logger->log2("原本内容：" . json_encode($info, JSON_UNESCAPED_UNICODE));
-                if (count($info['optionVal']) > 0) {
-                    foreach ($info['optionVal'] as $channel => &$channelInfo) {
-                        if (in_array($channel, $channelList)) {
-                            foreach ($channelInfo['make'] as &$makeInfo) {
-                                if ($makeInfo['type'] == "2") {
-                                    foreach ($fieldsList as $field) {
-                                        if (!in_array($field, $makeInfo['words'])) {
-                                            array_unshift($makeInfo['words'], $field);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    $curlService->s3015()->put("option-val-lists/{$info['_id']}", $info);
-                    $this->logger->log2("修改后内容：" . json_encode($info, JSON_UNESCAPED_UNICODE));
-                }
-                return true;
-            }
-            return false;
-        } else {
-            return false;
-        }
     }
 
 
@@ -1056,10 +856,6 @@ $return = [];
 $class->envService = (new EnvironmentConfig($data['action']))->getCurlService();
 
 switch ($data['action']) {
-    case "pageSwitchConfig":
-        $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->pageSwitchConfig($params);
-        break;
     case "fixTranslationManagements":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->fixTranslationManagements($params);
@@ -1076,17 +872,9 @@ switch ($data['action']) {
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paSampleSku($params);
         break;
-    case "paProductList":
-        $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->paProductList($params);
-        break;
     case "paFixProductLine":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paFixProductLine($params);
-        break;
-    case "addBrandFor":
-        $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->addBrandFor($params);
         break;
     case "uploadOss":
         $params = isset($data['params']) ? $data['params'] : [];

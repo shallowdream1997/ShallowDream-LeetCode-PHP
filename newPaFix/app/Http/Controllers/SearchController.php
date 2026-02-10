@@ -72,8 +72,6 @@ class SearchController
                 return $this->registerIp($params);
             case "fixFcuProductLine":
                 return $this->fixFcuProductLine($params);
-            case "configPage":
-                return $this->configPage($params);
             case "consignmentQD":
                 return $this->consignmentQD($params);
             case "skuPhotoFix":
@@ -481,28 +479,7 @@ class SearchController
     }
 
 
-    public function configPage($params){
-        $curlService = $this->envService;
-        $env = $curlService->environment;
-        $curlService->gateway();
 
-        $curlService->getModule('config');
-        $params = [
-            "condition" => [
-                "configKey" => $params['configKey'] ?: "",
-                "configValue" => $params['configValue'] ?: "",
-                "businessCategoryList" => $params['businessCategoryList'] ?: [],
-                "systemNameList" => $params['systemNameList'] ?: []
-            ],
-            "page" => [
-                "pageSize" => 100,
-                "pageNum" => 1
-            ]
-        ];
-        $resp = DataUtils::getNewResultData($curlService->getWayPost( $curlService->module . "/business/config/v1/query", $params));
-        return ["env" => $env, "data" => $resp['list']];
-
-    }
 
     /**
      * 寄卖新QD单

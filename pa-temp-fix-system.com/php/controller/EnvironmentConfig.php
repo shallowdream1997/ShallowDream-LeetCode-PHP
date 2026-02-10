@@ -19,12 +19,6 @@ class EnvironmentConfig
 
     private function setPageEnvironment($pageName){
         switch ($pageName){
-            case "paProductBrandSearch":
-                $this->curlService = (new CurlService())->pro();
-                break;
-            case "pageSwitchConfig":
-                $this->curlService = (new CurlService())->pro();
-                break;
             case "fixTranslationManagements":
                 $this->curlService = (new CurlService())->pro();
                 break;
@@ -37,32 +31,17 @@ class EnvironmentConfig
             case "paSampleSku":
                 $this->curlService = (new CurlService())->pro();
                 break;
-            case "paProductList":
-                $this->curlService = (new CurlService())->pro();
-                break;
             case "paFixProductLine":
-                $this->curlService = (new CurlService())->pro();
-                break;
-            case "addBrandFor":
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "uploadOss":
                 $this->curlService = (new CurlService())->test();
-                break;
-            case "getPmoData":
-                $this->curlService = (new CurlService())->pro();
                 break;
             case "registerIp":
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "fixFcuProductLine":
                 $this->curlService = (new CurlService())->pro();
-                break;
-            case "textDiff":
-                $this->curlService = (new CurlService())->local();
-                break;
-            case "configPage":
-                $this->curlService = (new CurlService())->test();
                 break;
             case "consignmentQD":
                 $this->curlService = (new CurlService())->pro();

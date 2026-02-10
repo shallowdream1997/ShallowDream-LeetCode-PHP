@@ -25,43 +25,6 @@ class search
 
 
     /**
-     * 重复品豁免
-     * @param $params
-     * @return array
-     */
-    public function pageSwitchConfig($params)
-    {
-        $curlService = $this->envService;
-
-        $env = $curlService->environment;
-
-        $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
-            "optionName" => "page_switch_config",
-            "limit" => 1
-        ]));
-
-        $paProductIds = $info['optionVal']['pa_product_detail_submit_leader_review']['paProductIds'];
-
-        $res = DataUtils::getPageList($curlService->s3015()->post("pa_products/queryPagePost", [
-                "id_in" => implode(",", $paProductIds), "limit" => count($paProductIds), "page" => 1]
-        ));
-        $batchNameList = [];
-        foreach ($res as $item) {
-            $batchNameList[] = [
-                "_id" => $item['_id'],
-                "batchName" => $item['batchName'],
-            ];
-        }
-        $this->logger->log("查询批次号数量：" . count($batchNameList) . " 个");
-
-        return [
-            "env" => $env,
-            "data" => $batchNameList
-        ];
-
-    }
-
-    /**
      * 翻译
      * @param $params
      * @return array
@@ -85,27 +48,6 @@ class search
         ];
     }
 
-    /**
-     * 品牌
-     * @param $params
-     * @return array
-     */
-    public function paProductBrand($params)
-    {
-
-        $curlService = $this->envService;
-
-        $env = $curlService->environment;
-
-        $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
-            "optionName" => $params['optionName'],
-            "limit" => 1
-        ]));
-
-        return [
-            "env" => $env
-        ];
-    }
 
     /**
      * CE资料呈现
@@ -187,18 +129,6 @@ class search
 
     }
 
-    public function paProductList($params){
-        $curlService = $this->envService;
-        $env = $curlService->environment;
-        $list = [];
-        if (isset($params['skuIdList']) && $params['skuIdList']) {
-
-        }
-        return [
-            "env" => $env,
-            "data" => $list
-        ];
-    }
 
 
     public function paFixProductLine($params){
@@ -223,23 +153,6 @@ class search
         ];
     }
 
-    public function addBrandFor($params){
-        $curlService = $this->envService;
-        $env = $curlService->environment;
-
-        $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
-            "optionName" => "pa_amazon_attribute_forbidden",
-            "limit" => 1
-        ]));
-        $list = array_keys($info['optionVal']);
-
-        return [
-            "env" => $env,
-            "data" => [
-                "canSearchChannelList" => $list
-            ]
-        ];
-    }
 
     public function uploadOss($params){
         $curlService = $this->envService;
@@ -278,38 +191,6 @@ class search
         ];
     }
 
-    /**
-     * 查询采购清单对应开发
-     * @param $params
-     * @return array
-     */
-    public function getPmoData($params)
-    {
-        $curlService = $this->envService;
-        $env = $curlService->environment;
-        if (isset($params['batchList']) && $params['batchList']) {
-
-            $productSkuController = new ProductSkuController();
-            $downloadOssLink = "PMO开发人员_" . date("YmdHis") . ".xlsx";
-            $link = $productSkuController->getPmoData($downloadOssLink,$params['batchList'], $env);
-
-            if ($link){
-                return [
-                    "env" => $env,
-                    "messages" => "下载成功",
-                    "data" => [
-                        "downLink" => "/export/uploads/default/" . $downloadOssLink
-                    ]
-                ];
-            }
-
-        }
-
-        return [
-            "env" => $env,
-            "data" => []
-        ];
-    }
 
     /**
      * 登记个人IP
@@ -399,43 +280,7 @@ class search
     }
 
 
-    public function configPage($params){
-        $curlService = $this->envService;
-        $env = $curlService->environment;
-        $curlService->gateway();
 
-        $curlService->getModule('config');
-//        {
-//            "condition": {
-//            "configKey": "",
-//        "configValue": "",
-//        "businessCategoryList": [
-//                "PA"
-//            ],
-//        "systemNameList": []
-//    },
-//    "page": {
-//            "pageSize": 20,
-//        "pageNum": 1
-//    }
-//}
-
-        $params = [
-            "condition" => [
-                "configKey" => $params['configKey'] ?: "",
-                "configValue" => $params['configValue'] ?: "",
-                "businessCategoryList" => $params['businessCategoryList'] ?: [],
-                "systemNameList" => $params['systemNameList'] ?: []
-            ],
-            "page" => [
-                "pageSize" => 100,
-                "pageNum" => 1
-            ]
-        ];
-        $resp = DataUtils::getNewResultData($curlService->getWayPost( $curlService->module . "/business/config/v1/query", $params));
-        return ["env" => $env, "data" => $resp['list']];
-
-    }
 
     /**
      * 寄卖新QD单
@@ -507,14 +352,6 @@ $return = [];
 $class->envService = (new EnvironmentConfig($data['action']))->getCurlService();
 
 switch ($data['action']) {
-    case "paProductBrandSearch":
-        $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->paProductBrand($params);
-        break;
-    case "pageSwitchConfig":
-        $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->pageSwitchConfig($params);
-        break;
     case "fixTranslationManagements":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->fixTranslationManagements($params);
@@ -531,25 +368,13 @@ switch ($data['action']) {
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paSampleSku($params);
         break;
-    case "paProductList":
-        $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->paProductList($params);
-        break;
     case "paFixProductLine":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->paFixProductLine($params);
         break;
-    case "addBrandFor":
-        $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->addBrandFor($params);
-        break;
     case "uploadOss":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->uploadOss($params);
-        break;
-    case "getPmoData":
-        $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->getPmoData($params);
         break;
     case "registerIp":
         $params = isset($data['params']) ? $data['params'] : [];
@@ -558,14 +383,6 @@ switch ($data['action']) {
     case "fixFcuProductLine":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->fixFcuProductLine($params);
-        break;
-    case "textDiff":
-        $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->textDiff($params);
-        break;
-    case "configPage":
-        $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->configPage($params);
         break;
     case "consignmentQD":
         $params = isset($data['params']) ? $data['params'] : [];

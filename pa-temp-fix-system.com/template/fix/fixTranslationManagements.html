@@ -9,116 +9,213 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
     <script src="../css_js/script/qs.min.js"></script>
-    <!--粒子特效-->
+    <!-- 粒子特效 -->
     <link rel="stylesheet" href="../css_js/own/lizi.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            padding: 20px 0;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 6px;
+        }
+        .btn-action {
+            width: 100%;
+            padding: 8px 0;
+            font-weight: bold;
+        }
+        .status-text {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .alert-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .publish-options {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .form-check {
+            margin-bottom: 10px;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .status-0 { background-color: #17a2b8; color: white; }
+        .status-1 { background-color: #ffc107; color: #212529; }
+        .status-2 { background-color: #0d6efd; color: white; }
+        .status-3 { background-color: #fd7e14; color: white; }
+        .status-4 { background-color: #198754; color: white; }
+        .status-5 { background-color: #dc3545; color: white; }
+    </style>
 </head>
 <body>
-<div class="container text-center" id="app">
-    <div style="margin-top: 20px" class="row">
-        <div class="col-5"><h3 style="color: yellow">{{message}} <br> <span style="color: red">当前环境：{{envMsg}}</span></h3></div>
-        <div class="col-7">
-            <div class="mb-3">
-                <input type="text" v-model="title" class="form-control" placeholder="翻译标题">
-            </div>
+<div class="container" id="app">
+    <!-- 页面标题和环境信息 -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2>{{ message }}</h2>
+            <p class="text-muted">当前环境：<span :class="envClass">{{ envMsg }}</span></p>
+        </div>
+    </div>
+
+    <!-- 搜索卡片 -->
+    <div class="card">
+        <div class="card-header">
+            翻译标题查询
+        </div>
+        <div class="card-body">
             <div class="row">
-                <div class="col-3">
-                    <button class="btn btn-primary" @click="searchTranslationManagement">查询标题</button>
+                <div class="col-md-8 mb-3">
+                    <label for="titleInput" class="form-label fw-bold">翻译标题</label>
+                    <input type="text" v-model="title" class="form-control" id="titleInput" placeholder="请输入翻译标题">
+                </div>
+                <div class="col-md-4 mb-3 d-flex flex-column">
+                    <label class="form-label fw-bold invisible">查询按钮</label>
+                    <button @click="searchTranslationManagement" class="btn btn-primary btn-action">
+                        <i class="bi bi-search"></i> 查询标题
+                    </button>
                 </div>
             </div>
-
         </div>
+    </div>
 
-
-        <div class="col-12" style="margin-top: 20px">
-            <table class="table table-dark table-striped align-middle" v-if="list && list.length > 0">
-                <thead>
-                <tr>
-                    <th scope="col">主键</th>
-                    <th scope="col">标题</th>
-                    <th scope="col">渠道</th>
-                    <th scope="col">状态</th>
-                    <th scope="col">sku数量</th>
-                    <th scope="col">处理进度</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="info in list" :key="info._id">
-                    <th scope="row">{{info._id}}</th>
-                    <td>{{info.title}}</td>
-                    <td>{{info.channel}}</td>
-                    <td>{{statusMap[info.status] || info.status}}</td>
-                    <td>{{info.skuIdList.length}}</td>
-                    <td style="color: red">{{info.isSuccess || ""}}</td>
-                </tr>
-                </tbody>
-            </table>
+    <!-- 结果列表卡片 -->
+    <div v-if="list && list.length > 0" class="card">
+        <div class="card-header">
+            查询结果
         </div>
-        <template v-if="list && list.length > 0">
-            <div class="col-4" style="color: deeppink">提示：回滚状态为主表，主表里的skuIdList的sku，以及子表的所有的状态</div>
-            <div class="col-8">
-                <div class="mb-3">
-                    <select class="form-select" aria-label="请选择" v-model="status" @change="changeStatus">
+        <div class="card-body">
+            <div class="table-container">
+                <table class="table table-striped align-middle">
+                    <thead>
+                    <tr>
+                        <th scope="col">主键</th>
+                        <th scope="col">标题</th>
+                        <th scope="col">渠道</th>
+                        <th scope="col">状态</th>
+                        <th scope="col">sku数量</th>
+                        <th scope="col">处理进度</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="info in list" :key="info._id">
+                        <th scope="row">{{info._id}}</th>
+                        <td>{{info.title}}</td>
+                        <td>{{info.channel}}</td>
+                        <td>
+                            <span :class="`status-badge status-${info.status}`">
+                                {{statusMap[info.status] || info.status}}
+                            </span>
+                        </td>
+                        <td>{{info.skuIdList.length}}</td>
+                        <td v-if="info.isSuccess" class="text-danger font-weight-bold">{{info.isSuccess}}</td>
+                        <td v-else>-</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 状态回滚卡片 -->
+    <div v-if="list && list.length > 0" class="card">
+        <div class="card-header">
+            状态回滚
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info mb-4">
+                <i class="bi bi-info-circle"></i> 提示：回滚状态为主表，主表里的skuIdList的sku，以及子表的所有的状态
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="statusSelect" class="form-label fw-bold">选择回滚状态</label>
+                    <select id="statusSelect" class="form-select" v-model="status" @change="changeStatus">
                         <option value="">请选择</option>
                         <option value="0">已选品</option>
-<!--                        <option value="1">待翻译</option>-->
-<!--                        <option value="2">翻译中</option>-->
                         <option value="3">审核中</option>
                         <option value="4">翻译完成</option>
                         <option value="5">已作废</option>
                     </select>
                 </div>
-
-                <template v-if="status == '3'">
-                    <div class="mb-3">
-                        <textarea v-model="skuIdString" class="form-control" placeholder="skuId,多个请换行" rows="5"/></textarea>
-                    </div>
-                </template>
-
-                <template v-if="status == '4'">
-                    <div class="mb-3">
-                        <div class="col-4" style="color: deeppink">提示：审核人请填写英文，日期示例如：2024-07-04 12:35:00Z</div>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" v-model="applyName" class="form-control" placeholder="审核人(英文)">
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" v-model="applyTime" class="form-control" placeholder="审核日期">
-                    </div>
-                </template>
-
-                <div class="row">
-                    <div class="col-3">
-                        <button class="btn btn-primary" @click="fixTranslationManagement">回滚状态</button>
-                    </div>
-                </div>
-
             </div>
 
-        </template>
+            <!-- 审核中特殊选项 -->
+            <div v-if="status == '3'" class="publish-options">
+                <label for="skuIdInput" class="form-label fw-bold">SKU ID列表</label>
+                <textarea v-model="skuIdString" id="skuIdInput" class="form-control" placeholder="skuId,多个请换行" rows="5"></textarea>
+                <div class="form-text">系统会自动去除空行和重复的SKU ID</div>
+            </div>
 
-        <div class="col-12">
-            <h5 style="color: red">{{loading}}</h5>
-        </div>
-        <div class="col-12">
-            <h4 style="color: red">{{errorMsg}}</h4>
+            <!-- 翻译完成特殊选项 -->
+            <div v-if="status == '4'" class="publish-options">
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> 提示：审核人请填写英文，日期示例如：2024-07-04 12:35:00Z
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="applyNameInput" class="form-label fw-bold">审核人(英文)</label>
+                        <input type="text" v-model="applyName" id="applyNameInput" class="form-control" placeholder="请输入审核人姓名">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="applyTimeInput" class="form-label fw-bold">审核日期</label>
+                        <input type="text" v-model="applyTime" id="applyTimeInput" class="form-control" placeholder="请输入审核日期">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <button @click="fixTranslationManagement" class="btn btn-primary btn-action">
+                        <i class="bi bi-arrow-counterclockwise"></i> 回滚状态
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- 消息提示区域 -->
+    <div v-if="loading" class="alert-message alert alert-info">
+        <i class="bi bi-hourglass-split"></i> {{ loading }}
+    </div>
+    <div v-if="errorMsg" class="alert-message alert alert-danger">
+        <i class="bi bi-exclamation-circle"></i> {{ errorMsg }}
+    </div>
+    <div v-if="successMsg" class="alert-message alert alert-success">
+        <i class="bi bi-check-circle"></i> {{ successMsg }}
+    </div>
 </div>
 
-</body>
-</html>
 <script src="../css_js/own/lizi.js"></script>
-
 <script>
-
-    const {createApp, ref} = Vue
-
+    const { createApp } = Vue;
 
     createApp({
-
         data() {
-            this.url = "http://172.16.29.23:90/php/controller";
             this.initPage();
             return {
                 message: '修改翻译状态',
@@ -137,132 +234,213 @@
                     "4": "翻译完成",
                     "5": "已作废"
                 },
-                applyName:'',
-                applyTime:'',
-                env:"",
-                envMsg:"",
-                url:"http://172.16.29.23:90/php/controller",
+                applyName: '',
+                applyTime: '',
+                env: "",
+                envMsg: "",
+                envClass: "",
+                url: "http://172.16.29.23:90/php/controller",
                 header: {
                     headers: {
-                        'Content-Type': 'application/json',
-                        // 其他自定义头
+                        'Content-Type': 'application/json'
                     }
                 }
             }
         },
 
         methods: {
-            async initPage(){
+            // 初始化页面，获取环境信息
+            async initPage() {
                 const data = {
                     action: "fixTranslationManagements",
-                    params: {},
+                    params: {}
                 };
-                this.header = {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 其他自定义头
+
+                try {
+                    this.url = "http://172.16.29.23:90/php/controller";
+                    let res = await axios.post(`${this.url}/search.php`, data, this.header);
+                    if (res.status === 200) {
+                        this.env = res.data.env;
+                        this.setEnvMessage();
                     }
-                };
-                let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
-                    this.errorMsg = "网络错误";
-                });
-                this.loading = "";
-                if (res.status === 200) {
-                    this.env = res.data.env;
-                    this.envMsg = this.env == 'test' ? 'Test环境' :  (this.env == 'local' ?  '开发环境' :  (this.env == 'uat' ?  'UAT环境' : '生产环境'));
+                } catch (error) {
+                    this.errorMsg = "初始化失败，无法获取环境信息";
+                    console.error("初始化错误:", error);
                 }
             },
-            async fixTranslationManagement() {
-                console.log(this.title, this.status)
-                this.loading = "............请等待，正在处理数据中..........";
-                this.errorMsg = "";
-                if (this.status == '') {
-                    this.errorMsg = "请选择状态啦!!!!!!";
-                    return;
-                }
-                if (this.list && this.list.length == 0) {
-                    this.errorMsg = "都没有数据怎么回滚!!!!!!";
-                    return;
-                }
-                if (this.status != '4'){
-                    this.applyName = "";
-                    this.applyTime = "";
-                }
-                let skuIdList = [];
-                if (this.skuIdString){
-                    skuIdList = this.skuIdString.split("\n");
-                    skuIdList =  [...new Set(skuIdList.filter(item => item))];
-                }
 
-
-                for (let item of this.list) {
-                    item.isSuccess = "正在执行中.";
-                    if(item.status == '5'){
-                        item.isSuccess = "已作废的无需处理";
-                        continue;
-                    }
-
-                    const data = {
-                        action: "fixTranslationManagements",
-                        params: {
-                            title: item.title,
-                            status: this.status,
-                            applyName:this.applyName,
-                            applyTime:this.applyTime,
-                            skuIdList:skuIdList
-                        },
-                    };
-
-                    let res = await axios.post(`${this.url}/update.php`, data,this.header).catch(function (error) {
-                        this.errorMsg = "网络错误";
-                    });
-                    console.log(res)
-                    if (res.status === 200 && res.data === true) {
-                        item.status = status;
-                        item.isSuccess = "完成回滚";
-                    } else {
-                        item.isSuccess = "回滚失败";
-                    }
-
+            // 设置环境信息显示
+            setEnvMessage() {
+                switch(this.env) {
+                    case 'test':
+                        this.envMsg = 'Test环境';
+                        this.envClass = 'text-warning';
+                        break;
+                    case 'local':
+                        this.envMsg = '开发环境';
+                        this.envClass = 'text-info';
+                        break;
+                    case 'uat':
+                        this.envMsg = 'UAT环境';
+                        this.envClass = 'text-primary';
+                        break;
+                    default:
+                        this.envMsg = '生产环境';
+                        this.envClass = 'text-danger';
                 }
-                this.loading = "";
             },
 
+            // 查询翻译管理
             async searchTranslationManagement() {
-                this.loading = "............请等待，正在处理数据中..........";
+                // 重置消息
+                this.loading = "正在查询数据，请稍候...";
                 this.errorMsg = "";
+                this.successMsg = "";
 
+                // 验证输入
+                if (!this.title.trim()) {
+                    this.loading = "";
+                    this.errorMsg = "请输入翻译标题";
+                    return;
+                }
+
+                // 构造请求数据
                 const data = {
                     action: "fixTranslationManagements",
                     params: {
                         title: this.title,
                         status: this.status
-                    },
+                    }
                 };
-                let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
-                    this.errorMsg = "网络错误";
-                });
-                this.loading = "";
-                if (res.status === 200) {
-                    if (res.data.data.length === 0) {
-                        this.errorMsg = "没有数据";
+
+                try {
+                    // 调用接口
+                    let res = await axios.post(`${this.url}/search.php`, data, this.header);
+
+                    this.loading = "";
+                    if (res.status === 200) {
+                        if (res.data.data.length === 0) {
+                            this.errorMsg = "没有找到相关数据";
+                            this.list = [];
+                        } else {
+                            this.list = res.data.data;
+                            this.env = res.data.env;
+                            this.setEnvMessage();
+                        }
                     } else {
-                        this.list = res.data.data;
-                        this.env = res.data.env;
-                        this.envMsg = this.env == 'test' ? 'Test环境' :  (this.env == 'local' ?  '开发环境' :  (this.env == 'uat' ?  'UAT环境' : '生产环境'));
+                        this.errorMsg = "查询失败，请重试";
+                    }
+                } catch (error) {
+                    this.loading = "";
+                    this.errorMsg = "网络错误，无法连接到服务器";
+                    console.error("查询错误:", error);
+                }
+            },
+
+            // 修复翻译管理
+            async fixTranslationManagement() {
+                // 重置消息
+                this.loading = "正在处理数据，请稍候...";
+                this.errorMsg = "";
+                this.successMsg = "";
+
+                // 验证输入
+                if (!this.status) {
+                    this.loading = "";
+                    this.errorMsg = "请选择回滚状态";
+                    return;
+                }
+
+                if (!this.list || this.list.length === 0) {
+                    this.loading = "";
+                    this.errorMsg = "没有数据可以回滚";
+                    return;
+                }
+
+                // 处理SKU ID列表
+                let skuIdList = [];
+                if (this.skuIdString) {
+                    skuIdList = this.skuIdString.split("\n")
+                        .map(sku => sku.trim())
+                        .filter(sku => sku); // 过滤空字符串
+
+                    // 去重
+                    skuIdList = [...new Set(skuIdList)];
+                }
+
+                // 验证审核完成状态的必填字段
+                if (this.status === '4') {
+                    if (!this.applyName.trim()) {
+                        this.loading = "";
+                        this.errorMsg = "请输入审核人姓名";
+                        return;
+                    }
+
+                    if (!this.applyTime.trim()) {
+                        this.loading = "";
+                        this.errorMsg = "请输入审核日期";
+                        return;
                     }
                 }
 
+                // 处理每个项目
+                let hasError = false;
+                for (let item of this.list) {
+                    item.isSuccess = "正在执行中...";
+
+                    // 跳过已作废的项目
+                    if (item.status == '5') {
+                        item.isSuccess = "已作废的无需处理";
+                        continue;
+                    }
+
+                    // 构造请求数据
+                    const data = {
+                        action: "fixTranslationManagements",
+                        params: {
+                            title: item.title,
+                            status: this.status,
+                            applyName: this.status === '4' ? this.applyName : "",
+                            applyTime: this.status === '4' ? this.applyTime : "",
+                            skuIdList: skuIdList
+                        }
+                    };
+
+                    try {
+                        // 调用接口
+                        let res = await axios.post(`${this.url}/update.php`, data, this.header);
+
+                        if (res.status === 200 && res.data === true) {
+                            item.status = this.status;
+                            item.isSuccess = "完成回滚";
+                        } else {
+                            item.isSuccess = "回滚失败";
+                            hasError = true;
+                        }
+                    } catch (error) {
+                        item.isSuccess = "回滚失败";
+                        hasError = true;
+                        console.error("处理错误:", error);
+                    }
+                }
+
+                this.loading = "";
+                if (hasError) {
+                    this.errorMsg = "部分数据处理失败，请查看表格中的处理进度";
+                } else {
+                    this.successMsg = "所有数据处理成功";
+                }
             },
-            changeStatus(){
-                if (this.status != '4'){
+
+            // 更改状态
+            changeStatus() {
+                if (this.status != '4') {
                     this.applyName = "";
                     this.applyTime = "";
                 }
             }
         }
-
-    }).mount('#app')
-
-
+    }).mount('#app');
 </script>
+</body>
+</html>

@@ -6894,11 +6894,86 @@ class SyncCurlController
 
     }
 
+    /**
+     */
+    public function updateSkuSellerConfig()
+    {
+        $c = (new CurlService())->pro();
+
+        $skus = [
+            "a26012900ux1714",
+            "a26012900ux1715",
+            "a26012900ux1717",
+            "a26012900ux1720",
+            "a26012900ux1723"
+        ];
+        $originSku = "a23022300ux0090";
+
+        $channelAndSellerMap = ["amazon_us" => "amazon","amazon_uk"=>"amazon_uk2","amazon_ca"=>"amazon_ca2","amazon_au"=>"amazon_au"];
+
+
+        $channels = array_keys($channelAndSellerMap);
+        $list = DataUtils::getPageList($c->s3015()->get("sku-seller-configs/queryPage", [
+            "skuId" => implode(",", $skus),
+            "channel" => implode(",", $channels),
+            "limit" => 1000
+        ]));
+
+        if ($list){
+
+            $skuChannelMap = [];
+            foreach ($list as $item){
+                $skuChannelMap[$item['skuId']][$item['channel']] = $item;
+            }
+            $orign = DataUtils::getPageList($c->s3015()->get("sku-seller-configs/queryPage", [
+                "skuId" => $originSku,
+                "channel" => implode(",", $channels),
+                "limit" => 1000
+            ]));
+            $map = [];
+            if ($orign){
+                foreach ($orign as $item){
+                    $map[$item['skuId']][$item['channel']] = $item;
+                }
+            }
+
+            foreach ($skuChannelMap as $skuId => $channelMap){
+                foreach ($channelMap as $channel => $item){
+                    if (isset($map[$originSku][$channel])){
+                        $cankao = $map[$originSku][$channel];
+
+                        $cankao['_id'] = $item['_id'];
+                        $cankao['skuId'] = $skuId;
+                        $cankao['brand'] = "X AUTOHAUX";
+                        $cankao['createdOn'] = $item['createdOn'];
+                        $cankao['modifiedOn'] = $item['modifiedOn'];
+                        $cankao['createdBy'] = $item['createdBy'];
+                        $cankao['modifiedBy'] = 'system(zhouangang)';
+
+                        //先删后增
+                        $this->log(json_encode($cankao,JSON_UNESCAPED_UNICODE));
+
+
+                        $c->s3015()->delete("sku-seller-configs/{$item['_id']}");
+                        $c->s3015()->post("sku-seller-configs", $cankao);
+                    }
+                }
+            }
+
+
+
+
+
+        }
+
+    }
+
 
 }
 
 $curlController = new SyncCurlController();
-$curlController->deleltePlatformFees();
+$curlController->updateSkuSellerConfig();
+//$curlController->deleltePlatformFees();
 //$curlController->initQdActionLog();
 //$curlController->testDing();
 //$curlController->downloadPaSkuMaterialSpData();
