@@ -23,7 +23,7 @@ class EnvironmentConfig
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "fixCeMaterials":
-                $this->curlService = (new CurlService())->pro();
+                $this->curlService = (new CurlService())->test();
                 break;
             case "paFbaChannelSellerConfig":
                 $this->curlService = (new CurlService())->pro();
