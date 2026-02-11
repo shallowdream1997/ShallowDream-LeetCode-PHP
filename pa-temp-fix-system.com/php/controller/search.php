@@ -86,6 +86,27 @@ class search
         $curlService = $this->envService;
         $env = $curlService->environment;
 
+        $list = [];
+        if (isset($params['action']) && $params['action']){
+            switch ($params['action']){
+                case "searchAllConfig":
+                    $list = $this->getPaFbaChannelSellerConfig($curlService);
+                    break;
+                case "searchChannelStock":
+                    $list = $this->paFbaChannelStocks($curlService,$params);
+                    break;
+            }
+
+        }
+
+        return [
+            "env" => $env,
+            "data" => $list
+        ];
+    }
+
+    private function getPaFbaChannelSellerConfig($curlService)
+    {
         $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
             "optionName" => "pa_fba_channel_seller_config",
             "limit" => 1
@@ -97,11 +118,34 @@ class search
                 "nowStocks" => $stocks
             ];
         }
+        return $list;
+    }
 
-        return [
-            "env" => $env,
-            "data" => $list
-        ];
+    public function paFbaChannelStocks($curlService,$params)
+    {
+        $stocks = [];
+        if (isset($params['channel']) && $params['channel']){
+            $list = DataUtils::getPageList($curlService->s3015()->get("seller-channel-platforms/queryPage", [
+                "channel" => $params['channel'],
+                "company" => "PA",
+                "limit" => 1000,
+                "columns" => "channel,listingType,company"
+            ]));
+            foreach ($list as $item){
+                if ($item['listingType']){
+                    foreach ($item['listingType'] as $listingType){
+                        if ($listingType['listingType'] == "fba"){
+                            $stocks[] = [
+                                "id" => $listingType['mainStock'],
+                                "name" => $listingType['mainStock']
+                            ];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return $stocks;
     }
 
     public function paSampleSku($params){
