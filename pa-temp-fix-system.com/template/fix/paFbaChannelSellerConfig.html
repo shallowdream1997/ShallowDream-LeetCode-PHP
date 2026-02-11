@@ -81,8 +81,28 @@
         </div>
     </div>
 
-    <!-- 配置列表卡片 -->
+    <!-- 搜索过滤卡片 -->
     <div v-if="list && list.length > 0" class="card">
+        <div class="card-header">
+            搜索过滤
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" v-model="searchKeyword" @input="searchChannel" class="form-control" placeholder="输入渠道名称搜索...">
+                        <button v-if="searchKeyword" @click="clearSearch" class="btn btn-outline-secondary">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 配置列表卡片 -->
+    <div v-if="filteredList && filteredList.length > 0" class="card">
         <div class="card-header">
             渠道仓库配置列表
         </div>
@@ -96,12 +116,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="info in list" :key="info.channel">
+                    <tr v-for="info in filteredList" :key="info.channel">
                         <td>{{ info.channel }}</td>
                         <td>
-                            <template v-for="(detail, index) in info.nowStocks" :key="index">
-                                {{ detail }}<br v-if="index < info.nowStocks.length - 1">
-                            </template>
+                            <div class="row">
+                                <div v-for="(detail, index) in info.nowStocks" :key="index" class="col-3 mb-2">
+                                    <span class="badge bg-primary rounded-pill px-2 py-1">{{ detail }}</span>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     </tbody>
@@ -200,10 +222,12 @@
                 errorMsg: '',
                 successMsg: '',
                 list: [],
+                filteredList: [],
                 loading: '',
                 env: "",
                 envMsg: "",
                 envClass: "",
+                searchKeyword: '',
                 url: "http://172.16.29.23:90/php/controller",
                 header: {
                     headers: {
@@ -297,6 +321,7 @@
                             this.list = [];
                         } else {
                             this.list = res.data.data;
+                            this.filteredList = [...this.list];
                             this.env = res.data.env;
                             this.setEnvMessage();
                         }
@@ -308,6 +333,24 @@
                     this.errorMsg = "网络错误，无法连接到服务器";
                     console.error("查询错误:", error);
                 }
+            },
+
+            // 搜索过滤
+            searchChannel() {
+                if (!this.searchKeyword.trim()) {
+                    this.filteredList = [...this.list];
+                } else {
+                    const keyword = this.searchKeyword.toLowerCase().trim();
+                    this.filteredList = this.list.filter(item =>
+                        item.channel.toLowerCase().includes(keyword)
+                    );
+                }
+            },
+
+            // 清除搜索
+            clearSearch() {
+                this.searchKeyword = '';
+                this.filteredList = [...this.list];
             },
 
             // 渠道选择变更处理
