@@ -423,20 +423,23 @@ class search
                                 if (isset($currencyCh[$info['channel']])){
                                     $realCurrency = $currencyCh[$info['channel']];
                                 }
+                                $canDelete = false;
                                 if ($realCurrency != $info['value']){
-                                    //双方币种不一致的情况下，需要删除
-                                    $key = $info['label'] . '|' . $info['channel'];
-                                    $deleteMap[$key] = true;
-                                    $preList[] = [
-                                        "skuId" => $productInfo['productId'],
-                                        "channel" => $info['channel'],
-                                        "realCurrency" => $realCurrency,
-                                        "label" => $info['label'],
-                                        "value" => $info['value'],
-                                        "canDelete" => true,
-                                    ];
+                                    $canDelete = true;
                                 }
 
+                                //双方币种不一致的情况下，需要删除
+                                $key = $info['label'] . '|' . $info['channel'];
+                                $deleteMap[$key] = true;
+
+                                $preList[] = [
+                                    "skuId" => $productInfo['productId'],
+                                    "channel" => $info['channel'],
+                                    "realCurrency" => $realCurrency ?? "暂无币种信息",
+                                    "label" => $info['label'],
+                                    "value" => $info['value'],
+                                    "canDelete" => $canDelete,
+                                ];
                             }
                         }
 
@@ -458,9 +461,9 @@ class search
                                     $preList[] = [
                                         "skuId" => $productInfo['productId'],
                                         "channel" => $channel,
-                                        "realCurrency" => $realCurrency ?? "暂无币种信息",
+                                        "realCurrency" => $realCurrency ? $realCurrency : "暂无币种信息",
                                         "label" => $label,
-                                        "value" => "",
+                                        "value" => "没有该属性",
                                         "canDelete" => false,
                                     ];
                                 }

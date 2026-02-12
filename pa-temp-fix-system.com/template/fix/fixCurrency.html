@@ -75,6 +75,30 @@
             border-radius: 6px;
             background-color: #f8f9fa;
         }
+        .bi {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            vertical-align: -0.125em;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 100% 100%;
+        }
+        .bi-search::before {
+            content: "\f52a";
+        }
+        .bi-trash::before {
+            content: "\f2ed";
+        }
+        .bi-hourglass-split::before {
+            content: "\f3f5";
+        }
+        .bi-exclamation-circle::before {
+            content: "\f3ed";
+        }
+        .bi-check-circle::before {
+            content: "\f26e";
+        }
     </style>
 </head>
 <body>
@@ -117,7 +141,7 @@
             <div class="row">
                 <div class="col-md-3">
                     <button @click="search" class="btn btn-primary btn-action">
-                        <i class="bi bi-search"></i> 查询币种信息
+                        查询币种信息
                     </button>
                 </div>
             </div>
@@ -147,9 +171,9 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="item in previewList" :key="`${item.skuId}-${item.channel}`" :class="{ 'table-danger': item.hasConflict }">
+                    <tr v-for="item in previewList" :key="`${item.skuId}-${item.channel}`" :class="{ 'table-danger': item.value && item.value !== item.realCurrency }">
                         <td>
-                            <input type="checkbox" :id="'item-' + item.id" :value="item" v-model="selectedItems" class="form-check-input">
+                            <input type="checkbox" :id="'item-' + item.id" :value="item" v-model="selectedItems" class="form-check-input" :disabled="!item.canDelete">
                         </td>
                         <td>{{ item.skuId }}</td>
                         <td>{{ item.channel }}</td>
@@ -158,7 +182,7 @@
                             <span class="currency-badge currency-primary">{{ item.label }}</span>
                         </td>
                         <td>
-                            <span :class="`currency-badge currency-conflict`">{{ item.value || '没有值' }}</span>
+                            <span :class="`currency-badge ${item.value && item.value !== item.realCurrency ? 'currency-conflict' : 'currency-secondary'}`">{{ item.value || '没有值' }}</span>
                         </td>
                         <td>
                             <span v-if="item.canDelete" class="text-success">✓ 可删除</span>
@@ -172,7 +196,7 @@
             <div class="row mt-4">
                 <div class="col-md-3">
                     <button @click="deleteSelected" class="btn btn-danger btn-action" :disabled="selectedItems.length === 0">
-                        <i class="bi bi-trash"></i> 删除选中数据
+                        删除选中数据
                     </button>
                 </div>
             </div>
@@ -191,7 +215,6 @@
     </div>
 </div>
 
-<script src="../css_js/own/lizi.js"></script>
 <script>
     const { createApp } = Vue;
 
@@ -362,82 +385,101 @@
             toggleSelectAll() {
                 if (this.selectAll) {
                     this.selectedItems = this.previewList.filter(item => item.canDelete);
+                    if (this.selectedItems.length === 0){
+                        this.errorMsg = "没有可删除的数据";
+                        this.selectAll = false;
+                    }
                 } else {
                     this.selectedItems = [];
                 }
             },
 
-            // 删除选中的数据
+            // 更新选中的数据
             async deleteSelected() {
                 if (this.selectedItems.length === 0) {
-                    this.errorMsg = "请先选择要删除的数据";
+                    this.errorMsg = "请先选择要更新的数据";
                     return;
                 }
 
-                this.loading = "正在删除数据，请稍候...";
+                // 筛选可更新的数据
+                const canUpdateItems = this.selectedItems.filter(item => item.canDelete);
+                if (canUpdateItems.length === 0) {
+                    this.errorMsg = "请选择可更新的数据";
+                    return;
+                }
+
+                this.loading = "正在准备更新数据...";
                 this.errorMsg = "";
                 this.successMsg = "";
 
+                // 按SKU分组处理数据
+                const skuGroups = {};
+                canUpdateItems.forEach(item => {
+                    if (!skuGroups[item.skuId]) {
+                        skuGroups[item.skuId] = {};
+                    }
+                    if (!skuGroups[item.skuId][item.channel]) {
+                        skuGroups[item.skuId][item.channel] = [];
+                    }
+                    skuGroups[item.skuId][item.channel].push(item.label);
+                });
+
+                const totalSkus = Object.keys(skuGroups).length;
+                let currentSkuIndex = 0;
                 let successCount = 0;
                 let failCount = 0;
+                let updateResults = [];
 
-                let skuGroupList = _.groupBy(this.selectedItems, "skuId");
-                for (let item of this.selectedItems){
-                    if (!item.canDelete){
-                        continue;
+                // 逐个SKU执行更新
+                for (const [skuId, channelData] of Object.entries(skuGroups)) {
+                    currentSkuIndex++;
+                    this.loading = `正在更新第 ${currentSkuIndex}/${totalSkus} 个SKU: ${skuId}`;
+
+                    const data = {
+                        action: "fixCurrency",
+                        params: {
+                            skuId: skuId,
+                            channelData: channelData
+                        }
+                    };
+
+                    try {
+                        let res = await axios.post(`${this.url}/update.php`, data, this.header);
+
+                        if (res.status === 200 && res.data.success) {
+                            successCount++;
+                            updateResults.push({
+                                skuId: skuId,
+                                status: 'success',
+                                message: `成功更新SKU: ${skuId}`
+                            });
+
+                            // 从预览列表中移除已更新的项目
+                            this.previewList = this.previewList.filter(item =>
+                                !(item.skuId === skuId && item.canDelete)
+                            );
+                        } else {
+                            failCount++;
+                            updateResults.push({
+                                skuId: skuId,
+                                status: 'error',
+                                message: `更新失败: ${skuId} - ${res.data.message || '未知错误'}`
+                            });
+                        }
+                    } catch (error) {
+                        failCount++;
+                        updateResults.push({
+                            skuId: skuId,
+                            status: 'error',
+                            message: `更新错误: ${skuId} - ${error.message}`
+                        });
                     }
-                    skuGroupList[item.skuId] = {};
-                    skuGroupList[item.skuId][item.channel] = [];
-                    skuGroupList[item.skuId][item.channel].push(item.label);
+
+                    // 短暂延迟，避免请求过快
+                    if (currentSkuIndex < totalSkus) {
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    }
                 }
-
-                if (Object.keys(skuGroupList).length === 0){
-                    this.errorMsg = "请选择可删除的数据";
-                    return;
-                }
-
-
-                // 逐个删除SKU数据
-                // for (let i = 0; i < this.selectedItems.length; i++) {
-                //     const item = this.selectedItems[i];
-                //
-                //     // 更新加载状态
-                //     this.loading = `正在删除第 ${i + 1}/${this.selectedItems.length} 条数据...`;
-                //
-                //     // 为当前SKU准备删除数据
-                //     const data = {
-                //         action: "fixCurrency",
-                //         params: {
-                //             skuId: item.skuId,
-                //             channel: item.channel
-                //         }
-                //     };
-                //
-                //     try {
-                //         let res = await axios.post(`${this.url}/update.php`, data, this.header);
-                //
-                //         if (res.status === 200 && res.data === true) {
-                //             successCount++;
-                //
-                //             // 从预览列表中移除已删除的项目
-                //             const index = this.previewList.findIndex(p => p.id === item.id);
-                //             if (index !== -1) {
-                //                 this.previewList.splice(index, 1);
-                //             }
-                //         } else {
-                //             failCount++;
-                //             console.error(`删除失败: ${item.skuId}`, res);
-                //         }
-                //     } catch (error) {
-                //         failCount++;
-                //         console.error(`删除错误: ${item.skuId}`, error);
-                //     }
-                //
-                //     // 短暂延迟，避免请求过快
-                //     if (i < this.selectedItems.length - 1) {
-                //         await new Promise(resolve => setTimeout(resolve, 100));
-                //     }
-                // }
 
                 this.loading = "";
 
@@ -445,20 +487,39 @@
                 this.selectedItems = [];
                 this.selectAll = false;
 
-                // 显示结果统计
-                if (successCount > 0 && failCount === 0) {
-                    this.successMsg = `成功删除 ${successCount} 条数据`;
-                } else if (successCount > 0 && failCount > 0) {
-                    this.successMsg = `部分删除成功：成功 ${successCount} 条，失败 ${failCount} 条`;
-                } else {
-                    this.errorMsg = `删除失败：${failCount} 条数据`;
-                }
+                // 显示详细结果
+                this.showUpdateResults(updateResults, successCount, failCount);
 
                 // 如果预览列表为空，清空相关状态
                 if (this.previewList.length === 0) {
                     this.skuIdString = "";
                     this.selectedChannels = [];
                     this.customChannel = "";
+                }
+            },
+
+            // 显示更新结果
+            showUpdateResults(results, successCount, failCount) {
+                if (successCount > 0 && failCount === 0) {
+                    this.successMsg = `全部更新成功：共 ${successCount} 个SKU`;
+                } else if (successCount > 0 && failCount > 0) {
+                    this.successMsg = `部分更新成功：成功 ${successCount} 个SKU，失败 ${failCount} 个SKU`;
+                    // 显示失败详情
+                    setTimeout(() => {
+                        const errorDetails = results
+                            .filter(r => r.status === 'error')
+                            .map(r => r.message)
+                            .join('\n');
+                        alert(`更新失败详情：\n${errorDetails}`);
+                    }, 1000);
+                } else {
+                    this.errorMsg = `全部更新失败：共 ${failCount} 个SKU`;
+                    const errorDetails = results
+                        .map(r => r.message)
+                        .join('\n');
+                    setTimeout(() => {
+                        alert(`更新失败详情：\n${errorDetails}`);
+                    }, 500);
                 }
             }
         },

@@ -5923,6 +5923,80 @@ class SyncCurlController
 
     }
 
+
+
+    public function fastProductSkuCurrent()
+    {
+        $curlService = (new CurlService())->test();
+
+        $skuIdList = [
+            "a23100800ux0272"
+        ];
+        $targetChannel = ["amazon_us","amazon_it"];
+        $targetLabel = [
+            'MSRPWithTax_currency',
+            'MSRP_currency',
+        ];
+        $productIdMap = [];
+        foreach (array_chunk($skuIdList,100) as $chunk){
+            $productSkuList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+                "productId" => implode(",",$chunk),
+                "limit" => count($chunk)
+            ]));
+            if ($productSkuList){
+                foreach ($productSkuList as $info){
+                    $productIdMap[$info['productId']] = $info;
+                }
+            }
+        }
+
+
+        $export = [];
+        foreach ($skuIdList as $sku){
+            if (isset($productIdMap[$sku])){
+                $productInfo = $productIdMap[$sku];
+
+
+                foreach ($targetChannel as $ch){
+                    foreach ($targetLabel as $lb){
+
+                        $found = false;
+                        // 遍历现有属性，查找匹配的channel和label
+                        foreach ($productInfo['attribute'] as &$info) {
+                            if ($info['channel'] === $ch && $info['label'] === $lb) {
+                                // 找到匹配项，更新value
+                                $oldValue = $info['value'];
+                                $info['value'] = "GBP";
+                                $this->log($sku . " 渠道：{$info['channel']} {$info['label']} 值已更新 - 旧值: {$oldValue}, 新值: GBP");
+                                $found = true;
+                            }
+                        }
+
+                        // 如果没有找到匹配项，新增属性
+                        if (!$found) {
+                            $newAttribute = [
+                                'channel' => $ch,
+                                'label' => $lb,
+                                'value' => "GBP"
+                            ];
+                            $productInfo['attribute'][] = $newAttribute;
+                            $this->log($sku . " 新增属性 - 渠道：{$ch} 标签：{$lb} 值：GBP");
+                        }
+
+
+                    }
+                }
+
+                $productInfo['userName'] = "system(zhouangang)";
+                $productInfo['action'] = "测试币种，增加不一样的币种";
+                $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
+                $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+            }
+        }
+    }
+
+
+
     public function updatePaSkuMaterialV2()
     {
         $curlService = new CurlService();
@@ -6985,7 +7059,8 @@ $curlController = new SyncCurlController();
 //$curlController->fallBackQD();
 //$curlController->fixProductSkuCategory();
 //$curlController->consignmentQD(null);
-$curlController->fixProductSkuCurrent();
+//$curlController->fixProductSkuCurrent();
+$curlController->fastProductSkuCurrent();
 //$curlController->exportAmazonUsAttribute();
 //$curlController->syncBusinessModulesToTest();
 //$curlController->exportBusinessModules();
