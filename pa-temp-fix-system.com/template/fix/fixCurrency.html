@@ -9,6 +9,7 @@
     <script src="../css_js/script/vue.global.js"></script>
     <script src="../css_js/script/axios.min.js"></script>
     <script src="../css_js/script/qs.min.js"></script>
+    <link rel="stylesheet" href="../css_js/bootstrap-5.3.0/css/bootstrap-icons.min.css">
     <!-- 粒子特效 -->
     <link rel="stylesheet" href="../css_js/own/lizi.css">
     <style>
@@ -75,29 +76,81 @@
             border-radius: 6px;
             background-color: #f8f9fa;
         }
-        .bi {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            vertical-align: -0.125em;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 100% 100%;
+        .progress-container {
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
-        .bi-search::before {
-            content: "\f52a";
+        .progress {
+            height: 20px;
+            border-radius: 10px;
         }
-        .bi-trash::before {
-            content: "\f2ed";
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
         }
-        .bi-hourglass-split::before {
-            content: "\f3f5";
+        .result-container {
+            margin-top: 20px;
+            border-radius: 6px;
+            overflow: hidden;
         }
-        .bi-exclamation-circle::before {
-            content: "\f3ed";
+        .result-header {
+            padding: 10px 15px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .bi-check-circle::before {
-            content: "\f26e";
+        .result-header-success {
+            background-color: #198754;
+        }
+        .result-header-partial {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .result-header-error {
+            background-color: #dc3545;
+        }
+        .result-body {
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-top: none;
+        }
+        .result-item {
+            padding: 8px 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .result-item-success {
+            background-color: #d1e7dd;
+            border-left: 4px solid #198754;
+        }
+        .result-item-error {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .result-summary {
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .collapse-btn {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+        .collapse-btn:hover {
+            opacity: 0.8;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -203,6 +256,39 @@
         </div>
     </div>
 
+    <!-- 进度条 -->
+    <div v-if="showProgress" class="card">
+        <div class="card-body">
+            <div class="progress-container">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-sm font-weight-bold">{{ progressText }}</span>
+                    <span class="text-sm font-weight-bold">{{ progressPercentage }}%</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" :style="{ width: progressPercentage + '%' }" :aria-valuenow="progressPercentage" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 更新结果展示 -->
+    <div v-if="showResults" class="result-container" :class="{ 'hidden': resultsCollapsed }">
+        <div :class="`result-header ${resultHeaderClass}`">
+            <span>{{ resultSummary }}</span>
+            <button class="collapse-btn" @click="toggleResults">
+                <i :class="resultsCollapsed ? 'bi bi-chevron-down' : 'bi bi-chevron-up'"></i>
+            </button>
+        </div>
+        <div v-if="!resultsCollapsed" class="result-body">
+            <div class="result-summary">{{ resultSummary }}</div>
+            <div v-if="updateResults.length > 0">
+                <div v-for="(result, index) in updateResults" :key="index" :class="`result-item ${result.status === 'success' ? 'result-item-success' : 'result-item-error'}`">
+                    {{ result.message }}
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 消息提示区域 -->
     <div v-if="loading" class="alert-message alert alert-info">
         <i class="bi bi-hourglass-split"></i> {{ loading }}
@@ -252,7 +338,16 @@
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                }
+                },
+                // 新增进度和结果相关状态
+                showProgress: false,
+                progressText: '',
+                progressPercentage: 0,
+                showResults: false,
+                resultsCollapsed: false,
+                updateResults: [],
+                resultSummary: '',
+                resultHeaderClass: ''
             }
         },
 
@@ -310,13 +405,15 @@
 
             // 查询币种信息
             async search() {
-                // 重置消息
+                // 重置消息和结果
                 this.loading = "正在查询数据，请稍候...";
                 this.errorMsg = "";
                 this.successMsg = "";
                 this.previewList = [];
                 this.selectedItems = [];
                 this.selectAll = false;
+                this.showResults = false;
+                this.updateResults = [];
 
                 // 验证输入
                 if (!this.skuIdString.trim()) {
@@ -408,9 +505,17 @@
                     return;
                 }
 
-                this.loading = "正在准备更新数据...";
+                // 重置状态
+                this.loading = "";
                 this.errorMsg = "";
                 this.successMsg = "";
+                this.showResults = false;
+                this.updateResults = [];
+
+                // 显示进度条
+                this.showProgress = true;
+                this.progressPercentage = 0;
+                this.progressText = "准备更新数据...";
 
                 // 按SKU分组处理数据
                 const skuGroups = {};
@@ -428,12 +533,12 @@
                 let currentSkuIndex = 0;
                 let successCount = 0;
                 let failCount = 0;
-                let updateResults = [];
 
                 // 逐个SKU执行更新
                 for (const [skuId, channelData] of Object.entries(skuGroups)) {
                     currentSkuIndex++;
-                    this.loading = `正在更新第 ${currentSkuIndex}/${totalSkus} 个SKU: ${skuId}`;
+                    this.progressText = `正在更新第 ${currentSkuIndex}/${totalSkus} 个SKU: ${skuId}`;
+                    this.progressPercentage = Math.round((currentSkuIndex / totalSkus) * 100);
 
                     const data = {
                         action: "fixCurrency",
@@ -445,10 +550,10 @@
 
                     try {
                         let res = await axios.post(`${this.url}/update.php`, data, this.header);
-
-                        if (res.status === 200 && res.data.success) {
+                        console.log(res.data)
+                        if (res.status === 200 && res.data.data.success) {
                             successCount++;
-                            updateResults.push({
+                            this.updateResults.push({
                                 skuId: skuId,
                                 status: 'success',
                                 message: `成功更新SKU: ${skuId}`
@@ -460,15 +565,15 @@
                             );
                         } else {
                             failCount++;
-                            updateResults.push({
+                            this.updateResults.push({
                                 skuId: skuId,
                                 status: 'error',
-                                message: `更新失败: ${skuId} - ${res.data.message || '未知错误'}`
+                                message: `更新失败: ${skuId} - ${res.data.data.message || '未知错误'}`
                             });
                         }
                     } catch (error) {
                         failCount++;
-                        updateResults.push({
+                        this.updateResults.push({
                             skuId: skuId,
                             status: 'error',
                             message: `更新错误: ${skuId} - ${error.message}`
@@ -481,14 +586,15 @@
                     }
                 }
 
-                this.loading = "";
+                // 隐藏进度条
+                this.showProgress = false;
 
                 // 清空选中项
                 this.selectedItems = [];
                 this.selectAll = false;
 
                 // 显示详细结果
-                this.showUpdateResults(updateResults, successCount, failCount);
+                this.showUpdateResults(this.updateResults, successCount, failCount);
 
                 // 如果预览列表为空，清空相关状态
                 if (this.previewList.length === 0) {
@@ -500,27 +606,27 @@
 
             // 显示更新结果
             showUpdateResults(results, successCount, failCount) {
+                this.showResults = true;
+                this.resultsCollapsed = false;
+
                 if (successCount > 0 && failCount === 0) {
-                    this.successMsg = `全部更新成功：共 ${successCount} 个SKU`;
+                    this.resultSummary = `全部更新成功：共 ${successCount} 个SKU`;
+                    this.resultHeaderClass = 'result-header-success';
+                    this.successMsg = this.resultSummary;
                 } else if (successCount > 0 && failCount > 0) {
-                    this.successMsg = `部分更新成功：成功 ${successCount} 个SKU，失败 ${failCount} 个SKU`;
-                    // 显示失败详情
-                    setTimeout(() => {
-                        const errorDetails = results
-                            .filter(r => r.status === 'error')
-                            .map(r => r.message)
-                            .join('\n');
-                        alert(`更新失败详情：\n${errorDetails}`);
-                    }, 1000);
+                    this.resultSummary = `部分更新成功：成功 ${successCount} 个SKU，失败 ${failCount} 个SKU`;
+                    this.resultHeaderClass = 'result-header-partial';
+                    this.successMsg = this.resultSummary;
                 } else {
-                    this.errorMsg = `全部更新失败：共 ${failCount} 个SKU`;
-                    const errorDetails = results
-                        .map(r => r.message)
-                        .join('\n');
-                    setTimeout(() => {
-                        alert(`更新失败详情：\n${errorDetails}`);
-                    }, 500);
+                    this.resultSummary = `全部更新失败：共 ${failCount} 个SKU`;
+                    this.resultHeaderClass = 'result-header-error';
+                    this.errorMsg = this.resultSummary;
                 }
+            },
+
+            // 切换结果显示/隐藏
+            toggleResults() {
+                this.resultsCollapsed = !this.resultsCollapsed;
             }
         },
 

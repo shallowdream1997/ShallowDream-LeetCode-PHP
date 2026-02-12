@@ -841,6 +841,92 @@ class update
         return ["env" => $env, "data" => true];
     }
 
+
+    public function fixCurrency($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+
+        $preList = [];
+        if (isset($params['skuId']) && !empty($params['skuId']) &&
+            isset($params['channelData']) && !empty($params['channelData'])){
+
+            $skuId = $params['skuId'];
+            $channelData = $params['channelData'];
+
+            $list = DataUtils::getPageList( $curlService->s3015()->get("product-skus/queryPage",[
+                "productId" => $skuId,
+                "limit" => 1
+            ]));
+            if ($list && count($list) > 0){
+                $productInfo = $list[0];
+
+                foreach ($channelData as $ch => $labels){
+
+                    $deleteMap = [];
+                    foreach ($productInfo['attribute'] as $info){
+                        if (in_array($info['label'],$labels) && $info['channel'] == $ch){
+                            $key = $info['label'] . '|' . $info['channel'];
+                            $deleteMap[$key] = true;
+                        }
+                    }
+
+                    if (count($deleteMap) == 0){
+                        continue;
+                    }
+                    $filtered = [];
+                    foreach ($productInfo['attribute'] as $item) {
+                        $currentKey = $item['label'] . '|' . $item['channel'];
+                        // 不在删除列表中的元素保留
+                        if (!isset($deleteMap[$currentKey])) {
+                            $filtered[] = $item;
+                        }
+                    }
+                    $productInfo['attribute'] = $filtered;
+                    $productInfo['userName'] = "system(zhouangang)";
+                    $productInfo['action'] = "修复币种不一导致上架失败问题";
+                    $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
+//                    $resp = false;
+                    if ($resp && $resp['result'] && $resp['result']['status'] == 'success'){
+                        return [
+                            "env" => $env,
+                            "data" => [
+                                "success" => true,
+                                "message" => "删除属性成功"
+                            ]
+                        ];
+                    }else{
+                        return [
+                            "env" => $env,
+                            "data" => [
+                                "success" => false,
+                                "message" => "删除属性失败"
+                            ]
+                        ];
+                    }
+                }
+
+            }else{
+                return [
+                    "env" => $env,
+                    "data" => [
+                        "success" => false,
+                        "message" => "未找到sku信息"
+                    ]
+                ];
+            }
+        }
+        return [
+            "env" => $env,
+            "data" => [
+                "success" => false,
+                "message" => "参数错误"
+            ]
+        ];
+    }
+
+
+
+
 }
 
 
@@ -895,6 +981,10 @@ switch ($data['action']) {
     case "skuPhotoFix":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->skuPhotoFix($params);
+        break;
+    case "fixCurrency":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->fixCurrency($params);
         break;
 }
 
