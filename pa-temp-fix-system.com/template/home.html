@@ -490,7 +490,7 @@
             <div class="header-content">
                 <h1>{{ message }}</h1>
                 <div class="header-right">
-                    <div class="version">当前版本：v.1.3</div>
+                    <div class="version">当前版本：v.1.4</div>
                     <span class="env-indicator" :class="`env-${envType}`">
                             {{ envText }}
                         </span>
@@ -584,24 +584,9 @@
             </div>
         </div>
     </div>
-
-    <!-- 空状态 -->
-    <div v-else-if="!loading" class="empty-state">
-        <i class="fa fa-search"></i>
-        <h3>未找到相关功能</h3>
-        <p>请尝试其他搜索关键词</p>
-    </div>
-
-    <!-- 加载状态 -->
-    <div v-if="loading" class="empty-state">
-        <i class="fa fa-spinner fa-spin" style="font-size: 3rem;"></i>
-        <h3>正在加载功能列表</h3>
-        <p class="loading">{{ loading }}</p>
-    </div>
-
     <!-- 页脚 -->
     <div class="footer">
-        <p>&copy; 2024 临时数据修复系统 - 为数据管理提供便捷工具</p>
+        <p>&copy; 2026 临时数据修复系统 - 为数据管理提供便捷工具</p>
     </div>
 </div>
 
@@ -618,6 +603,11 @@
                         title: '修改翻译状态',
                         level: 1,
                         url: 'fix/fixTranslationManagements.html'
+                    },
+                    {
+                        title: 'PA&小语种 恢复币种不一致SKU',
+                        level: 1,
+                        url: 'fix/fixCurrency.html'
                     },
                     {
                         title: 'FBA海外仓上架前移库申请渠道仓库配置',
@@ -640,11 +630,6 @@
                         url: 'fix/paFixProductLine.html'
                     },
                     {
-                        title: '上传文件到OSS - 自己用',
-                        level: 1,
-                        url: 'fix/uploadOss.html'
-                    },
-                    {
                         title: '登记个人IP',
                         level: 1,
                         url: 'fix/registerIp.html'
@@ -658,16 +643,6 @@
                         title: '修补SKU拍摄进度',
                         level: 1,
                         url: 'fix/skuPhotoFix.html'
-                    },
-                    {
-                        title: '批量修改产品属性',
-                        level: 2,
-                        url: 'fix/batchUpdateProduct.html'
-                    },
-                    {
-                        title: '数据导出工具',
-                        level: 3,
-                        url: 'test_page.html'
                     }
                 ],
                 searchQuery: '',
