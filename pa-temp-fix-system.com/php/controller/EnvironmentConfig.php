@@ -32,7 +32,7 @@ class EnvironmentConfig
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "paFixProductLine":
-                $this->curlService = (new CurlService())->pro();
+                $this->curlService = (new CurlService())->test();
                 break;
             case "uploadOss":
                 $this->curlService = (new CurlService())->test();

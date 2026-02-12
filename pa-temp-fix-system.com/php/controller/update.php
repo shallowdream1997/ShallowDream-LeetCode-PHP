@@ -5,6 +5,7 @@ require_once dirname(__FILE__) . '/../requiredfile/requiredChorm.php';
 require_once dirname(__FILE__) . '/EnvironmentConfig.php';
 require_once dirname(__FILE__) . '/../shell/ProductSkuController.php';
 require_once dirname(__FILE__) . '/cookieLogin.php';
+require_once(dirname(__FILE__) . "/../../php/utils/DataUtils.php");
 
 /**
  * 更新接口
@@ -301,28 +302,25 @@ class update
         $curlService = $this->envService;
         $env = $curlService->environment;
 
-        $prePurchaseBillNoList = [];
-        if (isset($params['prePurchaseBillNoList']) && $params['prePurchaseBillNoList']) {
-            $prePurchaseBillNoList = $params['prePurchaseBillNoList'];
-        }else{
-            return [
-                "updateSuccess" => true,
-                "messages" => "请先填写预计采购清单编号,此数据是为了获取sku的产品线信息"
-            ];
-        }
-
         if (isset($params['skuIdList']) && $params['skuIdList']) {
             $curlService->gateway()->getModule('pa');
-            $prePurchaseList = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/sms/sku/info/material/v1/findPrePurchaseBillWithSkuForSkuMaterialInfo", $prePurchaseBillNoList));
+            $sku30DataList = DataUtils::getNewResultData($curlService->getWayPost( $curlService->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
+                "skuIdList" => $params['skuIdList'],
+                "attrCodeList" => [
+                    "custom-skuInfo-skuId",
+                    "custom-common-developerUserName",
+                    "custom-common-salesUserName",
+                    "custom-prePurchase-prePurchaseBillNo",
+                    "custom-common-categoryId",
+                    "custom-common-categoryName"
+                ]
+            ]));
+
             $productLineNameSkuIdList = [];
-            if (count($prePurchaseList) > 0) {
-                foreach ($prePurchaseList as $mainList) {
-                    if ($mainList['detail']){
-                        foreach ($mainList['detail'] as $detailList){
-                            if (in_array($detailList['skuId'],$params['skuIdList'])){
-                                $productLineNameSkuIdList[$detailList['categoryName'] . "-" . $detailList['categoryId']][$detailList['developerUserName']][$detailList['salesUserName']][] = $detailList['skuId'];
-                            }
-                        }
+            if ($sku30DataList){
+                foreach ($sku30DataList as $item){
+                    if (in_array($item['custom-skuInfo-skuId'],$params['skuIdList'])){
+                        $productLineNameSkuIdList[$item['custom-common-categoryName'] . "-" . $item['custom-common-categoryId']][$item['custom-common-developerUserName']][$item['custom-common-salesUserName']][] = $item['custom-skuInfo-skuId'];
                     }
                 }
             }

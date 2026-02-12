@@ -1,232 +1,341 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <title>PA sku产品线查询和新增</title>
     <link href="../css_js/bootstrap-5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="../css_js/script/jquery-3.7.0.min.js"></script>
     <script src="../css_js/bootstrap-5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <script src="../css_js/script/vue.global.js"></script>
+    <script src="../css_js/script/axios.min.js"></script>
     <script src="../css_js/script/qs.min.js"></script>
-    <!--粒子特效-->
+    <!-- 粒子特效 -->
     <link rel="stylesheet" href="../css_js/own/lizi.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            padding: 20px 0;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 6px;
+        }
+        .btn-action {
+            width: 100%;
+            padding: 8px 0;
+            font-weight: bold;
+        }
+        .alert-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body>
-<div class="container text-center" id="app">
-    <div style="margin-top: 20px" class="row">
-        <div class="col-5"><h3 style="color: yellow">{{message}} <br>查询或新增<br> <span style="color: red">当前环境：{{envMsg}}</span></h3></div>
-        <div class="col-7">
-            <div class="mb-3">
-                <textarea v-model="skuIdString" class="form-control" placeholder="skuId,多个请换行" rows="5"/></textarea>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    <button class="btn btn-primary" @click="search">查询产品线</button>
-                </div>
-            </div>
+<div class="container" id="app">
+    <!-- 页面标题和环境信息 -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2>{{ message }}</h2>
+            <p class="text-muted">当前环境：<span :class="envClass">{{ envMsg }}</span></p>
         </div>
-
-        <div class="col-8" style="margin-top: 20px">
-            <table class="table table-dark table-striped align-middle" v-if="list && list.length > 0">
-                <thead>
-                <tr>
-                    <th scope="col">sku</th>
-                    <th scope="col">垂直</th>
-                    <th scope="col">产品线名称</th>
-                    <th scope="col">资料运营</th>
-                    <th scope="col">创建人<br>创建日期</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="info in list" :key="info.id">
-                    <td>{{info.skuId}}</td>
-                    <td>
-                        <b style="color: red">{{info.verticalName}}</b>
-                    </td>
-                    <td>
-                        <b style="color: red">{{info.productLineName}}</b>
-                    </td>
-                    <td>{{info.userName}}</td>
-                    <td>{{info.createdBy}}<br>{{info.createdOn}}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="col-4">
-            <div class="mb-3">
-                <h5 style="color:white;">产品线新增sku</h5>
-            </div>
-            <div class="mb-3">
-                <textarea v-model="addSkuIdString" class="form-control" placeholder="skuId,多个请换行" rows="5"/></textarea>
-            </div>
-            <div class="mb-3">
-                <textarea v-model="prePurchaseBillNoListString" class="form-control" placeholder="预计采购清单编号,多个请换行" rows="5"/></textarea>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    <button class="btn btn-primary" @click="update">添加</button>
-                </div>
-            </div>
-
-            <div class="row">
-                <h5 style="color: red">{{loading}}</h5>
-                <h4 style="color: red">{{errorMsg}}</h4>
-            </div>
-
-        </div>
-
     </div>
 
+    <!-- 查询卡片 -->
+    <div class="card">
+        <div class="card-header">
+            产品线查询
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8 mb-3">
+                    <label for="skuSearchInput" class="form-label fw-bold">SKU ID列表</label>
+                    <textarea v-model="skuIdString" id="skuSearchInput" class="form-control" placeholder="请输入SKU ID，多个请换行" rows="5"></textarea>
+                    <div class="form-text">系统会自动去除空行和重复的SKU ID</div>
+                </div>
+                <div class="col-md-4 mb-3 d-flex flex-column">
+                    <label class="form-label fw-bold invisible">查询按钮</label>
+                    <button @click="search" class="btn btn-primary btn-action">
+                        <i class="bi bi-search"></i> 查询产品线
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 查询结果卡片 -->
+    <div v-if="list && list.length > 0" class="card">
+        <div class="card-header">
+            查询结果
+        </div>
+        <div class="card-body">
+            <div class="table-container">
+                <table class="table table-striped align-middle">
+                    <thead>
+                    <tr>
+                        <th scope="col">SKU</th>
+                        <th scope="col">垂直</th>
+                        <th scope="col">产品线名称</th>
+                        <th scope="col">资料运营</th>
+                        <th scope="col">创建人</th>
+                        <th scope="col">创建日期</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="info in list" :key="info.id">
+                        <td>{{info.skuId}}</td>
+                        <td>
+                            <b style="color: red">{{info.verticalName}}</b>
+                        </td>
+                        <td>
+                            <b style="color: red">{{info.productLineName}}</b>
+                        </td>
+                        <td>{{info.userName}}</td>
+                        <td>{{info.createdBy}}</td>
+                        <td>{{info.createdOn}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增SKU卡片 -->
+    <div class="card">
+        <div class="card-header">
+            产品线新增SKU
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label for="skuAddInput" class="form-label fw-bold">SKU ID列表</label>
+                    <textarea v-model="addSkuIdString" id="skuAddInput" class="form-control" placeholder="请输入需要新增的SKU ID，多个请换行" rows="5"></textarea>
+                    <div class="form-text">系统会自动去除空行和重复的SKU ID，最多支持500个SKU</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <button @click="update" class="btn btn-primary btn-action">
+                        <i class="bi bi-plus-circle"></i> 添加SKU
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 消息提示区域 -->
+    <div v-if="loading" class="alert-message alert alert-info">
+        <i class="bi bi-hourglass-split"></i> {{ loading }}
+    </div>
+    <div v-if="errorMsg" class="alert-message alert alert-danger">
+        <i class="bi bi-exclamation-circle"></i> {{ errorMsg }}
+    </div>
+    <div v-if="successMsg" class="alert-message alert alert-success">
+        <i class="bi bi-check-circle"></i> {{ successMsg }}
+    </div>
 </div>
 
-</body>
-</html>
 <script src="../css_js/own/lizi.js"></script>
-
-
 <script>
-
-    const {createApp, ref,onMounted} = Vue
-
+    const { createApp } = Vue;
 
     createApp({
-
         data() {
             this.initPage();
             return {
                 message: 'PA sku产品线查询和新增',
                 skuIdString: '',
                 addSkuIdString: '',
-                prePurchaseBillNoListString:'',
-                productLineName: '',
                 errorMsg: '',
                 successMsg: '',
                 list: [],
                 loading: '',
-                env:"",
-                envMsg:"",
-                url:"http://172.16.29.23:90/php/controller",
+                env: "",
+                envMsg: "",
+                envClass: "",
+                url: "http://172.16.29.23:90/php/controller",
                 header: {
                     headers: {
-                        'Content-Type': 'application/json',
-                        // 其他自定义头
+                        'Content-Type': 'application/json'
                     }
                 }
             }
         },
 
         methods: {
-            async initPage(){
+            // 初始化页面，获取环境信息
+            async initPage() {
                 const data = {
                     action: "paFixProductLine",
-                    params: {},
+                    params: {}
                 };
-                this.header = {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 其他自定义头
-                    }
-                };
-                this.url = "http://172.16.29.23:90/php/controller";
-                let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
-                    this.errorMsg = "网络错误";
-                });
-                this.loading = "";
-                if (res.status === 200) {
-                    this.env = res.data.env;
-                    this.envMsg = this.env == 'test' ? 'Test环境' :  (this.env == 'local' ?  '开发环境' :  (this.env == 'uat' ?  'UAT环境' : '生产环境'));
-                }
 
+                try {
+                    this.url = "http://172.16.29.23:90/php/controller";
+                    let res = await axios.post(`${this.url}/search.php`, data, this.header);
+                    if (res.status === 200) {
+                        this.env = res.data.env;
+                        this.setEnvMessage();
+                    }
+                } catch (error) {
+                    this.errorMsg = "初始化失败，无法获取环境信息";
+                    console.error("初始化错误:", error);
+                }
             },
+
+            // 设置环境信息显示
+            setEnvMessage() {
+                switch(this.env) {
+                    case 'test':
+                        this.envMsg = 'Test环境';
+                        this.envClass = 'text-warning';
+                        break;
+                    case 'local':
+                        this.envMsg = '开发环境';
+                        this.envClass = 'text-info';
+                        break;
+                    case 'uat':
+                        this.envMsg = 'UAT环境';
+                        this.envClass = 'text-primary';
+                        break;
+                    default:
+                        this.envMsg = '生产环境';
+                        this.envClass = 'text-danger';
+                }
+            },
+
+            // 更新产品线SKU
             async update() {
-                this.loading = "............请等待，正在处理数据中..........";
+                // 重置消息
+                this.loading = "正在处理数据，请稍候...";
                 this.errorMsg = "";
+                this.successMsg = "";
 
-                if (!this.addSkuIdString) {
-                    this.errorMsg = "请输入sku!!!!!!";
-                    this.loading = "............报错..........";
-                    return;
-                }
-                //做转义
-                let addskuIdList = this.addSkuIdString.split("\n");
-                addskuIdList =  [...new Set(addskuIdList.filter(item => item))];
-                if (addskuIdList.length > 500){
-                    this.errorMsg = "sku添加过多，请不要超过500个";
-                    this.loading = "............报错..........";
+                // 验证输入
+                if (!this.addSkuIdString.trim()) {
+                    this.loading = "";
+                    this.errorMsg = "请输入SKU ID";
                     return;
                 }
 
-                let prePurchaseBillNoList = this.prePurchaseBillNoListString.split("\n");
-                prePurchaseBillNoList =  [...new Set(prePurchaseBillNoList.filter(item => item))];
-                if (prePurchaseBillNoList.length > 500){
-                    this.errorMsg = "预计采购清单编号过多，请不要超过10个";
-                    this.loading = "............报错..........";
+                // 处理SKU ID列表
+                let addskuIdList = this.addSkuIdString.split("\n")
+                    .map(sku => sku.trim())
+                    .filter(sku => sku); // 过滤空字符串
+
+                // 去重
+                addskuIdList = [...new Set(addskuIdList)];
+
+                // 验证数量限制
+                if (addskuIdList.length > 500) {
+                    this.loading = "";
+                    this.errorMsg = "SKU添加过多，请不要超过500个";
                     return;
                 }
+
+                // 构造请求数据
                 const data = {
                     action: "paFixProductLine",
                     params: {
-                        prePurchaseBillNoList: prePurchaseBillNoList,
-                        skuIdList: addskuIdList,
-                    },
+                        skuIdList: addskuIdList
+                    }
                 };
-                let res = await axios.post(`${this.url}/update.php`, data,this.header).catch(function (error) {
-                    this.errorMsg = "网络错误";
-                });
-                console.log(res)
-                if (res.status === 200 && res.data === true) {
-                    this.loading = "............可以刷新查看了..........";
-                } else {
-                    this.loading = "............报错..........";
-                }
 
-                this.loading = "";
+                try {
+                    // 调用接口
+                    let res = await axios.post(`${this.url}/update.php`, data, this.header);
+                    console.log(res.data)
+                    this.loading = "";
+                    if (res.status === 200 && res.data && res.data.updateSuccess) {
+                        this.successMsg = "SKU添加成功，可以刷新查看结果";
+                        // 清空输入框
+                        this.addSkuIdString = "";
+                    } else {
+                        this.errorMsg = "添加失败，请重试";
+                    }
+                } catch (error) {
+                    this.loading = "";
+                    this.errorMsg = "网络错误，无法连接到服务器";
+                    console.error("添加错误:", error);
+                }
             },
 
+            // 查询产品线
             async search() {
-                this.loading = "............请等待，正在处理数据中..........";
+                // 重置消息
+                this.loading = "正在查询数据，请稍候...";
                 this.errorMsg = "";
+                this.successMsg = "";
                 this.list = [];
-                if (!this.skuIdString){
-                    this.errorMsg = "请输入sku";
-                    this.loading = "............报错..........";
-                    return;
-                }
-                //做转义
-                let skuIdList = this.skuIdString.split("\n");
-                skuIdList =  [...new Set(skuIdList.filter(item => item))];
-                if (skuIdList.length > 500){
-                    this.errorMsg = "sku查询过多，请不要超过500个";
-                    this.loading = "............报错..........";
+
+                // 验证输入
+                if (!this.skuIdString.trim()) {
+                    this.loading = "";
+                    this.errorMsg = "请输入SKU ID";
                     return;
                 }
 
+                // 处理SKU ID列表
+                let skuIdList = this.skuIdString.split("\n")
+                    .map(sku => sku.trim())
+                    .filter(sku => sku); // 过滤空字符串
+
+                // 去重
+                skuIdList = [...new Set(skuIdList)];
+
+                // 验证数量限制
+                if (skuIdList.length > 500) {
+                    this.loading = "";
+                    this.errorMsg = "SKU查询过多，请不要超过500个";
+                    return;
+                }
+
+                // 构造请求数据
                 const data = {
                     action: "paFixProductLine",
                     params: {
-                        skuIdList: skuIdList,
-                    },
-                };
-                let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
-                    this.errorMsg = "网络错误";
-                });
-                console.log(res)
-                this.loading = "";
-                if (res.status === 200) {
-                    this.list = res.data.data;
-                    if (this.list.length == 0){
-                        this.errorMsg = "不存在这些sku的产品线";
+                        skuIdList: skuIdList
                     }
-                }else {
-                    this.loading = "............报错..........";
+                };
+
+                try {
+                    // 调用接口
+                    let res = await axios.post(`${this.url}/search.php`, data, this.header);
+                    
+                    this.loading = "";
+                    if (res.status === 200) {
+                        this.list = res.data.data;
+                        this.env = res.data.env;
+                        this.setEnvMessage();
+                        
+                        if (this.list.length === 0) {
+                            this.errorMsg = "不存在这些SKU的产品线信息";
+                        }
+                    } else {
+                        this.errorMsg = "查询失败，请重试";
+                    }
+                } catch (error) {
+                    this.loading = "";
+                    this.errorMsg = "网络错误，无法连接到服务器";
+                    console.error("查询错误:", error);
                 }
             }
-        },
-
-
-    }).mount('#app')
-
-
+        }
+    }).mount('#app');
 </script>
+</body>
+</html>
