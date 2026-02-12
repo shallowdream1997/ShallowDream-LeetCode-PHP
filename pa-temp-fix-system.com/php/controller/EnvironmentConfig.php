@@ -52,6 +52,9 @@ class EnvironmentConfig
             case "skuChannelUpdate":
                 $this->curlService = (new CurlService())->test();
                 break;
+            case "fixCurrency":
+                $this->curlService = (new CurlService())->test();
+                break;
         }
         return $this;
     }

@@ -380,6 +380,101 @@ class search
         return ["env" => $env, "data" => $preList];
     }
 
+    public function fixCurrency($params){
+        $curlService = $this->envService;
+        $env = $curlService->environment;
+
+        $preList = [];
+        if (isset($params['skuIdList']) && !empty($params['skuIdList']) &&
+            isset($params['channels']) && !empty($params['channels'])){
+
+            $skuIdList = $params['skuIdList'];
+            $channels = $params['channels'];
+
+            foreach (array_chunk($skuIdList,150) as $chunk){
+                $skuSellerConfigList = DataUtils::getPageList( $curlService->s3015()->get("sku-seller-configs/queryPage",[
+                    "skuId" => implode(",",$chunk),
+                    "channel" => implode(",",$channels),
+                    "limit" => 1000
+                ]));
+                $channelSkuMap = [];
+                foreach ($skuSellerConfigList as $skuSellerConfigInfo){
+                    $channelSkuMap[$skuSellerConfigInfo['skuId']][$skuSellerConfigInfo['channel']] = $skuSellerConfigInfo['currency'];
+                }
+
+                $list = DataUtils::getPageList( $curlService->s3015()->get("product-skus/queryPage",[
+                    "productId" => implode(",",$chunk),
+                    "limit" => 150
+                ]));
+                if ($list && count($list) > 0){
+                    foreach ($list as $productInfo){
+                        $currencyCh = [];
+                        if (isset($channelSkuMap[$productInfo['productId']])){
+                            $currencyCh = $channelSkuMap[$productInfo['productId']];
+                        }
+                        $deleteMap = [];
+                        foreach ($productInfo['attribute'] as $info){
+                            if (in_array($info['label'],[
+                                    'MSRPWithTax_currency',
+                                    'MSRP_currency',
+                                ]) && in_array($info['channel'],$channels)){
+
+                                $realCurrency = "";
+                                if (isset($currencyCh[$info['channel']])){
+                                    $realCurrency = $currencyCh[$info['channel']];
+                                }
+                                if ($realCurrency != $info['value']){
+                                    //双方币种不一致的情况下，需要删除
+                                    $key = $info['label'] . '|' . $info['channel'];
+                                    $deleteMap[$key] = true;
+                                    $preList[] = [
+                                        "skuId" => $productInfo['productId'],
+                                        "channel" => $info['channel'],
+                                        "realCurrency" => $realCurrency,
+                                        "label" => $info['label'],
+                                        "value" => $info['value'],
+                                        "canDelete" => true,
+                                    ];
+                                }
+
+                            }
+                        }
+
+                        foreach ($channels as $channel){
+
+
+                            $realCurrency = "";
+                            if (isset($currencyCh[$info['channel']])){
+                                $realCurrency = $currencyCh[$channel];
+                            }
+
+                            foreach ([
+                                         'MSRPWithTax_currency',
+                                         'MSRP_currency',
+                                     ] as $label){
+
+                                $key = $label . '|' . $channel;
+                                if (!isset($deleteMap[$key])){
+                                    $preList[] = [
+                                        "skuId" => $productInfo['productId'],
+                                        "channel" => $channel,
+                                        "realCurrency" => $realCurrency ?? "暂无币种信息",
+                                        "label" => $label,
+                                        "value" => "",
+                                        "canDelete" => false,
+                                    ];
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            return ["env" => $env, "data" => $preList];
+
+        }
+        return ["env" => $env, "data" => $preList];
+    }
 
 }
 
@@ -439,6 +534,10 @@ switch ($data['action']) {
     case "skuChannelUpdate":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->skuChannelUpdate($params);
+        break;
+    case "fixCurrency":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->fixCurrency($params);
         break;
 }
 

@@ -6972,7 +6972,7 @@ class SyncCurlController
 }
 
 $curlController = new SyncCurlController();
-$curlController->updateSkuSellerConfig();
+//$curlController->updateSkuSellerConfig();
 //$curlController->deleltePlatformFees();
 //$curlController->initQdActionLog();
 //$curlController->testDing();
@@ -6985,7 +6985,7 @@ $curlController->updateSkuSellerConfig();
 //$curlController->fallBackQD();
 //$curlController->fixProductSkuCategory();
 //$curlController->consignmentQD(null);
-//$curlController->fixProductSkuCurrent();
+$curlController->fixProductSkuCurrent();
 //$curlController->exportAmazonUsAttribute();
 //$curlController->syncBusinessModulesToTest();
 //$curlController->exportBusinessModules();
