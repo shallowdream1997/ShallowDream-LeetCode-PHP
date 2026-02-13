@@ -9,8 +9,11 @@
     <script src="../css_js/script/vue.global.js"></script>
     <script src="../css_js/script/axios.min.js"></script>
     <script src="../css_js/script/qs.min.js"></script>
+    <script src="../css_js/js/toast.js"></script>
     <!-- 粒子特效 -->
     <link rel="stylesheet" href="../css_js/own/lizi.css">
+    <!-- Toast通知样式 -->
+    <link rel="stylesheet" href="../css_js/css/toast.css">
     <style>
         body {
             background-color: #f0f2f5;
@@ -176,15 +179,21 @@
         </div>
     </div>
 
-    <!-- 消息提示区域 -->
-    <div v-if="loading" class="alert-message alert alert-info">
-        <i class="bi bi-hourglass-split"></i> {{ loading }}
-    </div>
-    <div v-if="errorMsg" class="alert-message alert alert-danger">
-        <i class="bi bi-exclamation-circle"></i> {{ errorMsg }}
-    </div>
-    <div v-if="successMsg" class="alert-message alert alert-success">
-        <i class="bi bi-check-circle"></i> {{ successMsg }}
+    
+    <!-- Toast通知容器 -->
+    <div class="toast-container">
+        <div v-for="(toast, index) in toasts" 
+             :key="toast.id" 
+             :class="['toast-notification', toast.type, { closing: toast.closing }]">
+            <i class="toast-icon bi" :class="{
+                'bi-check-circle-fill': toast.type === 'success',
+                'bi-exclamation-triangle-fill': toast.type === 'error',
+                'bi-info-circle-fill': toast.type === 'info',
+                'bi-exclamation-circle-fill': toast.type === 'warning'
+            }"></i>
+            <div class="toast-content">{{ toast.message }}</div>
+            <button class="toast-close" @click="removeToast(toast.id)">&times;</button>
+        </div>
     </div>
 </div>
 
@@ -193,6 +202,7 @@
     const { createApp } = Vue;
 
     createApp({
+        mixins: [ToastMixin],
         data() {
             this.initPage();
             return {
@@ -201,10 +211,8 @@
                 addSkuIdString: '',
                 status: '',
                 onlyUpdateTime: false,
-                errorMsg: '',
-                successMsg: '',
                 list: [],
-                loading: '',
+                loading: false,
                 env: "",
                 envMsg: "",
                 envClass: "",
@@ -233,7 +241,7 @@
                         this.setEnvMessage();
                     }
                 } catch (error) {
-                    this.errorMsg = "初始化失败，无法获取环境信息";
+                    this.showError("初始化失败，无法获取环境信息");
                     console.error("初始化错误:", error);
                 }
             },
@@ -262,15 +270,15 @@
             // 查询预计留样
             async search() {
                 // 重置消息
-                this.loading = "正在查询数据，请稍候...";
-                this.errorMsg = "";
-                this.successMsg = "";
+                this.loading = true;
+                ;
+                ;
                 this.list = [];
 
                 // 验证输入
                 if (!this.skuIdString.trim()) {
-                    this.loading = "";
-                    this.errorMsg = "请输入SKU ID";
+                    this.loading = false;
+                    this.showError("请输入SKU ID");
                     return;
                 }
 
@@ -283,14 +291,14 @@
                 skuIdList = [...new Set(skuIdList)];
 
                 if (skuIdList.length === 0) {
-                    this.loading = "";
-                    this.errorMsg = "SKU ID列表不能为空";
+                    this.loading = false;
+                    this.showError("SKU ID列表不能为空");
                     return;
                 }
 
                 if (skuIdList.length > 500) {
-                    this.loading = "";
-                    this.errorMsg = "SKU查询过多，请不要超过500个";
+                    this.loading = false;
+                    this.showError("SKU查询过多，请不要超过500个");
                     return;
                 }
 
@@ -303,7 +311,7 @@
 
                 try {
                     let res = await axios.post(`${this.url}/search.php`, data, this.header);
-                    this.loading = "";
+                    this.loading = false;
 
                     if (res.status === 200) {
                         let returnlist = res.data.data || [];
@@ -339,14 +347,14 @@
                         }
 
                         if (this.list.length === 0) {
-                            this.errorMsg = "没有找到相关数据";
+                            this.showError("没有找到相关数据");
                         }
                     } else {
-                        this.errorMsg = "查询失败，请重试";
+                        this.showError("查询失败，请重试");
                     }
                 } catch (error) {
-                    this.loading = "";
-                    this.errorMsg = "网络错误，无法连接到服务器";
+                    this.loading = false;
+                    this.showError("网络错误，无法连接到服务器");
                     console.error("查询错误:", error);
                 }
             },
@@ -354,14 +362,14 @@
             // 更新留样标识
             async update() {
                 // 重置消息
-                this.loading = "正在处理数据，请稍候...";
-                this.errorMsg = "";
-                this.successMsg = "";
+                this.loading = true;
+                ;
+                ;
 
                 // 验证输入
                 if (!this.addSkuIdString.trim()) {
-                    this.loading = "";
-                    this.errorMsg = "请输入SKU ID";
+                    this.loading = false;
+                    this.showError("请输入SKU ID");
                     return;
                 }
 
@@ -374,8 +382,8 @@
                 addskuIdList = [...new Set(addskuIdList)];
 
                 if (addskuIdList.length === 0) {
-                    this.loading = "";
-                    this.errorMsg = "SKU ID列表不能为空";
+                    this.loading = false;
+                    this.showError("SKU ID列表不能为空");
                     return;
                 }
 
@@ -389,20 +397,20 @@
 
                 try {
                     let res = await axios.post(`${this.url}/update.php`, data, this.header);
-                    this.loading = "";
+                    this.loading = false;
 
                     if (res.status === 200 && res.data === true) {
-                        this.successMsg = "处理成功，请刷新查看结果";
+                        this.showSuccess("处理成功，请刷新查看结果");
                         // 清空输入框
                         this.addSkuIdString = "";
                         this.status = "";
                         this.onlyUpdateTime = false;
                     } else {
-                        this.errorMsg = "处理失败，请重试";
+                        this.showError("处理失败，请重试");
                     }
                 } catch (error) {
-                    this.loading = "";
-                    this.errorMsg = "网络错误，无法连接到服务器";
+                    this.loading = false;
+                    this.showError("网络错误，无法连接到服务器");
                     console.error("更新错误:", error);
                 }
             },

@@ -9,9 +9,12 @@
     <script src="../css_js/script/vue.global.js"></script>
     <script src="../css_js/script/axios.min.js"></script>
     <script src="../css_js/script/qs.min.js"></script>
+    <script src="../css_js/js/toast.js"></script>
     <link rel="stylesheet" href="../css_js/bootstrap-5.3.0/css/bootstrap-icons.min.css">
     <!-- 粒子特效 -->
     <link rel="stylesheet" href="../css_js/own/lizi.css">
+    <!-- Toast通知样式 -->
+    <link rel="stylesheet" href="../css_js/css/toast.css">
     <style>
         body {
             background-color: #f0f2f5;
@@ -289,15 +292,20 @@
         </div>
     </div>
 
-    <!-- 消息提示区域 -->
-    <div v-if="loading" class="alert-message alert alert-info">
-        <i class="bi bi-hourglass-split"></i> {{ loading }}
-    </div>
-    <div v-if="errorMsg" class="alert-message alert alert-danger">
-        <i class="bi bi-exclamation-circle"></i> {{ errorMsg }}
-    </div>
-    <div v-if="successMsg" class="alert-message alert alert-success">
-        <i class="bi bi-check-circle"></i> {{ successMsg }}
+    <!-- Toast通知容器 -->
+    <div class="toast-container">
+        <div v-for="(toast, index) in toasts" 
+             :key="toast.id" 
+             :class="['toast-notification', toast.type, { closing: toast.closing }]">
+            <i class="toast-icon bi" :class="{
+                'bi-check-circle-fill': toast.type === 'success',
+                'bi-exclamation-triangle-fill': toast.type === 'error',
+                'bi-info-circle-fill': toast.type === 'info',
+                'bi-exclamation-circle-fill': toast.type === 'warning'
+            }"></i>
+            <div class="toast-content">{{ toast.message }}</div>
+            <button class="toast-close" @click="removeToast(toast.id)">&times;</button>
+        </div>
     </div>
 </div>
 
@@ -305,6 +313,7 @@
     const { createApp } = Vue;
 
     createApp({
+        mixins: [ToastMixin],
         data() {
             this.initPage();
             return {
@@ -315,9 +324,7 @@
                 selectAll: false,
                 selectedItems: [],
                 previewList: [],
-                errorMsg: '',
-                successMsg: '',
-                loading: '',
+                loading: false,
                 env: "",
                 envMsg: "",
                 envClass: "",
@@ -367,7 +374,7 @@
                         this.setEnvMessage();
                     }
                 } catch (error) {
-                    this.errorMsg = "初始化失败，无法获取环境信息";
+                    this.showError("初始化失败，无法获取环境信息");
                     console.error("初始化错误:", error);
                 }
             },
@@ -406,9 +413,7 @@
             // 查询币种信息
             async search() {
                 // 重置消息和结果
-                this.loading = "正在查询数据，请稍候...";
-                this.errorMsg = "";
-                this.successMsg = "";
+                this.loading = true;
                 this.previewList = [];
                 this.selectedItems = [];
                 this.selectAll = false;
@@ -417,8 +422,8 @@
 
                 // 验证输入
                 if (!this.skuIdString.trim()) {
-                    this.loading = "";
-                    this.errorMsg = "请输入SKU ID";
+                    this.loading = false;
+                    this.showError("请输入SKU ID");
                     return;
                 }
 
@@ -431,22 +436,22 @@
                 skuIdList = [...new Set(skuIdList)];
 
                 if (skuIdList.length === 0) {
-                    this.loading = "";
-                    this.errorMsg = "SKU ID列表不能为空";
+                    this.loading = false;
+                    this.showError("SKU ID列表不能为空");
                     return;
                 }
 
                 if (skuIdList.length > 500) {
-                    this.loading = "";
-                    this.errorMsg = "SKU查询过多，请不要超过500个";
+                    this.loading = false;
+                    this.showError("SKU查询过多，请不要超过500个");
                     return;
                 }
 
                 // 获取渠道列表
                 const channels = this.getFinalChannels();
                 if (channels.length === 0) {
-                    this.loading = "";
-                    this.errorMsg = "请至少选择一个渠道";
+                    this.loading = false;
+                    this.showError("请至少选择一个渠道");
                     return;
                 }
 
@@ -460,20 +465,20 @@
 
                 try {
                     let res = await axios.post(`${this.url}/search.php`, data, this.header);
-                    this.loading = "";
+                    this.loading = false;
 
                     if (res.status === 200) {
                         this.previewList = res.data.data || [];
 
                         if (this.previewList.length === 0) {
-                            this.errorMsg = "没有找到相关数据";
+                            this.showInfo("没有找到相关数据");
                         }
                     } else {
-                        this.errorMsg = "查询失败，请重试";
+                        this.showError("查询失败，请重试");
                     }
                 } catch (error) {
-                    this.loading = "";
-                    this.errorMsg = "网络错误，无法连接到服务器";
+                    this.loading = false;
+                    this.showError("网络错误，无法连接到服务器");
                     console.error("查询错误:", error);
                 }
             },
@@ -483,7 +488,7 @@
                 if (this.selectAll) {
                     this.selectedItems = this.previewList.filter(item => item.canDelete);
                     if (this.selectedItems.length === 0){
-                        this.errorMsg = "没有可删除的数据";
+                        this.showError("没有可删除的数据");
                         this.selectAll = false;
                     }
                 } else {
@@ -494,22 +499,19 @@
             // 更新选中的数据
             async deleteSelected() {
                 if (this.selectedItems.length === 0) {
-                    this.errorMsg = "请先选择要更新的数据";
+                    this.showError("请先选择要更新的数据");
                     return;
                 }
 
                 // 筛选可更新的数据
                 const canUpdateItems = this.selectedItems.filter(item => item.canDelete);
                 if (canUpdateItems.length === 0) {
-                    this.errorMsg = "请选择可更新的数据";
+                    this.showError("请选择可更新的数据");
                     return;
                 }
 
                 // 重置状态
-                this.loading = "";
-                this.errorMsg = "";
-                this.successMsg = "";
-                this.showResults = false;
+                this.loading = false;                this.showResults = false;
                 this.updateResults = [];
 
                 // 显示进度条
@@ -612,15 +614,15 @@
                 if (successCount > 0 && failCount === 0) {
                     this.resultSummary = `全部更新成功：共 ${successCount} 个SKU`;
                     this.resultHeaderClass = 'result-header-success';
-                    this.successMsg = this.resultSummary;
+                    this.showSuccess(this.resultSummary);
                 } else if (successCount > 0 && failCount > 0) {
                     this.resultSummary = `部分更新成功：成功 ${successCount} 个SKU，失败 ${failCount} 个SKU`;
                     this.resultHeaderClass = 'result-header-partial';
-                    this.successMsg = this.resultSummary;
+                    this.showWarning(this.resultSummary);
                 } else {
                     this.resultSummary = `全部更新失败：共 ${failCount} 个SKU`;
                     this.resultHeaderClass = 'result-header-error';
-                    this.errorMsg = this.resultSummary;
+                    this.showError(this.resultSummary);
                 }
             },
 

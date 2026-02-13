@@ -9,8 +9,11 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
     <script src="../css_js/script/qs.min.js"></script>
+    <script src="../css_js/js/toast.js"></script>
     <!--粒子特效-->
     <link rel="stylesheet" href="../css_js/own/lizi.css">
+    <!-- Toast通知样式 -->
+    <link rel="stylesheet" href="../css_js/css/toast.css">
 </head>
 <body>
 <div class="container" id="app">
@@ -139,6 +142,22 @@
 <!--        </div>-->
     </div>
 
+    <!-- Toast通知容器 -->
+    <div class="toast-container">
+        <div v-for="toast in toasts" 
+             :key="toast.id" 
+             :class="['toast-notification', toast.type, { closing: toast.closing }]">
+            <i class="toast-icon bi" :class="{
+                'bi-check-circle-fill': toast.type === 'success',
+                'bi-exclamation-triangle-fill': toast.type === 'error',
+                'bi-info-circle-fill': toast.type === 'info',
+                'bi-exclamation-circle-fill': toast.type === 'warning'
+            }"></i>
+            <div class="toast-content">{{ toast.message }}</div>
+            <button class="toast-close" @click="removeToast(toast.id)">&times;</button>
+        </div>
+    </div>
+
 </div>
 
 </body>
@@ -152,21 +171,19 @@
 
 
     createApp({
-
+        mixins: [ToastMixin],
         data() {
             console.log(getDomainAndPort());
             this.initPage();
             return {
                 message: '上传文件到OSS',
-                errorMsg: '',
-                successMsg: '',
                 selectedFile: null,
                 fileName:"",
                 fullPath:"",
                 fileCollect:[],
                 linkList:[],
                 filenumber:0,
-                loading: '',
+                loading: false,
                 env:"",
                 envMsg:"",
                 url:"http://172.16.29.23:90/php/controller",
@@ -193,9 +210,9 @@
                 };
                 this.url = "http://172.16.29.23:90/php/controller";
                 let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
-                    this.errorMsg = "网络错误";
+                    this.showError("网络错误");
                 });
-                this.loading = "";
+                this.loading = false;
                 if (res.status === 200) {
                     this.env = res.data.env;
                     this.envMsg = this.env == 'test' ? 'Test环境' :  (this.env == 'local' ?  '开发环境' :  (this.env == 'uat' ?  'UAT环境' : '生产环境'));
@@ -208,11 +225,10 @@
             async uploadFile() {
                 if (this.selectedFile) {
                     try {
-                        this.successMsg = "";
-                        this.errorMsg = "";
                         this.fullPath = "";
                         this.fileName = "";
                         let fileCollect = [];
+                        let uploadMessages = [];
                         for (let i = 0; i < this.selectedFile.length; i++) {
                             const formData = new FormData();
                             formData.append('fileToUploadOss[]', this.selectedFile[i]);
@@ -223,64 +239,63 @@
                                 }
                             });
                             if (response && response.data.code == 200){
-                                this.successMsg += response.data.message + "<br>";
+                                uploadMessages.push(response.data.message);
                                 console.log(response.data.fileCollect);
-                                //this.fileCollect = [...this.fileCollect,...response.data.fileCollect];
-                                this.loading = "文件加载中....已经加载：" + (i+1) + "/" + this.selectedFile.length;
-                                //fileCollect.push(response.data.fileCollect[0])
+                                this.loading = true;
                                 this.fileCollect = [...this.fileCollect,...response.data.fileCollect];
                             }else {
-                                this.errorMsg = response.data.message + "<br>";
+                                this.showError(response.data.message);
                             }
                         }
-                        //this.fileCollect = fileCollect;
+                        if (uploadMessages.length > 0) {
+                            this.showSuccess(`成功上传 ${uploadMessages.length} 个文件`);
+                        }
                         console.log(this.fileCollect);
 
                     } catch (error) {
-                        this.errorMsg = '加载文件失败';
+                        this.showError('加载文件失败');
                     }
                 } else {
-                    this.errorMsg = '请选择一个文件';
+                    this.showError('请选择一个文件');
                 }
             },
             async update(){
-                this.loading = "............请等待，正在处理数据中..........";
-                this.errorMsg = "";
-
+                this.loading = true;
                 if (this.fileCollect.length == 0) {
-                    this.errorMsg = "请先确保上文文件内容是否正确";
-                    this.loading = "............报错..........";
+                    this.showError("请先确保上文文件内容是否正确");
+                    this.loading = false;
                     return;
                 }
-                this.successMsg = "";
-                this.errorMsg = "";
                 this.linkList = [];
                 this.filenumber = 0;
+                let successCount = 0;
+                let failCount = 0;
+                
                 for(let chunk of this.fileCollect){
                     const data = {
                         action: "uploadOss",
                         params: {
-                            // fileName: this.fileName,
-                            // fullPath: this.fullPath
                             fileCollect: [chunk]
                         },
                     };
                     let res = await axios.post(`${this.url}/update.php`, data,this.header).catch(function (error) {
-                        this.errorMsg = "网络错误";
+                        this.showError("网络错误");
                     });
                     console.log(res)
                     if (res && res.data && res.data.uploadSuccess){
-                        // this.ossLink = res.data.link;
-                        //this.linkList = [...this.linkList,...res.data.linkList];
-                        this.loading = "上传中...";
+                        this.loading = false;
                         this.filenumber++;
-                        this.successMsg = res.data.messages;
+                        successCount++;
                     }else {
-                        this.errorMsg = res.data.messages;
+                        failCount++;
+                        this.showError(res.data.messages);
                     }
                 }
 
-                this.loading = "结束";
+                this.loading = false;
+                if (successCount > 0) {
+                    this.showSuccess(`成功处理 ${successCount} 个文件`);
+                }
             },
             async downloadOssLink(link){
                 window.open(link);
@@ -300,17 +315,14 @@
                 };
                 this.url = "http://172.16.29.23:90/php/controller";
                 let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
-                    this.errorMsg = "网络错误";
+                    this.showError("网络错误");
                 });
-                this.loading = "";
-                this.successMsg = "";
-                this.errorMsg = "";
+                this.loading = false;
                 if (res && res.data && res.data.uploadSuccess){
-                    // this.ossLink = res.data.link;
                     this.linkList = res.data.linkList;
-                    this.successMsg = res.data.messages;
+                    this.showSuccess(res.data.messages);
                 }else {
-                    this.errorMsg = res.data.messages;
+                    this.showError(res.data.messages);
                 }
 
             },
@@ -330,18 +342,15 @@
                 };
                 this.url = "http://172.16.29.23:90/php/controller";
                 let res = await axios.post(`${this.url}/search.php`, data,this.header).catch(function (error) {
-                    this.errorMsg = "网络错误";
+                    this.showError("网络错误");
                 });
-                this.loading = "";
-                this.successMsg = "";
-                this.errorMsg = "";
+                this.loading = false;
                 if (res && res.data && res.data.uploadSuccess){
-                    // this.ossLink = res.data.link;
                     this.linkList = res.data.linkList;
                     window.open("/php/" + res.data.downloadOssPathUrl);
-                    this.successMsg = res.data.messages;
+                    this.showSuccess(res.data.messages);
                 }else {
-                    this.errorMsg = res.data.messages;
+                    this.showError(res.data.messages);
                 }
 
             }

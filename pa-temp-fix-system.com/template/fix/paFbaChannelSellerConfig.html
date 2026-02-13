@@ -9,8 +9,11 @@
     <script src="../css_js/script/vue.global.js"></script>
     <script src="../css_js/script/axios.min.js"></script>
     <script src="../css_js/script/qs.min.js"></script>
+    <script src="../css_js/js/toast.js"></script>
     <!-- 粒子特效 -->
     <link rel="stylesheet" href="../css_js/own/lizi.css">
+    <!-- Toast通知样式 -->
+    <link rel="stylesheet" href="../css_js/css/toast.css">
     <style>
         body {
             background-color: #f0f2f5;
@@ -196,15 +199,21 @@
         </div>
     </div>
 
-    <!-- 消息提示区域 -->
-    <div v-if="loading" class="alert-message alert alert-info">
-        <i class="bi bi-hourglass-split"></i> {{ loading }}
-    </div>
-    <div v-if="errorMsg" class="alert-message alert alert-danger">
-        <i class="bi bi-exclamation-circle"></i> {{ errorMsg }}
-    </div>
-    <div v-if="successMsg" class="alert-message alert alert-success">
-        <i class="bi bi-check-circle"></i> {{ successMsg }}
+    
+    <!-- Toast通知容器 -->
+    <div class="toast-container">
+        <div v-for="(toast, index) in toasts" 
+             :key="toast.id" 
+             :class="['toast-notification', toast.type, { closing: toast.closing }]">
+            <i class="toast-icon bi" :class="{
+                'bi-check-circle-fill': toast.type === 'success',
+                'bi-exclamation-triangle-fill': toast.type === 'error',
+                'bi-info-circle-fill': toast.type === 'info',
+                'bi-exclamation-circle-fill': toast.type === 'warning'
+            }"></i>
+            <div class="toast-content">{{ toast.message }}</div>
+            <button class="toast-close" @click="removeToast(toast.id)">&times;</button>
+        </div>
     </div>
 </div>
 
@@ -213,17 +222,16 @@
     const { createApp } = Vue;
 
     createApp({
+        mixins: [ToastMixin],
         data() {
             this.initPage();
             return {
                 message: 'FBA海外仓上架前移库申请渠道仓库配置',
                 channel: '',
                 stocks: '',
-                errorMsg: '',
-                successMsg: '',
                 list: [],
                 filteredList: [],
-                loading: '',
+                loading: false,
                 env: "",
                 envMsg: "",
                 envClass: "",
@@ -271,7 +279,7 @@
                         this.setEnvMessage();
                     }
                 } catch (error) {
-                    this.errorMsg = "初始化失败，无法获取环境信息";
+                    this.showError("初始化失败，无法获取环境信息");
                     console.error("初始化错误:", error);
                 }
             },
@@ -300,11 +308,7 @@
             // 查询配置列表
             async search() {
                 // 重置消息
-                this.loading = "正在查询数据，请稍候...";
-                this.errorMsg = "";
-                this.successMsg = "";
-
-                const data = {
+                this.loading = true;                const data = {
                     action: "paFbaChannelSellerConfig",
                     params: {
                         action: "searchAllConfig"
@@ -313,11 +317,11 @@
 
                 try {
                     let res = await axios.post(`${this.url}/search.php`, data, this.header);
-                    this.loading = "";
+                    this.loading = false;
 
                     if (res.status === 200) {
                         if (res.data.data.length === 0) {
-                            this.errorMsg = "没有找到相关配置数据";
+                            this.showError("没有找到相关配置数据");
                             this.list = [];
                         } else {
                             this.list = res.data.data;
@@ -326,11 +330,11 @@
                             this.setEnvMessage();
                         }
                     } else {
-                        this.errorMsg = "查询失败，请重试";
+                        this.showError("查询失败，请重试");
                     }
                 } catch (error) {
-                    this.loading = "";
-                    this.errorMsg = "网络错误，无法连接到服务器";
+                    this.loading = false;
+                    this.showError("网络错误，无法连接到服务器");
                     console.error("查询错误:", error);
                 }
             },
@@ -367,10 +371,7 @@
 
             // 加载指定渠道的可用仓库
             async loadStocksForChannel(channel) {
-                this.loadingStocks = true;
-                this.errorMsg = "";
-
-                try {
+                this.loadingStocks = true;                try {
                     // 调用获取仓库列表的接口
                     const data = {
                         action: "paFbaChannelSellerConfig",
@@ -392,11 +393,11 @@
                             this.availableStocks = [];
                         }
                     } else {
-                        this.errorMsg = "获取仓库列表失败";
+                        this.showError("获取仓库列表失败");
                         this.availableStocks = [];
                     }
                 } catch (error) {
-                    this.errorMsg = "网络错误，无法获取仓库列表";
+                    this.showError("网络错误，无法获取仓库列表");
                     this.availableStocks = [];
                     console.error("获取仓库列表错误:", error);
                 } finally {
@@ -407,23 +408,19 @@
             // 更新配置
             async update() {
                 // 重置消息
-                this.loading = "正在处理数据，请稍候...";
-                this.errorMsg = "";
-                this.successMsg = "";
-
-                // 获取最终的渠道值
+                this.loading = true;                // 获取最终的渠道值
                 const finalChannel = this.selectedChannel === 'custom' ? this.customChannel : this.selectedChannel;
 
                 // 验证输入
                 if (!finalChannel || finalChannel.trim() === '') {
-                    this.loading = "";
-                    this.errorMsg = "请选择或输入渠道名称";
+                    this.loading = false;
+                    this.showError("请选择或输入渠道名称");
                     return;
                 }
 
                 if (this.selectedStocks.length === 0) {
-                    this.loading = "";
-                    this.errorMsg = "请至少选择一个仓库";
+                    this.loading = false;
+                    this.showError("请至少选择一个仓库");
                     return;
                 }
 
@@ -437,21 +434,21 @@
 
                 try {
                     let res = await axios.post(`${this.url}/update.php`, data, this.header);
-                    this.loading = "";
+                    this.loading = false;
 
                     if (res.status === 200 && res.data === true) {
-                        this.successMsg = "配置添加成功，请刷新列表查看";
+                        this.showSuccess("配置添加成功，请刷新列表查看");
                         // 重置表单
                         this.selectedChannel = "";
                         this.customChannel = "";
                         this.selectedStocks = [];
                         this.availableStocks = [];
                     } else {
-                        this.errorMsg = "配置添加失败，请重试";
+                        this.showError("配置添加失败，请重试");
                     }
                 } catch (error) {
-                    this.loading = "";
-                    this.errorMsg = "网络错误，无法连接到服务器";
+                    this.loading = false;
+                    this.showError("网络错误，无法连接到服务器");
                     console.error("更新错误:", error);
                 }
             }

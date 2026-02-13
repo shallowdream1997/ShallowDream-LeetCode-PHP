@@ -9,8 +9,11 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
     <script src="../css_js/script/qs.min.js"></script>
+    <script src="../css_js/js/toast.js"></script>
     <!-- 粒子特效 -->
     <link rel="stylesheet" href="../css_js/own/lizi.css">
+    <!-- Toast通知样式 -->
+    <link rel="stylesheet" href="../css_js/css/toast.css">
     <style>
         body {
             background-color: #f0f2f5;
@@ -112,15 +115,20 @@
                 </div>
             </div>
 
-            <!-- 处理结果信息 -->
-            <div v-if="loading" class="alert-message alert alert-info">
-                <i class="bi bi-hourglass-split"></i> {{ loading }}
-            </div>
-            <div v-if="errorMsg" class="alert-message alert alert-danger">
-                <i class="bi bi-exclamation-circle"></i> {{ errorMsg }}
-            </div>
-            <div v-if="successMsg" class="alert-message alert alert-success">
-                <i class="bi bi-check-circle"></i> {{ successMsg }}
+            <!-- Toast通知容器 -->
+            <div class="toast-container">
+                <div v-for="toast in toasts" 
+                     :key="toast.id" 
+                     :class="['toast-notification', toast.type, { closing: toast.closing }]">
+                    <i class="toast-icon bi" :class="{
+                        'bi-check-circle-fill': toast.type === 'success',
+                        'bi-exclamation-triangle-fill': toast.type === 'error',
+                        'bi-info-circle-fill': toast.type === 'info',
+                        'bi-exclamation-circle-fill': toast.type === 'warning'
+                    }"></i>
+                    <div class="toast-content">{{ toast.message }}</div>
+                    <button class="toast-close" @click="removeToast(toast.id)">&times;</button>
+                </div>
             </div>
         </div>
     </div>
@@ -131,6 +139,7 @@
     const { createApp } = Vue;
 
     createApp({
+        mixins: [ToastMixin],
         data() {
             this.initPage();
             return {
@@ -143,9 +152,7 @@
                 autoPublish: false,
 
                 // 消息提示
-                errorMsg: '',
-                successMsg: '',
-                loading: '',
+                loading: false,
 
                 // 环境配置
                 env: "",
@@ -176,7 +183,7 @@
                         this.setEnvMessage();
                     }
                 } catch (error) {
-                    this.errorMsg = "初始化失败，无法获取环境信息";
+                    this.showError("初始化失败，无法获取环境信息");
                     console.error("初始化错误:", error);
                 }
             },
@@ -205,20 +212,16 @@
             // 执行QD单处理
             async executeQdProcess() {
                 // 重置消息
-                this.loading = "正在处理QD单，请稍候...";
-                this.errorMsg = "";
-                this.successMsg = "";
-
-                // 验证输入
+                this.loading = true;                // 验证输入
                 if (!this.qdString.trim()) {
-                    this.loading = "";
-                    this.errorMsg = "请输入QD单号";
+                    this.loading = false;
+                    this.showError("请输入QD单号");
                     return;
                 }
 
                 if (!this.selectedStatus) {
-                    this.loading = "";
-                    this.errorMsg = "请选择处理状态";
+                    this.loading = false;
+                    this.showError("请选择处理状态");
                     return;
                 }
 
@@ -231,8 +234,8 @@
                 qdList = [...new Set(qdList)];
 
                 if (qdList.length === 0) {
-                    this.loading = "";
-                    this.errorMsg = "未找到有效的QD单号";
+                    this.loading = false;
+                    this.showError("未找到有效的QD单号");
                     return;
                 }
 
@@ -254,16 +257,16 @@
                     // 调用接口
                     let res = await axios.post(`${this.url}/update.php`, data, this.header);
 
-                    this.loading = "";
+                    this.loading = false;
                     console.log(res.data.data)
                     if (res.status === 200 && res.data.data.data && res.data.data.data === true) {
-                        this.successMsg = "执行成功，请去清单列表查看数据";
+                        this.showSuccess("执行成功，请去清单列表查看数据");
                     } else {
-                        this.errorMsg = res.data.data.state.message || "处理失败，请重试";
+                        this.showError(res.data.data.state.message || "处理失败，请重试");
                     }
                 } catch (error) {
-                    this.loading = "";
-                    this.errorMsg = "网络错误，无法连接到服务器";
+                    this.loading = false;
+                    this.showError("网络错误，无法连接到服务器");
                     console.error("处理QD单错误:", error);
                 }
             }

@@ -9,9 +9,13 @@
     <script src="../css_js/script/vue.global.js"></script>
     <script src="../css_js/script/axios.min.js"></script>
     <script src="../css_js/script/qs.min.js"></script>
+    <!-- Toast通知脚本 -->
+    <script src="../css_js/js/toast.js"></script>
     <link rel="stylesheet" href="../css_js/bootstrap-5.3.0/css/bootstrap-icons.min.css">
     <!-- 粒子特效 -->
     <link rel="stylesheet" href="../css_js/own/lizi.css">
+    <!-- Toast通知样式 -->
+    <link rel="stylesheet" href="../css_js/css/toast.css">
     <style>
         body {
             background-color: #f0f2f5;
@@ -264,15 +268,20 @@
         </div>
     </div>
 
-    <!-- 消息提示区域 -->
-    <div v-if="loading" class="alert-message alert alert-info">
-        <i class="bi bi-hourglass-split"></i> {{ loading }}
-    </div>
-    <div v-if="errorMsg" class="alert-message alert alert-danger">
-        <i class="bi bi-exclamation-circle"></i> {{ errorMsg }}
-    </div>
-    <div v-if="successMsg" class="alert-message alert alert-success">
-        <i class="bi bi-check-circle"></i> {{ successMsg }}
+    <!-- Toast通知容器 -->
+    <div class="toast-container">
+        <div v-for="(toast, index) in toasts" 
+             :key="toast.id" 
+             :class="['toast-notification', toast.type, { closing: toast.closing }]">
+            <i class="toast-icon bi" :class="{
+                'bi-check-circle-fill': toast.type === 'success',
+                'bi-exclamation-triangle-fill': toast.type === 'error',
+                'bi-info-circle-fill': toast.type === 'info',
+                'bi-exclamation-circle-fill': toast.type === 'warning'
+            }"></i>
+            <div class="toast-content">{{ toast.message }}</div>
+            <button class="toast-close" @click="removeToast(toast.id)">&times;</button>
+        </div>
     </div>
 </div>
 
@@ -281,6 +290,7 @@
     const { createApp } = Vue;
 
     createApp({
+        mixins: [ToastMixin],
         data() {
             this.initPage();
             return {
@@ -288,11 +298,9 @@
                 visitorIp: '',
                 visitTime: '',
                 searchName: '',
-                errorMsg: '',
-                successMsg: '',
                 list: [],
                 filtered_list: [],
-                loading: '',
+                loading: false,
                 env: "",
                 envMsg: "",
                 envClass: "",
@@ -334,9 +342,7 @@
         methods: {
             // 初始化页面，获取环境信息和数据
             async initPage() {
-                this.loading = "正在加载数据...";
-                this.errorMsg = "";
-                this.successMsg = "";
+                this.loading = true;
 
                 try {
                     const data = {
@@ -350,7 +356,7 @@
                     this.url = "http://172.16.29.23:90/php/controller";
                     let res = await axios.post(`${this.url}/search.php`, data, this.header);
                     
-                    this.loading = "";
+                    this.loading = false;
                     if (res.status === 200) {
                         this.list = res.data.allRecords || [];
                         this.filtered_list = [...this.list];
@@ -366,8 +372,8 @@
                         }
                     }
                 } catch (error) {
-                    this.loading = "";
-                    this.errorMsg = "初始化失败，无法获取数据";
+                    this.loading = false;
+                    this.showError("初始化失败，无法获取数据");
                     console.error("初始化错误:", error);
                 }
             },
@@ -473,19 +479,13 @@
             refreshVisitorInfo() {
                 this.getVisitorIp();
                 this.updateVisitTime();
-                this.successMsg = "访问信息已刷新";
-                setTimeout(() => {
-                    this.successMsg = "";
-                }, 3000);
+                this.showSuccess("访问信息已刷新");
             },
 
             // 刷新数据
             async refreshData() {
                 await this.initPage();
-                this.successMsg = "数据已刷新";
-                setTimeout(() => {
-                    this.successMsg = "";
-                }, 3000);
+                this.showSuccess("数据已刷新");
             },
 
             // 过滤列表
@@ -523,7 +523,7 @@
 
             // 手动记录本次访问
             async recordCurrentVisit() {
-                this.loading = "正在记录访问信息...";
+                this.loading = true;
                 
                 try {
                     const data = {
@@ -537,23 +537,20 @@
 
                     let res = await axios.post(`${this.url}/update.php`, data, this.header);
                     
-                    this.loading = "";
+                    this.loading = false;
                     if (res.status === 200 && res.data.success) {
                         // 更新数据
                         this.list = res.data.allRecords || [];
                         this.filtered_list = [...this.list];
                         this.calculateStats();
                         
-                        this.successMsg = res.data.message || "访问记录已保存";
-                        setTimeout(() => {
-                            this.successMsg = "";
-                        }, 3000);
+                        this.showSuccess(res.data.message || "访问记录已保存");
                     } else {
                         throw new Error(res.data.message || "服务器返回错误");
                     }
                 } catch (error) {
-                    this.loading = "";
-                    this.errorMsg = "记录访问信息失败";
+                    this.loading = false;
+                    this.showError("记录访问信息失败");
                     console.error("记录访问错误:", error);
                 }
             },
