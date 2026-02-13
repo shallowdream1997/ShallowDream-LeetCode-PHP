@@ -1,2 +1,0 @@
-2025-11-26 01:21:26 - 请求: POST：http://172.16.10.40:8000/api/dingding/sendOaNotice
-2025-11-26 01:21:26 - 参数：{"userType":"userName","userIdList":"zhouangang","title":"【否定词广告写入开启完毕】提醒","msg":[{"key":"","value":"2025-11-26 01:21:26 否定词广告写入开启完毕"}]}
