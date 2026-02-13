@@ -674,43 +674,64 @@ class update
         $env = $curlService->environment;
 
         $returnMsg = [];
+        $errors = [];
+        
         if (isset($params['fcuIdList']) && $params['fcuIdList']){
             $fculist = [];
             $skulist = [];
+            
+            // 分批查询FCU数据
             foreach (array_chunk($params['fcuIdList'],200) as $chunk){
-                $fcuResult = DataUtils::getPageDocList($curlService->s3044()->get("fcu_sku_maps/queryPage", [
-                    "fcuId_in" => implode(",",$chunk),
-                    "limit" => 200
-                ]));
-                if ($fcuResult && count($fcuResult) > 0){
-                    foreach ($fcuResult as $info){
-                        $firstSkuId = current($info['skuId']);
-                        $skulist[] = $firstSkuId;
-                        $fculist[$info['fcuId']] = $info;
+                try {
+                    $fcuResult = DataUtils::getPageDocList($curlService->s3044()->get("fcu_sku_maps/queryPage", [
+                        "fcuId_in" => implode(",",$chunk),
+                        "limit" => 200
+                    ]));
+                    
+                    if ($fcuResult && count($fcuResult) > 0){
+                        foreach ($fcuResult as $info){
+                            $firstSkuId = current($info['skuId']);
+                            $skulist[] = $firstSkuId;
+                            $fculist[$info['fcuId']] = $info;
+                        }
                     }
+                } catch (Exception $e) {
+                    $errors[] = "查询FCU数据失败: " . $e->getMessage();
+                    $this->logger->log2("查询FCU数据异常: " . $e->getMessage());
                 }
             }
+            
+            // 查询SKU对应的产品线映射
             $skuIdProductLineMap = [];
             if (count($skulist) > 0){
                 $list = [];
                 foreach (array_chunk($skulist,200) as $chunk){
-                    $getProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryPage", [
-                        "skuId" => implode(",",$chunk),
-                        "limit" => 200
-                    ]));
-                    if ($getProductMainResp && count($getProductMainResp['data']) > 0){
-                        $list = array_merge($list,$getProductMainResp['data']);
+                    try {
+                        $getProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryPage", [
+                            "skuId" => implode(",",$chunk),
+                            "limit" => 200
+                        ]));
+                        
+                        if ($getProductMainResp && count($getProductMainResp['data']) > 0){
+                            $list = array_merge($list,$getProductMainResp['data']);
+                        }
+                    } catch (Exception $e) {
+                        $errors[] = "查询产品线数据失败: " . $e->getMessage();
+                        $this->logger->log2("查询产品线数据异常: " . $e->getMessage());
                     }
                 }
+                
                 if (count($list) > 0){
                     $skuIdProductLineMap = array_column($list,null,"skuId");
                 }
             }
 
+            // 处理每个FCU ID
             foreach ($params['fcuIdList'] as $fcuId){
                 if (isset($fculist[$fcuId])){
                     $fcuInfo = $fculist[$fcuId];
                     $skuId = current($fcuInfo['skuId']);
+                    
                     if ($fcuInfo['productLineId']){
                         $returnMsg[] = [
                             "messages" => "已存在，无需补充",
@@ -720,44 +741,80 @@ class update
                         ];
                         continue;
                     }
+                    
                     if (isset($skuIdProductLineMap[$skuId])){
-                        $product_operator_mainInfo_id = $skuIdProductLineMap[$skuId]['product_operator_mainInfo_id'];
+                        try {
+                            $product_operator_mainInfo_id = $skuIdProductLineMap[$skuId]['product_operator_mainInfo_id'];
 
-                        $fcuInfo['productLineId'] = $product_operator_mainInfo_id;
-                        $fcuInfo['modifiedBy'] = "pa_system";
+                            $fcuInfo['productLineId'] = $product_operator_mainInfo_id;
+                            $fcuInfo['modifiedBy'] = "pa_system";
 
-                        $sss = DataUtils::getResultData($curlService->s3044()->put("fcu_sku_maps/{$fcuInfo['_id']}", $fcuInfo));
-                        $this->logger->log2("更新产品线id成功" . json_encode($sss,JSON_UNESCAPED_UNICODE));
-
-
-                        $returnMsg[] = [
-                            "messages" => "补充产品线成功",
-                            "fcuId" => $fcuId,
-                            "skuId" => $skuId,
-                            "productLine" => $skuIdProductLineMap[$skuId]['productLineName'],
-                        ];
-                    }else{
+                            $updateResult = DataUtils::getResultData($curlService->s3044()->put("fcu_sku_maps/{$fcuInfo['_id']}", $fcuInfo));
+                            
+                            if ($updateResult && isset($updateResult['status']) && $updateResult['status'] === 'success') {
+                                $this->logger->log2("更新产品线id成功: fcuId={$fcuId}, productLineId={$product_operator_mainInfo_id}");
+                                
+                                $returnMsg[] = [
+                                    "messages" => "补充产品线成功",
+                                    "fcuId" => $fcuId,
+                                    "skuId" => $skuId,
+                                    "productLine" => $skuIdProductLineMap[$skuId]['productLineName'],
+                                ];
+                            } else {
+                                $errors[] = "更新FCU记录失败: fcuId={$fcuId}";
+                                $this->logger->log2("更新FCU记录失败: " . json_encode($updateResult,JSON_UNESCAPED_UNICODE));
+                                
+                                $returnMsg[] = [
+                                    "messages" => "补充产品线失败",
+                                    "fcuId" => $fcuId,
+                                    "skuId" => $skuId,
+                                    "productLine" => "",
+                                ];
+                            }
+                        } catch (Exception $e) {
+                            $errors[] = "更新FCU记录异常: fcuId={$fcuId}, 错误: " . $e->getMessage();
+                            $this->logger->log2("更新FCU记录异常: fcuId={$fcuId}, 错误: " . $e->getMessage());
+                            
+                            $returnMsg[] = [
+                                "messages" => "补充产品线异常",
+                                "fcuId" => $fcuId,
+                                "skuId" => $skuId,
+                                "productLine" => "",
+                            ];
+                        }
+                    } else {
                         $this->logger->log2("找不到产品线：{$skuId} - {$fcuId}");
                         $returnMsg[] = [
-                            "messages" => "找不到产品线",
+                            "messages" => "找不到对应的产品线",
                             "fcuId" => $fcuId,
                             "skuId" => $skuId,
                             "productLine" => "",
                         ];
                     }
-                }else{
+                } else {
                     $this->logger->log2("找不到fcu：{$fcuId}");
                     $returnMsg[] = [
-                        "messages" => "找不到fcu",
+                        "messages" => "找不到FCU记录",
                         "fcuId" => $fcuId,
                         "skuId" => "",
                         "productLine" => "",
                     ];
                 }
             }
+        } else {
+            $errors[] = "FCU ID列表不能为空";
         }
 
-        return ["env" => $env, "data" => $returnMsg];
+        $response = [
+            "env" => $env, 
+            "data" => $returnMsg
+        ];
+        
+        if (!empty($errors)) {
+            $response['errors'] = $errors;
+        }
+        
+        return $response;
     }
 
 

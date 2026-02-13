@@ -271,27 +271,39 @@ class search
         $env = $curlService->environment;
 
         $returnMsg = [];
+        $errors = [];
+        
         if (isset($params['fcuIdList']) && $params['fcuIdList']){
             $fculist = [];
             $skulist = [];
+            
+            // 分批查询FCU数据
             foreach (array_chunk($params['fcuIdList'],200) as $chunk){
-                $fcuResult = DataUtils::getPageDocList($curlService->s3044()->get("fcu_sku_maps/queryPage", [
-                    "fcuId_in" => implode(",",$chunk),
-                    "limit" => 200
-                ]));
-                if ($fcuResult && count($fcuResult) > 0){
-                    foreach ($fcuResult as $info){
-                        $firstSkuId = current($info['skuId']);
-                        $skulist[] = $firstSkuId;
-                        $fculist[$info['fcuId']] = $info;
+                try {
+                    $fcuResult = DataUtils::getPageDocList($curlService->s3044()->get("fcu_sku_maps/queryPage", [
+                        "fcuId_in" => implode(",",$chunk),
+                        "limit" => 200
+                    ]));
+                    
+                    if ($fcuResult && count($fcuResult) > 0){
+                        foreach ($fcuResult as $info){
+                            $firstSkuId = current($info['skuId']);
+                            $skulist[] = $firstSkuId;
+                            $fculist[$info['fcuId']] = $info;
+                        }
                     }
+                } catch (Exception $e) {
+                    $errors[] = "查询FCU数据失败: " . $e->getMessage();
+                    $this->logger->log2("查询FCU数据异常: " . $e->getMessage());
                 }
             }
 
+            // 处理每个FCU ID
             foreach ($params['fcuIdList'] as $fcuId){
                 if (isset($fculist[$fcuId])){
                     $fcuInfo = $fculist[$fcuId];
                     $skuId = current($fcuInfo['skuId']);
+                    
                     if ($fcuInfo['productLineId']){
                         $returnMsg[] = [
                             "messages" => "已存在，无需补充",
@@ -299,28 +311,38 @@ class search
                             "skuId" => $skuId,
                             "productLine" => $fcuInfo['productLineId'],
                         ];
-                        continue;
+                    } else {
+                        $returnMsg[] = [
+                            "messages" => "需要补充产品线",
+                            "fcuId" => $fcuId,
+                            "skuId" => $skuId,
+                            "productLine" => "",
+                        ];
                     }
-                    $returnMsg[] = [
-                        "messages" => "找不到产品线",
-                        "fcuId" => $fcuId,
-                        "skuId" => $skuId,
-                        "productLine" => "",
-                    ];
-
-                }else{
+                } else {
                     $this->logger->log2("找不到fcu：{$fcuId}");
                     $returnMsg[] = [
-                        "messages" => "找不到fcu",
+                        "messages" => "找不到FCU记录",
                         "fcuId" => $fcuId,
                         "skuId" => "",
                         "productLine" => "",
                     ];
                 }
             }
+        } else {
+            $errors[] = "FCU ID列表不能为空";
         }
 
-        return ["env" => $env, "data" => $returnMsg];
+        $response = [
+            "env" => $env, 
+            "data" => $returnMsg
+        ];
+        
+        if (!empty($errors)) {
+            $response['errors'] = $errors;
+        }
+        
+        return $response;
     }
 
 
@@ -356,29 +378,6 @@ class search
         return ["env" => $env, "data" => $preList];
     }
 
-
-    public function skuChannelUpdate($params){
-        $curlService = $this->envService;
-        $env = $curlService->environment;
-
-        $preList = [];
-        if (isset($params['skuList']) && !empty($params['skuList']) &&
-            isset($params['channel']) && !empty($params['channel'])){
-
-            foreach (array_chunk($params['skuList'],150) as $chunk){
-               $list = DataUtils::getPageList( $curlService->s3015()->get("product-sku/queryPage",[
-                    "productId" => implode(",",$chunk),
-                    "limit" => 150
-                ]));
-               if ($list && count($list) > 0){
-
-               }
-            }
-
-
-        }
-        return ["env" => $env, "data" => $preList];
-    }
 
     public function fixCurrency($params){
         $curlService = $this->envService;
@@ -533,10 +532,6 @@ switch ($data['action']) {
     case "skuPhotoFix":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->skuPhotoFix($params);
-        break;
-    case "skuChannelUpdate":
-        $params = isset($data['params']) ? $data['params'] : [];
-        $return = $class->skuChannelUpdate($params);
         break;
     case "fixCurrency":
         $params = isset($data['params']) ? $data['params'] : [];

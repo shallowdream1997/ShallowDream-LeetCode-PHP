@@ -23,7 +23,7 @@ class EnvironmentConfig
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "fixCeMaterials":
-                $this->curlService = (new CurlService())->test();
+                $this->curlService = (new CurlService())->pro();
                 break;
             case "paFbaChannelSellerConfig":
                 $this->curlService = (new CurlService())->pro();
@@ -32,7 +32,7 @@ class EnvironmentConfig
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "paFixProductLine":
-                $this->curlService = (new CurlService())->test();
+                $this->curlService = (new CurlService())->pro();
                 break;
             case "uploadOss":
                 $this->curlService = (new CurlService())->test();
@@ -41,16 +41,13 @@ class EnvironmentConfig
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "fixFcuProductLine":
-                $this->curlService = (new CurlService())->pro();
+                $this->curlService = (new CurlService())->test();
                 break;
             case "consignmentQD":
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "skuPhotoFix":
                 $this->curlService = (new CurlService())->pro();
-                break;
-            case "skuChannelUpdate":
-                $this->curlService = (new CurlService())->test();
                 break;
             case "fixCurrency":
                 $this->curlService = (new CurlService())->test();
