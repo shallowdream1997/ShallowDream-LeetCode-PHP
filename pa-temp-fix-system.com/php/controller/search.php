@@ -251,14 +251,187 @@ class search
         $dbDataList = $redisService->hGetAll(REDIS_USERNAME_IP_KEY . "_{$env}");
         if (count($dbDataList) > 0){
             foreach ($dbDataList as $key => $keyInfo){
-                $list[] = json_decode($keyInfo,true);
+                // 包含所有用户记录：新格式(用户名_IP)和旧格式(IP)
+                if ((strpos($key, '_') !== false && strpos($key, 'ip_') !== 0) || 
+                    (strpos($key, '_') === false && filter_var($key, FILTER_VALIDATE_IP))) {
+                    $record = json_decode($keyInfo, true);
+                    if ($record) {
+                        // 兼容旧数据格式，补充缺失字段
+                        if (!isset($record['first_visit'])) {
+                            $record['first_visit'] = date('Y-m-d H:i:s');
+                        }
+                        if (!isset($record['last_visit'])) {
+                            $record['last_visit'] = $record['first_visit'];
+                        }
+                        if (!isset($record['visit_count'])) {
+                            $record['visit_count'] = 1;
+                        }
+                        // 如果是旧格式数据，key就是IP地址
+                        if (!isset($record['name']) && strpos($key, '_') === false) {
+                            $record['name'] = '未知用户';
+                        }
+                        if (!isset($record['ip'])) {
+                            $record['ip'] = $key;
+                        }
+                        $list[] = $record;
+                    }
+                }
             }
         }
 
-        return [
+        $response = [
+            "success" => true,
             "env" => $env,
-            "data" => $list
+            "allRecords" => $list,
+            "totalVisitors" => count($list)
         ];
+
+        // 获取当前用户信息
+        if (isset($params['getUserInfo']) && $params['getUserInfo']) {
+            $visitorIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+            $userKey = REDIS_USERNAME_IP_KEY . "_{$env}";
+            $userData = $redisService->hGet($userKey, $visitorIp);
+            
+            if ($userData) {
+                $userInfo = json_decode($userData, true);
+                if ($userInfo) {
+                    $response['current_user'] = [
+                        'name' => $userInfo['name'] ?? '未知用户',
+                        'ip' => $userInfo['ip'] ?? $visitorIp,
+                        'last_visit' => $userInfo['last_visit'] ?? date('Y-m-d H:i:s')
+                    ];
+                }
+            }
+        }
+
+        // 处理访问记录请求
+        if (isset($params['recordVisit']) && $params['recordVisit']) {
+            $visitorIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+            $userAgent = $params['userAgent'] ?? $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+            $currentTime = date('Y-m-d H:i:s');
+            $isNewRecord = false;
+
+            // 更新用户的访问统计（使用hash结构存储）
+            $userStatsKey = REDIS_USERNAME_IP_KEY . "_{$env}_stats";
+            $userData = $redisService->hGet($userStatsKey, $visitorIp);
+            
+            if ($userData) {
+                $userInfo = json_decode($userData, true);
+            } else {
+                $userInfo = [
+                    'ip' => $visitorIp,
+                    'first_visit' => $currentTime,
+                    'visit_count' => 0,
+                    'last_visit' => $currentTime,
+                    'last_user_agent' => substr($userAgent, 0, 100)
+                ];
+                $isNewRecord = true;
+            }
+
+            // 更新访问次数和最后访问时间
+            $userInfo['visit_count'] = ($userInfo['visit_count'] ?? 0) + 1;
+            $userInfo['last_visit'] = $currentTime;
+            $userInfo['last_user_agent'] = substr($userAgent, 0, 100);
+
+            // 保存用户统计数据
+            $redisService->hSet($userStatsKey, $visitorIp, json_encode($userInfo, JSON_UNESCAPED_UNICODE));
+
+            // 获取最近访问记录（从统计数据中提取）
+            $recentVisits = $this->getRecentVisits($redisService, $userStatsKey);
+            
+            // 获取本页访问次数
+            $thisPageVisits = $userInfo['visit_count'];
+
+            $response['recent_visits'] = $recentVisits;
+            $response['this_page_visits'] = $thisPageVisits;
+            $response['new_visit_recorded'] = $isNewRecord;
+        }
+
+        return $response;
+    }
+
+    /**
+     * 获取最近访问记录
+     */
+    private function getRecentVisits($redisService, $userStatsKey) {
+        $recentVisits = [];
+        $allUsers = $redisService->hGetAll($userStatsKey);
+        
+        // 转换并排序
+        $userList = [];
+        foreach ($allUsers as $ip => $userData) {
+            $userInfo = json_decode($userData, true);
+            if ($userInfo) {
+                $userList[] = [
+                    'ip' => $ip,
+                    'time' => $userInfo['last_visit'],
+                    'userAgent' => $userInfo['last_user_agent'] ?? '',
+                    'count' => $userInfo['visit_count'] ?? 1,
+                    'isNew' => false  // 默认不是新记录
+                ];
+            }
+        }
+        
+        // 按时间倒序排列，取最近20条
+        usort($userList, function($a, $b) {
+            return strtotime($b['time']) - strtotime($a['time']);
+        });
+        
+        return array_slice($userList, 0, 20);
+    }
+    
+    /**
+     * 获取客户端真实IP地址
+     * @param $params
+     * @return array
+     */
+    public function getClientIp($params)
+    {
+        $ip = $this->getRealClientIp();
+        
+        return [
+            "success" => true,
+            "ip" => $ip,
+            "message" => "IP地址获取成功"
+        ];
+    }
+    
+    /**
+     * 获取真实的客户端IP地址
+     * @return string
+     */
+    private function getRealClientIp()
+    {
+        // 检查各种可能的IP头信息
+        $ipKeys = [
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP', 
+            'HTTP_CLIENT_IP',
+            'HTTP_X_CLUSTER_CLIENT_IP',
+            'HTTP_FORWARDED_FOR',
+            'HTTP_FORWARDED',
+            'REMOTE_ADDR'
+        ];
+        
+        foreach ($ipKeys as $key) {
+            if (isset($_SERVER[$key]) && !empty($_SERVER[$key])) {
+                $ip = $_SERVER[$key];
+                
+                // 处理逗号分隔的IP列表（代理情况）
+                if (strpos($ip, ',') !== false) {
+                    $ips = explode(',', $ip);
+                    $ip = trim($ips[0]);
+                }
+                
+                // 验证IP地址格式
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                    return $ip;
+                }
+            }
+        }
+        
+        // 如果都没找到有效的公网IP，返回REMOTE_ADDR
+        return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
     }
 
     /**
@@ -520,6 +693,10 @@ switch ($data['action']) {
     case "registerIp":
         $params = isset($data['params']) ? $data['params'] : [];
         $return = $class->registerIp($params);
+        break;
+    case "getClientIp":
+        $params = isset($data['params']) ? $data['params'] : [];
+        $return = $class->getClientIp($params);
         break;
     case "fixFcuProductLine":
         $params = isset($data['params']) ? $data['params'] : [];

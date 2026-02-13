@@ -9,6 +9,7 @@
     <script src="../css_js/script/vue.global.js"></script>
     <script src="../css_js/script/axios.min.js"></script>
     <script src="../css_js/script/qs.min.js"></script>
+    <link rel="stylesheet" href="../css_js/bootstrap-5.3.0/css/bootstrap-icons.min.css">
     <!-- 粒子特效 -->
     <link rel="stylesheet" href="../css_js/own/lizi.css">
     <style>
@@ -47,9 +48,59 @@
             background-color: #fff3cd;
             border-left: 4px solid #ffc107;
         }
+        .visit-record-card {
+            background-color: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+        }
+        .auto-record-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: none;
+        }
+        .auto-record-indicator.show {
+            display: block;
+            animation: fadeInOut 3s ease-in-out;
+        }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(-20px); }
+            20%, 80% { opacity: 1; transform: translateY(0); }
+        }
+        .recent-visits {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .visit-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #0d6efd;
+        }
+        .visit-item.new {
+            background-color: #d4edda;
+            border-left-color: #28a745;
+            animation: highlight 2s ease-in-out;
+        }
+        @keyframes highlight {
+            0% { background-color: #d4edda; }
+            100% { background-color: #f8f9fa; }
+        }
     </style>
 </head>
 <body>
+<!-- 自动记录提示 -->
+<div id="autoRecordIndicator" class="auto-record-indicator">
+    <i class="bi bi-check-circle"></i> 访问已自动记录
+</div>
+
 <div class="container" id="app">
     <!-- 页面标题和环境信息 -->
     <div class="row mb-4">
@@ -58,6 +109,8 @@
             <p class="text-muted">当前环境：<span :class="envClass">{{ envMsg }}</span></p>
         </div>
     </div>
+
+
 
     <!-- 访问者IP信息卡片 -->
     <div class="card ip-info-card">
@@ -74,9 +127,14 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="col-12">
+                <div class="col-md-6">
                     <button @click="refreshVisitorInfo" class="btn btn-outline-primary btn-sm">
                         <i class="bi bi-arrow-repeat"></i> 刷新访问信息
+                    </button>
+                </div>
+                <div class="col-md-6 text-end">
+                    <button @click="recordCurrentVisit" class="btn btn-success btn-sm">
+                        <i class="bi bi-save"></i> 记录本次访问
                     </button>
                 </div>
             </div>
@@ -90,23 +148,58 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <div class="text-center">
                         <h4 class="text-warning">{{ totalVisitors }}</h4>
                         <p class="mb-0">总访问次数</p>
                     </div>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <div class="text-center">
                         <h4 class="text-success">{{ uniqueIps }}</h4>
                         <p class="mb-0">独立IP数</p>
                     </div>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <div class="text-center">
                         <h4 class="text-info">{{ todayVisitors }}</h4>
                         <p class="mb-0">今日访问</p>
                     </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="text-center">
+                        <h4 class="text-primary">{{ thisPageVisits }}</h4>
+                        <p class="mb-0">本页访问</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 最近访问记录卡片 -->
+    <div class="card visit-record-card">
+        <div class="card-header">
+            <i class="bi bi-clock-history"></i> 最近访问记录
+        </div>
+        <div class="card-body">
+            <div class="recent-visits">
+                <div v-for="(visit, index) in recentVisits" :key="index" 
+                     :class="['visit-item', { 'new': visit.isNew }]">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ visit.ip }}</strong>
+                            <small class="text-muted ms-2">{{ visit.time }}</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-secondary">{{ visit.count }}次</span>
+                        </div>
+                    </div>
+                    <div class="mt-1">
+                        <small class="text-muted">{{ visit.userAgent }}</small>
+                    </div>
+                </div>
+                <div v-if="recentVisits.length === 0" class="text-center py-3 text-muted">
+                    <i class="bi bi-clock"></i> 暂无访问记录
                 </div>
             </div>
         </div>
@@ -121,7 +214,7 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <div class="input-group">
-                        <input type="text" v-model="searchName" class="form-control" placeholder="搜索姓名...">
+                        <input type="text" v-model="searchName" class="form-control" placeholder="搜索IP地址...">
                         <button @click="filterList" class="btn btn-outline-secondary">
                             <i class="bi bi-search"></i>
                         </button>
@@ -141,7 +234,8 @@
                         <th scope="col">序号</th>
                         <th scope="col">姓名</th>
                         <th scope="col">IP地址</th>
-                        <th scope="col">访问时间</th>
+                        <th scope="col">首次访问</th>
+                        <th scope="col">最近访问</th>
                         <th scope="col">访问次数</th>
                     </tr>
                     </thead>
@@ -150,9 +244,10 @@
                         <th scope="row">{{ index + 1 }}</th>
                         <td>{{ info.name }}</td>
                         <td>
-                            <span class="badge bg-secondary">{{ info.ip }}</span>
+                            <span class="badge bg-success">{{ info.ip }}</span>
                         </td>
-                        <td>{{ formatDate(info.visit_time) }}</td>
+                        <td>{{ formatDate(info.first_visit) }}</td>
+                        <td>{{ formatDate(info.last_visit) }}</td>
                         <td>
                             <span class="badge" :class="getVisitCountClass(info.visit_count)">
                                 {{ info.visit_count }}
@@ -204,12 +299,16 @@
                 totalVisitors: 0,
                 uniqueIps: 0,
                 todayVisitors: 0,
+                thisPageVisits: 0,
+                recentVisits: [],
                 url: "http://172.16.29.23:90/php/controller",
                 header: {
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                }
+                },
+                visitTimer: null,
+                autoRecordInterval: 300000 // 5分钟自动记录一次
             }
         },
 
@@ -218,6 +317,18 @@
             this.updateVisitTime();
             // 每分钟更新一次访问时间
             setInterval(this.updateVisitTime, 60000);
+            
+            // 开始自动记录定时器
+            this.startAutoRecording();
+            
+            // 页面卸载时清理定时器
+            window.addEventListener('beforeunload', () => {
+                this.stopAutoRecording();
+            });
+        },
+
+        beforeUnmount() {
+            this.stopAutoRecording();
         },
 
         methods: {
@@ -230,7 +341,10 @@
                 try {
                     const data = {
                         action: "registerIp",
-                        params: {}
+                        params: {
+                            recordVisit: true,
+                            userAgent: navigator.userAgent
+                        }
                     };
 
                     this.url = "http://172.16.29.23:90/php/controller";
@@ -238,11 +352,18 @@
                     
                     this.loading = "";
                     if (res.status === 200) {
-                        this.list = res.data.data || [];
+                        this.list = res.data.allRecords || [];
                         this.filtered_list = [...this.list];
+                        this.recentVisits = res.data.recent_visits || [];
+                        this.thisPageVisits = res.data.this_page_visits || 0;
                         this.env = res.data.env;
                         this.setEnvMessage();
                         this.calculateStats();
+                        
+                        // 显示自动记录提示（如果是新访问）
+                        if (res.data.new_visit_recorded) {
+                            this.showAutoRecordIndicator();
+                        }
                     }
                 } catch (error) {
                     this.loading = "";
@@ -254,11 +375,22 @@
             // 获取访问者IP地址
             async getVisitorIp() {
                 try {
-                    // 首先尝试从后端获取真实IP
-                    const ipResponse = await axios.get('https://api.ipify.org?format=json');
-                    this.visitorIp = ipResponse.data.ip;
+                    // 通过后端接口获取真实IP地址
+                    const data = {
+                        action: "getClientIp",
+                        params: {}
+                    };
+                    
+                    let res = await axios.post(`${this.url}/search.php`, data, this.header);
+                    
+                    if (res.status === 200 && res.data.success) {
+                        this.visitorIp = res.data.ip;
+                    } else {
+                        // 备用方法：通过WebRTC获取本地IP
+                        this.getLocalIP();
+                    }
                 } catch (error) {
-                    console.log("无法获取公网IP，使用本地方法");
+                    console.log("无法通过后端获取IP，使用本地方法");
                     // 备用方法：通过WebRTC获取本地IP
                     this.getLocalIP();
                 }
@@ -323,7 +455,7 @@
 
             // 计算统计数据
             calculateStats() {
-                this.totalVisitors = this.list.length;
+                this.totalVisitors = this.list.reduce((sum, item) => sum + (item.visit_count || 1), 0);
                 
                 // 计算独立IP数
                 const uniqueIpSet = new Set(this.list.map(item => item.ip));
@@ -332,9 +464,9 @@
                 // 计算今日访问数
                 const today = new Date().toDateString();
                 this.todayVisitors = this.list.filter(item => {
-                    const itemDate = new Date(item.visit_time).toDateString();
+                    const itemDate = new Date(item.last_visit).toDateString();
                     return itemDate === today;
-                }).length;
+                }).reduce((sum, item) => sum + (item.visit_count || 1), 0);
             },
 
             // 刷新访问者信息
@@ -363,7 +495,7 @@
                 } else {
                     const searchTerm = this.searchName.toLowerCase();
                     this.filtered_list = this.list.filter(item => 
-                        item.name.toLowerCase().includes(searchTerm)
+                        item.ip.toLowerCase().includes(searchTerm)
                     );
                 }
             },
@@ -387,6 +519,101 @@
                 if (count >= 5) return 'bg-warning';
                 if (count >= 2) return 'bg-info';
                 return 'bg-secondary';
+            },
+
+            // 手动记录本次访问
+            async recordCurrentVisit() {
+                this.loading = "正在记录访问信息...";
+                
+                try {
+                    const data = {
+                        action: "registerIp",
+                        params: {
+                            recordVisit: true,
+                            userAgent: navigator.userAgent,
+                            manualRecord: true
+                        }
+                    };
+
+                    let res = await axios.post(`${this.url}/update.php`, data, this.header);
+                    
+                    this.loading = "";
+                    if (res.status === 200 && res.data.success) {
+                        // 更新数据
+                        this.list = res.data.allRecords || [];
+                        this.filtered_list = [...this.list];
+                        this.calculateStats();
+                        
+                        this.successMsg = res.data.message || "访问记录已保存";
+                        setTimeout(() => {
+                            this.successMsg = "";
+                        }, 3000);
+                    } else {
+                        throw new Error(res.data.message || "服务器返回错误");
+                    }
+                } catch (error) {
+                    this.loading = "";
+                    this.errorMsg = "记录访问信息失败";
+                    console.error("记录访问错误:", error);
+                }
+            },
+
+            // 开始自动记录
+            startAutoRecording() {
+                // 立即记录一次
+                this.recordVisitSilently();
+                
+                // 设置定时器，定期自动记录
+                this.visitTimer = setInterval(() => {
+                    this.recordVisitSilently();
+                }, this.autoRecordInterval);
+            },
+
+            // 停止自动记录
+            stopAutoRecording() {
+                if (this.visitTimer) {
+                    clearInterval(this.visitTimer);
+                    this.visitTimer = null;
+                }
+            },
+
+            // 静默记录访问（不显示loading）
+            async recordVisitSilently() {
+                try {
+                    const data = {
+                        action: "registerIp",
+                        params: {
+                            recordVisit: true,
+                            userAgent: navigator.userAgent,
+                            silent: true
+                        }
+                    };
+
+                    let res = await axios.post(`${this.url}/search.php`, data, {
+                        ...this.header,
+                        timeout: 5000 // 5秒超时
+                    });
+                    
+                    if (res.status === 200 && res.data.new_visit_recorded) {
+                        // 更新统计数据
+                        this.recentVisits = res.data.recent_visits || [];
+                        this.thisPageVisits = res.data.this_page_visits || 0;
+                        this.showAutoRecordIndicator();
+                    }
+                } catch (error) {
+                    console.log("自动记录访问失败:", error.message);
+                }
+            },
+
+            // 显示自动记录提示
+            showAutoRecordIndicator() {
+                const indicator = document.getElementById('autoRecordIndicator');
+                if (indicator) {
+                    indicator.classList.add('show');
+                    setTimeout(() => {
+                        indicator.classList.remove('show');
+                    }, 3000);
+                }
             }
         }
     }).mount('#app');

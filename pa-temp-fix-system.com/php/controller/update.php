@@ -4,7 +4,6 @@ require dirname(__FILE__) . '/../../vendor/autoload.php';
 require_once dirname(__FILE__) . '/../requiredfile/requiredChorm.php';
 require_once dirname(__FILE__) . '/EnvironmentConfig.php';
 require_once dirname(__FILE__) . '/../shell/ProductSkuController.php';
-require_once dirname(__FILE__) . '/cookieLogin.php';
 require_once(dirname(__FILE__) . "/../../php/utils/DataUtils.php");
 
 /**
@@ -576,90 +575,62 @@ class update
         $curlService = $this->envService;
         $env = $curlService->environment;
         $redisService = new RedisService();
-        $ipMap = [];
-        $dbDataList = $redisService->hGetAll(REDIS_USERNAME_IP_KEY . "_{$env}");
-        if (count($dbDataList) > 0){
-            foreach ($dbDataList as $key => $keyInfo){
-                $old = json_decode($keyInfo,true);
-                $ipMap[$old['ip']] = $old['name'] ?: "";
-            }
-        }
+        
         $ip = $_SERVER['REMOTE_ADDR'];
-
-        $needRegister = false;
-        if (!isset($ipMap[$ip]) || $ipMap[$ip] == '新用户'){
-            $needRegister = true;
-            if (!isset($params['username']) || !$params['username'] || !isset($params['pwd']) || !$params['pwd']){
-                return [
-                    "env" => $env,
-                    "messages" => "新的ip，请输入ucCenter账号密码，确认你的姓名",
-                    "data" => []
-                ];
-            }
-        }
-
-        $userCnName = "";
-        $errorList = [];
-        $ucToken = "";
-        if ($needRegister && isset($params['username']) && $params['username'] && isset($params['pwd']) && $params['pwd']){
-            $client = new CookieLogin();
-
-            // 使用你的账号密码
-            $success = $client->performLogin($params['username'], $params['pwd']);
-
-            if ($success) {
-                // 获取登录后的 Cookie（可用于后续 API 调用）
-                $cookieData = $client->getFinalCookies();
-                $ucToken = $client->extractCookieValue($cookieData,'uc_token_production');
-
-                if ($ucToken) {
-
-                } else {
-                    $errorList[] = "获取token失败,登录ucCenter失败，请检查账号密码是否正确喔~";
-                }
-
-            } else {
-                $errorList[] = "请输入ucCenter失败，请检查账号密码是否正确喔~";
-            }
-        }
-
-        if ($ucToken){
-            $resp = DataUtils::getNewResultData($curlService->getUcToken($ucToken)->gateway()->getWayPost( "/authrization-service/token/v1/getUser", [
-                "token" => $ucToken
-            ]));
-            if ($resp){
-                $userCnName = $resp['userCnName'];
-            }
-        }
-
-
-        if ($errorList){
-            return [
-                "env" => $env,
-                "messages" => implode(",",$errorList),
-                "data" => []
+        $userName = $params['name'] ?? '访客'; // 默认用户名
+        
+        // 使用"用户名_IP"组合作为唯一key，避免同一IP不同用户互相覆盖
+        $userIpKey = $userName . '_' . $ip;
+        $ipKey = 'ip_' . $ip; // 用于存储该IP对应的所有用户名
+        
+        // 获取现有记录
+        $existingData = $redisService->hGet(REDIS_USERNAME_IP_KEY . "_{$env}", $userIpKey);
+        $userData = $existingData ? json_decode($existingData, true) : null;
+        
+        if ($userData) {
+            // 更新现有记录
+            $userData['last_visit'] = date('Y-m-d H:i:s');
+            $userData['visit_count'] = ($userData['visit_count'] ?? 0) + 1;
+        } else {
+            // 创建新记录
+            $userData = [
+                "name" => $userName,
+                "ip" => $ip,
+                "last_visit" => date('Y-m-d H:i:s'),
+                "first_visit" => date('Y-m-d H:i:s'),
+                "visit_count" => 1
             ];
+            
+            // 更新IP对应的用户名列表
+            $ipUsers = $redisService->hGet(REDIS_USERNAME_IP_KEY . "_{$env}", $ipKey);
+            $usersList = $ipUsers ? json_decode($ipUsers, true) : [];
+            if (!in_array($userName, $usersList)) {
+                $usersList[] = $userName;
+                $redisService->hSet(REDIS_USERNAME_IP_KEY . "_{$env}", $ipKey, json_encode($usersList, JSON_UNESCAPED_UNICODE));
+            }
         }
-
-        if ($userCnName){
-            $dbData = [
-                "name" => $userCnName,
-                "ip" => $ip
-            ];
-            $redisService->hSet(REDIS_USERNAME_IP_KEY . "_{$env}", $ip,json_encode($dbData,JSON_UNESCAPED_UNICODE));
-        }
-
+        
+        // 保存用户IP记录
+        $redisService->hSet(REDIS_USERNAME_IP_KEY . "_{$env}", $userIpKey, json_encode($userData, JSON_UNESCAPED_UNICODE));
+        
+        // 获取所有记录用于返回
         $list = [];
         $dbDataList = $redisService->hGetAll(REDIS_USERNAME_IP_KEY . "_{$env}");
         if (count($dbDataList) > 0){
             foreach ($dbDataList as $key => $keyInfo){
-                $list[] = json_decode($keyInfo,true);
+                // 只返回用户记录，跳过IP索引记录
+                if (strpos($key, 'ip_') !== 0 && strpos($key, '_') !== false) {
+                    $list[] = json_decode($keyInfo, true);
+                }
             }
         }
+        
         return [
-            "env" => $env,
-            "data" => $list,
-            "ucToken" => $ucToken,
+            "success" => true,
+            "message" => "访问记录登记成功",
+            "currentUser" => $userData,
+            "allRecords" => $list,
+            "totalVisitors" => count($list)
         ];
     }
 
