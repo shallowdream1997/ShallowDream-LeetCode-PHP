@@ -6002,14 +6002,14 @@ class SyncCurlController
         $curlService = new CurlService();
         $curlService = $curlService->pro();
 
-        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/1.xlsx");
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/skuMaterial/111111.xlsx");
 
         if (count($fileFitContent) > 0){
             $ceBillNoSalesMap = [];
             foreach ($fileFitContent as $info){
-                $ceBillNoSalesMap[$info['CE单']] = [
-                    "old" => $info['原负责人'],
-                    "new" => $info['新负责人'],
+                $ceBillNoSalesMap[$info['CE/QD单号']] = [
+                    "old" => $info['产品运营(调整前)'],
+                    "new" => $info['产品运营(调整后)'],
                 ];
             }
 
@@ -6017,35 +6017,35 @@ class SyncCurlController
                 $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
                     "limit" => 1,
                     "page" => 1,
-                    "ceBillNo" => $ceBillNo
+                    "batchName" => $ceBillNo
                 ]));
                 if (count($l) == 0){
                     continue;
                 }
 
                 foreach ($l as $item){
-                    if (isset($ceBillNoSalesMap[$item['ceBillNo']])){
-                        if ($item['saleName'] == $ceBillNoSalesMap[$item['ceBillNo']]['old']){
-                            $item['saleName'] = $ceBillNoSalesMap[$item['ceBillNo']]['new'];
+                    if (isset($ceBillNoSalesMap[$item['batchName']])){
+                        if ($item['saleName'] == $ceBillNoSalesMap[$item['batchName']]['old']){
+                            $item['saleName'] = $ceBillNoSalesMap[$item['batchName']]['new'];
                         }
-                        if ($item['ebayTraceMan'] == $ceBillNoSalesMap[$item['ceBillNo']]['old']){
-                            $item['ebayTraceMan'] = $ceBillNoSalesMap[$item['ceBillNo']]['new'];
+                        if ($item['ebayTraceMan'] == $ceBillNoSalesMap[$item['batchName']]['old']){
+                            $item['ebayTraceMan'] = $ceBillNoSalesMap[$item['batchName']]['new'];
                         }
 
 
                         // 根据条件替换
                         if (isset($item['saleNameList']) && is_array($item['saleNameList'])) {
                             foreach ($item['saleNameList'] as $key => $value) {
-                                if ($value == $ceBillNoSalesMap[$item['ceBillNo']]['old']) {
-                                    $item['saleNameList'][$key] = $ceBillNoSalesMap[$item['ceBillNo']]['new'];
+                                if ($value == $ceBillNoSalesMap[$item['batchName']]['old']) {
+                                    $item['saleNameList'][$key] = $ceBillNoSalesMap[$item['batchName']]['new'];
                                 }
                             }
                             $item['saleNameList'] = array_unique($item['saleNameList']);
                         }
                         if (isset($item['ebayTraceManList']) && is_array($item['ebayTraceManList'])) {
                             foreach ($item['ebayTraceManList'] as $key => $value) {
-                                if ($value == $ceBillNoSalesMap[$item['ceBillNo']]['old']) {
-                                    $item['ebayTraceManList'][$key] = $ceBillNoSalesMap[$item['ceBillNo']]['new'];
+                                if ($value == $ceBillNoSalesMap[$item['batchName']]['old']) {
+                                    $item['ebayTraceManList'][$key] = $ceBillNoSalesMap[$item['batchName']]['new'];
                                 }
                             }
                             $item['ebayTraceManList'] = array_unique($item['ebayTraceManList']);
@@ -6056,7 +6056,7 @@ class SyncCurlController
                         $this->log(json_encode($item['saleNameList'],JSON_UNESCAPED_UNICODE));
                         $this->log(json_encode($item['ebayTraceManList'],JSON_UNESCAPED_UNICODE));
                     }else{
-                        $this->log("{$item['ceBillNo']}没有数据");
+                        $this->log("{$item['batchName']}没有数据");
                     }
                 }
 
@@ -7060,7 +7060,7 @@ $curlController = new SyncCurlController();
 //$curlController->fixProductSkuCategory();
 //$curlController->consignmentQD(null);
 //$curlController->fixProductSkuCurrent();
-$curlController->fastProductSkuCurrent();
+//$curlController->fastProductSkuCurrent();
 //$curlController->exportAmazonUsAttribute();
 //$curlController->syncBusinessModulesToTest();
 //$curlController->exportBusinessModules();
@@ -7097,7 +7097,7 @@ $curlController->fastProductSkuCurrent();
 //$curlController->updateEuSharedWarehouseFlowTypePriority();
 //$curlController->getCEBillNo();
 //$curlController->updatePaSkuMaterial();
-//$curlController->updatePaSkuMaterialV2();
+$curlController->updatePaSkuMaterialV2();
 //$curlController->downloadPaSkuMaterialSP();
 //$curlController->test();
 //$curlController->fix();

@@ -50,7 +50,7 @@ class EnvironmentConfig
                 $this->curlService = (new CurlService())->pro();
                 break;
             case "fixCurrency":
-                $this->curlService = (new CurlService())->test();
+                $this->curlService = (new CurlService())->pro();
                 break;
         }
         return $this;
