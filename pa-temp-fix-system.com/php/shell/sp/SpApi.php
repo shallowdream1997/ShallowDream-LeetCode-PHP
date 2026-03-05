@@ -1081,12 +1081,22 @@ class SpApi
 
     public function pidScuMapProductIdFindScuId($channel,$scuId)
     {
-        return DataUtils::getPageListInFirstData($this->curlService->s3015()->get("pid-scu-maps/queryPage",[
-            "scuIdType" => "fba",
-            "scuIdStyle" => "systemWithSelling",
-            "productId" => $scuId,
-            "channel" => $channel
-        ]));
+        $key = "{$channel}_{$scuId}";
+        $str = $this->redis->hGet("fbaSystemWithSelling", $key);
+        if (!$str) {
+            $data = DataUtils::getPageListInFirstData($this->curlService->s3015()->get("pid-scu-maps/queryPage",[
+                "scuIdType" => "fba",
+                "scuIdStyle" => "systemWithSelling",
+                "productId" => $scuId,
+                "channel" => $channel
+            ]));
+            if ($data){
+                $this->redis->hSet("fbaSystemWithSelling", $key, json_encode($data, JSON_UNESCAPED_UNICODE));
+            }
+        } else {
+            $data = json_decode($str,true);
+        }
+        return $data;
     }
 
     public function sellerConfig($sellerId)
@@ -1144,6 +1154,44 @@ class SpApi
         if ($resp && isset($resp['data']) && count($resp['data']) > 0){
             $list = $resp['data'];
         }
+    }
+
+    public function paPlacementAmazonSpV2($channel,$sellerId,$type,$targetingType,$campaignType,$scuId,$contentType,$contentText,$contentBid)
+    {
+        $d = [
+            "placementAction" => 1,
+            "placementType" => $type,
+            "targetingType" => $targetingType,
+            "campaignType" => $campaignType,
+            "channel" => $channel,
+            "sellerId" => $sellerId,
+            "scu" => $scuId,
+            "contentType" => $contentType,
+            "content" => $contentText,
+            "contentBid" => $contentBid,
+            "createdBy" => "system(zhouangang)",
+            "modifiedBy" => "system(zhouangang)"
+        ];
+        $this->log(json_encode($d,JSON_UNESCAPED_UNICODE));
+//        $resp = DataUtils::getResultData($this->curlService->phphk()->post("amazonSpApi/paPlacementAmazonSp", $d));
+//        $list = [];
+//        if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+//            $list = $resp['data'];
+//            $this->log(json_encode($list,JSON_UNESCAPED_UNICODE));
+//        }
+    }
+
+
+    public function keywordTypeMap($type)
+    {
+        $typeMap = [
+            "广泛" => "broad",
+            "词组" => "phrase",
+            "精准" => "exact",
+            "词组否定" => "negativePhrase",
+            "精准否定" => "negativeExact",
+        ];
+        return $typeMap[$type] ?? null;
     }
 
 }

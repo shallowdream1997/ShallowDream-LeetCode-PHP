@@ -380,7 +380,7 @@ class SyncCurlController
         $curlService = (new CurlService())->pro();
         $mainList = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
             "limit" => 1000,
-            "batchName" => "QD202508040008",
+            "batchName" => "QD202602240015",
         ]));
         if (count($mainList) > 0) {
 
@@ -7097,7 +7097,7 @@ $curlController = new SyncCurlController();
 //$curlController->updateEuSharedWarehouseFlowTypePriority();
 //$curlController->getCEBillNo();
 //$curlController->updatePaSkuMaterial();
-$curlController->updatePaSkuMaterialV2();
+//$curlController->updatePaSkuMaterialV2();
 //$curlController->downloadPaSkuMaterialSP();
 //$curlController->test();
 //$curlController->fix();
@@ -7105,7 +7105,7 @@ $curlController->updatePaSkuMaterialV2();
 //$curlController->fixPaSkuPhotoGress();
 //$curlController->updateSkuMaterial();
 //CE但资料同步
-//$curlController->deleteCeMaterial();
+$curlController->deleteCeMaterial();
 //$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();
 //$curlController->updatePaGoodsSourceManage();
