@@ -840,7 +840,7 @@ class SyncCurlController
     public function writeScmsPurchaseBillNo(){
         $curlSsl = (new CurlService())->pro();
 
-        $pmoBillNo = "DPMO250506011";
+        $pmoBillNo = "";
 //        $fileContent = (new ExcelUtils())->getXlsxData("../export/pmo/ppms_{$pmoBillNo}.xlsx");
 //        $pmoContent = (new ExcelUtils())->getXlsxData("../export/pmo/{$pmoBillNo}.xlsx");
 //        $pmoSkuMap = [];
@@ -878,12 +878,16 @@ class SyncCurlController
 //        ];
 //            if (count($preSkuList) > 0){
                 $writeData = [
-                    "prePurchaseBillNo" => $pmoBillNo,
-                    "pmoBillNo" => "PMO2025050600011",
-//                    "ceBillNo" => "CE202505090158",
-//                    "skuList" => $preSkuList,
+        //                    "prePurchaseBillNo" => $pmoBillNo,
+        //                    "pmoBillNo" => "PMO2025050600011",
+        //                    "ceBillNo" => "CE202505090158",
+        //                    "skuList" => $preSkuList,
+//                    "supplierId" => 7562,
                     "operatorName" => "zhouangang",
-//                    "purchaseHandleStatus" => 70
+                    "purchaseHandleStatus" => 90,
+//                    "qdBillNo" => "QD202602270003",
+                    "prePurchaseBillNo" => "QD202602270003",
+//                    "assignedDate" => "2026-03-03 21:30:28Z"
                 ];
 
                 $this->log(json_encode($writeData,JSON_UNESCAPED_UNICODE));
@@ -6553,7 +6557,7 @@ class SyncCurlController
     public function createSkuConsignmentCe(){
 
         $list = [
-            "QD202512170017"
+            "QD202602270003"
         ];
         foreach ($list as $qdBillNo){
 
@@ -7043,9 +7047,91 @@ class SyncCurlController
     }
 
 
+    public function checkPaProduct()
+    {
+        $c = (new CurlService())->pro();
+
+        $qdBillNoList = [];
+        $page = 1;
+        do {
+            $this->log($page);
+            $ll = DataUtils::getPageList($c->ux168()->get("product_development_lists/queryPage", [
+                "status" => 6,
+                "verticalDepartment" => "PA",
+//                "productListNo_in" => "QD20240102001,QD20240102002",
+                "page" => $page,
+                "limit" => 1000
+            ]));
+            if (count($ll) == 0) {
+                break;
+            }
+            foreach ($ll as $info){
+                $qdBillNoList[] = $info['productListNo'];
+            }
+            $page++;
+            sleep(1);
+        } while (true);
+
+        exit(1111111111);
+        $slist = [];
+        foreach (array_chunk($qdBillNoList,50) as $chunk){
+            $ll = DataUtils::getPageList($c->s3015()->get("pa_products/queryPage", [
+                "limit" => 100,
+                "productListNo_in" => implode(",",$chunk)
+            ]));
+            if ($ll){
+                $slist = array_merge($slist,$ll);
+            }
+        }
+
+
+        if ($slist){
+            $exportList = [];
+            foreach ($slist as $info){
+                $export = [];
+                $export['productListNo'] = $info['productListNo'];
+                $export['productlineId'] = $info['productlineId'];
+                if(count($info['ceNumber']) == 0){
+                    $export['ceNumber'] = "无";
+                }else{
+                    $export['ceNumber'] = implode(",",array_column($info['ceNumber'],'ceBillNo'));
+                }
+                if($info['categoryId']){
+                    $export['categoryId'] = $info['categoryId'];
+                }else{
+                    //没有分类取详情
+                    $detail = DataUtils::getPageListInFirstData($c->s3015()->get("pa_product_details/queryPage",[
+                        "paProductId" => $info['_id']
+                    ]));
+                    if ($detail){
+                        $export['categoryId'] = $detail['categoryId'];
+                    }
+                }
+
+                $export['consignmentName'] = $info['consignmentName'];
+                $export['consignorId'] = $info['consignorId'];
+                $export['developer'] = $info['developer'];
+                $export['traceMan'] = $info['traceMan'];
+                $exportList[] = $export;
+            }
+
+            if ($exportList){
+                $excelUtils = new ExcelUtils();
+                $downloadOssLink = "QD单生产环境数据检查_" . date("YmdHis") . ".xlsx";
+                $downloadOssPath = $excelUtils->downloadXlsx(["productListNo", "产品线", "CE单","categoryId","分配寄卖商","寄卖商id","开发","运营"],$exportList,$downloadOssLink);
+
+
+            }
+
+        }
+
+
+    }
+
 }
 
 $curlController = new SyncCurlController();
+//$curlController->checkPaProduct();
 //$curlController->updateSkuSellerConfig();
 //$curlController->deleltePlatformFees();
 //$curlController->initQdActionLog();
@@ -7076,7 +7162,7 @@ $curlController = new SyncCurlController();
 //$curlController->getssss();
 //$curlController->fixDengyiyi();
 //$curlController->fixTranslationManagementCategory();
-//$curlController->fixProductSku();
+$curlController->fixProductSku();
 //$curlController->fixMergeADV2SguId();
 //$curlController->fixMergeADSguId();
 //$curlController->createSguInfo();
@@ -7105,7 +7191,7 @@ $curlController = new SyncCurlController();
 //$curlController->fixPaSkuPhotoGress();
 //$curlController->updateSkuMaterial();
 //CE但资料同步
-$curlController->deleteCeMaterial();
+//$curlController->deleteCeMaterial();
 //$curlController->syncPaSkuMaterial();
 //$curlController->copyNewChannel();
 //$curlController->updatePaGoodsSourceManage();

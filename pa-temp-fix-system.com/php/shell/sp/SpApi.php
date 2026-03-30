@@ -65,6 +65,17 @@ class SpApi
         return $res;
     }
 
+    public function getMongoCampaignInfoV3()
+    {
+        $res = [];
+        $res = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_campaigns/queryPage",[
+            "limit" => 100,
+            "channel_in" => "amazon_de_swi,amazon_es_swi,amazon_it_swi,amazon_fr_swi",
+            "campaignName_like" => "aqd"
+        ]));
+        return $res;
+    }
+
     public function mongoCreateCampaignInfo($sellerId,$fixCampaign,$campaignId,$oldCampaignInfo)
     {
         $createCampaign = [
@@ -105,6 +116,24 @@ class SpApi
         }
 
     }
+
+    public function mongoUpdateCampaignInfoV2($_id,$updateParams)
+    {
+        $resp1 = $this->curlService->s3023()->post("amazon_sp_campaigns/updateCampaigns",[
+            "id" => $_id,
+            "isPassNotification" => "false",
+            "from" => $this->messages,
+            "updateParams" => $updateParams,
+        ]);
+        if ($resp1['result'] && isset($resp1['result']['campaign']) && count($resp1['result']['campaign']) > 0){
+            $this->log("updateCampaign 成功：{$resp1['result']['campaign']['channel']} - {$resp1['result']['campaign']['campaignName']}");
+        }else{
+            $this->log("updateCampaign 失败：{$resp1['result']['campaign']['channel']} - {$resp1['result']['campaign']['campaignName']}");
+        }
+
+    }
+
+
     public function listCampaign($sellerId,$campaignName)
     {
         $condition = ["name" => $campaignName];
@@ -144,6 +173,22 @@ class SpApi
             //这里如果失败的原因是DUPLICATE_VALUE ，则说明是campaign重复创建失败，需要递归，重新创建
             $this->log("创建campaign失败：{$sellerId} - {$campaignName}");
             return "";
+        }
+    }
+
+
+    public function updateAmazonCampaignName($sellerId,$campaignId,$campaignName)
+    {
+        $createParams = [
+            "campaignId" => $campaignId,
+            "name" => $campaignName
+        ];
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/campaigns/putCampaigns/{$sellerId}", [$createParams]));
+        if($returnMessage['status'] == 'success' && count($returnMessage['data']) > 0 && $returnMessage['data'][0]['code'] == "SUCCESS"){
+            //创建成功
+            return true;
+        }else{
+            return false;
         }
     }
     //===================================== campaign end ===================================================///
@@ -1139,7 +1184,8 @@ class SpApi
 //            "2"=>"keyword",
 //            "3"=>"asin",
 //            "4"=>"category",
-        $resp = DataUtils::getResultData($this->curlService->phphk()->post("amazonSpApi/paPlacementAmazonSp", [
+
+        $d = [
             "placementAction" => 1,
             "placementType" => $type,
             "targetingType" => $targetingType,
@@ -1149,7 +1195,9 @@ class SpApi
             "scu" => $scuId,
             "createdBy" => "system(zhouangang)",
             "modifiedBy" => "system(zhouangang)"
-        ]));
+        ];
+        $this->log(json_encode($d,JSON_UNESCAPED_UNICODE));
+        $resp = DataUtils::getResultData($this->curlService->phphk()->post("amazonSpApi/paPlacementAmazonSp", $d));
         $list = [];
         if ($resp && isset($resp['data']) && count($resp['data']) > 0){
             $list = $resp['data'];
@@ -1173,12 +1221,12 @@ class SpApi
             "modifiedBy" => "system(zhouangang)"
         ];
         $this->log(json_encode($d,JSON_UNESCAPED_UNICODE));
-//        $resp = DataUtils::getResultData($this->curlService->phphk()->post("amazonSpApi/paPlacementAmazonSp", $d));
-//        $list = [];
-//        if ($resp && isset($resp['data']) && count($resp['data']) > 0){
-//            $list = $resp['data'];
-//            $this->log(json_encode($list,JSON_UNESCAPED_UNICODE));
-//        }
+        $resp = DataUtils::getResultData($this->curlService->phphk()->post("amazonSpApi/paPlacementAmazonSp", $d));
+        $list = [];
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0){
+            $list = $resp['data'];
+            $this->log(json_encode($list,JSON_UNESCAPED_UNICODE));
+        }
     }
 
 
