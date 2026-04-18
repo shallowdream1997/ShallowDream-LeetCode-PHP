@@ -882,11 +882,11 @@ class SyncCurlController
         //                    "pmoBillNo" => "PMO2025050600011",
         //                    "ceBillNo" => "CE202505090158",
         //                    "skuList" => $preSkuList,
-//                    "supplierId" => 7562,
+                    "supplierId" => 5796,
                     "operatorName" => "zhouangang",
                     "purchaseHandleStatus" => 90,
 //                    "qdBillNo" => "QD202602270003",
-                    "prePurchaseBillNo" => "QD202602270003",
+                    "prePurchaseBillNo" => "QD202602130001",
 //                    "assignedDate" => "2026-03-03 21:30:28Z"
                 ];
 
@@ -6764,25 +6764,30 @@ class SyncCurlController
 
     public function initQdActionLog()
     {
-        $curlPaService = (new CurlService())->test()->getModule("pa")->gateway();
-        $curlLogService = (new CurlService())->test()->getModule('ux168log')->gateway();
+        $curlPaService = (new CurlService())->pro()->getModule("pa")->gateway();
+        $curlLogService = (new CurlService())->pro()->getModule('ux168log')->gateway();
 
         $list = [];
 
-        $page = 1;
-        do{
-            $qdlist = DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignmentqdlist/v1/qdPageList", [
-                "pageNum" => $page,
-                "pageSize" => 100,
-//                "qdBillNoList" => ["QD202601050001"]
-            ]));
-            if ($qdlist && isset($qdlist['list']) && $qdlist['list'] && count($qdlist['list']) > 0){
-                $list = array_merge($list,array_column($qdlist['list'],'consignmentQdId'));
-            }else{
-                break;
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/qd/迁移数据.xlsx");
+        if (sizeof($fileFitContent) > 0) {
+            $qdBillNoList = array_column($fileFitContent, 'qd_bill_no');
+            if (count($qdBillNoList) == 0){
+                $this->log("没有迁移数据");
+                return;
             }
-            $page++;
-        }while(true);
+
+            foreach (array_chunk($qdBillNoList, 200) as $qdBillNoChunkList){
+                $qdlist = DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignmentqdlist/v1/qdPageList", [
+                    "pageNum" => 1,
+                    "pageSize" => 200,
+                    "qdBillNoList" => $qdBillNoChunkList,
+                ]));
+                if ($qdlist && isset($qdlist['list']) && $qdlist['list'] && count($qdlist['list']) > 0){
+                    $list = array_merge($list,array_column($qdlist['list'],'consignmentQdId'));
+                }
+            }
+        }
 
         if ($list){
             //这里可以读表搞一个映射出来
@@ -6929,6 +6934,67 @@ class SyncCurlController
 
             }
 
+
+        }
+
+
+    }
+
+    public function initQdActionLogV2()
+    {
+        $curlPaService = (new CurlService())->pro()->getModule("pa")->gateway();
+        $curlLogService = (new CurlService())->pro()->getModule('ux168log')->gateway();
+
+        $list = [];
+
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/qd/自动作废数据.xlsx");
+        if (sizeof($fileFitContent) > 0) {
+            $qdBillNoList = array_column($fileFitContent, 'qd_bill_no');
+            if (count($qdBillNoList) == 0){
+                $this->log("没有迁移数据");
+                return;
+            }
+
+            $qdIdMap = [];
+            foreach (array_chunk($qdBillNoList, 200) as $qdBillNoChunkList){
+                $qdlist = DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignmentqdlist/v1/qdPageList", [
+                    "pageNum" => 1,
+                    "pageSize" => 200,
+                    "qdBillNoList" => $qdBillNoChunkList,
+                ]));
+                if ($qdlist && isset($qdlist['list']) && $qdlist['list'] && count($qdlist['list']) > 0){
+                    foreach ($qdlist['list'] as $qdItem){
+                        $qdIdMap[$qdItem['qdBillNo']] = $qdItem['consignmentQdId'];
+                    }
+                }
+            }
+
+            $log = [];
+            foreach ($fileFitContent as $fileFitContentItem){
+                $log[] = [
+                    "consignmentQdId" => $qdIdMap[$fileFitContentItem['qd_bill_no']],
+                    "qdBillNo" => $fileFitContentItem['qd_bill_no'],
+                    "beforeConsignmentQdPublishRecordId" => $fileFitContentItem['consignment_qd_publish_record_id'],
+                    "afterConsignmentQdPublishRecordId" => null,
+                    "beforeBidBillNo" => $fileFitContentItem['bid_bill_no'],
+                    "afterBidBillNo" => null,
+                    "beforeGroupId" => null,
+                    "beforeSupplierId" => null,
+                    "afterGroupId" => null,
+                    "afterSupplierId" => null,
+                    "action" => "作废",
+                    "remark" => $fileFitContentItem['delete_reason'],
+                    "createTime" => DateTime::createFromFormat('Y/m/d H:i:s', $fileFitContentItem['delete_time'])->format('Y-m-d H:i:s'),
+                    "createBy" => "ConsignmentWorkFlow",
+                ];
+
+            }
+
+            if ($log){
+                $this->log(json_encode($log,JSON_UNESCAPED_UNICODE));
+
+                DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignment/workflow/v1/batchInsertLog",$log));
+            }
 
         }
 
@@ -7135,6 +7201,7 @@ $curlController = new SyncCurlController();
 //$curlController->updateSkuSellerConfig();
 //$curlController->deleltePlatformFees();
 //$curlController->initQdActionLog();
+$curlController->initQdActionLogV2();
 //$curlController->testDing();
 //$curlController->downloadPaSkuMaterialSpData();
 //$curlController->createSkuConsignmentCe();
@@ -7162,7 +7229,7 @@ $curlController = new SyncCurlController();
 //$curlController->getssss();
 //$curlController->fixDengyiyi();
 //$curlController->fixTranslationManagementCategory();
-$curlController->fixProductSku();
+//$curlController->fixProductSku();
 //$curlController->fixMergeADV2SguId();
 //$curlController->fixMergeADSguId();
 //$curlController->createSguInfo();
