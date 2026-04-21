@@ -26,7 +26,7 @@ class SpEnabledCampaignController
         $spApi = new SpApi();
 
         try {
-            $contentList = $excelUtils->getXlsxData("excel/1111.xlsx");
+            $contentList = $excelUtils->getXlsxData("excel/20260418补充asin广告.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -56,6 +56,46 @@ class SpEnabledCampaignController
     }
 
 
+    public function placementCampaignV2($channel){
+        $redisService = new RedisService();
+        $excelUtils = new ExcelUtils();
+        $spApi = new SpApi();
+
+        try {
+            $contentList = $excelUtils->getXlsxData("excel/20260418补充asin广告.xlsx");
+        } catch (Exception $e) {
+            die($e->getLine() . " : " . $e->getMessage());
+        }
+        if (count($contentList) > 0) {
+
+            $list = [];
+            foreach ($contentList as $content){
+                if ($content['channel'] == $channel){
+                    $list[] = $content;
+                }
+            }
+            $this->log("开始处理渠道：{$channel} - 共有：" . count($list) . " 个数据");
+            foreach ($list as $item){
+                if ($channel){
+                    $fbaData = $spApi->pidScuMapProductIdFindScuId($channel,$item['product_id']);
+                    if (!$fbaData || !$fbaData['scuId']){
+                        $this->log("SKU: {$item['product_id']}，不存在fba");
+                        continue;
+                    }
+                    $spApi->paPlacementAmazonSp($channel, $item['seller_id'], 3,'manual','asin',$fbaData['scuId']);
+                }
+            }
+
+
+
+        }
+
+
+
+
+    }
+
+
     public function getSellerId($channel)
     {
 
@@ -65,9 +105,19 @@ class SpEnabledCampaignController
 }
 $parameters = DataUtils::ExplainArgv(@$argv, array());
 $params = (count(@$argv) > 1) ? $parameters : $_REQUEST;
-$sellerId = "";
-if (isset($params['sellerId']) && trim($params['sellerId'] != '')) {
-    $sellerId = $params['sellerId'];
+//$sellerId = "";
+//if (isset($params['sellerId']) && trim($params['sellerId'] != '')) {
+//    $sellerId = $params['sellerId'];
+//}
+//$con = new SpEnabledCampaignController();
+//$con->placementCampaign($sellerId);
+
+
+
+
+$channel= "";
+if (isset($params['channel']) && trim($params['channel'] != '')) {
+    $channel = $params['channel'];
 }
 $con = new SpEnabledCampaignController();
-$con->placementCampaign($sellerId);
+$con->placementCampaignV2($channel);

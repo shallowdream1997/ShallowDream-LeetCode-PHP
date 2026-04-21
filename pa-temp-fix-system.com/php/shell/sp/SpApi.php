@@ -1114,6 +1114,24 @@ class SpApi
         return $res;
     }
 
+
+    public function getMongoSpRuleConfigList()
+    {
+        $res = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_rule_configs/queryPage",[
+            "limit" => 1000
+        ]));
+        return $res;
+    }
+
+    public function getMongoSpBudgetBidRuleList()
+    {
+        $res = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_budget_and_bid_rule_configs/queryPage",[
+            "limit" => 1000
+        ]));
+        return $res;
+    }
+
+
     public function pidScuMapAdGroupFindProductId($channel,$scuId)
     {
         return DataUtils::getPageListInFirstData($this->curlService->s3015()->get("pid-scu-maps/queryPage",[

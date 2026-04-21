@@ -16,123 +16,204 @@ class SpSyncPomsController
         $this->log = new MyLogger("sp");
     }
 
-    /**
-     * 调用 MongoDB 查询 API
-     *
-     * @return array|false 返回解码后的 JSON 响应，或 false 表示失败
-     */
-    private function callMongoApi()
+    public function updatePaSpSellerRules()
     {
-        $url = 'http://api-management-service.all-test.svc.cluster.local:9021/mongo_query/v1/pageList';
-
-        // 构建请求体
-        $payload = [
-            "collectionName" => "amazon_ad_campaigns_list",
-            "aggCondition" => [
-                "aggregates" => [
-                    [
-                        "aggregates" => [
-                            [
-                                "fieldName" => "sellerId",
-                                "link"      => "AND",
-                                "option"    => "eq",
-                                "value"     => "amazon_jp_pat"
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            "queryFiledList" => ["_id", "channel", "sellerId", "campaign"],
-            "pageNum"        => 1,
-            "pageSize"       => 20,
-            "sortReqList"    => [
-                [
-                    "fileName"   => "_id",
-                    "sortType"   => "asc"
-                ]
-            ]
-        ];
-
-        $jsonPayload = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-
-        // 初始化 cURL
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: bearer b1cdd4ce-c4a2-467b-b3f7-7adab852924f',
-            'Content-Type: application/json',
-            'Accept: */*',
-            'Host: api-management-service.all-test.svc.cluster.local:9021',
-            'Connection: keep-alive'
-        ]);
-
-        $this->log("Sending request to MongoDB API: " . $jsonPayload);
-
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-
-        curl_close($ch);
-
-        if ($error) {
-            $this->log("cURL error: " . $error);
-            return false;
+        $excelUtils = new ExcelUtils();
+        $curlService = (new CurlService())->pro();
+        $redisService = new RedisService();
+        $spApi = new SpApi();
+        try {
+            $contentList = $excelUtils->getXlsxData("excel/PA-amazon广告自动化配置-20260416.xlsx");
+        } catch (Exception $e) {
+            die($e->getLine() . " : " . $e->getMessage());
         }
+        if (count($contentList) > 0) {
 
-        if ($httpCode >= 400) {
-            $this->log("HTTP error: " . $httpCode . ", response: " . $response);
-            return false;
-        }
-
-        $decoded = json_decode($response, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->log("JSON decode error: " . json_last_error_msg());
-            return false;
-        }
-
-        $this->log("MongoDB API call succeeded, fetched " . (isset($decoded['data']['list']) ? count($decoded['data']['list']) : 'unknown') . " records.");
-        return $decoded;
+            $jsonString = <<<JSON
+[
+    {
+        "skuRuleId": 1,
+        "name": "S级/开发渠道",
+        "condition": [
+            {"field": "product_level", "value": "S级"},
+            {"field": "is_dev_channel", "value": true}
+        ],
+        "oeNumber": 5,
+        "oneOeGetTopAsinNumber": 20
+    },
+    {
+        "skuRuleId": 2,
+        "name": "S级/非开发渠道",
+        "condition": [
+            {"field": "product_level", "value": "S级"},
+            {"field": "is_dev_channel", "value": false}
+        ],
+        "oeNumber": 2,
+        "oneOeGetTopAsinNumber": 20
+    },
+    {
+        "skuRuleId": 3,
+        "name": "A级/开发渠道",
+        "condition": [
+            {"field": "product_level", "value": "A级"},
+            {"field": "is_dev_channel", "value": true}
+        ],
+        "oeNumber": 2,
+        "oneOeGetTopAsinNumber": 20
+    },
+    {
+        "skuRuleId": 4,
+        "name": "A级/非开发渠道",
+        "condition": [
+            {"field": "product_level", "value": "A级"},
+            {"field": "is_dev_channel", "value": false}
+        ],
+        "oeNumber": 2,
+        "oneOeGetTopAsinNumber": 20
+    },
+    {
+        "skuRuleId": 5,
+        "name": "B级/开发渠道",
+        "condition": [
+            {"field": "product_level", "value": "B级"},
+            {"field": "is_dev_channel", "value": true}
+        ],
+        "oeNumber": 1,
+        "oneOeGetTopAsinNumber": 20
+    },
+    {
+        "skuRuleId": 6,
+        "name": "B级/非开发渠道",
+        "condition": [
+            {"field": "product_level", "value": "B级"},
+            {"field": "is_dev_channel", "value": false}
+        ],
+        "oeNumber": 1,
+        "oneOeGetTopAsinNumber": 20
     }
+]
+JSON;
 
-    private function log(string $string = "")
-    {
-        $this->log->log2($string);
-    }
+            $ruleData = json_decode($jsonString, true);
+            $ruleMap = [];
+            foreach ($ruleData as $rule){
+                $ruleMap[$rule['name']] = $rule['skuRuleId'];
+            }
 
-    public function syncToPoms()
-    {
-        $this->log("Starting syncToPoms process...");
+            $sellerRuleList = $spApi->getMongoSellerRuleList();
+            $sellerRuleMap = [];
+            $sellerRuleBindRuleMap = [];
+            if ($sellerRuleList){
+                foreach ($sellerRuleList as $sellerRule){
+                    $sellerRuleMap[$sellerRule['sellerId']] = $sellerRule;
 
-        $result = $this->callMongoApi();
-
-        if ($result === false) {
-            $this->log("Failed to fetch data from MongoDB API.");
-            return;
-        }
-
-        if ($result['state']['code'] == 2000000 && isset($result['data']['list']) && count($result['data']['list']) > 0){
-            foreach ($result['data']['list'] as $item){
-                $condition = [];
-                $condition['channel'] = $item['sellerId'];
-
-                if(isset($item['campaign'])){
-
+                    foreach ($sellerRule['bindRule'] as $bindRuleItem){
+                        $sellerRuleBindRuleMap[$sellerRule['sellerId']]["{$bindRuleItem['spType']}_{$bindRuleItem['skuRuleId']}"] = $bindRuleItem;
+                    }
                 }
             }
+
+
+            $mongoSpRuleConfigList = $spApi->getMongoSpRuleConfigList();
+
+            $ruleNameMap = [];
+            foreach ($mongoSpRuleConfigList as $mongoSpRuleConfig){
+                $ruleName = preg_replace('/\s+/', ' ', $mongoSpRuleConfig['ruleName']);
+                // 可选：如果字符串开头或结尾也可能有多余空格，建议加上 trim()
+                $ruleName = trim($ruleName);
+                $ruleNameMap[$ruleName] = $mongoSpRuleConfig['ruleId'];
+            }
+
+            $mongoSpBudgetBidRuleList = $spApi->getMongoSpBudgetBidRuleList();
+            $ruleBudgetBidNameMap = [];
+            foreach ($mongoSpBudgetBidRuleList as $mongoSpRuleConfig){
+                $ruleName = preg_replace('/\s+/', ' ', $mongoSpRuleConfig['ruleName']);
+                // 可选：如果字符串开头或结尾也可能有多余空格，建议加上 trim()
+                $ruleName = trim($ruleName);
+                $ruleBudgetBidNameMap[$ruleName] = $mongoSpRuleConfig['bidRuleId'];
+            }
+
+            $spData = [];
+            $ruleTypeAndId = [];
+            foreach ($contentList as $content){
+                $spData[$content['适用账号']] = [
+                    "company" => "CR201706060001",
+                    "channel" => $content['适用渠道'],
+                    "sellerId" => $content['适用账号'],
+                    "brand" => $content['品牌'],
+                    "isIndependenceSeller" => 1,
+                    "asinNumberLimit" => 0,
+                    "modifiedBy" => "system(zhouangang)",
+                    "createdBy" => "system(zhouangang)",
+                    "oeNumberRule" => [],
+                    "bindRule" => []
+                ];
+                $spType = $content['广告类型'];
+                if ($spType == "manual keyword"){
+                    $spType = "manual";
+                }else if ($spType == "category"){
+                    $spType = "manual category";
+                }
+
+                if (!isset($ruleNameMap[$content['系统创建campaign广告']])){
+                    $this->log->log2("系统创建campaign广告不存在：{$content['系统创建campaign广告']}");
+                    continue;
+                }
+                $ruleId = $ruleNameMap[$content['系统创建campaign广告']];
+
+
+                $bidRuleId = "";
+
+                if (!empty($content['bid规则(此列留空的不作上传)'])){
+                    if (!isset($ruleBudgetBidNameMap[$content['bid规则(此列留空的不作上传)']])){
+                        $this->log->log2("bid规则不存在：{$content['bid规则(此列留空的不作上传)']}");
+                        continue;
+                    }
+                    $bidRuleId = $ruleBudgetBidNameMap[$content['bid规则(此列留空的不作上传)']];
+                }
+
+                $ruleTypeAndId[$content['适用账号']]["{$spType}_{$ruleMap[$content['开发渠道']]}"]["campaignRuleBySystem"] = $ruleId;
+                $ruleTypeAndId[$content['适用账号']]["{$spType}_{$ruleMap[$content['开发渠道']]}"]["bidRule"] = $bidRuleId;
+
+            }
+
+            foreach ($spData as $sellerId => $spInfo){
+                if(isset($sellerRuleMap[$sellerId])){
+                    $mongosellerRule = $sellerRuleMap[$sellerId];
+
+                    $mongosellerRule['modifiedBy'] = "system(zhouangang)";
+
+                    foreach ($mongosellerRule['bindRule'] as &$bindRuleItem){
+                        $key = "{$bindRuleItem['spType']}_{$bindRuleItem['skuRuleId']}";
+
+                        foreach ($bindRuleItem['ruleTypeAndId'] as &$ruleTypeAndIdItem){
+                            if ($ruleTypeAndIdItem['ruleType'] == "campaignRuleBySystem"){
+                                $ruleTypeAndIdItem['ruleId'] = $ruleTypeAndId[$sellerId][$key]['campaignRuleBySystem'];
+                            }
+                            if ($ruleTypeAndIdItem['ruleType'] == "bidRule"){
+                                $ruleTypeAndIdItem['ruleId'] = $ruleTypeAndId[$sellerId][$key]['bidRule'];
+                            }
+                        }
+
+                        if (empty($ruleTypeAndId[$sellerId][$key]['bidRule'])){
+                            $bindRuleItem['status'] = 0;
+                        }
+
+                    }
+
+
+                    $this->log->log2("修改后：" . json_encode($mongosellerRule));
+                    $spApi->updateMongoSellerRule($mongosellerRule);
+                }
+
+
+            }
+
         }
-
-        // TODO: 在这里处理 $result 中的数据，例如同步到 POMS 系统
-        // 示例：
-        // foreach ($result['data']['list'] as $item) {
-        //     // 同步逻辑
-        // }
-
-        $this->log("syncToPoms completed successfully.");
     }
+
+
+
 }
 $con = new SpSyncPomsController();
-$con->syncToPoms();
+$con->updatePaSpSellerRules();
