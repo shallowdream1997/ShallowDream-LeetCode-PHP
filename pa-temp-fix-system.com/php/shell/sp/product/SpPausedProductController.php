@@ -40,13 +40,13 @@ class SpPausedProductController
         return $this;
     }
 
-    public function pausedProducts(){
+    public function pausedProducts($channel = ""){
         $excelUtils = new ExcelUtils();
         $curlService = (new CurlService())->pro();
         $redisService = new RedisService();
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("/xp/www/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/export/sp/关停products_5.xlsx");
+            $contentList = $excelUtils->getXlsxData("./excel/广告关停adid清单{$channel}.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -54,7 +54,7 @@ class SpPausedProductController
             $sellerIdAdId = [];
             foreach ($contentList as $item){
                 if (!empty($item['adid'])){
-                    $sellerIdAdId[$item['seller_id']][] = $item['adid'];
+                    $sellerIdAdId[$item['sellerid']][] = $item['adid'];
                 }
             }
             $exportList = [];
@@ -137,5 +137,11 @@ class SpPausedProductController
 
 }
 
+$parameters = DataUtils::ExplainArgv(@$argv, array());
+$params = (count(@$argv) > 1) ? $parameters : $_REQUEST;
+$channel = "";
+if (isset($params['channel']) && trim($params['channel'] != '')) {
+    $channel = $params['channel'];
+}
 $con = new SpPausedProductController();
-$con->pausedProducts();
+$con->pausedProducts($channel);

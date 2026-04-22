@@ -66,28 +66,70 @@ class SpArchivedErrorAdGroupController
 
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/要归档的adgroupid广告.xlsx");
+            $contentList = $excelUtils->getXlsxData("./excel/待归档asin广告清单.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
         if (count($contentList) > 0) {
+
+            $adGroupIds = [];
+
+
             foreach ($contentList as $content){
-                if (!$content["adgroupid"]){
+
+                $sellerId = $spApi->specialSellerIdReverseConver($content["sellerid"]);
+                if (!$sellerId){
+                    $this->log("没有sellerId");
                     continue;
                 }
-                $adGroupId = $content["adgroupid"];
-                $sellerId = $spApi->specialSellerIdReverseConver($content["seller_id"]);
-                $channel = $content['channel'];
-
-
-                $a = $this->redis->hGet("adGroupAdGroupId", $adGroupId);
                 $adGroupInfo = [];
-                if (!$a){
-                    $adGroupInfo = $spApi->getMongoAdGroupInfo($sellerId, '', '',$adGroupId);
-                    $this->redis->hSet("adGroupAdGroupId", $adGroupId, json_encode($adGroupInfo,JSON_UNESCAPED_UNICODE));
+                $adGroupId = "";
+                if (!isset($content["adgroupid"]) || !$content["adgroupid"]){
+                    if (!isset($content['campaignname']) || !$content['campaignname']){
+                        $this->log("没有campaignName");
+                        continue;
+                    }
+                    $campaignData = $spApi->getMongoCampaignInfo($sellerId,$content['campaignname']);
+                    if (!$campaignData){
+                        $this->log("没有campaignName");
+                        continue;
+                    }
+
+                    $keysss = "{$sellerId}_{$campaignData['campaignId']}_{$content['adgroupname']}";
+                    $aaaa = $this->redis->hGet("adGroupSCAAdGroupId", $keysss);
+
+                    if (!$aaaa){
+                        $adGroupInfo = $spApi->getMongoAdGroupInfo($sellerId,$campaignData['campaignId'],$content['adgroupname']);
+                        $this->redis->hSet("adGroupSCAAdGroupId", $keysss, json_encode($adGroupInfo,JSON_UNESCAPED_UNICODE));
+                    }else{
+                        $adGroupInfo = json_decode($aaaa,true);
+                    }
+
+                    if (!$adGroupInfo || !$adGroupInfo['adGroupId']){
+                        $this->log("没有adGroupName");
+                        continue;
+                    }
+
+                    $adGroupId = $adGroupInfo['adGroupId'];
                 }else{
-                    $adGroupInfo = json_decode($a,true);
+
+                    $adGroupId = $content["adgroupid"];
+
+                    $a = $this->redis->hGet("adGroupAdGroupId", $adGroupId);
+
+                    if (!$a){
+                        $adGroupInfo = $spApi->getMongoAdGroupInfo($sellerId, '', '',$adGroupId);
+                        $this->redis->hSet("adGroupAdGroupId", $adGroupId, json_encode($adGroupInfo,JSON_UNESCAPED_UNICODE));
+                    }else{
+                        $adGroupInfo = json_decode($a,true);
+                    }
+
                 }
+
+                if ($adGroupId){
+                    $adGroupIds[$sellerId][] = $adGroupId;
+                }
+
                 if ($adGroupInfo){
                     $adGroupName = $adGroupInfo['adGroupName'];
                     $this->log("{$sellerId} {$adGroupInfo['campaignId']} {$adGroupName}");
@@ -178,22 +220,11 @@ class SpArchivedErrorAdGroupController
 
                     $spApi->deleteMongoAdGroupInfo($adGroupInfo['_id']);
 
-
-
-
-
                 }else{
                     $this->log("没有adGroupInfo");
                 }
-
             }
 
-            $adGroupIds = [];
-            foreach ($contentList as $content){
-                if ($content['adgroupid']){
-                    $adGroupIds[$content['seller_id']][] = $content['adgroupid'];
-                }
-            }
             if ($adGroupIds){
                 $exportList = [];
                 foreach ($adGroupIds as $sellerId=>$asgids){
@@ -1150,7 +1181,7 @@ if (isset($params['channel']) && trim($params['channel'] != '')) {
     $channel = $params['channel'];
 }
 $con = new SpArchivedErrorAdGroupController();
-//$con->archivedErrorAdGroup();
+$con->archivedErrorAdGroup();
 
 
 
@@ -1158,4 +1189,4 @@ $con = new SpArchivedErrorAdGroupController();
 //$con->reloadEnabledKeyword($channel);
 //$con->reloadEnabledAdGroup($channel);
 
-$con->archivedErrorAdGroupV2($channel);
+//$con->archivedErrorAdGroupV2($channel);

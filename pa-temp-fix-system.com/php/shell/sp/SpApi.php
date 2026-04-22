@@ -17,7 +17,7 @@ class SpApi
     public function __construct()
     {
         $this->log = new MyLogger("sp");
-        $this->curlService = (new CurlService())->pro();
+        $this->curlService = (new CurlService())->test();
         $this->redis = new RedisService();
     }
 
@@ -1103,6 +1103,7 @@ class SpApi
     {
         $res = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_sellers/queryPage",[
             "company" => "CR201706060001",
+//            "sellerId" => "amazon_uk_tuc",
             "limit" => 1000
         ]));
         return $res;

@@ -197,6 +197,8 @@ JSON;
 
                         if (empty($ruleTypeAndId[$sellerId][$key]['bidRule'])){
                             $bindRuleItem['status'] = 0;
+                        }else if (!empty($ruleTypeAndId[$sellerId][$key]['bidRule']) && !empty($ruleTypeAndId[$sellerId][$key]['campaignRuleBySystem'])){
+                            $bindRuleItem['status'] = 1;
                         }
 
                     }
