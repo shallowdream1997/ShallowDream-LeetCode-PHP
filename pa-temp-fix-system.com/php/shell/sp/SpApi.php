@@ -1115,6 +1115,12 @@ class SpApi
         return $res;
     }
 
+    public function createMongoSellerRule($info)
+    {
+        $res = DataUtils::getResultData($this->curlService->s3023()->post("amazon_sp_sellers",$info));
+        return $res;
+    }
+
 
     public function getMongoSpRuleConfigList()
     {

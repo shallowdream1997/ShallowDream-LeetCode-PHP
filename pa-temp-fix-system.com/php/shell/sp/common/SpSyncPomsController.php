@@ -206,6 +206,75 @@ JSON;
 
                     $this->log->log2("修改后：" . json_encode($mongosellerRule));
                     $spApi->updateMongoSellerRule($mongosellerRule);
+                }else{
+                    //没有账号，要新增
+                    $mongosellerRule = $spData[$sellerId];
+                    $mongosellerRule['createdBy'] = "system(zhouangang)";
+                    $mongosellerRule['modifiedBy'] = "system(zhouangang)";
+
+                    $oeNumberRule = [];
+                    $bindRule = [];
+                    foreach ($ruleData as $ruleTypeAndIdValue){
+
+                        foreach (["auto","manual","manual asin","manual category"] as $sptype){
+
+                            $oeNumberRule[] = [
+                                "skuRuleId" => $ruleTypeAndIdValue['skuRuleId'],
+                                "spType" => $sptype,
+                                "oeNumber" => $ruleTypeAndIdValue['oeNumber'],
+                                "oneOeGetTopAsinNumber" => $ruleTypeAndIdValue['oneOeGetTopAsinNumber'],
+                            ];
+
+                            $bidRuleData = [
+                                "spType" => $sptype,
+                                "status" => 0,
+                                "skuRuleId" => $ruleTypeAndIdValue['skuRuleId'],
+                                "skuRuleName" => $ruleTypeAndIdValue['name'],
+                                "ruleTypeAndId" => []
+                            ];
+
+
+                            $key = "{$sptype}_{$ruleTypeAndIdValue['skuRuleId']}";
+
+                            $ruleTypeAndIdList = [];
+                            foreach (["campaignRuleBySystem","campaignRuleByManual","adGroupRule","bidRule"] as $item){
+                                $ruleTypeAndIdItem = [
+                                    "ruleType" => $item,
+                                    "ruleId" => ""
+                                ];
+                                if ($item == "campaignRuleBySystem"){
+                                    $ruleTypeAndIdItem['ruleId'] = $ruleTypeAndId[$sellerId][$key]['campaignRuleBySystem'];
+                                } elseif ($item == "bidRule"){
+                                    $ruleTypeAndIdItem['ruleId'] = $ruleTypeAndId[$sellerId][$key]['bidRule'];
+                                } elseif ($item == "campaignRuleByManual"){
+                                    $ruleTypeAndIdItem['ruleId'] = isset($ruleTypeAndId[$sellerId][$key]['campaignRuleByManual']) && !empty($ruleTypeAndId[$sellerId][$key]['campaignRuleByManual']) ? $ruleTypeAndId[$sellerId][$key]['campaignRuleByManual'] : "";
+                                } elseif ($item == "adGroupRule"){
+                                    $ruleTypeAndIdItem['ruleId'] = isset($ruleTypeAndId[$sellerId][$key]['adGroupRule']) && !empty($ruleTypeAndId[$sellerId][$key]['adGroupRule']) ? $ruleTypeAndId[$sellerId][$key]['adGroupRule'] : "";
+                                }
+
+                                $ruleTypeAndIdList[] = $ruleTypeAndIdItem;
+                            }
+
+                            if (empty($ruleTypeAndId[$sellerId][$key]['bidRule'])){
+                                $bidRuleData['status'] = 0;
+                            }else if (!empty($ruleTypeAndId[$sellerId][$key]['bidRule']) && !empty($ruleTypeAndId[$sellerId][$key]['campaignRuleBySystem'])){
+                                $bidRuleData['status'] = 1;
+                            }
+
+                            $bidRuleData['ruleTypeAndId'] = $ruleTypeAndIdList;
+                            $bindRule[] = $bidRuleData;
+                        }
+
+
+                    }
+
+                    $mongosellerRule['oeNumberRule'] = $oeNumberRule;
+                    $mongosellerRule['bindRule'] = $bindRule;
+
+
+                    $this->log->log2("新增：" . json_encode($mongosellerRule));
+                    $spApi->createMongoSellerRule($mongosellerRule);
+
                 }
 
 
