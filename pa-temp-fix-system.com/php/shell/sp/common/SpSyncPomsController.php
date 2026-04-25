@@ -19,8 +19,6 @@ class SpSyncPomsController
     public function updatePaSpSellerRules()
     {
         $excelUtils = new ExcelUtils();
-        $curlService = (new CurlService())->pro();
-        $redisService = new RedisService();
         $spApi = new SpApi();
         try {
             $contentList = $excelUtils->getXlsxData("excel/PA-amazon广告自动化配置-20260416.xlsx");
@@ -161,9 +159,27 @@ JSON;
                 }
                 $ruleId = $ruleNameMap[$content['系统创建campaign广告']];
 
+                if ($content['adgroup广告规则']){
+
+                    if (!isset($ruleNameMap[$content['adgroup广告规则']])){
+                        $this->log->log2("adgroup广告规则不存在：{$content['adgroup广告规则']}");
+                    }
+
+                    $agroupRuleId = $ruleNameMap[$content['adgroup广告规则']];
+                    $ruleTypeAndId[$content['适用账号']]["{$spType}_{$ruleMap[$content['开发渠道']]}"]["adGroupRule"] = $agroupRuleId;
+                }
+
+                if ($content['人工创建campaign广告']){
+                    if (!isset($ruleNameMap[$content['人工创建campaign广告']])){
+                        $this->log->log2("人工创建campaign广告不存在：{$content['人工创建campaign广告']}");
+                    }
+                    $campaignRuleByManualRuleId = $ruleNameMap[$content['人工创建campaign广告']];
+                    $ruleTypeAndId[$content['适用账号']]["{$spType}_{$ruleMap[$content['开发渠道']]}"]["campaignRuleByManual"] = $campaignRuleByManualRuleId;
+                }
+
+
 
                 $bidRuleId = "";
-
                 if (!empty($content['bid规则(此列留空的不作上传)'])){
                     if (!isset($ruleBudgetBidNameMap[$content['bid规则(此列留空的不作上传)']])){
                         $this->log->log2("bid规则不存在：{$content['bid规则(此列留空的不作上传)']}");
@@ -189,6 +205,12 @@ JSON;
                         foreach ($bindRuleItem['ruleTypeAndId'] as &$ruleTypeAndIdItem){
                             if ($ruleTypeAndIdItem['ruleType'] == "campaignRuleBySystem"){
                                 $ruleTypeAndIdItem['ruleId'] = $ruleTypeAndId[$sellerId][$key]['campaignRuleBySystem'];
+                            }
+                            if ($ruleTypeAndIdItem['ruleType'] == "campaignRuleByManual" && isset($ruleTypeAndId[$sellerId][$key]['campaignRuleByManual']) && !empty($ruleTypeAndId[$sellerId][$key]['campaignRuleByManual'])){
+                                $ruleTypeAndIdItem['ruleId'] = $ruleTypeAndId[$sellerId][$key]['campaignRuleByManual'];
+                            }
+                            if ($ruleTypeAndIdItem['ruleType'] == "adGroupRule" && isset($ruleTypeAndId[$sellerId][$key]['adGroupRule']) && !empty($ruleTypeAndId[$sellerId][$key]['adGroupRule'])){
+                                $ruleTypeAndIdItem['ruleId'] = $ruleTypeAndId[$sellerId][$key]['adGroupRule'];
                             }
                             if ($ruleTypeAndIdItem['ruleType'] == "bidRule"){
                                 $ruleTypeAndIdItem['ruleId'] = $ruleTypeAndId[$sellerId][$key]['bidRule'];
@@ -282,9 +304,116 @@ JSON;
 
         }
     }
+    public function sssss()
+    {
+        $excelUtils = new ExcelUtils();
+        $spApi = new SpApi();
+        try {
+            $contentList = $excelUtils->getXlsxData("excel/产品清单车型库清单0425.xlsx");
+        } catch (Exception $e) {
+            die($e->getLine() . " : " . $e->getMessage());
+        }
+        if (count($contentList) > 0) {
+            $list = [];
+            $exportList = [];
+            foreach ($contentList as $content){
+                if ($content){
+                    $productId = $content['product_id'];
+                    $channel = $content['channel'];
+                    $sellerId = $content['seller_id'];
+                    $nonFbaInfo = $spApi->pidScuMapAdGroupFindScuId($channel,$productId);
+                    $data = [
+                        "product_id" => $productId,
+                        "channel" => $channel,
+                        "seller_id" => $sellerId,
+                        "nonFba" => "yes",
+                        "adGroupName" => "",
+                        "isHasAdGroupName" => "yes",
+                        "adGroupId" => "",
+                        "isHasKeyword" => "yes",
+                        "keywordText" => "",
+                        "keywordId" => "",
+                        "keywordMatchType" => "",
+                        "keywordBid" => ""
+                    ];
+                    if (!$nonFbaInfo){
+                        $this->log->log2("没有找到adGroupName nonFba信息：" . $productId);
+                        $data['nonFba'] = "no";
+                        $data['isHasAdGroupName'] = "no";
+                        $data['isHasKeyword'] = "no";
+                        $exportList[] = $data;
+                        continue;
+                    }
+                    $data['adGroupName'] = $nonFbaInfo['scuId'];
+                    $slipt = explode("\n",$content['ss']);
+                    foreach ($slipt as &$item){
+                        $item = trim($item);
+                    }
+                    if ($data['nonFba'] == 'yes'){
+                        //存在nonFba信息，去查adGroup广告
+                        $adGroupList = $spApi->getMongoAdGroupInfoList($sellerId,$nonFbaInfo['scuId']);
+                        if (!$adGroupList){
+                            $data['isHasAdGroupName'] = 'no';
+                            $data['isHasKeyword'] = "no";
+                            $exportList[] = $data;
+                            continue;
+                        }else{
+
+                            foreach ($adGroupList as $adGroup){
+                                if ($adGroup['adGroupId']){
+                                    $data['adGroupId'] = "'{$adGroup['adGroupId']}";
+                                    $keywordList = $spApi->getMongoKeywordInfoV2($sellerId,$adGroup['campaignId'],$adGroup['adGroupId']);
+                                    if (!$keywordList){
+                                        $data['isHasKeyword'] = "no";
+                                        $exportList[] = $data;
+                                        continue;
+                                    }else{
+                                        //存在keyword
+                                        foreach ($keywordList as $keyword){
+                                            if ($keyword['keywordId'] && in_array(trim($keyword['keywordText']),$slipt)){
+                                                $data['keywordId'] = "'{$keyword['keywordId']}";
+                                                $data['keywordText'] = $keyword['keywordText'];
+                                                $data['keywordMatchType'] = $keyword['matchType'];
+                                                $data['keywordBid'] = $keyword['bid'];
+                                                $exportList[] = $data;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                        }
+                    }
+
+
+
+                }
+            }
+
+            if ($exportList){
+                $excelUtils = new ExcelUtils("sp/keyword/");
+                $filePath = $excelUtils->downloadXlsx([
+                    "product_id",
+                    "channel",
+                    "seller_id",
+                    "nonFba",
+                    "adGroupName",
+                    "isHasAdGroupName",
+                    "adGroupId",
+                    "isHasKeyword",
+                    "keywordText",
+                    "keywordId",
+                    "keywordMatchType",
+                    "keywordBid"
+                ],$exportList,"仅投放了hot_fitment的keyword_".date("YmdHis").".xlsx");
+            }
+        }
+    }
 
 
 
 }
 $con = new SpSyncPomsController();
-$con->updatePaSpSellerRules();
+//$con->updatePaSpSellerRules();
+$con->sssss();

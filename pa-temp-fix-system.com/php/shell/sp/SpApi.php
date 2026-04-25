@@ -17,7 +17,7 @@ class SpApi
     public function __construct()
     {
         $this->log = new MyLogger("sp");
-        $this->curlService = (new CurlService())->test();
+        $this->curlService = (new CurlService())->pro();
         $this->redis = new RedisService();
     }
 
@@ -348,6 +348,20 @@ class SpApi
             $condition['adGroupId'] = $adGroupId;
         }
         return DataUtils::getPageListInFirstData($this->curlService->s3023()->get("amazon_sp_adgroups/queryPage",$condition));
+    }
+    public function getMongoAdGroupInfoList($sellerId,$adGroupName = '',$adGroupId = '')
+    {
+        $condition = [
+            "channel" => $this->specialSellerIdConver($sellerId),
+            "limit" => 1000
+        ];
+        if ($adGroupName){
+            $condition['adGroupName'] = $adGroupName;
+        }
+        if ($adGroupId){
+            $condition['adGroupId'] = $adGroupId;
+        }
+        return DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_adgroups/queryPage",$condition));
     }
     public function getMongoAdGroups($adGroupIds = [])
     {
@@ -1145,6 +1159,16 @@ class SpApi
             "scuIdType" => "nonFba",
             "scuIdStyle" => "sellerSku",
             "scuId" => $scuId,
+            "channel" => $channel
+        ]));
+    }
+
+    public function pidScuMapAdGroupFindScuId($channel,$productId)
+    {
+        return DataUtils::getPageListInFirstData($this->curlService->s3015()->get("pid-scu-maps/queryPage",[
+            "scuIdType" => "nonFba",
+            "scuIdStyle" => "sellerSku",
+            "productId" => $productId,
             "channel" => $channel
         ]));
     }

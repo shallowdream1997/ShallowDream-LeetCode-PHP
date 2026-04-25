@@ -46,7 +46,7 @@ class SpPausedProductController
         $redisService = new RedisService();
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/广告关停adid清单{$channel}.xlsx");
+            $contentList = $excelUtils->getXlsxData("./excel/广告关停adid清单260423{$channel}.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
