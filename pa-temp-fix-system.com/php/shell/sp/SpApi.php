@@ -1326,4 +1326,267 @@ class SpApi
         return $typeMap[$type] ?? null;
     }
 
+    //===================================== 批量查询方法 start ===================================================
+
+    /**
+     * 批量查询 pid-scu-maps (nonFba)
+     * @param array $channelProductIds [[channel, productId], ...] 或者按channel分组
+     * @param string $channel 渠道（所有productId使用同一渠道时）
+     * @param array $productIds productId数组（所有productId使用同一渠道时）
+     * @return array productId -> nonFbaInfo 的映射
+     */
+    public function batchPidScuMapAdGroupFindScuId($channel, $productIds)
+    {
+        if (empty($productIds)) {
+            return [];
+        }
+        
+        $map = [];
+        // 先从Redis批量获取
+        $cachedKeys = [];
+        $needQueryProductIds = [];
+        
+        foreach ($productIds as $productId) {
+            $key = "{$channel}_{$productId}";
+            $str = $this->redis->hGet("pidScuMapNonFba", $key);
+            if ($str) {
+                $map[$productId] = json_decode($str, true);
+            } else {
+                $needQueryProductIds[] = $productId;
+            }
+        }
+        
+        // 批量查询未缓存的数据（分批查询，每批100个）
+        if (count($needQueryProductIds) > 0) {
+            $batchSize = 100;
+            $batches = array_chunk($needQueryProductIds, $batchSize);
+            
+            foreach ($batches as $batch) {
+                $productIdIn = implode(",", $batch);
+                $list = DataUtils::getPageList($this->curlService->s3015()->get("pid-scu-maps/queryPage", [
+                    "scuIdType" => "nonFba",
+                    "scuIdStyle" => "sellerSku",
+                    "productId" => $productIdIn,
+                    "channel" => $channel,
+                    "limit" => 1000
+                ]));
+                
+                if (count($list) > 0) {
+                    foreach ($list as $item) {
+                        $productId = $item['productId'];
+                        $map[$productId] = $item;
+                        // 写入Redis缓存
+                        $key = "{$channel}_{$productId}";
+                        $this->redis->hSet("pidScuMapNonFba", $key, json_encode($item, JSON_UNESCAPED_UNICODE));
+                    }
+                }
+            }
+        }
+        
+        return $map;
+    }
+
+    /**
+     * 批量查询 adGroup 信息
+     * @param string $sellerId
+     * @param array $adGroupNames adGroupName数组
+     * @return array adGroupName -> adGroupList 的映射
+     */
+    public function batchGetMongoAdGroupInfoList($sellerId, $adGroupNames)
+    {
+        if (empty($adGroupNames)) {
+            return [];
+        }
+        
+        $channel = $this->specialSellerIdConver($sellerId);
+        $map = [];
+        
+        // 先从Redis批量获取
+        $needQueryNames = [];
+        foreach ($adGroupNames as $adGroupName) {
+            $key = "{$channel}_{$adGroupName}";
+            $str = $this->redis->hGet("adGroupSpData", $key);
+            if ($str) {
+                $map[$adGroupName] = json_decode($str, true);
+            } else {
+                $needQueryNames[] = $adGroupName;
+            }
+        }
+        
+        // 批量查询未缓存的数据
+        if (count($needQueryNames) > 0) {
+            $batchSize = 50;
+            $batches = array_chunk($needQueryNames, $batchSize);
+            
+            foreach ($batches as $batch) {
+                $adGroupNameIn = implode(",", $batch);
+                $list = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_adgroups/queryPage", [
+                    "channel" => $channel,
+                    "adGroupName_in" => $adGroupNameIn,
+                    "limit" => 1000
+                ]));
+                
+                if (count($list) > 0) {
+                    foreach ($list as $item) {
+                        $adGroupName = $item['adGroupName'];
+                        if (!isset($map[$adGroupName])) {
+                            $map[$adGroupName] = [];
+                        }
+                        $map[$adGroupName][] = $item;
+                    }
+                    // 写入Redis缓存（每个adGroupName的所有adGroup）
+                    foreach ($batch as $adGroupName) {
+                        if (isset($map[$adGroupName]) && count($map[$adGroupName]) > 0) {
+                            $key = "{$channel}_{$adGroupName}";
+                            $this->redis->hSet("adGroupSpData", $key, json_encode($map[$adGroupName], JSON_UNESCAPED_UNICODE));
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $map;
+    }
+
+    /**
+     * 批量查询 keyword 信息
+     * @param string $sellerId
+     * @param array $campaignIdAdGroupIdPairs [[campaignId, adGroupId], ...]
+     * @return array campaignId_adGroupId -> keywordList 的映射
+     */
+    public function batchGetMongoKeywordInfoV2($sellerId, $campaignIdAdGroupIdPairs)
+    {
+        if (empty($campaignIdAdGroupIdPairs)) {
+            return [];
+        }
+        
+        $channel = $this->specialSellerIdConver($sellerId);
+        $map = [];
+        
+        // 先从Redis批量获取
+        $needQueryPairs = [];
+        foreach ($campaignIdAdGroupIdPairs as $pair) {
+            $campaignId = $pair[0];
+            $adGroupId = $pair[1];
+            $key = "{$channel}_{$campaignId}_{$adGroupId}";
+            $str = $this->redis->hGet("keywordSpDataV2", $key);
+            if ($str) {
+                $mapKey = "{$campaignId}_{$adGroupId}";
+                $map[$mapKey] = json_decode($str, true);
+            } else {
+                $needQueryPairs[] = $pair;
+            }
+        }
+        
+        // 批量查询未缓存的数据（按 campaignId 分组，使用分页确保数据完整性）
+        // 注意：批量查询多个 adGroupId 时 keywords 总数可能超过 1000，需要分页获取
+        if (count($needQueryPairs) > 0) {
+            // 按 campaignId 分组并去重 adGroupId
+            $campaignGroups = [];
+            foreach ($needQueryPairs as $pair) {
+                $campaignId = $pair[0];
+                $adGroupId = $pair[1];
+                if (!isset($campaignGroups[$campaignId])) {
+                    $campaignGroups[$campaignId] = [];
+                }
+                // 去重
+                if (!in_array($adGroupId, $campaignGroups[$campaignId])) {
+                    $campaignGroups[$campaignId][] = $adGroupId;
+                }
+            }
+            
+            // 每个campaignId批量查询其下的所有adGroupId的keyword，使用分页
+            foreach ($campaignGroups as $campaignId => $adGroupIds) {
+                $adGroupIdIn = implode(",", $adGroupIds);
+                $page = 1;
+                $allKeywords = [];
+                
+                do {
+                    $list = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_keywords/queryPage", [
+                        "channel" => $channel,
+                        "campaignId" => $campaignId,
+                        "adGroupId_in" => $adGroupIdIn,
+                        "limit" => 1000,
+                        "page" => $page
+                    ]));
+                    
+                    if (count($list) == 0) break;
+                    
+                    $allKeywords = array_merge($allKeywords, $list);
+                    $page++;
+                } while (count($list) >= 1000);  // 如果返回满1000，可能还有更多数据
+                
+                // 按adGroupId分组放入map
+                foreach ($allKeywords as $item) {
+                    $mapKey = "{$campaignId}_{$item['adGroupId']}";
+                    if (!isset($map[$mapKey])) {
+                        $map[$mapKey] = [];
+                    }
+                    $map[$mapKey][] = $item;
+                }
+            }
+            
+            // 写入Redis缓存（每个 campaignId+adGroupId 单独缓存）
+            foreach ($needQueryPairs as $pair) {
+                $campaignId = $pair[0];
+                $adGroupId = $pair[1];
+                $mapKey = "{$campaignId}_{$adGroupId}";
+                if (isset($map[$mapKey]) && count($map[$mapKey]) > 0) {
+                    $key = "{$channel}_{$campaignId}_{$adGroupId}";
+                    $this->redis->hSet("keywordSpDataV2", $key, json_encode($map[$mapKey], JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }
+        
+        return $map;
+    }
+
+    /**
+     * 批量查询 keyword 信息（按 keywordText 查询）
+     * @param string $sellerId
+     * @param array $keywordTexts keywordText数组
+     * @return array keywordText -> keywordList 的映射
+     */
+    public function batchGetMongoKeywordByKeywordText($sellerId, $keywordTexts)
+    {
+        if (empty($keywordTexts)) {
+            return [];
+        }
+        
+        $channel = $this->specialSellerIdConver($sellerId);
+        $map = [];
+        
+        // 批量查询，使用分页确保数据完整性
+        $keywordTextIn = implode(",", array_unique($keywordTexts));
+        $page = 1;
+        $allKeywords = [];
+        
+        do {
+            $list = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_keywords/queryPage", [
+                "channel" => $channel,
+                "keywordText_in" => $keywordTextIn,
+                "limit" => 1000,
+                "page" => $page
+            ]));
+            
+            if (count($list) == 0) break;
+            
+            $allKeywords = array_merge($allKeywords, $list);
+            $page++;
+        } while (count($list) >= 1000);
+        
+        // 按 keywordText 分组放入 map
+        foreach ($allKeywords as $item) {
+            $keywordText = $item['keywordText'];
+            if (!isset($map[$keywordText])) {
+                $map[$keywordText] = [];
+            }
+            $map[$keywordText][] = $item;
+        }
+        
+        return $map;
+    }
+
+    //===================================== 批量查询方法 end ===================================================
+
 }

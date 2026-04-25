@@ -117,7 +117,6 @@ JSON;
             $ruleNameMap = [];
             foreach ($mongoSpRuleConfigList as $mongoSpRuleConfig){
                 $ruleName = preg_replace('/\s+/', ' ', $mongoSpRuleConfig['ruleName']);
-                // 可选：如果字符串开头或结尾也可能有多余空格，建议加上 trim()
                 $ruleName = trim($ruleName);
                 $ruleNameMap[$ruleName] = $mongoSpRuleConfig['ruleId'];
             }
@@ -126,7 +125,6 @@ JSON;
             $ruleBudgetBidNameMap = [];
             foreach ($mongoSpBudgetBidRuleList as $mongoSpRuleConfig){
                 $ruleName = preg_replace('/\s+/', ' ', $mongoSpRuleConfig['ruleName']);
-                // 可选：如果字符串开头或结尾也可能有多余空格，建议加上 trim()
                 $ruleName = trim($ruleName);
                 $ruleBudgetBidNameMap[$ruleName] = $mongoSpRuleConfig['bidRuleId'];
             }
@@ -160,11 +158,9 @@ JSON;
                 $ruleId = $ruleNameMap[$content['系统创建campaign广告']];
 
                 if ($content['adgroup广告规则']){
-
                     if (!isset($ruleNameMap[$content['adgroup广告规则']])){
                         $this->log->log2("adgroup广告规则不存在：{$content['adgroup广告规则']}");
                     }
-
                     $agroupRuleId = $ruleNameMap[$content['adgroup广告规则']];
                     $ruleTypeAndId[$content['适用账号']]["{$spType}_{$ruleMap[$content['开发渠道']]}"]["adGroupRule"] = $agroupRuleId;
                 }
@@ -176,8 +172,6 @@ JSON;
                     $campaignRuleByManualRuleId = $ruleNameMap[$content['人工创建campaign广告']];
                     $ruleTypeAndId[$content['适用账号']]["{$spType}_{$ruleMap[$content['开发渠道']]}"]["campaignRuleByManual"] = $campaignRuleByManualRuleId;
                 }
-
-
 
                 $bidRuleId = "";
                 if (!empty($content['bid规则(此列留空的不作上传)'])){
@@ -196,7 +190,6 @@ JSON;
             foreach ($spData as $sellerId => $spInfo){
                 if(isset($sellerRuleMap[$sellerId])){
                     $mongosellerRule = $sellerRuleMap[$sellerId];
-
                     $mongosellerRule['modifiedBy'] = "system(zhouangang)";
 
                     foreach ($mongosellerRule['bindRule'] as &$bindRuleItem){
@@ -222,14 +215,11 @@ JSON;
                         }else if (!empty($ruleTypeAndId[$sellerId][$key]['bidRule']) && !empty($ruleTypeAndId[$sellerId][$key]['campaignRuleBySystem'])){
                             $bindRuleItem['status'] = 1;
                         }
-
                     }
-
 
                     $this->log->log2("修改后：" . json_encode($mongosellerRule));
                     $spApi->updateMongoSellerRule($mongosellerRule);
                 }else{
-                    //没有账号，要新增
                     $mongosellerRule = $spData[$sellerId];
                     $mongosellerRule['createdBy'] = "system(zhouangang)";
                     $mongosellerRule['modifiedBy'] = "system(zhouangang)";
@@ -237,9 +227,7 @@ JSON;
                     $oeNumberRule = [];
                     $bindRule = [];
                     foreach ($ruleData as $ruleTypeAndIdValue){
-
                         foreach (["auto","manual","manual asin","manual category"] as $sptype){
-
                             $oeNumberRule[] = [
                                 "skuRuleId" => $ruleTypeAndIdValue['skuRuleId'],
                                 "spType" => $sptype,
@@ -254,7 +242,6 @@ JSON;
                                 "skuRuleName" => $ruleTypeAndIdValue['name'],
                                 "ruleTypeAndId" => []
                             ];
-
 
                             $key = "{$sptype}_{$ruleTypeAndIdValue['skuRuleId']}";
 
@@ -273,7 +260,6 @@ JSON;
                                 } elseif ($item == "adGroupRule"){
                                     $ruleTypeAndIdItem['ruleId'] = isset($ruleTypeAndId[$sellerId][$key]['adGroupRule']) && !empty($ruleTypeAndId[$sellerId][$key]['adGroupRule']) ? $ruleTypeAndId[$sellerId][$key]['adGroupRule'] : "";
                                 }
-
                                 $ruleTypeAndIdList[] = $ruleTypeAndIdItem;
                             }
 
@@ -286,24 +272,21 @@ JSON;
                             $bidRuleData['ruleTypeAndId'] = $ruleTypeAndIdList;
                             $bindRule[] = $bidRuleData;
                         }
-
-
                     }
 
                     $mongosellerRule['oeNumberRule'] = $oeNumberRule;
                     $mongosellerRule['bindRule'] = $bindRule;
 
-
                     $this->log->log2("新增：" . json_encode($mongosellerRule));
                     $spApi->createMongoSellerRule($mongosellerRule);
-
                 }
-
-
             }
-
         }
     }
+
+    /**
+     * 简化版本 - 直接用 seller_id + keywordText 批量查询 keywords
+     */
     public function sssss()
     {
         $excelUtils = new ExcelUtils();
@@ -314,106 +297,139 @@ JSON;
             die($e->getLine() . " : " . $e->getMessage());
         }
         if (count($contentList) > 0) {
-            $list = [];
             $exportList = [];
-            foreach ($contentList as $content){
-                if ($content){
+            
+            // ========== 第一步：收集 pid-scu-maps 查询参数 ==========
+            $this->log->log2("收集 pid-scu-maps 参数...");
+            $channelProductIdsMap = [];
+            
+            foreach ($contentList as $content) {
+                if ($content) {
+                    $productId = $content['product_id'];
+                    $channel = $content['channel'];
+                    
+                    if (!isset($channelProductIdsMap[$channel])) {
+                        $channelProductIdsMap[$channel] = [];
+                    }
+                    $channelProductIdsMap[$channel][] = $productId;
+                }
+            }
+            
+            // ========== 第二步：批量查询 pid-scu-maps ==========
+            $this->log->log2("批量查询 pid-scu-maps...");
+            $nonFbaInfoMap = [];
+            
+            foreach ($channelProductIdsMap as $channel => $productIds) {
+                $batchMap = $spApi->batchPidScuMapAdGroupFindScuId($channel, $productIds);
+                foreach ($batchMap as $pid => $info) {
+                    $nonFbaInfoMap[$pid] = $info;
+                }
+            }
+            $this->log->log2("pid-scu-maps 查询完成，映射数量: " . count($nonFbaInfoMap));
+            
+            // ========== 第三步：收集 keyword 查询参数（seller_id + keywordText） ==========
+            $this->log->log2("收集 keyword 查询参数...");
+            $sellerKeywordTextsMap = [];
+            
+            foreach ($contentList as $content) {
+                if ($content) {
+                    $sellerId = $content['seller_id'];
+                    $ss = $content['ss'];
+                    
+                    if ($ss) {
+                        $keywordTexts = explode("\n", $ss);
+                        foreach ($keywordTexts as $keywordText) {
+                            $keywordText = trim($keywordText);
+                            if ($keywordText) {
+                                if (!isset($sellerKeywordTextsMap[$sellerId])) {
+                                    $sellerKeywordTextsMap[$sellerId] = [];
+                                }
+                                $sellerKeywordTextsMap[$sellerId][] = $keywordText;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // ========== 第四步：批量查询 keywords ==========
+            $this->log->log2("批量查询 keywords...");
+            $keywordListMap = [];
+            
+            foreach ($sellerKeywordTextsMap as $sellerId => $keywordTexts) {
+                $batchMap = $spApi->batchGetMongoKeywordByKeywordText($sellerId, array_unique($keywordTexts));
+                if (!isset($keywordListMap[$sellerId])) {
+                    $keywordListMap[$sellerId] = [];
+                }
+                foreach ($batchMap as $keywordText => $list) {
+                    $keywordListMap[$sellerId][$keywordText] = $list;
+                }
+            }
+            $this->log->log2("keywords 查询完成");
+            
+            // ========== 第五步：遍历处理，从映射中取数据生成结果 ==========
+            $this->log->log2("开始生成结果数据...");
+            
+            foreach ($contentList as $content) {
+                if ($content) {
                     $productId = $content['product_id'];
                     $channel = $content['channel'];
                     $sellerId = $content['seller_id'];
-                    $nonFbaInfo = $spApi->pidScuMapAdGroupFindScuId($channel,$productId);
-                    $data = [
-                        "product_id" => $productId,
-                        "channel" => $channel,
-                        "seller_id" => $sellerId,
-                        "nonFba" => "yes",
-                        "adGroupName" => "",
-                        "isHasAdGroupName" => "yes",
-                        "adGroupId" => "",
-                        "isHasKeyword" => "yes",
-                        "keywordText" => "",
-                        "keywordId" => "",
-                        "keywordMatchType" => "",
-                        "keywordBid" => ""
-                    ];
-                    if (!$nonFbaInfo){
-                        $this->log->log2("没有找到adGroupName nonFba信息：" . $productId);
-                        $data['nonFba'] = "no";
-                        $data['isHasAdGroupName'] = "no";
-                        $data['isHasKeyword'] = "no";
-                        $exportList[] = $data;
-                        continue;
+                    
+                    // 获取 adGroupName（从 nonFbaInfo）
+                    $adGroupName = "";
+                    if (isset($nonFbaInfoMap[$productId])) {
+                        $adGroupName = $nonFbaInfoMap[$productId]['scuId'];
                     }
-                    $data['adGroupName'] = $nonFbaInfo['scuId'];
-                    $slipt = explode("\n",$content['ss']);
-                    foreach ($slipt as &$item){
-                        $item = trim($item);
-                    }
-                    if ($data['nonFba'] == 'yes'){
-                        //存在nonFba信息，去查adGroup广告
-                        $adGroupList = $spApi->getMongoAdGroupInfoList($sellerId,$nonFbaInfo['scuId']);
-                        if (!$adGroupList){
-                            $data['isHasAdGroupName'] = 'no';
-                            $data['isHasKeyword'] = "no";
-                            $exportList[] = $data;
-                            continue;
-                        }else{
-
-                            foreach ($adGroupList as $adGroup){
-                                if ($adGroup['adGroupId']){
-                                    $data['adGroupId'] = "'{$adGroup['adGroupId']}";
-                                    $keywordList = $spApi->getMongoKeywordInfoV2($sellerId,$adGroup['campaignId'],$adGroup['adGroupId']);
-                                    if (!$keywordList){
-                                        $data['isHasKeyword'] = "no";
-                                        $exportList[] = $data;
-                                        continue;
-                                    }else{
-                                        //存在keyword
-                                        foreach ($keywordList as $keyword){
-                                            if ($keyword['keywordId'] && in_array(trim($keyword['keywordText']),$slipt)){
-                                                $data['keywordId'] = "'{$keyword['keywordId']}";
-                                                $data['keywordText'] = $keyword['keywordText'];
-                                                $data['keywordMatchType'] = $keyword['matchType'];
-                                                $data['keywordBid'] = $keyword['bid'];
-                                                $exportList[] = $data;
-                                            }
-                                        }
-                                    }
+                    
+                    // 解析 ss 字段中的 keywordText
+                    $keywordTexts = explode("\n", $content['ss']);
+                    $keywordTexts = array_map('trim', $keywordTexts);
+                    $keywordTexts = array_filter($keywordTexts);
+                    
+                    // 从映射取 keyword 数据
+                    foreach ($keywordTexts as $keywordText) {
+                        if ($keywordText && isset($keywordListMap[$sellerId][$keywordText])) {
+                            $keywordList = $keywordListMap[$sellerId][$keywordText];
+                            foreach ($keywordList as $keyword) {
+                                if ($keyword['keywordId']) {
+                                    $exportList[] = [
+                                        "product_id" => $productId,
+                                        "channel" => $channel,
+                                        "seller_id" => $sellerId,
+                                        "adGroupName" => $adGroupName,
+                                        "adGroupId" => "'{$keyword['adGroupId']}",
+                                        "keywordText" => $keyword['keywordText'],
+                                        "keywordId" => "'{$keyword['keywordId']}",
+                                        "keywordMatchType" => $keyword['matchType'],
+                                        "keywordBid" => $keyword['bid']
+                                    ];
                                 }
                             }
-
-
                         }
                     }
-
-
-
                 }
             }
+            
+            $this->log->log2("结果生成完成，总数: " . count($exportList));
 
-            if ($exportList){
-                $excelUtils = new ExcelUtils("sp/keyword/");
+            if ($exportList) {
+                $excelUtils = new ExcelUtils("sp/");
                 $filePath = $excelUtils->downloadXlsx([
                     "product_id",
                     "channel",
                     "seller_id",
-                    "nonFba",
                     "adGroupName",
-                    "isHasAdGroupName",
                     "adGroupId",
-                    "isHasKeyword",
                     "keywordText",
                     "keywordId",
                     "keywordMatchType",
                     "keywordBid"
-                ],$exportList,"仅投放了hot_fitment的keyword_".date("YmdHis").".xlsx");
+                ], $exportList, "仅投放了hot_fitment的keyword_" . date("YmdHis") . ".xlsx");
             }
         }
     }
-
-
-
 }
+
 $con = new SpSyncPomsController();
 //$con->updatePaSpSellerRules();
 $con->sssss();
