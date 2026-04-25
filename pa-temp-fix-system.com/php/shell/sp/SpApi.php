@@ -351,17 +351,31 @@ class SpApi
     }
     public function getMongoAdGroupInfoList($sellerId,$adGroupName = '',$adGroupId = '')
     {
-        $condition = [
-            "channel" => $this->specialSellerIdConver($sellerId),
-            "limit" => 1000
-        ];
-        if ($adGroupName){
-            $condition['adGroupName'] = $adGroupName;
+        // 构建唯一标识key
+        $channel = $this->specialSellerIdConver($sellerId);
+        $key = "{$channel}_{$adGroupName}";
+        
+        $str = $this->redis->hGet("adGroupSpData", $key);
+        $data = [];
+        if (!$str) {
+            $condition = [
+                "channel" => $channel,
+                "limit" => 1000
+            ];
+            if ($adGroupName){
+                $condition['adGroupName'] = $adGroupName;
+            }
+            if ($adGroupId){
+                $condition['adGroupId'] = $adGroupId;
+            }
+            $data = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_adgroups/queryPage",$condition));
+            if ($data) {
+                $this->redis->hSet("adGroupSpData", $key, json_encode($data, JSON_UNESCAPED_UNICODE));
+            }
+        } else {
+            $data = json_decode($str, true);
         }
-        if ($adGroupId){
-            $condition['adGroupId'] = $adGroupId;
-        }
-        return DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_adgroups/queryPage",$condition));
+        return $data;
     }
     public function getMongoAdGroups($adGroupIds = [])
     {
@@ -843,13 +857,24 @@ class SpApi
 
     public function getMongoKeywordInfoV2($sellerId,$campaignId,$adGroupId)
     {
-        $list = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_keywords/queryPage",[
-            "channel" => $this->specialSellerIdConver($sellerId),
-            "campaignId" => $campaignId,
-            "adGroupId" => $adGroupId,
-            "limit" => 1000
-        ]));
-        return $list;
+        $channel = $this->specialSellerIdConver($sellerId);
+        $key = "{$channel}_{$campaignId}_{$adGroupId}";
+        
+        $str = $this->redis->hGet("keywordSpDataV2", $key);
+        $data = [];        if (!$str) {
+            $data = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_keywords/queryPage",[
+                "channel" => $channel,
+                "campaignId" => $campaignId,
+                "adGroupId" => $adGroupId,
+                "limit" => 1000
+            ]));
+            if ($data) {
+                $this->redis->hSet("keywordSpDataV2", $key, json_encode($data, JSON_UNESCAPED_UNICODE));
+            }
+        } else {
+            $data = json_decode($str, true);
+        }
+        return $data;
     }
 
     public function getMongoNegativeKeywordInfoV2($sellerId,$campaignId,$adGroupId)
@@ -1165,12 +1190,22 @@ class SpApi
 
     public function pidScuMapAdGroupFindScuId($channel,$productId)
     {
-        return DataUtils::getPageListInFirstData($this->curlService->s3015()->get("pid-scu-maps/queryPage",[
-            "scuIdType" => "nonFba",
-            "scuIdStyle" => "sellerSku",
-            "productId" => $productId,
-            "channel" => $channel
-        ]));
+        $key = "{$channel}_{$productId}";
+        $str = $this->redis->hGet("pidScuMapNonFba", $key);
+        $data = [];        if (!$str) {
+            $data = DataUtils::getPageListInFirstData($this->curlService->s3015()->get("pid-scu-maps/queryPage",[
+                "scuIdType" => "nonFba",
+                "scuIdStyle" => "sellerSku",
+                "productId" => $productId,
+                "channel" => $channel
+            ]));
+            if ($data) {
+                $this->redis->hSet("pidScuMapNonFba", $key, json_encode($data, JSON_UNESCAPED_UNICODE));
+            }
+        } else {
+            $data = json_decode($str, true);
+        }
+        return $data;
     }
 
     public function pidScuMapProductIdFindScuId($channel,$scuId)
