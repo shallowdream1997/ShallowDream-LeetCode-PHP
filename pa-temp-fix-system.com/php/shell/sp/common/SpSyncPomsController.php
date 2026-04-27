@@ -292,7 +292,7 @@ JSON;
         $excelUtils = new ExcelUtils();
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("excel/产品清单车型库清单0425.xlsx");
+            $contentList = $excelUtils->getXlsxData("excel/产品清单车型库清单0427.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -368,43 +368,24 @@ JSON;
             
             // ========== 第五步：遍历处理，从映射中取数据生成结果 ==========
             $this->log->log2("开始生成结果数据...");
-            
-            foreach ($contentList as $content) {
-                if ($content) {
-                    $productId = $content['product_id'];
-                    $channel = $content['channel'];
-                    $sellerId = $content['seller_id'];
-                    
-                    // 获取 adGroupName（从 nonFbaInfo）
-                    $adGroupName = "";
-                    if (isset($nonFbaInfoMap[$productId])) {
-                        $adGroupName = $nonFbaInfoMap[$productId]['scuId'];
-                    }
-                    
-                    // 解析 ss 字段中的 keywordText
-                    $keywordTexts = explode("\n", $content['ss']);
-                    $keywordTexts = array_map('trim', $keywordTexts);
-                    $keywordTexts = array_filter($keywordTexts);
-                    
-                    // 从映射取 keyword 数据
-                    foreach ($keywordTexts as $keywordText) {
-                        if ($keywordText && isset($keywordListMap[$sellerId][$keywordText])) {
-                            $keywordList = $keywordListMap[$sellerId][$keywordText];
-                            foreach ($keywordList as $keyword) {
-                                if ($keyword['keywordId']) {
-                                    $exportList[] = [
-                                        "product_id" => $productId,
-                                        "channel" => $channel,
-                                        "seller_id" => $sellerId,
-                                        "adGroupName" => $adGroupName,
-                                        "adGroupId" => "'{$keyword['adGroupId']}",
-                                        "keywordText" => $keyword['keywordText'],
-                                        "keywordId" => "'{$keyword['keywordId']}",
-                                        "keywordMatchType" => $keyword['matchType'],
-                                        "keywordBid" => $keyword['bid']
-                                    ];
-                                }
-                            }
+            $mustArchivedKeywordIds = [];
+            $mustDeleteKeywordIds = [];
+            foreach ($keywordListMap as $sellerId => $keywordList) {
+                foreach ($keywordList as $keywordText => $key) {
+                    foreach ($key as $keyword){
+                        $mustDeleteKeywordIds[] = $keyword['_id'];
+                        if ($keyword['keywordId']) {
+                            $exportList[] = [
+                                "seller_id" => $spApi->specialSellerIdReverseConver($keyword['channel']),
+                                "adGroupId" => "'{$keyword['adGroupId']}",
+                                "keywordText" => $keyword['keywordText'],
+                                "keywordId" => "'{$keyword['keywordId']}",
+                                "state" => $keyword['state'],
+                                "keywordMatchType" => $keyword['matchType'],
+                                "keywordBid" => $keyword['bid']
+                            ];
+
+                            $mustArchivedKeywordIds[$sellerId][] = $keyword['keywordId'];
                         }
                     }
                 }
@@ -412,22 +393,153 @@ JSON;
             
             $this->log->log2("结果生成完成，总数: " . count($exportList));
 
+            $exportList1 = [];
+            $exportList1 = $this->archivedSP($mustArchivedKeywordIds, "keyword", $exportList);
+            $this->mongoDeleteSP($mustDeleteKeywordIds, "keyword");
+
             if ($exportList) {
                 $excelUtils = new ExcelUtils("sp/");
                 $filePath = $excelUtils->downloadXlsx([
-                    "product_id",
-                    "channel",
                     "seller_id",
-                    "adGroupName",
                     "adGroupId",
                     "keywordText",
                     "keywordId",
+                    "state",
                     "keywordMatchType",
                     "keywordBid"
                 ], $exportList, "仅投放了hot_fitment的keyword_" . date("YmdHis") . ".xlsx");
             }
+            if ($exportList1) {
+                $this->log->log2("开始导出");
+
+                $excelUtils = new ExcelUtils("sp/");
+                $filePath = $excelUtils->downloadXlsx([
+                    "sellerId",
+                    "type",
+                    "spId",
+                    "msg"
+                ], $exportList1, "归档结果keyword_" . date("YmdHis") . ".xlsx");
+
+            }
         }
     }
+
+    public function archivedSP($ids, $type, $exportList = [])
+    {
+        switch ($type) {
+            case "adGroup":
+                $this->log->log2("开始归档adGroup");
+                foreach ($ids as $sellerId => $asgids) {
+
+                    foreach (array_chunk($asgids, 100) as $idsChunk) {
+                        $spApi = new SpApi();
+                        $last = $spApi->archivedAdGroup($sellerId, $idsChunk);
+                        foreach ($last as $i) {
+
+                            $exportList[] = [
+                                "sellerId" => $sellerId,
+                                "type" => $type,
+                                "spId" => "'" . $i['adGroupId'],
+                                "msg" => $i['msg'],
+                            ];
+
+                        }
+                    }
+                }
+                break;
+            case "keyword":
+                $this->log->log2("开始归档keyword");
+                foreach ($ids as $sellerId => $asgids) {
+
+                    foreach (array_chunk($asgids, 100) as $idsChunk) {
+                        $spApi = new SpApi();
+                        $last = $spApi->archivedKeyword($sellerId, $idsChunk);
+                        foreach ($last as $i) {
+
+                            $exportList[] = [
+                                "sellerId" => $sellerId,
+                                "type" => $type,
+                                "spId" => "'" . $i['keywordId'],
+                                "msg" => $i['msg'],
+                            ];
+                        }
+                    }
+                }
+                break;
+            case "negativeKeyword":
+                $this->log->log2("开始归档negativeKeyword");
+
+                foreach ($ids as $sellerId => $asgids) {
+
+                    foreach (array_chunk($asgids, 100) as $idsChunk) {
+                        $spApi = new SpApi();
+                        $last = $spApi->archivedNegativeKeyword($sellerId, $idsChunk);
+                        foreach ($last as $i) {
+
+                            $exportList[] = [
+                                "sellerId" => $sellerId,
+                                "type" => $type,
+                                "spId" => "'" . $i['keywordId'],
+                                "msg" => $i['msg'],
+                            ];
+                        }
+                    }
+                }
+                break;
+            case "target":
+                $this->log->log2("开始归档target");
+                foreach ($ids as $sellerId => $asgids) {
+
+                    foreach (array_chunk($asgids, 100) as $idsChunk) {
+                        $spApi = new SpApi();
+                        $last = $spApi->archivedTarget($sellerId, $idsChunk);
+                        foreach ($last as $i) {
+
+                            $exportList[] = [
+                                "sellerId" => $sellerId,
+                                "type" => $type,
+                                "spId" => "'" . $i['targetId'],
+                                "msg" => $i['msg'],
+                            ];
+                        }
+                    }
+                }
+                break;
+        }
+
+        return $exportList;
+    }
+
+    public function mongoDeleteSP($ids,$type)
+    {
+        switch ($type) {
+            case "adGroup":
+                $spApi = new SpApi();
+                foreach ($ids as $id){
+                    $spApi->deleteMongoAdGroupInfo($id);
+                }
+                break;
+            case "keyword":
+                $spApi = new SpApi();
+                foreach ($ids as $id){
+                    $spApi->deleteMongoKeywordInfo($id);
+                }
+                break;
+            case "negativeKeyword":
+                $spApi = new SpApi();
+                foreach ($ids as $id){
+                    $spApi->deleteMongoNegativeKeywordInfo($id);
+                }
+                break;
+            case "target":
+                $spApi = new SpApi();
+                foreach ($ids as $id){
+                    $spApi->deleteMongoTargetInfo($id);
+                }
+                break;
+        }
+    }
+
 }
 
 $con = new SpSyncPomsController();
