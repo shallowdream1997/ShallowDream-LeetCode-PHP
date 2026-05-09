@@ -6096,13 +6096,21 @@ class SyncCurlController
 
 
     public function fixProductSkuCategory(){
-        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/2006个SGU需要帮忙导入中文分类.xlsx");
+        $fileFitContent = (new ExcelUtils())->getXlsxData("../export/1005个sgu需导入中文目录.xlsx");
         $fitmentSkuMap = [];
         if (sizeof($fileFitContent) > 0) {
 
+            $issetCategoryMap = [];
+            foreach ($fileFitContent as $info){
+                if ($info['categoryId'] && !isset($issetCategoryMap[$info['categoryId']])){
+                    $request = new RequestUtils('pro');
+                    $categoryIdInfo = $request->getCategoryIdInfoV2($info['categoryId']);
 
-            $request = new RequestUtils('pro');
-            $categoryIdInfo = $request->getCategoryIdInfoV2(30980);
+                    $issetCategoryMap[$info['categoryId']] = $categoryIdInfo;
+                }
+            }
+
+
             $curlService = (new CurlService())->pro();
 
             $list = array_unique(array_column($fileFitContent,"SGU"));
@@ -6124,7 +6132,12 @@ class SyncCurlController
 
                 if (isset($map[$info['SGU']])){
                     $productInfo = $map[$info['SGU']];
+                    $categoryIdInfo = $issetCategoryMap[$info['categoryId']] ?? null;
 
+                    if (!$categoryIdInfo){
+                        $this->log("没有找到{$info['categoryId']}对应的中文分类");
+                        continue;
+                    }
                     $productInfo['category'] = $categoryIdInfo['categoryId'];
                     $productInfo['categoryPaths'] = $categoryIdInfo['categoryIds'];
                     $productInfo['cn_Category'] = $categoryIdInfo['cnCategoryFullPath'];
@@ -6579,40 +6592,260 @@ class SyncCurlController
 
     public function deleteCeSku(){
 
-        $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
-        $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/scms/ce_bill_no/v1/deleteCeDetailByCeBillNo", [
-            "ceBillNo" => "CE202512220038",
-            "operatorName" => "system(zhouangang)",
-            "reason"=>"删除重复CE单"
-        ]));
-        $map  =[];
-        if ($getKeyResp){
-            $this->log(json_encode($getKeyResp));
-        }
-
+//        $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+//
+//        foreach ([
+//            "CE202605070032",
+//            "CE202605070033",
+//            "CE202605070027",
+//            "CE202605070045",
+//            "CE202605070049",
+//
+//            "CE202605070036",
+//            "CE202605070037",
+//            "CE202605070039",
+//            "CE202605070042",
+//            "CE202605070043",
+//            "CE202605070047",
+//            "CE202605070028",
+//            "CE202605070030",
+//            "CE202605070046",
+//            "CE202605070050",
+//            "CE202605070040",
+//            "CE202605070044"
+//                 ] as $ceBillNo){
+//
+//            $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/scms/ce_bill_no/v1/deleteCeDetailByCeBillNo", [
+//                "ceBillNo" => $ceBillNo,
+//                "operatorName" => "system(zhouangang)",
+//                "reason"=>"删除重复CE单"
+//            ]));
+//            $map  =[];
+//            if ($getKeyResp){
+//                $this->log(json_encode($getKeyResp));
+//            }
+//        }
+//        die(11) ;
         $skuList = [
-            "a25122200ux0258",
-            "a25122200ux0261",
-            "a25122200ux0264",
-            "a25122200ux0267",
-            "a25122200ux0270",
-            "a25122200ux0273",
-            "a25122200ux0276",
-            "a25122200ux0279",
-            "a25122200ux0282",
-            "a25122200ux0285",
-            "a25122200ux0288",
-            "a25122200ux0291",
-            "a25122200ux0294",
-            "a25122200ux0297",
-            "a25122200ux0300",
-            "a25122200ux0303",
-            "a25122200ux0306",
-            "a25122200ux0309",
-            "a25122200ux0312",
-            "a25122200ux0315",
-            "a25122200ux0318",
-            "a25122200ux0321"
+"a26050700ux0452",
+"a26050700ux0453",
+"a26050700ux0454",
+"a26050700ux0455",
+"a26050700ux0456",
+"a26050700ux0457",
+"a26050700ux0458",
+"a26050700ux0459",
+"a26050700ux0460",
+"a26050700ux0461",
+"a26050700ux0462",
+"a26050700ux0463",
+"a26050700ux0464",
+"a26050700ux0465",
+"a26050700ux0466",
+"a26050700ux0467",
+"a26050700ux0468",
+"a26050700ux0469",
+"a26050700ux0470",
+"a26050700ux0471",
+"a26050700ux0472",
+"a26050700ux0473",
+"a26050700ux0474",
+"a26050700ux0485",
+"a26050700ux0487",
+"a26050700ux0489",
+"a26050700ux0491",
+"a26050700ux0493",
+"a26050700ux0495",
+"a26050700ux0504",
+"a26050700ux0505",
+"a26050700ux0506",
+"a26050700ux0507",
+"a26050700ux0508",
+"a26050700ux0509",
+"a26050700ux0514",
+"a26050700ux0516",
+"a26050700ux0518",
+"a26050700ux0519",
+"a26050700ux0520",
+"a26050700ux0521",
+"a26050700ux0522",
+"a26050700ux0523",
+"a26050700ux0526",
+"a26050700ux0528",
+"a26050700ux0530",
+"a26050700ux0531",
+"a26050700ux0532",
+"a26050700ux0533",
+"a26050700ux0534",
+"a26050700ux0535",
+"a26050700ux0536",
+"a26050700ux0537",
+"a26050700ux0538",
+"a26050700ux0539",
+"a26050700ux0546",
+"a26050700ux0547",
+"a26050700ux0548",
+"a26050700ux0549",
+"a26050700ux0550",
+"a26050700ux0552",
+"a26050700ux0554",
+"a26050700ux0551",
+"a26050700ux0553",
+"a26050700ux0555",
+"a26050700ux0556",
+"a26050700ux0557",
+"a26050700ux0558",
+"a26050700ux0560",
+"a26050700ux0562",
+"a26050700ux0564",
+"a26050700ux0566",
+"a26050700ux0568",
+"a26050700ux0570",
+"a26050700ux0573",
+"a26050700ux0571",
+"a26050700ux0574",
+"a26050700ux0576",
+"a26050700ux0579",
+"a26050700ux0582",
+"a26050700ux0586",
+"a26050700ux0590",
+"a26050700ux0559",
+"a26050700ux0561",
+"a26050700ux0563",
+"a26050700ux0565",
+"a26050700ux0567",
+"a26050700ux0569",
+"a26050700ux0572",
+"a26050700ux0575",
+"a26050700ux0578",
+"a26050700ux0581",
+"a26050700ux0584",
+"a26050700ux0589",
+"a26050700ux0594",
+"a26050700ux0598",
+"a26050700ux0601",
+"a26050700ux0605",
+"a26050700ux0587",
+"a26050700ux0592",
+"a26050700ux0596",
+"a26050700ux0602",
+"a26050700ux0606",
+"a26050700ux0609",
+"a26050700ux0612",
+"a26050700ux0615",
+"a26050700ux0618",
+"a26050700ux0621",
+"a26050700ux0624",
+"a26050700ux0627",
+"a26050700ux0631",
+"a26050700ux0585",
+"a26050700ux0591",
+"a26050700ux0595",
+"a26050700ux0599",
+"a26050700ux0604",
+"a26050700ux0607",
+"a26050700ux0610",
+"a26050700ux0613",
+"a26050700ux0616",
+"a26050700ux0619",
+"a26050700ux0622",
+"a26050700ux0625",
+"a26050700ux0628",
+"a26050700ux0632",
+"a26050700ux0635",
+"a26050700ux0638",
+"a26050700ux0641",
+"a26050700ux0577",
+"a26050700ux0580",
+"a26050700ux0583",
+"a26050700ux0588",
+"a26050700ux0593",
+"a26050700ux0597",
+"a26050700ux0600",
+"a26050700ux0603",
+"a26050700ux0608",
+"a26050700ux0611",
+"a26050700ux0614",
+"a26050700ux0617",
+"a26050700ux0620",
+"a26050700ux0623",
+"a26050700ux0626",
+"a26050700ux0630",
+"a26050700ux0634",
+"a26050700ux0637",
+"a26050700ux0640",
+"a26050700ux0643",
+"a26050700ux0645",
+"a26050700ux0647",
+"a26050700ux0649",
+"a26050700ux0651",
+"a26050700ux0654",
+"a26050700ux0656",
+"a26050700ux0658",
+"a26050700ux0660",
+"a26050700ux0662",
+"a26050700ux0629",
+"a26050700ux0633",
+"a26050700ux0636",
+"a26050700ux0639",
+"a26050700ux0642",
+"a26050700ux0644",
+"a26050700ux0646",
+"a26050700ux0648",
+"a26050700ux0650",
+"a26050700ux0652",
+"a26050700ux0653",
+"a26050700ux0655",
+"a26050700ux0657",
+"a26050700ux0659",
+"a26050700ux0661",
+"a26050700ux0663",
+"a26050700ux0669",
+"a26050700ux0671",
+"a26050700ux0673",
+"a26050700ux0675",
+"a26050700ux0677",
+"a26050700ux0679",
+"a26050700ux0680",
+"a26050700ux0683",
+"a26050700ux0686",
+"a26050700ux0689",
+"a26050700ux0692",
+"a26050700ux0695",
+"a26050700ux0698",
+"a26050700ux0701",
+"a26050700ux0704",
+"a26050700ux0707",
+"a26050700ux0710",
+"a26050700ux0664",
+"a26050700ux0665",
+"a26050700ux0666",
+"a26050700ux0667",
+"a26050700ux0668",
+"a26050700ux0670",
+"a26050700ux0672",
+"a26050700ux0674",
+"a26050700ux0676",
+"a26050700ux0678",
+"a26050700ux0682",
+"a26050700ux0684",
+"a26050700ux0687",
+"a26050700ux0690",
+"a26050700ux0693",
+"a26050700ux0696",
+"a26050700ux0699",
+"a26050700ux0702",
+"a26050700ux0705",
+"a26050700ux0708",
+"a26050700ux0711",
+"a26050700ux0713",
+"a26050700ux0715",
+"a26050700ux0717",
+"a26050700ux0719",
+"a26050700ux0721",
+"a26050700ux0723",
+"a26050700ux0725",
+"a26050700ux0728"
         ];
 
         $curlService = (new CurlService())->pro();
@@ -6633,7 +6866,7 @@ class SyncCurlController
                 $productInfo = [
                     "status" => "retired",
                     "userName" => "system(zhouangang)",
-                    "action" => "system(删除重复CE号sku)260106",
+                    "action" => "删除CE联动作废SKU",
                     "modifiedOn" => $map[$sku]['modifiedOn'],
                     "modifiedBy" => "system(zhouangang)",
                     "_id" => $map[$sku]['_id'],
@@ -7201,11 +7434,11 @@ $curlController = new SyncCurlController();
 //$curlController->updateSkuSellerConfig();
 //$curlController->deleltePlatformFees();
 //$curlController->initQdActionLog();
-$curlController->initQdActionLogV2();
+//$curlController->initQdActionLogV2();
 //$curlController->testDing();
 //$curlController->downloadPaSkuMaterialSpData();
 //$curlController->createSkuConsignmentCe();
-//$curlController->deleteCeSku();
+$curlController->deleteCeSku();
 //$curlController->deleteProductSku();
 //$curlController->findPaCeSkuMaterialStatusNotSync();
 //$curlController->getSkuPhotoProgress();
