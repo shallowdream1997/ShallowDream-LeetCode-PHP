@@ -7427,9 +7427,34 @@ class SyncCurlController
 
     }
 
+
+    public function deleteTestSku()
+    {
+        $c = (new CurlService())->test();
+
+        $productId = "a26031300ux0005";
+        $list = DataUtils::getPageList($c->s3015()->get("product-skus/queryPage",[
+            "limit" => 1,
+            "productId" => $productId
+        ]));
+        foreach ($list as $info){
+            //$c->s3015()->delete("product-skus/{$info['_id']}");
+            $this->log(json_encode($info,JSON_UNESCAPED_UNICODE));
+        }
+        $resp = $c->s3015()->get("sku-sale-statuses/queryPage", ["skuId" => $productId]);
+        $skuSaleStatusList = DataUtils::getPageListInFirstData($resp);
+        if ($skuSaleStatusList){
+            $this->log(json_encode($skuSaleStatusList,JSON_UNESCAPED_UNICODE));
+           //$c->s3015()->delete("sku-sale-statuses/{$skuSaleStatusList['_id']}");
+        }
+
+    }
+
 }
 
 $curlController = new SyncCurlController();
+
+$curlController->deleteTestSku();
 //$curlController->checkPaProduct();
 //$curlController->updateSkuSellerConfig();
 //$curlController->deleltePlatformFees();
@@ -7438,7 +7463,7 @@ $curlController = new SyncCurlController();
 //$curlController->testDing();
 //$curlController->downloadPaSkuMaterialSpData();
 //$curlController->createSkuConsignmentCe();
-$curlController->deleteCeSku();
+//$curlController->deleteCeSku();
 //$curlController->deleteProductSku();
 //$curlController->findPaCeSkuMaterialStatusNotSync();
 //$curlController->getSkuPhotoProgress();
