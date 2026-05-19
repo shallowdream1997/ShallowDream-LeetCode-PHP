@@ -4618,6 +4618,76 @@ class SyncCurlController
     }
 
 
+    public function initSguInfo()
+    {
+        $list = [
+//            "g26042900ux0029",
+            "g26042900ux0028",
+            "g26042900ux0027",
+            "g26042900ux0026",
+            "g26042900ux0025",
+            "g26042900ux0032",
+            "g26042900ux0031",
+            "g26042900ux0030",
+            "g26042900ux0033",
+            "g26042900ux0038",
+            "g26042900ux0041",
+            "g26042900ux0040",
+            "g26042900ux0039",
+            "g26042900ux0037",
+            "g26042900ux0036",
+            "g26042900ux0035",
+            "g26042900ux0034"
+        ];
+        $curlService = (new CurlService())->pro();
+        $sguInfoList = DataUtils::getQueryList($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
+            "sguId" => implode(",",$list),
+            "limit" => 1000,
+        ]));
+
+        $sguIdSkuMap = [];
+        foreach ($sguInfoList as $sguInfo){
+            $sguIdSkuMap[$sguInfo['sguId']][] = $sguInfo['skuScuId'];
+        }
+
+        foreach ($sguIdSkuMap as $sguId => $skus){
+            $this->log("{$sguId} 批量初始化");
+            if (count($skus) > 0){
+                $sku = $skus[0];
+            }else{
+                $this->log("{$sguId} 没有sku");
+                continue;
+            }
+
+            $this->log("{$sguId} 开始初始化");
+            $sssinof = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
+                "limit" => 1,
+                "productId" => $sguId
+            ]));
+            if (!$sssinof){
+                $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+                $resp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/sms/sku/info/init/v1/initSkuInfo", [
+                    "initSkuId" => $sku,
+                    "operatorName" => "system(修复sgu初始化)",
+                    "productType" => "SGU",
+                    "sguId" => $sguId
+                ]));
+
+                $this->log("{$sguId} 结束初始化");
+            }else{
+                $this->log("{$sguId} 已经初始化");
+            }
+        }
+
+
+
+
+
+
+
+    }
+
+
 
     public function createSguInfo()
     {
@@ -4772,161 +4842,7 @@ class SyncCurlController
     {
         $curlService = (new CurlService())->pro();
         $list = [
-            "689ef98a7fbdf42093ce5d30",
-            "689ef98a7363a82099cc33cf",
-            "68a2e30bb78a492b51f5f1a3",
-            "68a2e30b7306c02b458956f7",
-            "68abcf6e5e49d202bb5568ce",
-            "68abcf6f719bc05600b18a1d",
-            "68abcf6f38d8aa2886ba6eb1",
-            "68abcf70f01bcc2893eea895",
-            "68abcf71468a8228805a44ac",
-            "68abcf74c54f2755ebc0960b",
-            "68abcf754d445b28a6a3caff",
-            "68abcf75468a8228805a44df",
-            "68abcf765e49d202bb5569b1",
-            "68abcf7640e74455f1f31c8f",
-            "68abcf76468a8228805a44e6",
-            "68abcf76c4758902b30a8433",
-            "68abcf77ff4d5402c5c4f004",
-            "68abcf779135e4560fec01ec",
-            "68abcf77c54f2755ebc09614",
-            "68abcf77f01bcc2893eea8e8",
-            "68abcf77c4758902b30a8449",
-            "68abcf77719bc05600b18a3d",
-            "68abcf7940e74455f1f31caf",
-            "68abcf7940e74455f1f31cb7",
-            "68abcf795e49d202bb5569e1",
-            "68abcf799135e4560fec0206",
-            "68abcf799135e4560fec020d",
-            "68abcf799135e4560fec0217",
-            "68abcf7a5e49d202bb5569ec",
-            "68abcf7ac4758902b30a8476",
-            "68abcf7bc4758902b30a84ac",
-            "68abcf7b468a8228805a451e",
-            "68abcf7c5e49d202bb556a6b",
-            "68abcf7cf01bcc2893eea91e",
-            "68abcf7c468a8228805a4529",
-            "68abcf7cff4d5402c5c4f12a",
-            "68abcf7c468a8228805a4530",
-            "68abcf7d40e74455f1f31cf8",
-            "68abcf7dc4758902b30a8500",
-            "68abcf7d5e49d202bb556aef",
-            "68abcf7d40e74455f1f31d00",
-            "68abcf7dc54f2755ebc0965f",
-            "68abcf7d5e49d202bb556afa",
-            "68abcf7d40e74455f1f31d0a",
-            "68abcf7eff4d5402c5c4f155",
-            "68abcf7e5e49d202bb556b07",
-            "68abcf7e4d445b28a6a3cb8f",
-            "68abcf7e5e49d202bb556b12",
-            "68abcf7e39fee202d4c117be",
-            "68abcf7eff4d5402c5c4f169",
-            "68abcf7fc4758902b30a8539",
-            "68abcf7f39fee202d4c117d7",
-            "68abcf7fc4758902b30a8557",
-            "68abcf7f719bc05600b18a8b",
-            "68abcf7ff01bcc2893eea990",
-            "68abcf809135e4560fec0283",
-            "68abcf805e49d202bb556c0c",
-            "68abcf8040e74455f1f31d26",
-            "68abcf804d445b28a6a3cbc0",
-            "68abcf80c54f2755ebc096af",
-            "68abcf815e49d202bb556c3d",
-            "68abcf81468a8228805a456e",
-            "68abcf8138d8aa2886ba6f7a",
-            "68abcf819135e4560fec029f",
-            "68abcf825e49d202bb556c50",
-            "68abcf82468a8228805a4585",
-            "68ad1c05468a82288066e613",
-            "68ad1c05468a82288066e61a",
-            "68ad1c06c54f2755ebceb7d3",
-            "68ad1c0639fee202d4d9b98b",
-            "68ad1c0638d8aa2886c906cc",
-            "68ad1c0638d8aa2886c906d3",
-            "68ad1c0639fee202d4d9b999",
-            "68ad1c06719bc05600bf9312",
-            "68ad1c069135e4560ff8ebaf",
-            "68ad1c073d113423e613a0a5",
-            "68ad1c079135e4560ff8ebb6",
-            "68ad1c07468a82288066e625",
-            "68ad77c2cc0c3d3d5b75813f",
-            "68ad778883de315576fe6832",
-            "68ad7787dce11b279223296e",
-            "68ad77a4cc0c3d3d5b757f57",
-            "68ad778e057d753d8386a7c2",
-            "68ad77b0cc0c3d3d5b758005",
-            "68ad77aeb0cd5d3d660bac50",
-            "68ad77c2057d753d8386acb4",
-            "68ad77c2dce11b2792232ec9",
-            "68ad7787b0cd5d3d660ba7b7",
-            "68ad778a07f7a755663c7c64",
-            "68ad77a45ae386557c752450",
-            "68ad778d5ae386557c752245",
-            "68ad77ae07f7a755663c80d0",
-            "68ad77ae514005556c02037c",
-            "68ad77c25ae386557c7527ae",
-            "68ad77c783de315576fe74f5",
-            "68ad778a5ae386557c7521da",
-            "68ad7787057d753d8386a6b3",
-            "68ad77a683de315576fe6a47",
-            "68ad77a3dce11b2792232cd9",
-            "68ad77aecc0c3d3d5b757fae",
-            "68ad77b1057d753d8386ab2a",
-            "68ad77c583de315576fe7371",
-            "68ad77c4cc0c3d3d5b75819f",
-            "68ad779f65126027a6c60d2d",
-            "68ad77a307f7a755663c7fe4",
-            "68ad77b907f7a755663c824c",
-            "68ad77b1514005556c0203b2",
-            "68ad77b065126027a6c60f95",
-            "68ad77c63701cb279a60bdef",
-            "68ad77c4b2c74a27b53aadae",
-            "68ad2ca338d8aa2886c9d0ce",
-            "68ad2ca4cfcce7046cdaeabc",
-            "68ad2ca4c4758902b32644aa",
-            "68ad2ca4c4758902b32644ad",
-            "68ad2ca5c54f2755ebcfb56b",
-            "68ad2ca5ff4d5402c5df3eab",
-            "68ad2ca5c4758902b32644bd",
-            "68ad2ca6c54f2755ebcfb575",
-            "68ad2ca64d445b28a6b1c7d3",
-            "68ad2ca63d113423e6149df9",
-            "68ad2ca6cfcce7046cdaeacc",
-            "68ad2ca640e74455f100c291",
-            "68ad2ca6719bc05600c0a072",
-            "68ad2ca6cfcce7046cdaead1",
-            "68ad2ca7719bc05600c0a076",
-            "68ad2ca7ff4d5402c5df3ee3",
-            "68ad2ca7468a82288067c77f",
-            "68ad2ca240e74455f100c254",
-            "68ad2ca24d445b28a6b1c7ad",
-            "68ad2ca239fee202d4dbe1f7",
-            "68ad2ca33d113423e6149d6c",
-            "68ad2ca340e74455f100c27e",
-            "68ad2ca39135e4560ff9d7e9",
-            "68ad2ca84d445b28a6b1c7da",
-            "68ad2ca8c54f2755ebcfb57e",
-            "68ad2ca8cfcce7046cdaeaed",
-            "68ad2ca89135e4560ff9d823",
-            "68ad2ca9c4758902b32644e9",
-            "68ad2ca9468a82288067c79a",
-            "68ad2ca73d113423e6149dfe",
-            "68ad2ca7ff4d5402c5df3eec",
-            "68ad2ca7c54f2755ebcfb57a",
-            "68ad2ca83d113423e6149e01",
-            "68ad2ca8468a82288067c783",
-            "68ad2ca8cfcce7046cdaeae9",
-            "68ad7907dce11b27922339a8",
-            "68ad793565126027a6c62096",
-            "68ad79353701cb279a60ccd6",
-            "68ad791a514005556c0242b7",
-            "68ad792e0c81493d7485f026",
-            "68ad791383de315576feac6c",
-            "68ad7913057d753d8386b846",
-            "68ad7908cc0c3d3d5b758beb",
-            "68ad7b60057d753d8386cf75",
-            "68ad7b5d0c81493d748604f5",
+            "689ef98a7fbdf42093ce5d30"
         ];
 
         $exportList = [];
@@ -5039,6 +4955,8 @@ class SyncCurlController
 
                 }
             }
+
+
 
 //            if ($fix30List){
 //                foreach (array_chunk($fix30List,200) as $chunkFix30List){
@@ -7454,7 +7372,8 @@ class SyncCurlController
 
 $curlController = new SyncCurlController();
 
-$curlController->deleteTestSku();
+$curlController->initSguInfo();
+//$curlController->deleteTestSku();
 //$curlController->checkPaProduct();
 //$curlController->updateSkuSellerConfig();
 //$curlController->deleltePlatformFees();

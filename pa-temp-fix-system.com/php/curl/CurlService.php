@@ -22,6 +22,7 @@ class CurlService
     private $s3016 = null;
     private $gateway = null;
     private $aiCategoryApi = null;
+    private $smsSupport = null;
 
     public $module = "pa-biz-application";
 
@@ -257,6 +258,17 @@ class CurlService
 
     public function aiCategoryApi(){
         $this->port = "aiCategoryApi";
+        $this->setBaseComponentByEnv();
+        return $this;
+    }
+
+    /**
+     * platform-sms-support-application
+     * @return $this
+     */
+    public function smsSupport(): CurlService
+    {
+        $this->port = "smsSupport";
         $this->setBaseComponentByEnv();
         return $this;
     }
@@ -548,6 +560,10 @@ class CurlService
                 break;
             case "aiCategoryApi":
                 $this->aiCategoryApi = "http://172.16.75.238:12121";
+                break;
+            case "smsSupport":
+                $this->smsSupport = "http://platform-sms-support-application.all-test.svc.cluster.local:9021";
+                break;
         }
         return $this;
     }
@@ -593,6 +609,9 @@ class CurlService
                 break;
             case "gateway":
                 $this->gateway = "https://gateway-uat.ux168.cn";
+                break;
+            case "smsSupport":
+                $this->smsSupport = "http://platform-sms-support-application.all-uat.svc.cluster.local:9021";
                 break;
         }
         return $this;
@@ -646,6 +665,10 @@ class CurlService
                 break;
             case "aiCategoryApi":
                 $this->aiCategoryApi = "https://ai-category-recommend.ux168.cn";
+                break;
+            case "smsSupport":
+                $this->smsSupport = "https://platform-sms-support-application.ux168.cn";
+                break;
         }
         return $this;
     }
