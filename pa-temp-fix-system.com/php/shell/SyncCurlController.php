@@ -4,6 +4,7 @@ require_once(dirname(__FILE__) . "/../../php/utils/DataUtils.php");
 require_once(dirname(__FILE__) . "/../../php/curl/CurlService.php");
 require_once(dirname(__FILE__) . "/../../php/utils/RequestUtils.php");
 require_once dirname(__FILE__) . '/../shell/ProductSkuController.php';
+
 /**
  * 仅限用于同步生产数据到测试环境数据mongo的增删改查，其中delete和create只有test环境有，而find查询是pro和test有
  * Class SyncCurlController
@@ -18,6 +19,7 @@ class SyncCurlController
     private $module = "platform-wms-application";
 
     private RedisService $redis;
+
     public function __construct()
     {
         $this->log = new MyLogger("common-curl/curl");
@@ -27,8 +29,10 @@ class SyncCurlController
 
         $this->redis = new RedisService();
     }
-    public function getModule($modlue){
-        switch ($modlue){
+
+    public function getModule($modlue)
+    {
+        switch ($modlue) {
             case "wms":
                 $this->module = "platform-wms-application";
                 break;
@@ -42,6 +46,7 @@ class SyncCurlController
 
         return $this;
     }
+
     /**
      * 日志记录
      * @param string $message 日志内容
@@ -51,7 +56,7 @@ class SyncCurlController
         $this->log->log2($message);
     }
 
-    public function commonDelete($port, $model, $id,$env = "test")
+    public function commonDelete($port, $model, $id, $env = "test")
     {
         $curlService = new CurlService();
         $resp = DataUtils::getResultData($curlService->$env()->$port()->delete($model, $id));
@@ -101,46 +106,49 @@ class SyncCurlController
         return $data;
     }
 
-    public function commonCreate($port, $model, $params,$env = "test")
+    public function commonCreate($port, $model, $params, $env = "test")
     {
         $curlService = new CurlService();
         $resp = DataUtils::getResultData($curlService->$env()->$port()->post("{$model}", $params));
         $this->log("创建{$model}，" . json_encode($params, JSON_UNESCAPED_UNICODE) . "返回结果：" . json_encode($resp, JSON_UNESCAPED_UNICODE));
         return $resp;
     }
-    public function commonUpdate($port, $model, $params,$env = "test")
+
+    public function commonUpdate($port, $model, $params, $env = "test")
     {
         $curlService = new CurlService();
         $resp = DataUtils::getResultData($curlService->$env()->$port()->put("{$model}/{$params['_id']}", $params));
         $this->log("更新{$model}，" . json_encode($params, JSON_UNESCAPED_UNICODE) . "返回结果：" . json_encode($resp, JSON_UNESCAPED_UNICODE));
         return $resp;
     }
+
     /**
      * 删除campaign广告
      */
-    public function deleteCampaign(){
-        $list = $this->commonFindByParams("s3023","amazon_sp_campaigns",[
+    public function deleteCampaign()
+    {
+        $list = $this->commonFindByParams("s3023", "amazon_sp_campaigns", [
             "status" => "3",
             "company" => "CR201706060001",
             "state" => "enabled",
             "limit" => 2000
-        ],"pro");
+        ], "pro");
         $needDeleteList = [];
-        if (count($list) > 0){
-            foreach ($list as $item){
-                if (empty($item['campaignId'])){
+        if (count($list) > 0) {
+            foreach ($list as $item) {
+                if (empty($item['campaignId'])) {
                     $this->log("campaignId 为空,删除");
                     $needDeleteList[] = $item['_id'];
                     //$this->commonDelete("s3023","amazon_sp_campaigns",$item['_id'],"pro");
                 }
             }
         }
-        if (count($needDeleteList) > 0){
-            foreach ($needDeleteList as $_id){
-                $this->commonDelete("s3023","amazon_sp_campaigns",$_id,"pro");
+        if (count($needDeleteList) > 0) {
+            foreach ($needDeleteList as $_id) {
+                $this->commonDelete("s3023", "amazon_sp_campaigns", $_id, "pro");
             }
             (new RequestUtils("test"))->dingTalk("删除重复创建campaign结束");
-        }else{
+        } else {
             (new RequestUtils("test"))->dingTalk("没有重复创建campaign可删除");
         }
 
@@ -191,8 +199,8 @@ class SyncCurlController
         }
     }
 
-    public function getPaSkuMaterial(){
-
+    public function getPaSkuMaterial()
+    {
 
 
         $ceBillNo = "CE202502130077";
@@ -215,7 +223,7 @@ class SyncCurlController
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/fitment.xlsx");
         $fitmentSkuMap = [];
         if (sizeof($fileFitContent) > 0) {
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
                 $fitmentSkuMap[$info['skuId']][] = [
                     "make" => $info['make'],
                     "model" => $info['model']
@@ -226,18 +234,18 @@ class SyncCurlController
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/cpasin.xlsx");
         $cpSkuMap = [];
         if (sizeof($fileFitContent) > 0) {
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
                 $cpSkuMap[$info['skuId']][] = $info['asin'];
             }
         }
-        $dpmoList = $this->commonFindByParams("s3044","pa_sku_materials",[
+        $dpmoList = $this->commonFindByParams("s3044", "pa_sku_materials", [
             "limit" => 1000,
             "ceBillNo" => $ceBillNo,
 //            "skuId" => $parentSku
-        ],"pro");
+        ], "pro");
         $_idList = [];
-        if (count($dpmoList) > 0){
-            foreach ($dpmoList as $info){
+        if (count($dpmoList) > 0) {
+            foreach ($dpmoList as $info) {
                 $keywords = [
                     "Gear Shift Knob Cover",
                     "Gear Shift Knob Sticker",
@@ -247,10 +255,10 @@ class SyncCurlController
                 ];
                 $fitment = [];
                 $cpAsin = [];
-                if(isset($fitmentSkuMap[$info['skuId']])){
+                if (isset($fitmentSkuMap[$info['skuId']])) {
                     $fitment = $fitmentSkuMap[$info['skuId']];
                 }
-                if(isset($cpSkuMap[$info['skuId']])){
+                if (isset($cpSkuMap[$info['skuId']])) {
                     $cpAsin = $cpSkuMap[$info['skuId']];
                 }
 
@@ -259,13 +267,9 @@ class SyncCurlController
                 $info['cpAsin'] = $cpAsin;
                 $info['fitment'] = $fitment;
                 $info['modifiedBy'] = "zhouangang";
-                $this->commonUpdate("s3044","pa_sku_materials",$info,"pro");
+                $this->commonUpdate("s3044", "pa_sku_materials", $info, "pro");
 
             }
-
-
-
-
 
 
 //            $parentSkuInfo = $dpmoList[0];
@@ -315,7 +319,8 @@ class SyncCurlController
 
     }
 
-    public function addOptionValListData(){
+    public function addOptionValListData()
+    {
         $price_base_fields = [
             [
                 "feeType" => "ads",
@@ -358,19 +363,20 @@ class SyncCurlController
                 "dull_sale_type" => 1
             ]
         ];
-        echo json_encode($price_base_fields,JSON_UNESCAPED_UNICODE)."\n";
-        echo json_encode($unsalable_base_fields,JSON_UNESCAPED_UNICODE)."\n";
+        echo json_encode($price_base_fields, JSON_UNESCAPED_UNICODE) . "\n";
+        echo json_encode($unsalable_base_fields, JSON_UNESCAPED_UNICODE) . "\n";
 
     }
 
 
-    public function fixPaSkuPhotoGress(){
-        $list = $this->commonFindByParams("s3015","sku_photography_progresss",[
+    public function fixPaSkuPhotoGress()
+    {
+        $list = $this->commonFindByParams("s3015", "sku_photography_progresss", [
             "ceBillNo_in" => "CE202509250127"
-        ],"pro");
-        foreach ($list as &$item){
+        ], "pro");
+        foreach ($list as &$item) {
             $item['createCeBillNoOn'] = "2025-03-28T16:47:58.000Z";
-            $this->commonUpdate("s3015","sku_photography_progresss",$item,"pro");
+            $this->commonUpdate("s3015", "sku_photography_progresss", $item, "pro");
         }
 
     }
@@ -384,8 +390,8 @@ class SyncCurlController
         ]));
         if (count($mainList) > 0) {
 
-            foreach ($mainList as $index => $main){
-                if ($index == 1){
+            foreach ($mainList as $index => $main) {
+                if ($index == 1) {
                     continue;
                 }
                 $curlService->s3044()->delete("pa_ce_materials/{$main['_id']}");
@@ -400,33 +406,33 @@ class SyncCurlController
         $curlService = (new CurlService())->pro();
         $curlService->gateway();
         $this->getModule('pa');
-        $list = $this->commonFindByParams("s3044", "pa_ce_materials", ["createdBy"=>"P3-CreateCeSkuMaterialJob"], "pro");
+        $list = $this->commonFindByParams("s3044", "pa_ce_materials", ["createdBy" => "P3-CreateCeSkuMaterialJob"], "pro");
         $batchNameList = [];
-        if ($list){
-            $batchNameList = array_column($list,"batchName");
+        if ($list) {
+            $batchNameList = array_column($list, "batchName");
         }
-        if (count($batchNameList) > 0){
+        if (count($batchNameList) > 0) {
             $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/info/material/v1/findPrePurchaseBillWithSkuForSkuMaterialInfo", $batchNameList));
             $platformMap = [];
-            if ($resp){
-                foreach ($resp as $item){
+            if ($resp) {
+                foreach ($resp as $item) {
                     $platformMap[$item['prePurchaseBillNo']] = $item;
                 }
             }
-            foreach (array_chunk($batchNameList,150) as $chunkList){
-                $mainInfoList = $this->commonFindByParams("s3044", "pa_ce_materials", ["batchName_in" => implode(",",$chunkList)], "pro");
+            foreach (array_chunk($batchNameList, 150) as $chunkList) {
+                $mainInfoList = $this->commonFindByParams("s3044", "pa_ce_materials", ["batchName_in" => implode(",", $chunkList)], "pro");
                 if (count($mainInfoList) > 0) {
-                    foreach ($mainInfoList as $mainInfo){
+                    foreach ($mainInfoList as $mainInfo) {
                         $canUpdate = false;
-                        if (!$mainInfo['platform'] && isset($platformMap[$mainInfo['batchName']]) && isset($platformMap[$mainInfo['batchName']]['platform'])){
+                        if (!$mainInfo['platform'] && isset($platformMap[$mainInfo['batchName']]) && isset($platformMap[$mainInfo['batchName']]['platform'])) {
                             $mainInfo['platform'] = $platformMap[$mainInfo['batchName']]['platform'];
                             $canUpdate = true;
                         }
-                        if (!$mainInfo['ebayTraceMan'] && isset($platformMap[$mainInfo['batchName']]) && isset($platformMap[$mainInfo['batchName']]['minorSalesUserName'])){
+                        if (!$mainInfo['ebayTraceMan'] && isset($platformMap[$mainInfo['batchName']]) && isset($platformMap[$mainInfo['batchName']]['minorSalesUserName'])) {
                             $mainInfo['ebayTraceMan'] = $platformMap[$mainInfo['batchName']]['minorSalesUserName'];
                             $canUpdate = true;
                         }
-                        if ($canUpdate){
+                        if ($canUpdate) {
                             $this->commonUpdate("s3044", "pa_ce_materials", $mainInfo, "pro");
                             $this->log("更新批次的平台数据：{$mainInfo['batchName']} - {$mainInfo['platform']} - {$mainInfo['ebayTraceMan']}");
                         }
@@ -440,7 +446,8 @@ class SyncCurlController
     }
 
 
-    public function getCompanyByCompanyId($userName = 'zhouangang'){
+    public function getCompanyByCompanyId($userName = 'zhouangang')
+    {
 
 
         $curlService = new CurlService();
@@ -449,11 +456,11 @@ class SyncCurlController
 
         $channelParams = array();
         $channelArray = array();
-        if ($data){
+        if ($data) {
             $info = $data[0];
             $channelDetailParams = array();
-            foreach ($info['regional'] as $item){
-                $channelArr = explode("_",$item);
+            foreach ($info['regional'] as $item) {
+                $channelArr = explode("_", $item);
                 $channelDetailParams[] = array(
                     "platform" => $channelArr[0],
                     "channel" => $item,
@@ -476,24 +483,23 @@ class SyncCurlController
 
         }
 
-        $productList = $this->commonFindByParams("s3015","pa_product_details",[
+        $productList = $this->commonFindByParams("s3015", "pa_product_details", [
             "ceBillNo_in" => "CE202412100077"
-        ],"pro");
-        $this->log(json_encode(array_column($productList,"skuId"),JSON_UNESCAPED_UNICODE));
-        foreach ($productList as $info){
-            if ($info['skuId']){
-                $skuSaleStatusList = $this->commonFindOneByParams("s3015","sku-sale-statuses",["skuId" => $info['skuId']],"pro");
-                if (count($skuSaleStatusList) == 0){
+        ], "pro");
+        $this->log(json_encode(array_column($productList, "skuId"), JSON_UNESCAPED_UNICODE));
+        foreach ($productList as $info) {
+            if ($info['skuId']) {
+                $skuSaleStatusList = $this->commonFindOneByParams("s3015", "sku-sale-statuses", ["skuId" => $info['skuId']], "pro");
+                if (count($skuSaleStatusList) == 0) {
                     $channelParams['skuId'] = $info['skuId'];
                     $result = $curlService->pro()->s3015()->post("sku-sale-statuses/createSkuSaleStatusesEx", $channelParams);
-                    $this->log(json_encode($result,JSON_UNESCAPED_UNICODE));
-                }else{
+                    $this->log(json_encode($result, JSON_UNESCAPED_UNICODE));
+                } else {
                     $this->log("已有可售表");
                 }
 
             }
         }
-
 
 
     }
@@ -566,7 +572,7 @@ class SyncCurlController
             ]
         ];
         if (sizeof($fileContent) > 0) {
-            foreach ($fileContent as $info){
+            foreach ($fileContent as $info) {
                 $oldTMapNewT = array();
                 $this->log("旧T号：{$info['tempSkuId']}");
                 $teRes = $this->commonFindByParams("s3015", "pa_product_details", array(
@@ -577,7 +583,7 @@ class SyncCurlController
                 //
                 if (count($teRes) > 0) {
                     //暴力一点吧全部重写
-                    foreach ($teRes as $tinfo){
+                    foreach ($teRes as $tinfo) {
                         $dteRes = $this->commonFindByParams("s3015", "pa_product_details", array(
                             "orderBy" => "_id",
                             "productName" => $tinfo['productName'],
@@ -587,15 +593,15 @@ class SyncCurlController
                         //用productName来找到以前的T号
                         $oldTempSkuId = "";
                         if (count($dteRes) > 0) {
-                            foreach ($dteRes as $dteInfo){
-                                if ($dteInfo['tempSkuId'] != $info['tempSkuId']){
+                            foreach ($dteRes as $dteInfo) {
+                                if ($dteInfo['tempSkuId'] != $info['tempSkuId']) {
                                     $oldTempSkuId = $dteInfo['tempSkuId'];
                                     break;
                                 }
                             }
                         }
                         //如果有旧T号
-                        if (!empty($oldTempSkuId)){
+                        if (!empty($oldTempSkuId)) {
                             //用旧T号查到技术维度
                             $paSkuAttributeInfo = $this->commonFindOneByParams("s3015", "pa_sku_attributes", array(
                                 "tmepSkuId" => $oldTempSkuId,
@@ -607,28 +613,28 @@ class SyncCurlController
                                 //替换成新的
                                 $paSkuAttributeInfo['tempSkuId'] = $uniqueId;
                                 //$paSkuAttributeInfo['skuId'] = $uniqueId;
-                                $rs = $this->commonUpdate("s3015","pa_sku_attributes",$paSkuAttributeInfo,$env);
-                                if($rs){
+                                $rs = $this->commonUpdate("s3015", "pa_sku_attributes", $paSkuAttributeInfo, $env);
+                                if ($rs) {
                                     $this->log("存在技术维度：{$oldTempSkuId}，已更改为：{$uniqueId}");
                                     $tinfo['tempSkuId'] = $uniqueId;
-                                    $rss = $this->commonUpdate("s3015","pa_product_details",$tinfo,$env);
+                                    $rss = $this->commonUpdate("s3015", "pa_product_details", $tinfo, $env);
                                 }
-                            }else{
+                            } else {
                                 $this->log("没有技术维度：{$oldTempSkuId}，直接更新T号");
                                 //没有技术维度直接
                                 //新的T号
                                 $uniqueId = $this->getTempSkuIdByRedis();
                                 $tinfo['tempSkuId'] = $uniqueId;
-                                $rss = $this->commonUpdate("s3015","pa_product_details",$tinfo,$env);
+                                $rss = $this->commonUpdate("s3015", "pa_product_details", $tinfo, $env);
 
                             }
 
-                        }else{
+                        } else {
                             $this->log("{$tinfo['tempSkuId']} 查不到旧名称：{$tinfo['productName']}");
                             //新的T号
                             $uniqueId = $this->getTempSkuIdByRedis();
                             $tinfo['tempSkuId'] = $uniqueId;
-                            $rss = $this->commonUpdate("s3015","pa_product_details",$tinfo,$env);
+                            $rss = $this->commonUpdate("s3015", "pa_product_details", $tinfo, $env);
                         }
 
                     }
@@ -644,7 +650,8 @@ class SyncCurlController
     }
 
     //生成T号
-    public function getTempSkuIdByRedis(){
+    public function getTempSkuIdByRedis()
+    {
         // 获取当前年月日
         $currentDate = date('ymd');
         // 构建编号的前缀
@@ -664,8 +671,8 @@ class SyncCurlController
     }
 
 
-
-    public function buildSql(){
+    public function buildSql()
+    {
         $excelUtils = new ExcelUtils();
         $list = [
             [
@@ -678,12 +685,13 @@ class SyncCurlController
 //        $list = [
 //            ["sasdasd",121412,"eafggggg"]
 //        ];
-        $filePath = $excelUtils->downloadXlsx(["文件原名","Oss Key名","OSS链接"],$list,"oss文件");
+        $filePath = $excelUtils->downloadXlsx(["文件原名", "Oss Key名", "OSS链接"], $list, "oss文件");
 //        $filePath = $excelUtils->downloadXlsxV2($list,"oss文件");
         $this->log($filePath);
     }
 
-    public function writeProductBaseFba(){
+    public function writeProductBaseFba()
+    {
         $env = "pro";
         $rs = $this->commonFindByParams("s3015", "product_fba_bases", [
             "sequenceId" => "CR201706060001",
@@ -692,8 +700,8 @@ class SyncCurlController
             "channel_in" => "ebay_us",
             "limit" => 2500
         ], $env);
-        if($rs){
-            foreach ($rs as $info){
+        if ($rs) {
+            foreach ($rs as $info) {
 
                 $curlSsl = (new CurlService())->pro();
                 $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/ce_bill_no/v1/getCeDetailBySkuIdList", [
@@ -702,19 +710,19 @@ class SyncCurlController
                     "pageNumber" => 1,
                     "entriesPerPage" => 1
                 ]));
-                if ($getKeyResp && count($getKeyResp) > 0){
+                if ($getKeyResp && count($getKeyResp) > 0) {
                     $ceInfo = $getKeyResp[0];
                     $batchName = "";
-                    if ($ceInfo && isset($ceInfo['ceBillNo']) && $ceInfo['ceBillNo']){
+                    if ($ceInfo && isset($ceInfo['ceBillNo']) && $ceInfo['ceBillNo']) {
                         $batchName = $ceInfo['ceBillNo'];
 
                         $respssss = (new CurlService())->pro()->s3044()->post("ebay_bilino_add_rounds/setSellerIdAndAddCountByBatchName", [
                             "batchName" => $batchName,
                             "skuId" => $info['skuId'],
                             "userName" => "pa-fix-sys",
-                            "source"=>"海外仓轮单"
+                            "source" => "海外仓轮单"
                         ]);
-                        $this->log("{$batchName} - {$info['skuId']} - 进入轮单：" . json_encode($respssss,JSON_UNESCAPED_UNICODE));
+                        $this->log("{$batchName} - {$info['skuId']} - 进入轮单：" . json_encode($respssss, JSON_UNESCAPED_UNICODE));
                     }
                 }
 
@@ -726,7 +734,8 @@ class SyncCurlController
 
     }
 
-    public function get30PpmsByTempskuid(){
+    public function get30PpmsByTempskuid()
+    {
         $t = [
             "a09052200ux0075",
             "a09052200ux0065",
@@ -749,7 +758,7 @@ class SyncCurlController
                 "custom-common-minorSalesUserName"
             ]
         ]));
-        if ($getKeyResp){
+        if ($getKeyResp) {
 //            $tempIdsList = [
 //                [
 //                    "id" => "1879052194089963565",
@@ -837,7 +846,9 @@ class SyncCurlController
         }
 
     }
-    public function writeScmsPurchaseBillNo(){
+
+    public function writeScmsPurchaseBillNo()
+    {
         $curlSsl = (new CurlService())->pro();
 
         $pmoBillNo = "";
@@ -877,24 +888,24 @@ class SyncCurlController
 //            "skuId" => "a25050800ux2790"
 //        ];
 //            if (count($preSkuList) > 0){
-                $writeData = [
-        //                    "prePurchaseBillNo" => $pmoBillNo,
-        //                    "pmoBillNo" => "PMO2025050600011",
-        //                    "ceBillNo" => "CE202505090158",
-        //                    "skuList" => $preSkuList,
-                    "supplierId" => 5796,
-                    "operatorName" => "zhouangang",
-                    "purchaseHandleStatus" => 90,
+        $writeData = [
+            //                    "prePurchaseBillNo" => $pmoBillNo,
+            //                    "pmoBillNo" => "PMO2025050600011",
+            //                    "ceBillNo" => "CE202505090158",
+            //                    "skuList" => $preSkuList,
+            "supplierId" => 5796,
+            "operatorName" => "zhouangang",
+            "purchaseHandleStatus" => 90,
 //                    "qdBillNo" => "QD202602270003",
-                    "prePurchaseBillNo" => "QD202602130001",
+            "prePurchaseBillNo" => "QD202602130001",
 //                    "assignedDate" => "2026-03-03 21:30:28Z"
-                ];
+        ];
 
-                $this->log(json_encode($writeData,JSON_UNESCAPED_UNICODE));
-                $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $writeData));
-                if ($getKeyResp){
-                    $this->log(json_encode($getKeyResp,JSON_UNESCAPED_UNICODE));
-                }
+        $this->log(json_encode($writeData, JSON_UNESCAPED_UNICODE));
+        $getKeyResp = DataUtils::getNewResultData($curlSsl->gateway()->getModule("pa")->getWayPost($curlSsl->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $writeData));
+        if ($getKeyResp) {
+            $this->log(json_encode($getKeyResp, JSON_UNESCAPED_UNICODE));
+        }
 //            }
 
 //        }
@@ -908,25 +919,22 @@ class SyncCurlController
 //        }
 
 
-
-
-
-
     }
 
-    public function saveReceiveIpCheck(){
+    public function saveReceiveIpCheck()
+    {
         $curlSsl = (new CurlService())->pro();
-        $info = DataUtils::getPageListInFirstData($curlSsl->s3010()->get("problem-product-infos/queryPage",[
+        $info = DataUtils::getPageListInFirstData($curlSsl->s3010()->get("problem-product-infos/queryPage", [
             "skuId" => "a24080100ux0303",
             "type" => "tort",
         ]));
-        if ($info){
+        if ($info) {
 //            $info['remark'] = "Product IP Issue";
 //            $info['newBrandName'] = "K LOGO";
 //            $info['url'] = "https://branddb.wipo.int/en/advancedsearch/brand/US502015086736339";
             $info['status'] = 'new';
-            $result = DataUtils::getPageListInFirstData($curlSsl->s3010()->put("problem-product-infos/{$info['_id']}",$info));
-            $this->log(json_encode($result,JSON_UNESCAPED_UNICODE));
+            $result = DataUtils::getPageListInFirstData($curlSsl->s3010()->put("problem-product-infos/{$info['_id']}", $info));
+            $this->log(json_encode($result, JSON_UNESCAPED_UNICODE));
             //再查
 //            $infoAft = DataUtils::getPageListInFirstData($curlSsl->s3010()->get("problem-product-infos/queryPage",[
 //                "skuId" => "a24080100ux0303",
@@ -950,26 +958,26 @@ class SyncCurlController
     }
 
 
-    public function updateSampleSku(){
-
+    public function updateSampleSku()
+    {
 
 
         $env = "pro";
         $fileContent = (new ExcelUtils())->getXlsxData("../export/留样CP.xlsx");
 
         if (sizeof($fileContent) > 0) {
-            $skuIdList = array_column($fileContent,"sku_id");
+            $skuIdList = array_column($fileContent, "sku_id");
 
             $skuCPList = [];
-            foreach (array_chunk($skuIdList,200) as $chunk){
+            foreach (array_chunk($skuIdList, 200) as $chunk) {
                 $curlService = new CurlService();
                 $resp = $curlService->$env()->s3009()->get("market-analysis-reports/getSkuIdInfoByCpBillNoList", [
-                    "cpBillNoListJsonEncode" => json_encode($chunk,JSON_UNESCAPED_UNICODE)
+                    "cpBillNoListJsonEncode" => json_encode($chunk, JSON_UNESCAPED_UNICODE)
                 ]);
                 $list = DataUtils::getQueryList($resp);
 
-                if (count($list) > 0){
-                    foreach ($list as $info){
+                if (count($list) > 0) {
+                    foreach ($list as $info) {
                         $skuCPList[] = [
                             "sequenceId" => $info['sequenceId'],
                             "skuId" => $info['skuId'],
@@ -980,11 +988,9 @@ class SyncCurlController
             }
 
 
-
             $excelUtils = new ExcelUtils();
             $downloadOssLink = "sku和Cp号对应关系_" . date("YmdHis") . ".xlsx";
-            $downloadOssPath = $excelUtils->downloadXlsx(["CP号", "skuId", "CE单"],$skuCPList,$downloadOssLink);
-
+            $downloadOssPath = $excelUtils->downloadXlsx(["CP号", "skuId", "CE单"], $skuCPList, $downloadOssLink);
 
 
         }
@@ -996,7 +1002,8 @@ class SyncCurlController
     /**
      * 回写CE单 到 预计采购清单
      */
-    public function ceWrite(){
+    public function ceWrite()
+    {
         $env = "pro";
 
         $data = [
@@ -1007,37 +1014,37 @@ class SyncCurlController
         $curlService1 = new CurlService();
         $curlService1->$env()->gateway()->getModule('pa');
         $resp3 = DataUtils::getNewResultData($curlService1->getWayPost($curlService1->module . "/scms/ce_bill_no/v1/writeBackAutarkyCeSkuToPrePurchase", $data));
-        if ($resp3){
-            $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
+        if ($resp3) {
+            $this->log(json_encode($resp3, JSON_UNESCAPED_UNICODE));
         }
         die(1111);
         $pmoList = [
             "DPMO251231005-黎乾海",
         ];
         $curlService = new CurlService();
-        foreach ($pmoList as $pmoBillNo){
+        foreach ($pmoList as $pmoBillNo) {
             $resp = $curlService->$env()->s3009()->get("market-analysis-reports/getMainSkuIdInfo", [
                 "batch" => $pmoBillNo
             ]);
-            if (count($resp['result'])>0){
+            if (count($resp['result']) > 0) {
                 $pmoInfo = $resp['result'][0];
-                if ($pmoInfo){
+                if ($pmoInfo) {
                     $resp1 = $curlService->$env()->s3009()->post("cmo-managements/masterQuery", [
                         "conditionsJsonEncode" => json_encode(["pmoBillNoList" => [$pmoInfo['pmoBillNo']]], JSON_UNESCAPED_UNICODE),
                         "entriesPerPage" => 10,
                         "orderBy" => "cmoBillNo desc",
                         "pageNumber" => 1
                     ]);
-                    if ($resp1 && $resp1['result'] && $resp1['result']['cmoMasterResponse'] && $resp1['result']['cmoMasterResponse']['cmoMasters'] && count($resp1['result']['cmoMasterResponse']['cmoMasters']) > 0){
-                        foreach ($resp1['result']['cmoMasterResponse']['cmoMasters'] as $cmoBillNoInfo){
-                            if ($cmoBillNoInfo){
+                    if ($resp1 && $resp1['result'] && $resp1['result']['cmoMasterResponse'] && $resp1['result']['cmoMasterResponse']['cmoMasters'] && count($resp1['result']['cmoMasterResponse']['cmoMasters']) > 0) {
+                        foreach ($resp1['result']['cmoMasterResponse']['cmoMasters'] as $cmoBillNoInfo) {
+                            if ($cmoBillNoInfo) {
                                 $resp2 = $curlService->$env()->s3009()->get("cmo-managements/cmoMasterProgress", [
                                     "cmoBillNo" => $cmoBillNoInfo['cmoBillNo'],
                                 ]);
                                 $list = [];
-                                if ($resp2['result'] && $resp2['result']['data']){
-                                    foreach ( $resp2['result']['data'] as $sourceId => $ceList){
-                                        foreach ($ceList as $ceBillNo => $ceProcess){
+                                if ($resp2['result'] && $resp2['result']['data']) {
+                                    foreach ($resp2['result']['data'] as $sourceId => $ceList) {
+                                        foreach ($ceList as $ceBillNo => $ceProcess) {
                                             if (strpos($ceBillNo, "CE") === 0) {
 
                                                 $prePurchaseBillNo = $pmoBillNo;
@@ -1059,18 +1066,18 @@ class SyncCurlController
                                     }
                                 }
 
-                                if (count($list) > 0){
-                                    foreach ($list as $info){
-                                        if ($info['ceBillNo'] == "CE202508060047"){
+                                if (count($list) > 0) {
+                                    foreach ($list as $info) {
+                                        if ($info['ceBillNo'] == "CE202508060047") {
                                             continue;
                                         }
-                                        $this->log(json_encode($info,JSON_UNESCAPED_UNICODE));
+                                        $this->log(json_encode($info, JSON_UNESCAPED_UNICODE));
 
                                         $curlService1 = new CurlService();
                                         $curlService1->$env()->gateway()->getModule('pa');
                                         $resp3 = DataUtils::getNewResultData($curlService1->getWayPost($curlService1->module . "/scms/ce_bill_no/v1/writeBackAutarkyCeSkuToPrePurchase", $info));
-                                        if ($resp3){
-                                            $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
+                                        if ($resp3) {
+                                            $this->log(json_encode($resp3, JSON_UNESCAPED_UNICODE));
                                         }
 
                                     }
@@ -1086,93 +1093,91 @@ class SyncCurlController
         }
 
 
-
-
-
-
     }
 
     //同步全公司年度目标看板:
-    public function syncAllVerticalMonthlTargets(){
+    public function syncAllVerticalMonthlTargets()
+    {
         //todo 同步前请清空表pa_all_vertical_monthly_target 和pa_all_vertical_monthly_sales
 
         $curlService = new CurlService();
         $page = 1;
         $pages = 1;
         $allList = [];
-        do{
+        do {
             $resp = $curlService->pro()->s3044()->get("pa_all_vertical_monthly_targets/queryPage", [
                 "limit" => 1000,
                 "page" => $page
             ]);
             $list = DataUtils::getPageList($resp);
-            if (count($list['data']) > 0){
-                $allList = array_merge($allList,$list['data']);
+            if (count($list['data']) > 0) {
+                $allList = array_merge($allList, $list['data']);
                 $pages = $list['pages'];
-            }else{
+            } else {
                 break;
             }
             $page++;
-        }while($page <= $pages);
+        } while ($page <= $pages);
 
-        if (count($allList) > 0){
-            $res = $curlService->uat()->s3044()->post("pa_all_vertical_monthly_targets/createBatch",$allList);
-            $this->log("添加：".json_encode($res,JSON_UNESCAPED_UNICODE));
+        if (count($allList) > 0) {
+            $res = $curlService->uat()->s3044()->post("pa_all_vertical_monthly_targets/createBatch", $allList);
+            $this->log("添加：" . json_encode($res, JSON_UNESCAPED_UNICODE));
         }
 
         $page = $pages = 1;
         $allList = [];
-        do{
-            $resp = $curlService->pro()->s3047()->get("pa_all_vertical_monthly_saless/queryPage",[
+        do {
+            $resp = $curlService->pro()->s3047()->get("pa_all_vertical_monthly_saless/queryPage", [
                 "limit" => 1000,
                 "page" => $page
             ]);
             $list = DataUtils::getPageList($resp);
-            if (count($list['data']) > 0){
-                $allList = array_merge($allList,$list['data']);
+            if (count($list['data']) > 0) {
+                $allList = array_merge($allList, $list['data']);
                 $pages = $list['pages'];
-            }else{
+            } else {
                 break;
             }
             $page++;
-        }while($page <= $pages);
+        } while ($page <= $pages);
 
-        if (count($allList) > 0){
-            foreach ($allList as $info){
-                $res = $curlService->uat()->s3047()->post("pa_all_vertical_monthly_saless",$info);
-                $this->log("添加：".json_encode($res,JSON_UNESCAPED_UNICODE));
+        if (count($allList) > 0) {
+            foreach ($allList as $info) {
+                $res = $curlService->uat()->s3047()->post("pa_all_vertical_monthly_saless", $info);
+                $this->log("添加：" . json_encode($res, JSON_UNESCAPED_UNICODE));
             }
 
         }
 
         $page = $pages = 1;
         $allList = [];
-        do{
-            $resp = $curlService->pro()->s3047()->get("pa_vertical_daily_saless/queryPage",[
+        do {
+            $resp = $curlService->pro()->s3047()->get("pa_vertical_daily_saless/queryPage", [
                 "limit" => 1000,
                 "year" => "2025",
                 "page" => $page
             ]);
             $list = DataUtils::getPageList($resp);
-            if (count($list['data']) > 0){
-                $allList = array_merge($allList,$list['data']);
+            if (count($list['data']) > 0) {
+                $allList = array_merge($allList, $list['data']);
                 $pages = $list['pages'];
-            }else{
+            } else {
                 break;
             }
             $page++;
-        }while($page <= $pages);
+        } while ($page <= $pages);
 
-        if (count($allList) > 0){
-            foreach ($allList as $info){
-                $res = $curlService->uat()->s3047()->post("pa_vertical_daily_saless",$info);
-                $this->log("添加：".json_encode($res,JSON_UNESCAPED_UNICODE));
+        if (count($allList) > 0) {
+            foreach ($allList as $info) {
+                $res = $curlService->uat()->s3047()->post("pa_vertical_daily_saless", $info);
+                $this->log("添加：" . json_encode($res, JSON_UNESCAPED_UNICODE));
             }
         }
 
     }
 
-    public function updateFcuProductLine(){
+    public function updateFcuProductLine()
+    {
         //todo 同步前请清空表pa_all_vertical_monthly_target 和pa_all_vertical_monthly_sales
 
         $env = "pro";
@@ -1186,56 +1191,56 @@ class SyncCurlController
             $fcuIdList = array_column($fileContent, "fcuId");
 
             $list = [];
-            foreach (array_chunk($skuIdList,200) as $chunk){
+            foreach (array_chunk($skuIdList, 200) as $chunk) {
                 $getProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryPage", [
-                    "skuId" => implode(",",$chunk),
+                    "skuId" => implode(",", $chunk),
                     "limit" => 200
                 ]));
-                if ($getProductMainResp && count($getProductMainResp['data']) > 0){
-                    $list = array_merge($list,$getProductMainResp['data']);
+                if ($getProductMainResp && count($getProductMainResp['data']) > 0) {
+                    $list = array_merge($list, $getProductMainResp['data']);
                 }
             }
 
             $skuIdProductLineMap = [];
-            if (count($list) > 0){
-                $skuIdProductLineMap = array_column($list,null,"skuId");
+            if (count($list) > 0) {
+                $skuIdProductLineMap = array_column($list, null, "skuId");
             }
 
 
             $fculist = [];
-            foreach (array_chunk($fcuIdList,200) as $chunk){
+            foreach (array_chunk($fcuIdList, 200) as $chunk) {
                 $fcuResult = DataUtils::getPageDocList($curlService->s3044()->get("fcu_sku_maps/queryPage", [
-                    "fcuId_in" => implode(",",$chunk),
+                    "fcuId_in" => implode(",", $chunk),
                     "limit" => 200
                 ]));
-                if ($fcuResult && count($fcuResult) > 0){
-                    foreach ($fcuResult as $info){
+                if ($fcuResult && count($fcuResult) > 0) {
+                    foreach ($fcuResult as $info) {
                         $fculist[$info['fcuId']] = $info;
                     }
                 }
             }
 
 
-            foreach ($fileContent as $item){
+            foreach ($fileContent as $item) {
                 $skuId = $item['skuId'];
-                if (isset($skuIdProductLineMap[$skuId])){
+                if (isset($skuIdProductLineMap[$skuId])) {
                     $product_operator_mainInfo_id = $skuIdProductLineMap[$skuId]['product_operator_mainInfo_id'];
 
-                    if (isset($fculist[$item['fcuId']])){
+                    if (isset($fculist[$item['fcuId']])) {
                         $fcuInfo = $fculist[$item['fcuId']];
-                        if ($fcuInfo['productLineId']){
+                        if ($fcuInfo['productLineId']) {
                             continue;
                         }
                         $fcuInfo['productLineId'] = $product_operator_mainInfo_id;
                         $fcuInfo['modifiedBy'] = "zhouangang";
 
                         $sss = $curlService->s3044()->put("fcu_sku_maps/{$fcuInfo['_id']}", $fcuInfo);
-                        $this->log("更新产品线id成功" . json_encode($sss,JSON_UNESCAPED_UNICODE));
-                    }else{
+                        $this->log("更新产品线id成功" . json_encode($sss, JSON_UNESCAPED_UNICODE));
+                    } else {
                         $this->log("找不到fcu：{$fcuInfo['fcuId']}");
                     }
 
-                }else{
+                } else {
                     $this->log("找不到产品线：{$skuId} - {$item['fcuId']}");
                 }
 
@@ -1249,7 +1254,8 @@ class SyncCurlController
     }
 
 
-    public function updateProductFba(){
+    public function updateProductFba()
+    {
         //todo 同步前请清空表pa_all_vertical_monthly_target 和pa_all_vertical_monthly_sales
 
         $env = "pro";
@@ -1259,17 +1265,17 @@ class SyncCurlController
         $curlService = $curlService->pro();
 
         if (sizeof($fileContent) > 0) {
-            foreach ($fileContent as $info){
-                $fbaInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("product_fba_bases/queryPage",[
+            foreach ($fileContent as $info) {
+                $fbaInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("product_fba_bases/queryPage", [
                     "skuId" => $info['sku'],
                     "channel" => $info['上架渠道'],
                     "dcId" => $info['仓库'],
                     "limit" => 1,
                 ]));
-                if (!empty($fbaInfo)){
+                if (!empty($fbaInfo)) {
                     $fbaInfo['status'] = "Y";
-                    $res = DataUtils::getResultData($curlService->s3015()->put("product_fba_bases/{$fbaInfo['_id']}",$fbaInfo));
-                    $this->log("更新成功".json_encode($res,JSON_UNESCAPED_UNICODE));
+                    $res = DataUtils::getResultData($curlService->s3015()->put("product_fba_bases/{$fbaInfo['_id']}", $fbaInfo));
+                    $this->log("更新成功" . json_encode($res, JSON_UNESCAPED_UNICODE));
 
                 }
             }
@@ -1280,27 +1286,29 @@ class SyncCurlController
 
     }
 
-    public function deleteFC(){
+    public function deleteFC()
+    {
         $chunk = [
             "FC2025031003310",
         ];
         $curlService = new CurlService();
         $curlService = $curlService->pro();
-        $list = DataUtils::getPageDocList($curlService->s3044()->get("fcu_applys/queryPage",[
-            "batch_in" => implode(",",$chunk),
+        $list = DataUtils::getPageDocList($curlService->s3044()->get("fcu_applys/queryPage", [
+            "batch_in" => implode(",", $chunk),
             "company" => "CR201706060001",
             "status" => "0",
             "limit" => 200,
         ]));
-        if (!empty($list)){
-            foreach ($list as $v){
-                $del = DataUtils::getResultData($curlService->s3044()->delete("fcu_applys",$v['_id']));
-                $this->log("删除：".json_encode($del,JSON_UNESCAPED_UNICODE));
+        if (!empty($list)) {
+            foreach ($list as $v) {
+                $del = DataUtils::getResultData($curlService->s3044()->delete("fcu_applys", $v['_id']));
+                $this->log("删除：" . json_encode($del, JSON_UNESCAPED_UNICODE));
             }
         }
     }
 
-    public function combineFC(){
+    public function combineFC()
+    {
         $env = "pro";
         $fileContent = (new ExcelUtils())->getXlsxData("../export/FCU.xlsx");
 
@@ -1308,36 +1316,36 @@ class SyncCurlController
         $curlService = $curlService->pro();
 
         if (sizeof($fileContent) > 0) {
-            $batchList = array_unique(array_column($fileContent,"FCU"));
+            $batchList = array_unique(array_column($fileContent, "FCU"));
             $mainFCUBatch = [];
             $allFCMap = [];
-            foreach (array_chunk($batchList,200) as $chunk){
-                $list = DataUtils::getPageDocList($curlService->s3044()->get("fcu_applys/queryPage",[
-                    "batch_in" => implode(",",$chunk),
+            foreach (array_chunk($batchList, 200) as $chunk) {
+                $list = DataUtils::getPageDocList($curlService->s3044()->get("fcu_applys/queryPage", [
+                    "batch_in" => implode(",", $chunk),
                     "company" => "CR201706060001",
                     "status" => "0",
                     "limit" => 200,
                 ]));
-                if (!empty($list)){
+                if (!empty($list)) {
                     $mainFCUBatch = $list[0];
-                    foreach ($list as $v){
+                    foreach ($list as $v) {
                         $allFCMap[$v['_id']] = $v['batch'];
                     }
                 }
             }
 
             foreach ($allFCMap as $_id => $batch) {
-                if ($_id != $mainFCUBatch['_id']){
+                if ($_id != $mainFCUBatch['_id']) {
                     $fcuSkuMapList = DataUtils::getPageDocList($curlService->s3044()->get("fcu_sku_maps/queryPage", [
                         "main_id" => $_id,
                         "limit" => 10000,
                     ]));
                     if (count($fcuSkuMapList) > 0) {
                         foreach ($fcuSkuMapList as &$fcuSkuMapInfo) {
-                            if ($fcuSkuMapInfo['main_id'] != $mainFCUBatch['_id']){
+                            if ($fcuSkuMapInfo['main_id'] != $mainFCUBatch['_id']) {
                                 $fcuSkuMapInfo['main_id'] = $mainFCUBatch['_id'];
-                                $res = DataUtils::getResultData($curlService->s3044()->put("fcu_sku_maps/{$fcuSkuMapInfo['_id']}",$fcuSkuMapInfo));
-                                $this->log("更新：".json_encode($res,JSON_UNESCAPED_UNICODE));
+                                $res = DataUtils::getResultData($curlService->s3044()->put("fcu_sku_maps/{$fcuSkuMapInfo['_id']}", $fcuSkuMapInfo));
+                                $this->log("更新：" . json_encode($res, JSON_UNESCAPED_UNICODE));
                             }
                         }
                     }
@@ -1348,7 +1356,8 @@ class SyncCurlController
 
     }
 
-    public function updateProductListNo(){
+    public function updateProductListNo()
+    {
         $env = "pro";
         $fileContent = (new ExcelUtils())->getXlsxData("../export/productListNo.xlsx");
 
@@ -1356,7 +1365,7 @@ class SyncCurlController
         $curlService = $curlService->pro();
 
         if (sizeof($fileContent) > 0) {
-            $batchList = array_unique(array_column($fileContent,"productList"));
+            $batchList = array_unique(array_column($fileContent, "productList"));
 //            foreach (array_chunk($batchList,200) as $chunk){
 //                $list = DataUtils::getPageList($curlService->ux168()->get("product_development_lists/queryPage",[
 //                    "productListNo_in" => implode(",",$chunk),
@@ -1413,7 +1422,7 @@ class SyncCurlController
 //                $res['remark'] = "{\"draftBeginDate\":\"2025-03-06 14:00:00\",\"draftOverDate\":\"2025-03-06 21:00:00\",\"applyDate\":\"2025-03-06 14:00:02\",\"reason\":\"\"}";
 //                DataUtils::getResultData($curlService->ux168()->put("product_development_logs/{$res['_id']}",$res));
 //            }
-            $list = DataUtils::getPageList($curlService->ux168()->get("product_development_lists/queryPage",[
+            $list = DataUtils::getPageList($curlService->ux168()->get("product_development_lists/queryPage", [
                 "productListNo" => "QD202503040025",
                 "limit" => 1,
             ]));
@@ -1423,8 +1432,8 @@ class SyncCurlController
 //                    $res['assignedDate'] = "2025-03-06T14:00:02.000Z";
 //                    $res['draftNum'] = 1;
                     $res['draftInfos']['supplierId'] = [4397];
-                    $ss = DataUtils::getResultData($curlService->ux168()->put("product_development_lists/{$res['_id']}",$res));
-                    if ($ss){
+                    $ss = DataUtils::getResultData($curlService->ux168()->put("product_development_lists/{$res['_id']}", $res));
+                    if ($ss) {
 
                     }
                 }
@@ -1447,7 +1456,8 @@ class SyncCurlController
 
     }
 
-    public function fixSkuPhotoProcess(){
+    public function fixSkuPhotoProcess()
+    {
         $curlService = new CurlService();
         $curlService = $curlService->pro();
 
@@ -1471,16 +1481,16 @@ class SyncCurlController
 
         $ceMasterCreatedOn = "2025-09-25T20:53:15.000Z";
         $skuMap = [];
-        foreach (array_chunk($skuIdList,200) as $chunk){
-            $list = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+        foreach (array_chunk($skuIdList, 200) as $chunk) {
+            $list = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage", [
                 "limit" => 200,
-                "productId" => implode(",",$chunk)
+                "productId" => implode(",", $chunk)
             ]));
-            foreach ($list as $info){
-                if ($info['status'] == "completed"){
+            foreach ($list as $info) {
+                if ($info['status'] == "completed") {
                     $secondVeroDateTime = "";
-                    foreach ($info['reviewingList'] as $val){
-                        if ($val['reviewingName'] == "secondVero"){
+                    foreach ($info['reviewingList'] as $val) {
+                        if ($val['reviewingName'] == "secondVero") {
                             $secondVeroDateTime = $val['createdOn'];
                             break;
                         }
@@ -1492,13 +1502,13 @@ class SyncCurlController
         }
 
         $batch = [];
-        foreach ($skuMap as $skuId => $dateTime){
-            $ss = DataUtils::getPageListInFirstData($curlService->s3015()->get("sku_photography_progresss/queryPage",[
+        foreach ($skuMap as $skuId => $dateTime) {
+            $ss = DataUtils::getPageListInFirstData($curlService->s3015()->get("sku_photography_progresss/queryPage", [
                 "skuId" => $skuId,
                 "ceBillNo_in" => $ceBillNo,
                 "limit" => 1,
             ]));
-            if ($ss){
+            if ($ss) {
                 continue;
             }
             $data = [
@@ -1516,13 +1526,14 @@ class SyncCurlController
             $batch[] = $data;
         }
 
-        if (count($batch) > 0){
+        if (count($batch) > 0) {
             $this->log(count($batch) . "个新增");
-            $curlService->s3015()->post("sku_photography_progresss/createBatch",$batch);
+            $curlService->s3015()->post("sku_photography_progresss/createBatch", $batch);
         }
     }
 
-    public function fixProductOpt(){
+    public function fixProductOpt()
+    {
         $fileContent = (new ExcelUtils())->getXlsxData("../export/资料图片工单.xlsx");
 
         $curlService = new CurlService();
@@ -1534,15 +1545,14 @@ class SyncCurlController
         if (sizeof($fileContent) > 0) {
 
 
-
-            foreach ($fileContent as $info){
-                $dataInfo = DataUtils::getPageListInFirstDataV2($curlService->s3044()->get("pa_product_optimizations/queryPage",[
+            foreach ($fileContent as $info) {
+                $dataInfo = DataUtils::getPageListInFirstDataV2($curlService->s3044()->get("pa_product_optimizations/queryPage", [
                     "limit" => 1,
                     "skuId" => $info['skuId'],
                     "applyReasons" => $info['修改来源']
                 ]));
 
-                if (empty($dataInfo)){
+                if (empty($dataInfo)) {
                     continue;
                 }
 
@@ -1550,7 +1560,7 @@ class SyncCurlController
                 $status = 0;
                 $operator = "";
 
-                if ($info['状态'] == "作废"){
+                if ($info['状态'] == "作废") {
                     continue;
                     $option = '执行已作废';
                     $status = 102;
@@ -1560,17 +1570,17 @@ class SyncCurlController
                         "option" => $option,
                         "status" => $status,
                         "optionBy" => $info['执行人'],
-                        "optionTime" => date("Y-m-d H:i:s",time())."Z",
+                        "optionTime" => date("Y-m-d H:i:s", time()) . "Z",
                     ];
                     $dataInfo['remarkArrays'][] = [
                         "option" => $option,
                         "optionBy" => $info['执行人'],
-                        "optionTime" => date("Y-m-d H:i:s",time())."Z",
+                        "optionTime" => date("Y-m-d H:i:s", time()) . "Z",
                         "remark" => "运营要求取消执行",
                     ];
 
                     $updateData = [
-                        "executor" => explode(",",$info['执行人']),
+                        "executor" => explode(",", $info['执行人']),
                         "modifiedBy" => $info['执行人'],
                         "modifiedOn" => $dataInfo['modifiedOn'],
                         "status" => $status,
@@ -1581,12 +1591,11 @@ class SyncCurlController
                         "remarkArrays" => $dataInfo['remarkArrays'],
                     ];
 
-                    $curlService->s3044()->put("pa_product_optimizations/{$dataInfo['_id']}",$updateData);
+                    $curlService->s3044()->put("pa_product_optimizations/{$dataInfo['_id']}", $updateData);
 
 
-
-                }else if($info['状态'] == "已完成"){
-                    $exectorList = explode(",",$info['执行人']);
+                } else if ($info['状态'] == "已完成") {
+                    $exectorList = explode(",", $info['执行人']);
 
                     $updateData = [
                         "executor" => $exectorList,
@@ -1597,27 +1606,22 @@ class SyncCurlController
                         "completedDate" => date("Y-m-d H:i:s", time()) . "Z",
                     ];
 
-                    $curlService->s3044()->put("pa_product_optimizations/{$dataInfo['_id']}",$updateData);
+                    $curlService->s3044()->put("pa_product_optimizations/{$dataInfo['_id']}", $updateData);
 
                 }
-
 
 
             }
 
 
-
         }
-
-
-
-
 
 
     }
 
 
-    public function skuMaterialDocCreate(){
+    public function skuMaterialDocCreate()
+    {
 //        $curlService = new CurlService();
 //        $curlService->local()->gateway()->getModule('pa');
 //
@@ -1665,30 +1669,30 @@ class SyncCurlController
             "s25042501ux0995",
             "s25042501ux0986",
         ];
-        foreach ($list as $sku){
-            $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
+        foreach ($list as $sku) {
+            $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage", [
                 "productId" => $sku
             ]));
-            if ($info){
-                foreach ($info['attribute'] as &$item){
-                    if ($item['channel'] == "walmart_us" && $item['label'] == "brand"){
+            if ($info) {
+                foreach ($info['attribute'] as &$item) {
+                    if ($item['channel'] == "walmart_us" && $item['label'] == "brand") {
                         $item['value'] = "NOMADIC NOOK";
                     }
                 }
                 $info['userName'] = "system(zhouangang)";
 
-                $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$info['_id']}",$info);
-                if ($resp){
+                $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$info['_id']}", $info);
+                if ($resp) {
 
                 }
             }
         }
 
 
-
     }
 
-    public function getAmazonSpKeyword(){
+    public function getAmazonSpKeyword()
+    {
 //        $curlService = new CurlService();
 //        $list = [];
 //        for ($page = 1; $page < 500; $page++) {
@@ -1737,22 +1741,22 @@ class SyncCurlController
 
         if (sizeof($fileContent) > 0) {
             $keywordTexts = [];
-            foreach ($fileContent as $info){
-                if ($info['model']){
+            foreach ($fileContent as $info) {
+                if ($info['model']) {
                     $keywordTexts[] = $info['model'];
                 }
             }
             $keywordInfoList = [];
-            foreach (array_chunk($keywordTexts,300) as $chunk){
-                $list = DataUtils::getPageList($curlService->pro()->s3023()->get("amazon_sp_keywords/queryPage",[
-                    "keywordText_in" => implode(",",$chunk),
+            foreach (array_chunk($keywordTexts, 300) as $chunk) {
+                $list = DataUtils::getPageList($curlService->pro()->s3023()->get("amazon_sp_keywords/queryPage", [
+                    "keywordText_in" => implode(",", $chunk),
                     "columns" => "channel,keywordId,campaignId,adGroupId,state,keywordText,matchType,bid,createdOn",
                     "createdBy" => "php_restful_commonPaNewCreateKeywordsByType",
                     "state" => "enabled",
                     "limit" => 10000
                 ]));
-                if (count($list) > 0){
-                    foreach ($list as $info){
+                if (count($list) > 0) {
+                    foreach ($list as $info) {
                         $keywordInfoList[] = [
 //                            "_id" => $info['_id'],
 //                            "messages" => $info['messages'],
@@ -1773,7 +1777,7 @@ class SyncCurlController
 
 
             if (count($keywordInfoList) > 0) {
-                foreach (array_chunk($keywordInfoList,15000) as $chunk){
+                foreach (array_chunk($keywordInfoList, 15000) as $chunk) {
                     $excelUtils = new ExcelUtils();
                     $filePath = $excelUtils->downloadXlsx([
 //                        "_id",
@@ -1798,27 +1802,30 @@ class SyncCurlController
 
     }
 
-    public function syncSkuSellerConfig(){
+    public function syncSkuSellerConfig()
+    {
         $curlService = new CurlService();
-        $info = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("seller-configs/queryPage",[
+        $info = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("seller-configs/queryPage", [
             "sellerId" => "amazon_ca_ifn",
         ]));
-        if ($info){
+        if ($info) {
             unset($info['_id']);
-            $curlService->uat()->s3015()->post("seller-configs",$info);
+            $curlService->uat()->s3015()->post("seller-configs", $info);
         }
 
 
-        $info1 = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("sku-seller-configs/queryPage",[
+        $info1 = DataUtils::getPageListInFirstData($curlService->pro()->s3015()->get("sku-seller-configs/queryPage", [
             "sellerId" => "amazon_ca_ifn",
             "skuId" => "a24101800ux0691",
         ]));
-        if ($info1){
+        if ($info1) {
             unset($info1['_id']);
-            $curlService->uat()->s3015()->post("sku-seller-configs",$info1);
+            $curlService->uat()->s3015()->post("sku-seller-configs", $info1);
         }
     }
-    public function updatePaGoodsSourceManage(){
+
+    public function updatePaGoodsSourceManage()
+    {
 //        $curlService = new CurlService();
 //        $list = [];
 //        for ($page = 1; $page < 25; $page++) {
@@ -1868,24 +1875,24 @@ class SyncCurlController
 
             $curlService = $curlService->pro();
 
-            $skuIdList = array_column($fileContent,"skuid");
+            $skuIdList = array_column($fileContent, "skuid");
             $map = [];
-            foreach ($fileContent as $info){
+            foreach ($fileContent as $info) {
                 $map[$info['skuid']] = $info['ppmcaigoulianjie'];
             }
             $list = [];
-            foreach (array_chunk($skuIdList,200) as $chunk){
-                $list = DataUtils::getPageList($curlService->s3015()->get("pa_goods_source_manages/queryPage",[
+            foreach (array_chunk($skuIdList, 200) as $chunk) {
+                $list = DataUtils::getPageList($curlService->s3015()->get("pa_goods_source_manages/queryPage", [
                     "limit" => 200,
-                    "skuId_in" => implode(",",$chunk),
+                    "skuId_in" => implode(",", $chunk),
                 ]));
-                if (count($list) > 0){
-                    foreach ($list as $item){
-                        if (isset($map[$item['skuId']]) && $map[$item['skuId']]){
+                if (count($list) > 0) {
+                    foreach ($list as $item) {
+                        if (isset($map[$item['skuId']]) && $map[$item['skuId']]) {
                             $item['purchaseLink'] = $map[$item['skuId']];
                             $item['modifiedBy'] = "zhouangang(修复采购链接)";
-                            $curlService->s3015()->put("pa_goods_source_manages/{$item['_id']}",$item);
-                        }else{
+                            $curlService->s3015()->put("pa_goods_source_manages/{$item['_id']}", $item);
+                        } else {
                             $this->log("{$item['skuId']}没有采购链接");
                         }
                     }
@@ -1896,7 +1903,9 @@ class SyncCurlController
 
 
     }
-    public function updateSkuMaterial(){
+
+    public function updateSkuMaterial()
+    {
         $curlService = (new CurlService())->pro();
         $list = [];
 
@@ -1907,7 +1916,7 @@ class SyncCurlController
             ['ce_bill_no' => 'CE202512260065'],
         ];
         if (sizeof($fileFitContent) > 0) {
-            foreach ($fileFitContent as $item){
+            foreach ($fileFitContent as $item) {
 
 
                 $main = DataUtils::getPageDocListInFirstDataV1($curlService->s3044()->get("pa_ce_materials/queryPage", [
@@ -1917,10 +1926,10 @@ class SyncCurlController
                 if (count($main) > 0) {
                     $this->log("{$item['ce_bill_no']}");
                     $main['status'] = 'materialComplete';
-                    $curlService->s3044()->put("pa_ce_materials/{$main['_id']}",$main);
+                    $curlService->s3044()->put("pa_ce_materials/{$main['_id']}", $main);
 
-                    if (count($main['skuIdList']) > 0){
-                        foreach ($main['skuIdList'] as $sku){
+                    if (count($main['skuIdList']) > 0) {
+                        foreach ($main['skuIdList'] as $sku) {
 
                             $detail = DataUtils::getPageDocListInFirstDataV1($curlService->s3044()->get("pa_sku_materials/queryPage", [
                                 "limit" => 1,
@@ -1928,9 +1937,9 @@ class SyncCurlController
                                 "skuId" => $sku,
                                 "ceBillNo" => $main['ceBillNo'],
                             ]));
-                            if ($detail){
+                            if ($detail) {
                                 $detail['status'] = "materialComplete";
-                                $curlService->s3044()->put("pa_sku_materials/{$detail['_id']}",$detail);
+                                $curlService->s3044()->put("pa_sku_materials/{$detail['_id']}", $detail);
                             }
                         }
 
@@ -1942,14 +1951,14 @@ class SyncCurlController
             }
 
 
-
         }
 
 
     }
 
 
-    public function syncSkuMaterialToAudit(){
+    public function syncSkuMaterialToAudit()
+    {
         $curlService = (new CurlService())->pro();
         $curlService->gateway();
         $this->getModule('pa');
@@ -1961,8 +1970,8 @@ class SyncCurlController
         ]));
 
         $batchNameList = [];
-        if ($resp1 && count($resp1['list']) > 0){
-            foreach ($resp1['list'] as $info){
+        if ($resp1 && count($resp1['list']) > 0) {
+            foreach ($resp1['list'] as $info) {
 //                if ($info['afterChangedTranslationAttributeValue'] == "<p></p>\n"){
 //                    $batchNameList[] = $info['docNumber'];
 //                }
@@ -1973,22 +1982,23 @@ class SyncCurlController
 //            "2025080700056",
 //        ];
         if (count($batchNameList) > 0) {
-            $this->log("一共：".count($batchNameList)."个单据翻译失败，");
-            $this->log(json_encode($batchNameList,JSON_UNESCAPED_UNICODE));
-            foreach ($batchNameList as $item){
+            $this->log("一共：" . count($batchNameList) . "个单据翻译失败，");
+            $this->log(json_encode($batchNameList, JSON_UNESCAPED_UNICODE));
+            foreach ($batchNameList as $item) {
                 $postParams = [
                     "docNumbers" => [$item],
                     "operatorName" => "P3-fixTranslationFail"
                 ];
                 $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/material/changed_doc/v1/syncSkuMaterialToAudit", $postParams));
 
-                $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+                $this->log(json_encode($resp, JSON_UNESCAPED_UNICODE));
             }
 
         }
     }
 
-    public function skuMaterialSyncToProductSku(){
+    public function skuMaterialSyncToProductSku()
+    {
         $curlService = (new CurlService())->pro();
         $curlService->gateway();
         $curlService->getModule('pa');
@@ -2000,8 +2010,8 @@ class SyncCurlController
         ]));
 
         $batchNameList = [];
-        if ($resp1 && count($resp1['list']) > 0){
-            foreach ($resp1['list'] as $info){
+        if ($resp1 && count($resp1['list']) > 0) {
+            foreach ($resp1['list'] as $info) {
 //                if ($info['afterChangedTranslationAttributeValue'] == "<p></p>\n"){
 //                    $batchNameList[] = $info['docNumber'];
 //                }
@@ -2012,23 +2022,24 @@ class SyncCurlController
 //            "2025080700056",
 //        ];
         if (count($batchNameList) > 0) {
-            $this->log("一共：".count($batchNameList)."个单据翻译失败，");
-            $this->log(json_encode($batchNameList,JSON_UNESCAPED_UNICODE));
-            foreach ($batchNameList as $item){
+            $this->log("一共：" . count($batchNameList) . "个单据翻译失败，");
+            $this->log(json_encode($batchNameList, JSON_UNESCAPED_UNICODE));
+            foreach ($batchNameList as $item) {
                 $postParams = [
                     "docNumbers" => [$item],
                     "operatorName" => "P3-fixTranslationFail"
                 ];
                 $resp = DataUtils::getNewResultData($curlService->getWayPost($this->module . "/sms/sku/material/changed_doc/v1/skuMaterialSyncToProductSku", $postParams));
 
-                $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+                $this->log(json_encode($resp, JSON_UNESCAPED_UNICODE));
             }
 
         }
     }
 
 
-    public function copyNewChannel(){
+    public function copyNewChannel()
+    {
         $curlService = (new CurlService())->pro();
 
 
@@ -2036,21 +2047,21 @@ class SyncCurlController
         $newChannel = "amazon_nl";
 
         $list = [];
-        for ($page = 1;$page < 10;$page ++){
+        for ($page = 1; $page < 10; $page++) {
             $resp1 = DataUtils::getPageList($curlService->s3015()->get("channel-amazon-attributes/queryPage", [
                 "limit" => 5000,
                 "page" => $page,
                 "channel" => $oldChannel
             ]));
-            if (count($resp1) > 0){
-                $list = array_merge($list,$resp1);
-            }else{
+            if (count($resp1) > 0) {
+                $list = array_merge($list, $resp1);
+            } else {
                 break;
             }
         }
         if (count($list) > 0) {
             //$curlService = (new CurlService())->test();
-            foreach ($list as $info){
+            foreach ($list as $info) {
                 unset($info['_id']);
                 $info['channel'] = $newChannel;
                 $curlService->s3015()->post("channel-amazon-attributes", $info);
@@ -2060,7 +2071,8 @@ class SyncCurlController
     }
 
 
-    public function syncPaSkuMaterial(){
+    public function syncPaSkuMaterial()
+    {
         $curlService = (new CurlService())->pro();
 
 
@@ -2071,23 +2083,23 @@ class SyncCurlController
         $resp1 = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
             "limit" => 5000,
             "page" => 1,
-            "skuId_in" => implode(",",$skuIdList)
+            "skuId_in" => implode(",", $skuIdList)
         ]));
-        if (count($resp1) > 0){
-            $list = array_merge($list,$resp1);
+        if (count($resp1) > 0) {
+            $list = array_merge($list, $resp1);
         }
 
         if (count($list) > 0) {
             $curlService = (new CurlService())->test();
-            $testList = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage",[
+            $testList = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
                 "limit" => 5000,
                 "page" => 1,
-                "skuId_in" => implode(",",$skuIdList)
+                "skuId_in" => implode(",", $skuIdList)
             ]));
-            $skuIdMap = array_column($testList,null,"skuId");
+            $skuIdMap = array_column($testList, null, "skuId");
 
-            foreach ($list as $info){
-                if (isset($skuIdMap[$info['skuId']])){
+            foreach ($list as $info) {
+                if (isset($skuIdMap[$info['skuId']])) {
                     $curlService->s3044()->delete("pa_sku_materials/{$skuIdMap[$info['skuId']]['_id']}");
                 }
                 $curlService->s3044()->post("pa_sku_materials", $info);
@@ -2098,7 +2110,8 @@ class SyncCurlController
     }
 
 
-    public function fix(){
+    public function fix()
+    {
         $curlService = (new CurlService())->pro();
         $curlService->gateway();
         $curlService->getModule('pa');
@@ -2110,15 +2123,15 @@ class SyncCurlController
         $fitmentSkuMap = [];
         $map = [];
         if (sizeof($fileFitContent) > 0) {
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
                 $map[$info['outside_title']] = $info['id'];
             }
         }
 
         $skuList = [];
-        if (sizeof($fileFitContent1) > 0){
-            foreach ($fileFitContent1 as $info){
-                if (isset($map[$info['productLineName']])){
+        if (sizeof($fileFitContent1) > 0) {
+            foreach ($fileFitContent1 as $info) {
+                if (isset($map[$info['productLineName']])) {
                     $skuList[] = [
                         "devSkuPkId" => $map[$info['productLineName']],
                         "skuId" => $info['skuId']
@@ -2137,16 +2150,16 @@ class SyncCurlController
             "purchaseHandleStatus" => 70
         ];
         $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $pmoArr));
-        if ($resp){
+        if ($resp) {
 
         }
-
 
 
     }
 
 
-    public function syncDevSkuInfoToProductSku(){
+    public function syncDevSkuInfoToProductSku()
+    {
         $curlService = (new CurlService())->pro();
         $curlService->gateway();
         $curlService->getModule('pa');
@@ -2182,14 +2195,14 @@ class SyncCurlController
             "a25051800ux0266",
             "a25051800ux0267"
         ];
-        foreach ($skuIdList as $sku){
+        foreach ($skuIdList as $sku) {
             $pmoArr = [
                 "initSkuId" => $sku,
                 "operatorName" => "system(zhouangang)",
                 "prePurchaseBillNo" => "QD202505130005"
             ];
             $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/sms/sku/info/init/v1/syncDevSkuInfoToProductSku", $pmoArr));
-            if ($resp){
+            if ($resp) {
 
             }
         }
@@ -2197,13 +2210,14 @@ class SyncCurlController
     }
 
 
-    public function updateSalesUserNameCancel2(){
+    public function updateSalesUserNameCancel2()
+    {
         //清掉小语种2的
         $env = "pro";
         $userList = [
             [
-                "old"=>"dengyiyi2",
-                "new"=>"dengyiyi",
+                "old" => "dengyiyi2",
+                "new" => "dengyiyi",
             ]
         ];
 
@@ -2212,14 +2226,11 @@ class SyncCurlController
         $this->Mongo3044Sql($userList);
 
 
-
-
-
-
     }
 
 
-    public function Mongo3009Sql($userList){
+    public function Mongo3009Sql($userList)
+    {
 
         $dbList = [
             [
@@ -2255,16 +2266,17 @@ class SyncCurlController
                 "field" => "traceman"
             ],
         ];
-        foreach ($userList as $user){
-            foreach ($dbList as $db){
-                $sql = 'db.' . $db['ku'] .'.updateMany({' . $db['field'] . ':"' . $user['old'] . '"},{$set:{' . $db['field'] . ':"'.$user['new'].'"}});';
+        foreach ($userList as $user) {
+            foreach ($dbList as $db) {
+                $sql = 'db.' . $db['ku'] . '.updateMany({' . $db['field'] . ':"' . $user['old'] . '"},{$set:{' . $db['field'] . ':"' . $user['new'] . '"}});';
                 $this->log($sql);
             }
         }
 
     }
 
-    public function Mongo3015Sql($userList){
+    public function Mongo3015Sql($userList)
+    {
 
         $dbList = [
             [
@@ -2324,16 +2336,17 @@ class SyncCurlController
 //                "field" => "developerUserName"
 //            ],
         ];
-        foreach ($userList as $user){
-            foreach ($dbList as $db){
-                $sql = 'db.' . $db['ku'] .'.updateMany({' . $db['field'] . ':"' . $user['old'] . '"},{$set:{' . $db['field'] . ':"'.$user['new'].'"}});';
+        foreach ($userList as $user) {
+            foreach ($dbList as $db) {
+                $sql = 'db.' . $db['ku'] . '.updateMany({' . $db['field'] . ':"' . $user['old'] . '"},{$set:{' . $db['field'] . ':"' . $user['new'] . '"}});';
                 $this->log($sql);
             }
         }
 
     }
 
-    public function Mongo3044Sql($userList){
+    public function Mongo3044Sql($userList)
+    {
 
         $dbList = [
             [
@@ -2349,9 +2362,9 @@ class SyncCurlController
                 "field" => "saleName"
             ]
         ];
-        foreach ($userList as $user){
-            foreach ($dbList as $db){
-                $sql = 'db.' . $db['ku'] .'.updateMany({' . $db['field'] . ':"' . $user['old'] . '"},{$set:{' . $db['field'] . ':"'.$user['new'].'"}});';
+        foreach ($userList as $user) {
+            foreach ($dbList as $db) {
+                $sql = 'db.' . $db['ku'] . '.updateMany({' . $db['field'] . ':"' . $user['old'] . '"},{$set:{' . $db['field'] . ':"' . $user['new'] . '"}});';
                 $this->log($sql);
             }
         }
@@ -2359,7 +2372,8 @@ class SyncCurlController
     }
 
 
-    public function createPmo(){
+    public function createPmo()
+    {
         ///scms/pmo_plan/v1/createPmo
 
         $curlService = (new CurlService())->pro();
@@ -2382,7 +2396,7 @@ class SyncCurlController
             "1996580262074515456",
         ];
 
-        foreach ($ids as $id){
+        foreach ($ids as $id) {
 //            $pmoArr = [
 //                "id" => $id,
 //            ];
@@ -2392,50 +2406,49 @@ class SyncCurlController
 //            }
 
 
-
             $pmoArr = [
                 "id" => $id,
             ];
             $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/scms/pmo_plan/v1/createPmo", $pmoArr));
-            if ($resp){
+            if ($resp) {
 
             }
         }
 
 
-
     }
 
 
-    public function updateZhixiao(){
+    public function updateZhixiao()
+    {
         $curlService = (new CurlService())->pro();
         //$curlService->gateway();
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/滞销定价sku_1.xlsx");
         $fitmentSkuMap = [];
         if (sizeof($fileFitContent) > 0) {
             $sellerIdProductIds = [];
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
                 $sellerIdProductIds[$info['账号']][] = $info['scuId'];
             }
-            foreach ($sellerIdProductIds as $sellerId => $sellerProductIds){
+            foreach ($sellerIdProductIds as $sellerId => $sellerProductIds) {
 
-                foreach (array_chunk($sellerProductIds,100) as $chunk){
-                    $fbaInfo = DataUtils::getPageList($curlService->s3015()->get("channel-price-customizes/queryPage",[
-                        "productId" => implode(",",$chunk),
+                foreach (array_chunk($sellerProductIds, 100) as $chunk) {
+                    $fbaInfo = DataUtils::getPageList($curlService->s3015()->get("channel-price-customizes/queryPage", [
+                        "productId" => implode(",", $chunk),
                         "seller" => $sellerId,
                         "priceType" => "unsale",
                         "limit" => 100,
                     ]));
 
-                    foreach ($fbaInfo as $info){
-                        if ($info['status'] == "inactive"){
+                    foreach ($fbaInfo as $info) {
+                        if ($info['status'] == "inactive") {
                             $this->log("{$info['productId']} 已经取消滞销，不需要再取消");
                             continue;
                         }
                         $info['status'] = "inactive";
                         $info['endTime'] = "2025-06-12T01:00:00.000Z";
                         $info['modifiedBy'] = "system(zhouangang)";
-                        $res = DataUtils::getResultData($curlService->s3015()->put("channel-price-customizes/{$info['_id']}",$info));
+                        $res = DataUtils::getResultData($curlService->s3015()->put("channel-price-customizes/{$info['_id']}", $info));
                         $this->log("取消滞销价:{$info['productId']}");
                     }
                 }
@@ -2446,7 +2459,8 @@ class SyncCurlController
 
     }
 
-    public function test(){
+    public function test()
+    {
 
         $lines = [
             "导入：a25062500ux0563-车型",
@@ -2487,7 +2501,8 @@ class SyncCurlController
 
     }
 
-    public function test1($a,$b,$c,$d){
+    public function test1($a, $b, $c, $d)
+    {
         echo "{$a} {$b} {$c} {$d}";
     }
 
@@ -2496,7 +2511,8 @@ class SyncCurlController
      * 修复垂直ID
      * @throws Exception
      */
-    public function fixSkuVerticalId(){
+    public function fixSkuVerticalId()
+    {
         $curlService = (new CurlService())->pro();
 
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/修复SKU.xlsx");
@@ -2511,22 +2527,22 @@ class SyncCurlController
                 "PLG" => "CR2024052100001",
                 "运营" => "CR201706080003",
             ];
-            foreach ($fileFitContent as $info){
-                $productInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
+            foreach ($fileFitContent as $info) {
+                $productInfo = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage", [
                     "productId" => $info['skuid'],
                     "limit" => 1
                 ]));
-                if ($productInfo){
-                    if (!$productInfo['verticalId']){
+                if ($productInfo) {
+                    if (!$productInfo['verticalId']) {
                         $productInfo['verticalId'] = $companyIdMap[$info['company']] ?? null;
                         $productInfo['action'] = "修复商家ID";
                         $productInfo['userName'] = "system(zhouangang)";
 
-                        $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
-                        if ($resp){
+                        $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}", $productInfo);
+                        if ($resp) {
 
                         }
-                    }else{
+                    } else {
                         $this->log("有商家ID，不需要修");
                     }
 
@@ -2536,44 +2552,43 @@ class SyncCurlController
         }
 
 
-
     }
-
 
 
     /**
      * 修复垂直ID
      * @throws Exception
      */
-    public function fixAmazonSpRuleId(){
+    public function fixAmazonSpRuleId()
+    {
         $curlService = (new CurlService())->pro();
 
-        $productInfo = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_sellers/queryPage",[
+        $productInfo = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_sellers/queryPage", [
             "company_in" => "CR201706060001",
             "limit" => 500
         ]));
-        if ($productInfo){
-            foreach ($productInfo as &$info){
-                if (isset($info['bindRule']) && count($info['bindRule']) > 0){
+        if ($productInfo) {
+            foreach ($productInfo as &$info) {
+                if (isset($info['bindRule']) && count($info['bindRule']) > 0) {
                     $update = false;
-                    foreach ($info['bindRule'] as &$bind){
-                        if ($bind['status'] == 0){
+                    foreach ($info['bindRule'] as &$bind) {
+                        if ($bind['status'] == 0) {
                             $startDate = '2025-06-18';
                             if (strpos($info['modifiedOn'], $startDate) === 0) {
                                 $this->log("{$info['sellerId']} - {$bind['spType']} - {$info['modifiedOn']}");
                             }
 
-                            foreach ( $bind['ruleTypeAndId'] as &$sss){
-                                if ($sss['ruleType'] == 'campaignRuleBySystem' && $sss['ruleId']){
+                            foreach ($bind['ruleTypeAndId'] as &$sss) {
+                                if ($sss['ruleType'] == 'campaignRuleBySystem' && $sss['ruleId']) {
                                     $sss['ruleId'] = "";
                                     $update = true;
                                 }
                             }
                         }
                     }
-                    if ($update){
+                    if ($update) {
                         $this->log("更新");
-                        $this->log(json_encode($info,JSON_UNESCAPED_UNICODE));
+                        $this->log(json_encode($info, JSON_UNESCAPED_UNICODE));
                         //$curlService->s3023()->put("amazon_sp_sellers/{$info['_id']}",$info);
                     }
                 }
@@ -2586,25 +2601,26 @@ class SyncCurlController
      * 查询本身就是未设置的数据，但是依然投放了campaign的数据
      * @throws Exception
      */
-    public function findCampaign(){
+    public function findCampaign()
+    {
         $curlService = (new CurlService())->pro();
 
-        $productInfo = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_sellers/queryPage",[
+        $productInfo = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_sellers/queryPage", [
             "company_in" => "CR201706060001",
             "limit" => 500
         ]));
-        if ($productInfo){
+        if ($productInfo) {
             $export = [];
             $sameCampaign = [];
             $manualAllZero = [];
-            foreach ($productInfo as &$info){
-                if (isset($info['bindRule']) && count($info['bindRule']) > 0){
+            foreach ($productInfo as &$info) {
+                if (isset($info['bindRule']) && count($info['bindRule']) > 0) {
                     $update = false;
-                    foreach ($info['bindRule'] as &$bind){
-                        if ($bind['status'] == 0){
+                    foreach ($info['bindRule'] as &$bind) {
+                        if ($bind['status'] == 0) {
 
                             $targetingType = $bind['spType'];
-                            if (strpos($bind['spType'],"manual") === 0){
+                            if (strpos($bind['spType'], "manual") === 0) {
                                 $targetingType = "manual";
                                 $this->log("{$info['sellerId']} - {$bind['spType']} - {$info['createdOn']} - {$info['modifiedOn']}");
                                 //$
@@ -2638,7 +2654,6 @@ class SyncCurlController
 //                                }
 
 
-
                         }
                     }
                 }
@@ -2650,7 +2665,7 @@ class SyncCurlController
 //                $this->log($filePath);
 //            }
 
-            $this->log(json_encode($manualAllZero,JSON_UNESCAPED_UNICODE));
+            $this->log(json_encode($manualAllZero, JSON_UNESCAPED_UNICODE));
 
 
         }
@@ -2693,7 +2708,7 @@ class SyncCurlController
             $page++;
         } while (true);
 
-        if (count($list) > 0){
+        if (count($list) > 0) {
             $excelUtils = new ExcelUtils();
             foreach (array_chunk($list, 10000) as $chunk) {
                 $filePath = $excelUtils->downloadXlsx([
@@ -2707,7 +2722,7 @@ class SyncCurlController
                 ], $chunk, "图片拍摄进度导出_" . date("YmdHis") . ".xlsx");
 
             }
-        }else{
+        } else {
             $this->log("没有导出");
         }
 
@@ -2715,8 +2730,9 @@ class SyncCurlController
     }
 
 
-    public function week(){
-        echo date("w",1750806000);
+    public function week()
+    {
+        echo date("w", 1750806000);
     }
 
     public function downloadPa()
@@ -2754,7 +2770,7 @@ class SyncCurlController
             $page++;
         } while (true);
 
-        if (count($list) > 0){
+        if (count($list) > 0) {
             $excelUtils = new ExcelUtils();
             foreach (array_chunk($list, 10000) as $chunk) {
                 $filePath = $excelUtils->downloadXlsx([
@@ -2768,7 +2784,7 @@ class SyncCurlController
                 ], $chunk, "图片拍摄进度导出_" . date("YmdHis") . ".xlsx");
 
             }
-        }else{
+        } else {
             $this->log("没有导出");
         }
 
@@ -2811,12 +2827,12 @@ class SyncCurlController
             } while (true);
 
 
-            if (count($ceBillNoMap) > 0){
+            if (count($ceBillNoMap) > 0) {
                 $keywordsList = [];
                 $cpAsinList = [];
                 $fitmentList = [];
-                foreach ($ceBillNoMap as $ceBillNo => $info){
-                    $this->log($ceBillNo."查询资料呈现");
+                foreach ($ceBillNoMap as $ceBillNo => $info) {
+                    $this->log($ceBillNo . "查询资料呈现");
                     $ll = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
                         "ceBillNo" => $ceBillNo,
                         "limit" => 1500,
@@ -2826,7 +2842,7 @@ class SyncCurlController
                         break;
                     }
                     foreach ($ll as $item) {
-                        foreach ($item['keywords'] as $k){
+                        foreach ($item['keywords'] as $k) {
                             $keywordsList[] = [
                                 'ceBillNo' => $ceBillNo,
                                 'saleName' => $info['saleName'],
@@ -2834,7 +2850,7 @@ class SyncCurlController
                                 'keywords' => $k
                             ];
                         }
-                        foreach ($item['cpAsin'] as $cp){
+                        foreach ($item['cpAsin'] as $cp) {
                             $cpAsinList[] = [
                                 'ceBillNo' => $ceBillNo,
                                 'saleName' => $info['saleName'],
@@ -2842,7 +2858,7 @@ class SyncCurlController
                                 'cpAsin' => $cp
                             ];
                         }
-                        foreach ($item['fitment'] as $fit){
+                        foreach ($item['fitment'] as $fit) {
                             $fitmentList[] = [
                                 'ceBillNo' => $ceBillNo,
                                 'saleName' => $info['saleName'],
@@ -2854,8 +2870,8 @@ class SyncCurlController
                     }
                 }
 
-                if (count($keywordsList) > 0){
-                    $this->redis->hSet(REDIS_MATERIAL_KEY . "_keywords", $ceBillNoLike,json_encode($keywordsList,JSON_UNESCAPED_UNICODE));
+                if (count($keywordsList) > 0) {
+                    $this->redis->hSet(REDIS_MATERIAL_KEY . "_keywords", $ceBillNoLike, json_encode($keywordsList, JSON_UNESCAPED_UNICODE));
 
                     $excelUtils = new ExcelUtils();
                     $filePath = $excelUtils->downloadXlsx([
@@ -2865,12 +2881,12 @@ class SyncCurlController
                         "核心词",
                     ], $keywordsList, "{$ceBillNoLike}_核心词导出_" . date("YmdHis") . ".xlsx");
                     $this->log("导出核心词");
-                }else{
+                } else {
                     $this->log("没有核心词");
                 }
 
-                if (count($cpAsinList) > 0){
-                    $this->redis->hSet(REDIS_MATERIAL_KEY . "_cpasins", $ceBillNoLike,json_encode($cpAsinList,JSON_UNESCAPED_UNICODE));
+                if (count($cpAsinList) > 0) {
+                    $this->redis->hSet(REDIS_MATERIAL_KEY . "_cpasins", $ceBillNoLike, json_encode($cpAsinList, JSON_UNESCAPED_UNICODE));
                     $excelUtils = new ExcelUtils();
                     $filePath = $excelUtils->downloadXlsx([
                         "CE单号",
@@ -2879,12 +2895,12 @@ class SyncCurlController
                         "CP ASIN",
                     ], $cpAsinList, "{$ceBillNoLike}_CP_Asin导出_" . date("YmdHis") . ".xlsx");
                     $this->log("导出CP ASIN");
-                }else{
+                } else {
                     $this->log("没有CP ASIN");
                 }
 
-                if (count($fitmentList) > 0){
-                    $this->redis->hSet(REDIS_MATERIAL_KEY . "_fitment", $ceBillNoLike,json_encode($fitmentList,JSON_UNESCAPED_UNICODE));
+                if (count($fitmentList) > 0) {
+                    $this->redis->hSet(REDIS_MATERIAL_KEY . "_fitment", $ceBillNoLike, json_encode($fitmentList, JSON_UNESCAPED_UNICODE));
                     $excelUtils = new ExcelUtils();
                     $filePath = $excelUtils->downloadXlsx([
                         "CE单号",
@@ -2894,18 +2910,16 @@ class SyncCurlController
                         "model",
                     ], $fitmentList, "{$ceBillNoLike}_fitment导出_" . date("YmdHis") . ".xlsx");
                     $this->log("导出fitment");
-                }else{
+                } else {
                     $this->log("没有fitment");
                 }
 
-            }else{
+            } else {
                 $this->log("{$ceBillNoLike}没有数据");
             }
 
 
         }
-
-
 
 
     }
@@ -2927,11 +2941,11 @@ class SyncCurlController
                 break;
             }
             foreach ($l as $info) {
-                if (preg_match('/^(QD|DPMO)/', $info['batchName'])){
-                    if (empty($info['saleNameList'])){
+                if (preg_match('/^(QD|DPMO)/', $info['batchName'])) {
+                    if (empty($info['saleNameList'])) {
                         $list[] = $info['batchName'];
                     }
-                }else{
+                } else {
                     $this->log("结束了");
                     break 2;
                 }
@@ -2952,18 +2966,18 @@ class SyncCurlController
 //        if (sizeof($fileFitContent) > 0) {
 //            $batchNameList = array_unique(array_column($fileFitContent,"batchName"));
 //        }else{
-            $batchNameList = $this->getQDDPMOBatchNameCeMaterialList();
+        $batchNameList = $this->getQDDPMOBatchNameCeMaterialList();
 //        }
 
-        if (count($batchNameList) > 0){
+        if (count($batchNameList) > 0) {
             $batchNameCeBillNoMap = [];
-            foreach (array_chunk($batchNameList,100) as $chunkBatchNameList){
+            foreach (array_chunk($batchNameList, 100) as $chunkBatchNameList) {
                 $curlService->gateway();
                 $curlService->getModule('pa');
                 $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/sms/sku/info/material/v1/findPrePurchaseBillWithSkuForSkuMaterialInfo", $chunkBatchNameList));
-                if ($resp){
+                if ($resp) {
                     $this->log("获取数据");
-                    foreach ($resp as $item){
+                    foreach ($resp as $item) {
                         $billNo = "";
                         if (isset($item['qdBillNo']) && $item['qdBillNo']) {
                             $billNo = $item['qdBillNo'];
@@ -2985,19 +2999,19 @@ class SyncCurlController
 
             $curlService = new CurlService();
             $curlService = $curlService->pro();
-            foreach (array_chunk($batchNameList,300) as $chunkBatchNameList){
+            foreach (array_chunk($batchNameList, 300) as $chunkBatchNameList) {
                 $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
                     "limit" => 1000,
                     "page" => 1,
-                    "batchName_in" => implode(",",$chunkBatchNameList)
+                    "batchName_in" => implode(",", $chunkBatchNameList)
                 ]));
-                if (count($l) == 0){
+                if (count($l) == 0) {
                     continue;
                 }
 
-                foreach ($l as $item){
+                foreach ($l as $item) {
                     $key = $item['batchName'] . $item['ceBillNo'];
-                    if (isset($batchNameCeBillNoMap[$key])){
+                    if (isset($batchNameCeBillNoMap[$key])) {
                         //存在数据
                         $this->log("有数据，更新");
                         $item['developerList'] = $batchNameCeBillNoMap[$key]['developerUserName'];
@@ -3006,14 +3020,14 @@ class SyncCurlController
                         $item['platformList'] = $batchNameCeBillNoMap[$key]['platformList'];
                         $item['productLevelList'] = $batchNameCeBillNoMap[$key]['productLevelList'];
                         $res = $curlService->s3044()->put("pa_ce_materials/{$item['_id']}", $item);
-                    }else{
+                    } else {
                         $this->log("{$item['batchName']}没有数据");
                     }
                 }
 
             }
 
-        }else{
+        } else {
             $this->log("没有可以修改的数据");
         }
     }
@@ -3022,8 +3036,8 @@ class SyncCurlController
     {
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/无ce单的自营sku数据_2025.xlsx");
 
-        if(sizeof($fileFitContent) > 0){
-            $list = array_unique(array_column($fileFitContent,"sku_id"));
+        if (sizeof($fileFitContent) > 0) {
+            $list = array_unique(array_column($fileFitContent, "sku_id"));
 
 
             $curlSsl = (new CurlService())->pro();
@@ -3033,10 +3047,10 @@ class SyncCurlController
                 "pageNumber" => 1,
                 "entriesPerPage" => 500
             ]));
-            if ($getKeyResp && count($getKeyResp) > 0){
+            if ($getKeyResp && count($getKeyResp) > 0) {
 
                 $skuIdCeMap = [];
-                foreach ($getKeyResp as $item){
+                foreach ($getKeyResp as $item) {
                     $skuIdCeMap[$item['skuId']] = $item['ceBillNo'];
                 }
 
@@ -3049,22 +3063,22 @@ class SyncCurlController
                     ]
                 ]));
                 $map = [];
-                if ($getKeyResp1){
-                    foreach ($getKeyResp1 as $item){
+                if ($getKeyResp1) {
+                    foreach ($getKeyResp1 as $item) {
                         $ceBillNo = "";
-                        if (isset($skuIdCeMap[$item['custom-skuInfo-skuId']])){
+                        if (isset($skuIdCeMap[$item['custom-skuInfo-skuId']])) {
                             $ceBillNo = $skuIdCeMap[$item['custom-skuInfo-skuId']];
                         }
-                        if(!empty($ceBillNo)){
+                        if (!empty($ceBillNo)) {
                             $map[$item['custom-prePurchase-prePurchaseBillNo']][$ceBillNo][] = $item['custom-skuInfo-skuId'];
                         }
                     }
                 }
 
-                if ($map){
-                    foreach ($map as $prePurchaseBillNo => $ceBillNoMap){
-                        foreach ($ceBillNoMap as $ceBillNo => $skuIds){
-                            $this->log("{$prePurchaseBillNo} 开始回写: {$ceBillNo}". json_encode($skuIds,JSON_UNESCAPED_UNICODE));
+                if ($map) {
+                    foreach ($map as $prePurchaseBillNo => $ceBillNoMap) {
+                        foreach ($ceBillNoMap as $ceBillNo => $skuIds) {
+                            $this->log("{$prePurchaseBillNo} 开始回写: {$ceBillNo}" . json_encode($skuIds, JSON_UNESCAPED_UNICODE));
                             $data = [
                                 "prePurchaseBillNo" => $prePurchaseBillNo,
                                 "ceBillNo" => $ceBillNo,
@@ -3073,8 +3087,8 @@ class SyncCurlController
                             $curlService1 = (new CurlService())->pro();
                             $curlService1->gateway()->getModule('pa');
                             $resp3 = DataUtils::getNewResultData($curlService1->getWayPost($curlService1->module . "/scms/ce_bill_no/v1/writeBackAutarkyCeSkuToPrePurchase", $data));
-                            if ($resp3){
-                                $this->log(json_encode($resp3,JSON_UNESCAPED_UNICODE));
+                            if ($resp3) {
+                                $this->log(json_encode($resp3, JSON_UNESCAPED_UNICODE));
                             }
                             sleep(3);
                         }
@@ -3082,13 +3096,10 @@ class SyncCurlController
                 }
 
 
-
             }
 
 
         }
-
-
 
 
     }
@@ -3098,10 +3109,11 @@ class SyncCurlController
      * 更新欧洲共享仓归属优先级配置
      * @return void
      */
-    public function updateEuSharedWarehouseFlowTypePriority(){
+    public function updateEuSharedWarehouseFlowTypePriority()
+    {
         $curlService = new CurlService();
         $curlService = $curlService->test();
-        $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage",[
+        $info = DataUtils::getPageListInFirstData($curlService->s3015()->get("option-val-lists/queryPage", [
             "optionName" => "EuSharedWarehouseFlowTypePriority"
         ]));
         $config = [
@@ -3114,7 +3126,7 @@ class SyncCurlController
             "PL",
             "SE"
         ];
-        if ($info){
+        if ($info) {
             $list = [];
 
             $ssss = $config;
@@ -3144,7 +3156,6 @@ class SyncCurlController
     }
 
 
-
     public function findPrePurchaseBillWithSkuForSkuMaterialInfo()
     {
         $curlService = (new CurlService())->pro();
@@ -3170,7 +3181,7 @@ class SyncCurlController
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/补充修复630数据.xlsx");
         if (sizeof($fileFitContent) > 0) {
 
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
                 $pmoArr = [
                     "qdBillNo" => $info['qdBillNo'],
                     "operatorName" => "zhouangang",
@@ -3178,7 +3189,7 @@ class SyncCurlController
                     "supplierId" => $info['supplierId']
                 ];
                 $resp = DataUtils::getNewResultData($curlService->getWayPost($curlService->module . "/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase", $pmoArr));
-                if ($resp){
+                if ($resp) {
 
                 }
             }
@@ -3208,8 +3219,8 @@ class SyncCurlController
                 break;
             }
             foreach ($l as $info) {
-                if (preg_match('/^(QD|DPMO)/', $info['batchName'])){
-                    $logListResp = DataUtils::getNewResultData($curlLogService->getWayPost($curlLogService->module . "/log/v1/query",[
+                if (preg_match('/^(QD|DPMO)/', $info['batchName'])) {
+                    $logListResp = DataUtils::getNewResultData($curlLogService->getWayPost($curlLogService->module . "/log/v1/query", [
                         "page" => [
                             "pageNum" => 1,
                             "pageSize" => 1000,
@@ -3220,8 +3231,8 @@ class SyncCurlController
                             "logType" => "pa-sku-material"
                         ]
                     ]));
-                    if ($logListResp && isset($logListResp['list']) && $logListResp['list'] && count($logListResp['list']) > 0){
-                        foreach ($logListResp['list'] as $logInfo){
+                    if ($logListResp && isset($logListResp['list']) && $logListResp['list'] && count($logListResp['list']) > 0) {
+                        foreach ($logListResp['list'] as $logInfo) {
                             $list[] = [
                                 "ceBillNo" => $info['ceBillNo'],
                                 "opType" => $logInfo['opType'],
@@ -3231,11 +3242,11 @@ class SyncCurlController
                             ];
                         }
                         $this->log("有日志：{$info['_id']}");
-                    }else{
+                    } else {
                         $this->log("没有日志：{$info['_id']}");
                     }
 
-                }else{
+                } else {
                     $this->log("结束了");
                     break 2;
                 }
@@ -3244,10 +3255,10 @@ class SyncCurlController
             $page++;
         } while (true);
 
-        if (count($list) > 0){
+        if (count($list) > 0) {
             $excelUtils = new ExcelUtils();
             $downloadOssLink = "资呈_" . date("YmdHis") . ".xlsx";
-            $downloadOssPath = $excelUtils->downloadXlsx(["ceBillNo", "opType", "修改前","修改后","备注"],$list,$downloadOssLink);
+            $downloadOssPath = $excelUtils->downloadXlsx(["ceBillNo", "opType", "修改前", "修改后", "备注"], $list, $downloadOssLink);
             $this->log("导出内容");
         }
 
@@ -3263,8 +3274,8 @@ class SyncCurlController
         $fitmentSkuMap = [];
         if (sizeof($fileFitContent) > 0) {
             $list = [];
-            foreach ($fileFitContent as $info){
-                if ($info['修改前'] == '/' && $info['修改后'] == '/'){
+            foreach ($fileFitContent as $info) {
+                if ($info['修改前'] == '/' && $info['修改后'] == '/') {
                     $this->log("没有任何修改");
                     continue;
                 }
@@ -3275,12 +3286,12 @@ class SyncCurlController
                 // 提取 "操作类型"
                 $colonPos = strpos($info['备注'], '：');
                 if ($colonPos !== false) {
-                    $action = substr( $info['备注'], 0, $colonPos);
-                    $remaining = substr( $info['备注'], $colonPos + 3); // 跳过 "：a"
+                    $action = substr($info['备注'], 0, $colonPos);
+                    $remaining = substr($info['备注'], $colonPos + 3); // 跳过 "：a"
                 } else {
                     // 处理 "保存a25062700ux2136" 这种情况
-                    $action = substr( $info['备注'], 0, 6); // 取前6个字符（"保存"）
-                    $remaining = substr( $info['备注'], 6); // 剩下的部分
+                    $action = substr($info['备注'], 0, 6); // 取前6个字符（"保存"）
+                    $remaining = substr($info['备注'], 6); // 剩下的部分
                 }
 
                 // 提取 "a编号" 和 "后缀"
@@ -3296,32 +3307,32 @@ class SyncCurlController
                 $this->log("{$action}");
                 $this->log("{$aNumber}");
                 $this->log("{$suffix}");
-                if ($action == '保存'){
+                if ($action == '保存') {
                     $this->log("保存，不读");
                     continue;
                 }
-                if (!isset($list[$aNumber])){
+                if (!isset($list[$aNumber])) {
                     $list[$aNumber] = [
                         "ceBillNo" => $ceBillNo
                     ];
                 }
-                if ($action == '导入'){
+                if ($action == '导入') {
                     $this->log("导入");
-                    if ($suffix == '车型'){
+                    if ($suffix == '车型') {
                         $list[$aNumber]["fitment"] = $info['修改后'];
-                    }else if ($suffix == '核心词'){
+                    } else if ($suffix == '核心词') {
                         $list[$aNumber]["keywords"] = $info['修改后'];
-                    }else if ($suffix == 'cpAsin'){
+                    } else if ($suffix == 'cpAsin') {
                         $list[$aNumber]["cpAsin"] = $info['修改后'];
                     }
                 }
-                if ($action == '更新'){
+                if ($action == '更新') {
                     $this->log("更新");
-                    if ($suffix == '车型'){
+                    if ($suffix == '车型') {
                         $list[$aNumber]["fitment"] = $info['修改后'];
-                    }else if ($suffix == '核心词'){
+                    } else if ($suffix == '核心词') {
                         $list[$aNumber]["keywords"] = $info['修改后'];
-                    }else if ($suffix == 'cpAsin'){
+                    } else if ($suffix == 'cpAsin') {
                         $list[$aNumber]["cpAsin"] = $info['修改后'];
                     }
                 }
@@ -3331,7 +3342,7 @@ class SyncCurlController
 
 
             $exportList = [];
-            foreach ($list as $skuId => $item){
+            foreach ($list as $skuId => $item) {
                 $exportList[] = [
                     "skuId" => $skuId,
                     "ceBillNo" => $item['ceBillNo'] ?? "",
@@ -3341,11 +3352,11 @@ class SyncCurlController
                 ];
             }
 
-            if (count($exportList) > 0){
+            if (count($exportList) > 0) {
 
                 $excelUtils = new ExcelUtils();
                 $downloadOssLink = "导出资呈数据_" . date("YmdHis") . ".xlsx";
-                $downloadOssPath = $excelUtils->downloadXlsx(["skuId", "ceBillNo", "fitment","keywords","cpAsin"],$exportList,$downloadOssLink);
+                $downloadOssPath = $excelUtils->downloadXlsx(["skuId", "ceBillNo", "fitment", "keywords", "cpAsin"], $exportList, $downloadOssLink);
                 $this->log("导出内容");
 
 
@@ -3360,7 +3371,7 @@ class SyncCurlController
         $curlService = (new CurlService())->pro();
 
         foreach ([
-            "CE202507180079"
+                     "CE202507180079"
                  ] as $ceBillNo) {
 
             $resp = DataUtils::getPageDocList(
@@ -3386,31 +3397,31 @@ class SyncCurlController
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/导出资呈数据_20250718113804.xlsx");
         if (sizeof($fileFitContent) > 0) {
             $ceBillNoMap = [];
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
                 $ceBillNoMap[$info['ceBillNo']][] = [
                     "skuId" => $info['skuId'],
-                    "fitment" => json_decode($info['fitment'],true),
-                    "keywords" => json_decode($info['keywords'],true),
-                    "cpAsin" => json_decode($info['cpAsin'],true),
+                    "fitment" => json_decode($info['fitment'], true),
+                    "keywords" => json_decode($info['keywords'], true),
+                    "cpAsin" => json_decode($info['cpAsin'], true),
                 ];
             }
 
-            if (count($ceBillNoMap) > 0){
+            if (count($ceBillNoMap) > 0) {
 
-                foreach ($ceBillNoMap as $ceBillNo => $list){
+                foreach ($ceBillNoMap as $ceBillNo => $list) {
 
                     $resp = DataUtils::getPageDocList(
                         $curlService->s3044()->get("pa_ce_materials/queryPage", [
                             "ceBillNo" => $ceBillNo,
                         ])
                     );
-                    if ($resp){
+                    if ($resp) {
                         $info = $resp[0];
-                        if ($info['status'] == "materialComplete"){
+                        if ($info['status'] == "materialComplete") {
                             //资料发布的需要修复数据
-                            if (count($list) > 0){
+                            if (count($list) > 0) {
                                 $this->log("资料发布了需要修复：{$ceBillNo}");
-                                foreach ($list as $dataInfo){
+                                foreach ($list as $dataInfo) {
                                     $respD = DataUtils::getPageDocList(
                                         $curlService->s3044()->get("pa_sku_materials/queryPage", [
                                             "ceBillNo" => $ceBillNo,
@@ -3418,7 +3429,7 @@ class SyncCurlController
                                             "limit" => 1
                                         ])
                                     );
-                                    if ($respD){
+                                    if ($respD) {
                                         $detailInfo = $respD[0];
                                         $detailInfo['fitment'] = $dataInfo['fitment'];
                                         $detailInfo['keywords'] = $dataInfo['keywords'];
@@ -3426,11 +3437,11 @@ class SyncCurlController
                                         $detailInfo['modifiedBy'] = "system(fix-angang)";
 
 
-                                        $this->log(json_encode($detailInfo,JSON_UNESCAPED_UNICODE));
+                                        $this->log(json_encode($detailInfo, JSON_UNESCAPED_UNICODE));
 
 
                                         $ss = $curlService->s3044()->put("pa_sku_materials/{$detailInfo['_id']}", $detailInfo);
-                                        if ($ss){
+                                        if ($ss) {
                                             $this->log("更新完毕");
                                         }
                                     }
@@ -3438,10 +3449,10 @@ class SyncCurlController
 
                             }
 
-                        }else{
+                        } else {
                             $this->log("资料未发布，可以不用修复：{$ceBillNo}");
                         }
-                    }else{
+                    } else {
                         $this->log("找不到数据：{$ceBillNo}");
                     }
 
@@ -3472,32 +3483,32 @@ class SyncCurlController
                 "custom-sguInfo-sguId"
             ]
         ]));
-        $map  =[];
-        if ($getKeyResp){
-            foreach ($getKeyResp as $item){
+        $map = [];
+        if ($getKeyResp) {
+            foreach ($getKeyResp as $item) {
                 $map[$item['custom-skuInfo-skuId']] = $item['custom-sguInfo-sguId'];
             }
 
         }
-        $res = DataUtils::getResultData($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
-            "skuScuId_in" => implode(",",$list),
+        $res = DataUtils::getResultData($curlService->s3015()->get("/sgu-sku-scu-maps/query", [
+            "skuScuId_in" => implode(",", $list),
             "limit" => 200,
         ]));
 
         foreach ($res as $info) {
 
 
-            if (isset($map[$info['skuScuId']])){
+            if (isset($map[$info['skuScuId']])) {
 
-                if ($map[$info['skuScuId']] != $info['sguId']){
+                if ($map[$info['skuScuId']] != $info['sguId']) {
                     $info['sguId'] = $map[$info['skuScuId']];
                     $info['modifiedBy'] = "system(zhouangang)";
                     $curlService->s3015()->put("sgu-sku-scu-maps/{$info['_id']}", $info);
-                }else{
+                } else {
                     $this->log("{$info['skuScuId']} sgu一样无需修复：{$map[$info['skuScuId']]} {$info['sguId']}");
                 }
 
-            }else{
+            } else {
                 $this->log("找不到");
             }
 
@@ -3518,18 +3529,18 @@ class SyncCurlController
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/导出资呈数据_20250718113804.xlsx");
         if (sizeof($fileFitContent) > 0) {
             $ceBillNoMap = [];
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
                 $ceBillNoMap[$info['ceBillNo']][] = [
                     "skuId" => $info['skuId'],
-                    "fitment" => json_decode($info['fitment'],true),
-                    "keywords" => json_decode($info['keywords'],true),
-                    "cpAsin" => json_decode($info['cpAsin'],true),
+                    "fitment" => json_decode($info['fitment'], true),
+                    "keywords" => json_decode($info['keywords'], true),
+                    "cpAsin" => json_decode($info['cpAsin'], true),
                 ];
             }
 
-            if (count($ceBillNoMap) > 0){
+            if (count($ceBillNoMap) > 0) {
 
-                foreach ($ceBillNoMap as $ceBillNo => $list){
+                foreach ($ceBillNoMap as $ceBillNo => $list) {
 
                 }
 
@@ -3540,8 +3551,6 @@ class SyncCurlController
     }
 
 
-
-
     public function fixPaSkuMaterialList()
     {
         $curlService = (new CurlService())->pro();
@@ -3550,10 +3559,10 @@ class SyncCurlController
         if (sizeof($fileFitContent) > 0) {
             $ceSkuMap = [];
             foreach ($fileFitContent as $sheet => $sheetList) {
-                if ($sheet === '核心词'){
+                if ($sheet === '核心词') {
                     $uniqueKeyMap = [];
-                    foreach ($sheetList as $info){
-                        if (!empty($info['核心词'])){
+                    foreach ($sheetList as $info) {
+                        if (!empty($info['核心词'])) {
                             $uniqueKey = "{$info['skuId']}{$info['核心词']}";
                             if (!isset($uniqueKeyMap[$uniqueKey])) {
 
@@ -3563,11 +3572,11 @@ class SyncCurlController
                             }
                         }
                     }
-                }else if ($sheet === '热销车型'){
+                } else if ($sheet === '热销车型') {
                     $uniqueKeyMap = [];
-                    foreach ($sheetList as $info){
+                    foreach ($sheetList as $info) {
                         $uniqueKey = "{$info['skuId']}{$info['make']}{$info['model']}";
-                        if (!isset($uniqueKeyMap[$uniqueKey])){
+                        if (!isset($uniqueKeyMap[$uniqueKey])) {
                             $ceSkuMap[$info['CE#']][$info['skuId']]['fitment'][] = [
                                 "make" => $info['make'],
                                 "model" => $info['model'],
@@ -3575,9 +3584,9 @@ class SyncCurlController
                             $uniqueKeyMap[$uniqueKey] = 1;
                         }
                     }
-                }else if ($sheet === 'CP asin'){
+                } else if ($sheet === 'CP asin') {
                     $uniqueKeyMap = [];
-                    foreach ($sheetList as $info){
+                    foreach ($sheetList as $info) {
                         if (!empty($info['asin'])) {
                             $uniqueKey = "{$info['skuId']}{$info['asin']}";
 
@@ -3593,12 +3602,12 @@ class SyncCurlController
             }
 
 
-            if ($ceSkuMap){
+            if ($ceSkuMap) {
                 $skuNumber = 0;
                 $ceNumber = 0;
-                foreach ($ceSkuMap as $ceBillNo => $tree1){
+                foreach ($ceSkuMap as $ceBillNo => $tree1) {
                     $ceNumber++;
-                    foreach ($tree1 as $skuId => $tree2){
+                    foreach ($tree1 as $skuId => $tree2) {
                         $skuNumber++;
                         $skuMaterialInfo = DataUtils::getPageDocListInFirstDataV1($curlService->s3044()->get("pa_sku_materials/queryPage", [
                             "limit" => 1,
@@ -3606,15 +3615,15 @@ class SyncCurlController
                             "skuId" => $skuId,
                             "page" => 1
                         ]));
-                        if ($skuMaterialInfo){
+                        if ($skuMaterialInfo) {
                             //存在，不管之前的值是怎样的，直接覆盖
-                            $skuMaterialInfo['keywords'] = $tree2['keywords']??[];
-                            $skuMaterialInfo['cpAsin'] = $tree2['cpAsin']??[];
-                            $skuMaterialInfo['fitment'] = $tree2['fitment']??[];
+                            $skuMaterialInfo['keywords'] = $tree2['keywords'] ?? [];
+                            $skuMaterialInfo['cpAsin'] = $tree2['cpAsin'] ?? [];
+                            $skuMaterialInfo['fitment'] = $tree2['fitment'] ?? [];
                             $skuMaterialInfo['modifiedBy'] = "system(zhouangang88)";
-                            $this->log("更新sku{$ceBillNo}-{$skuId}" . json_encode($skuMaterialInfo,JSON_UNESCAPED_UNICODE));
+                            $this->log("更新sku{$ceBillNo}-{$skuId}" . json_encode($skuMaterialInfo, JSON_UNESCAPED_UNICODE));
                             $curlService->s3044()->put("pa_sku_materials/{$skuMaterialInfo['_id']}", $skuMaterialInfo);
-                        }else{
+                        } else {
                             //不存在，就要创建,先查ce资呈，看看里面的sku，看看里面的sku有没有父类
                             $this->log("{$ceBillNo}{$skuId}不存在sku资呈,等待创建");
                             $skuMaterialList = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
@@ -3623,9 +3632,9 @@ class SyncCurlController
                                 "page" => 1,
                                 "orderBy" => "-_id"
                             ]));
-                            if ($skuMaterialList){
-                                foreach ($skuMaterialList as $item){
-                                    if (empty($item['parentSkuId'])){
+                            if ($skuMaterialList) {
+                                foreach ($skuMaterialList as $item) {
+                                    if (empty($item['parentSkuId'])) {
                                         $syncSkuInfo = [];
                                         //是父类
                                         $syncSkuInfo = $item;
@@ -3633,25 +3642,25 @@ class SyncCurlController
                                         $syncSkuInfo['skuId'] = $skuId;
                                         $syncSkuInfo['ceBillNo'] = $ceBillNo;
                                         $syncSkuInfo['createdBy'] = "system(zhouangang)";
-                                        $syncSkuInfo['keywords'] = $tree2['keywords']??[];
-                                        $syncSkuInfo['cpAsin'] = $tree2['cpAsin']??[];
-                                        $syncSkuInfo['fitment'] = $tree2['fitment']??[];
+                                        $syncSkuInfo['keywords'] = $tree2['keywords'] ?? [];
+                                        $syncSkuInfo['cpAsin'] = $tree2['cpAsin'] ?? [];
+                                        $syncSkuInfo['fitment'] = $tree2['fitment'] ?? [];
                                         unset($syncSkuInfo['_id']);
                                         unset($syncSkuInfo['__v']);
-                                        $this->log("同步父sku到子sku{$ceBillNo}-{$skuId}" . json_encode($syncSkuInfo,JSON_UNESCAPED_UNICODE));
+                                        $this->log("同步父sku到子sku{$ceBillNo}-{$skuId}" . json_encode($syncSkuInfo, JSON_UNESCAPED_UNICODE));
                                         $curlService->s3044()->post("pa_sku_materials", $syncSkuInfo);
                                         break;
                                     }
                                 }
-                            }else{
+                            } else {
                                 //ce单一个sku都没有的，直接创建吧
                                 $syncSkuInfo = [
                                     "skuId" => $skuId,
                                     "ceBillNo" => $ceBillNo,
                                     "createdBy" => "system(zhouangang)",
-                                    "keywords" => $tree2['keywords']??[],
-                                    "fitment" => $tree2['fitment']??[],
-                                    "cpAsin" => $tree2['cpAsin']??[],
+                                    "keywords" => $tree2['keywords'] ?? [],
+                                    "fitment" => $tree2['fitment'] ?? [],
+                                    "cpAsin" => $tree2['cpAsin'] ?? [],
                                     "basicInfo" => "",
                                     "categoryRelation" => "",
                                     "description" => "",
@@ -3662,13 +3671,13 @@ class SyncCurlController
                                     "saleBasicInfo" => "",
                                     "developerFile" => "",
                                     "saleFile" => "",
-                                    "developerStartOn" => date("Y-m-d H:i:s",time()) . "Z",
+                                    "developerStartOn" => date("Y-m-d H:i:s", time()) . "Z",
                                     "developerStartBy" => "system(zhouangang)",
                                     "saleStartOn" => null,
                                     "saleStartBy" => "",
                                     "oeNumber" => [],
                                 ];
-                                $this->log("初始化创建sku{$ceBillNo}-{$skuId}" . json_encode($syncSkuInfo,JSON_UNESCAPED_UNICODE));
+                                $this->log("初始化创建sku{$ceBillNo}-{$skuId}" . json_encode($syncSkuInfo, JSON_UNESCAPED_UNICODE));
                                 $curlService->s3044()->post("pa_sku_materials", $syncSkuInfo);
 
                             }
@@ -3683,15 +3692,12 @@ class SyncCurlController
                 $this->log("sku数量：{$skuNumber}");
 
 
-
             }
 
         }
 
 
-
     }
-
 
 
     public function getRepeatSkuMaterial()
@@ -3712,9 +3718,9 @@ class SyncCurlController
                 break;
             }
             foreach ($l as $info) {
-                if (preg_match('/^(QD|DPMO)/', $info['batchName']) && preg_match('/^(CE)/',$info['ceBillNo'])){
+                if (preg_match('/^(QD|DPMO)/', $info['batchName']) && preg_match('/^(CE)/', $info['ceBillNo'])) {
                     $ceBillNoList[] = $info['ceBillNo'];
-                }else{
+                } else {
                     $this->log("结束了");
                     break 2;
                 }
@@ -3723,14 +3729,14 @@ class SyncCurlController
         } while (true);
 
         $exportList = [];
-        if (count($ceBillNoList) > 0){
-            $this->log(count($ceBillNoList)."个CE单");
+        if (count($ceBillNoList) > 0) {
+            $this->log(count($ceBillNoList) . "个CE单");
             $cccTime = "2025-07-18T00:00:00.000Z";
 
-            foreach (array_chunk($ceBillNoList,10) as $chunk){
+            foreach (array_chunk($ceBillNoList, 10) as $chunk) {
                 $ll = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
                     "limit" => 10000,
-                    "ceBillNo_in" => implode(",",$chunk),
+                    "ceBillNo_in" => implode(",", $chunk),
                     "status" => "materialComplete",
                     "orderBy" => "-_id"
                 ]));
@@ -3742,9 +3748,9 @@ class SyncCurlController
                     $cc = new DateTime($cccTime);
                     $ss = new DateTime($info['publishOn']);
                     $this->log("{$info['ceBillNo']}-{$info['skuId']}" . $info['publishOn']);
-                    if (!empty($info['publishOn']) && !empty($info['publishBy']) && ($ss < $cc)){
+                    if (!empty($info['publishOn']) && !empty($info['publishBy']) && ($ss < $cc)) {
 
-                        if (!empty($info['keywords']) || !empty($info['cpAsin']) || !empty($info['fitment'])){
+                        if (!empty($info['keywords']) || !empty($info['cpAsin']) || !empty($info['fitment'])) {
                             $key = $info['ceBillNo'] . $info['skuId'];
                             $data = [
                                 "ceBillNo" => $info['ceBillNo'],
@@ -3754,7 +3760,7 @@ class SyncCurlController
 //                                "fitment" => $info['fitment'],
                                 "publishOn" => $info['publishOn'],
                             ];
-                            $this->redis->hSet(REDIS_MATERIAL_REPT_KEY, $key,json_encode($data,JSON_UNESCAPED_UNICODE));
+                            $this->redis->hSet(REDIS_MATERIAL_REPT_KEY, $key, json_encode($data, JSON_UNESCAPED_UNICODE));
 
                             $dataJ = [
                                 "ceBillNo" => $info['ceBillNo'],
@@ -3860,15 +3866,14 @@ class SyncCurlController
 //            }
 //        }
 
-        if (count($exportList) > 0){
+        if (count($exportList) > 0) {
             $excelUtils = new ExcelUtils();
-            $filePath = $excelUtils->downloadXlsx(["ceBillNo","skuId","发布日期"],$exportList,"sku资料呈现资料发布后广告信息内容_".date("YmdHis").".xlsx");
+            $filePath = $excelUtils->downloadXlsx(["ceBillNo", "skuId", "发布日期"], $exportList, "sku资料呈现资料发布后广告信息内容_" . date("YmdHis") . ".xlsx");
             $this->log($filePath);
-        }else{
+        } else {
             $this->log("没有数据");
 
         }
-
 
 
     }
@@ -3885,10 +3890,10 @@ class SyncCurlController
 //        $fileContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/sku资料呈现资料发布后广告信息内容_test.xlsx");
 
         $ceBillNoMap = [];
-        foreach ($fileContent as $info){
+        foreach ($fileContent as $info) {
             $ceBillNoMap[$info['ceBillNo']][] = [
                 "skuId" => $info['skuId'],
-                "publishOn" => date("Y-m-d",strtotime($info['发布日期']))
+                "publishOn" => date("Y-m-d", strtotime($info['发布日期']))
             ];
         }
 
@@ -3900,7 +3905,7 @@ class SyncCurlController
             foreach ($skuMap as $skuId) {
 
                 $jixianTime = "2025-04-12T08:00:00.000Z";
-                if (strtotime($skuId['publishOn']) <= strtotime($jixianTime)){
+                if (strtotime($skuId['publishOn']) <= strtotime($jixianTime)) {
                     $this->log("{$skuId['skuId']} {$skuId['publishOn']} 超过4个月，无法获取阿里云数据");
                     continue;
                 }
@@ -3908,13 +3913,13 @@ class SyncCurlController
                 $this->log("{$query}");
                 $res = (new RequestUtils("test"))->callAliCloudSls($query);
 
-                if ($res && $res['code'] == "200" && $res['data'] && $res['data']['logs'] && count($res['data']['logs']) > 0){
+                if ($res && $res['code'] == "200" && $res['data'] && $res['data']['logs'] && count($res['data']['logs']) > 0) {
                     //按时间倒序
-                    usort($res['data']['logs'], function($a, $b) {
+                    usort($res['data']['logs'], function ($a, $b) {
                         return $b['__time__'] <=> $a['__time__'];
                     });
-                    $nextLog = $this->findNoMaterialStatusDate($res['data']['logs'],0);
-                    if ($nextLog){
+                    $nextLog = $this->findNoMaterialStatusDate($res['data']['logs'], 0);
+                    if ($nextLog) {
                         $key = $nextLog['ceBillNo'] . $nextLog['skuId'];
                         $data1 = [
                             "ceBillNo" => $nextLog['ceBillNo'],
@@ -3923,21 +3928,21 @@ class SyncCurlController
                             "cpAsin" => $nextLog['cpAsin'],
                             "fitment" => $nextLog['fitment']
                         ];
-                        $this->redis->hSet(REDIS_MATERIAL_REPT_CORRET_KEY, $key,json_encode($data1,JSON_UNESCAPED_UNICODE));
+                        $this->redis->hSet(REDIS_MATERIAL_REPT_CORRET_KEY, $key, json_encode($data1, JSON_UNESCAPED_UNICODE));
 
                         $dataJ1 = [
                             "ceBillNo" => $nextLog['ceBillNo'],
                             "skuId" => $nextLog['skuId'],
-                            "keywords" => json_encode($nextLog['keywords'],JSON_UNESCAPED_UNICODE),
-                            "cpAsin" => json_encode($nextLog['cpAsin'],JSON_UNESCAPED_UNICODE),
-                            "fitment" => json_encode($nextLog['fitment'],JSON_UNESCAPED_UNICODE),
+                            "keywords" => json_encode($nextLog['keywords'], JSON_UNESCAPED_UNICODE),
+                            "cpAsin" => json_encode($nextLog['cpAsin'], JSON_UNESCAPED_UNICODE),
+                            "fitment" => json_encode($nextLog['fitment'], JSON_UNESCAPED_UNICODE),
                         ];
                         $exportList[] = $dataJ1;
-                        $this->log("有日志：" .json_encode($dataJ1));
+                        $this->log("有日志：" . json_encode($dataJ1));
                     }
 
 
-                }else{
+                } else {
                     $this->log("没有log日志");
                 }
 
@@ -3946,36 +3951,35 @@ class SyncCurlController
 
         }
 
-        if (count($exportList) > 0){
+        if (count($exportList) > 0) {
             $excelUtils = new ExcelUtils();
-            $filePath = $excelUtils->downloadXlsx(["ceBillNo","skuId","核心词","asin","车型"],$exportList,"sku资料呈现资料发布前广告信息内容_".date("YmdHis").".xlsx");
+            $filePath = $excelUtils->downloadXlsx(["ceBillNo", "skuId", "核心词", "asin", "车型"], $exportList, "sku资料呈现资料发布前广告信息内容_" . date("YmdHis") . ".xlsx");
             $this->log($filePath);
-        }else{
+        } else {
             $this->log("没有数据");
 
         }
 
 
-
     }
 
 
-    public function findNoMaterialStatusDate($logsList,$index = 0){
-        if (!isset($logsList[$index])){
+    public function findNoMaterialStatusDate($logsList, $index = 0)
+    {
+        if (!isset($logsList[$index])) {
             $this->log("没有日志");
             return [];
         }
 
         $nowLog = json_decode($logsList[$index]['FormString'], true);
-        if (isset($nowLog['publishOn']) && $nowLog['publishOn'] && isset($nowLog['status']) && $nowLog['status'] == 'materialComplete'){
+        if (isset($nowLog['publishOn']) && $nowLog['publishOn'] && isset($nowLog['status']) && $nowLog['status'] == 'materialComplete') {
             $this->log("是发布完成的日志更新，跳过");
             $index++;
-            return $this->findNoMaterialStatusDate($logsList,$index);
+            return $this->findNoMaterialStatusDate($logsList, $index);
         }
 
         return $nowLog;
     }
-
 
 
     public function exportBeforeSkuMaterial()
@@ -3989,12 +3993,12 @@ class SyncCurlController
         $exportListAsins = [];
         $exportListFitments = [];
 
-        foreach ($fileContent as $info){
+        foreach ($fileContent as $info) {
 
 
-            if ($info['核心词']){
-                $keywords = json_decode($info['核心词'],true);
-                foreach ($keywords as $keyword){
+            if ($info['核心词']) {
+                $keywords = json_decode($info['核心词'], true);
+                foreach ($keywords as $keyword) {
 
                     $exportListKeywords[] = [
                         "ceBillNo" => $info['ceBillNo'],
@@ -4005,9 +4009,9 @@ class SyncCurlController
                 }
             }
 
-            if ($info['asin']){
-                $asins = json_decode($info['asin'],true);
-                foreach ($asins as $asin){
+            if ($info['asin']) {
+                $asins = json_decode($info['asin'], true);
+                foreach ($asins as $asin) {
                     $exportListAsins[] = [
                         "ceBillNo" => $info['ceBillNo'],
                         "skuId" => $info['skuId'],
@@ -4016,9 +4020,9 @@ class SyncCurlController
                 }
             }
 
-            if ($info['车型']){
-                $fitments = json_decode($info['车型'],true);
-                foreach ($fitments as $fitment){
+            if ($info['车型']) {
+                $fitments = json_decode($info['车型'], true);
+                foreach ($fitments as $fitment) {
                     $exportListFitments[] = [
                         "ceBillNo" => $info['ceBillNo'],
                         "skuId" => $info['skuId'],
@@ -4031,38 +4035,33 @@ class SyncCurlController
         }
 
 
-
-
-        if (count($exportListKeywords) > 0){
+        if (count($exportListKeywords) > 0) {
             $excelUtils = new ExcelUtils();
-            $filePath = $excelUtils->downloadXlsx(["ceBillNo","skuId","核心词"],$exportListKeywords,"sku资料呈现资料发布前广告信息核心词_".date("YmdHis").".xlsx");
+            $filePath = $excelUtils->downloadXlsx(["ceBillNo", "skuId", "核心词"], $exportListKeywords, "sku资料呈现资料发布前广告信息核心词_" . date("YmdHis") . ".xlsx");
             $this->log($filePath);
-        }else{
+        } else {
             $this->log("没有数据");
 
         }
-        if (count($exportListAsins) > 0){
+        if (count($exportListAsins) > 0) {
             $excelUtils = new ExcelUtils();
-            $filePath = $excelUtils->downloadXlsx(["ceBillNo","skuId","asin"],$exportListAsins,"sku资料呈现资料发布前广告信息CP_Asin_".date("YmdHis").".xlsx");
+            $filePath = $excelUtils->downloadXlsx(["ceBillNo", "skuId", "asin"], $exportListAsins, "sku资料呈现资料发布前广告信息CP_Asin_" . date("YmdHis") . ".xlsx");
             $this->log($filePath);
-        }else{
+        } else {
             $this->log("没有数据");
 
         }
-        if (count($exportListFitments) > 0){
+        if (count($exportListFitments) > 0) {
             $excelUtils = new ExcelUtils();
-            $filePath = $excelUtils->downloadXlsx(["ceBillNo","skuId","make","model"],$exportListFitments,"sku资料呈现资料发布前广告信息车型_".date("YmdHis").".xlsx");
+            $filePath = $excelUtils->downloadXlsx(["ceBillNo", "skuId", "make", "model"], $exportListFitments, "sku资料呈现资料发布前广告信息车型_" . date("YmdHis") . ".xlsx");
             $this->log($filePath);
-        }else{
+        } else {
             $this->log("没有数据");
 
         }
-
 
 
     }
-
-
 
 
     public function fixCeMaterialSSSS()
@@ -4073,24 +4072,24 @@ class SyncCurlController
         if (sizeof($fileFitContent) > 0) {
             $ceBillNoSkuIdMap = [];
 
-            if (isset($fileFitContent['核心词'])){
-                foreach ($fileFitContent['核心词'] as $info){
+            if (isset($fileFitContent['核心词'])) {
+                foreach ($fileFitContent['核心词'] as $info) {
                     $ceBillNoSkuIdMap[$info['ceBillNo']][$info['skuId']]["keywords"][] = $info['核心词'];
                 }
             }
 
-            if (isset($fileFitContent['asin'])){
-                foreach ($fileFitContent['asin'] as $info){
+            if (isset($fileFitContent['asin'])) {
+                foreach ($fileFitContent['asin'] as $info) {
                     $ceBillNoSkuIdMap[$info['ceBillNo']][$info['skuId']]["cpAsin"][] = $info['asin'];
                 }
             }
 
-            if (isset($fileFitContent['车型'])){
+            if (isset($fileFitContent['车型'])) {
                 $uniqFitmentMap = [];
-                foreach ($fileFitContent['车型'] as $info){
+                foreach ($fileFitContent['车型'] as $info) {
 
                     $uniqFitment = md5($info['ceBillNo'] . $info['skuId'] . $info['make'] . $info['model']);
-                    if (!isset($uniqFitmentMap[$uniqFitment])){
+                    if (!isset($uniqFitmentMap[$uniqFitment])) {
                         $ceBillNoSkuIdMap[$info['ceBillNo']][$info['skuId']]["fitment"][] = [
                             "make" => $info['make'],
                             "model" => $info['model']
@@ -4102,15 +4101,15 @@ class SyncCurlController
                 }
             }
 
-            if (count($ceBillNoSkuIdMap) > 0){
+            if (count($ceBillNoSkuIdMap) > 0) {
 
-                foreach ($ceBillNoSkuIdMap as $ceBillNo => $list){
+                foreach ($ceBillNoSkuIdMap as $ceBillNo => $list) {
 
                     //资料发布的需要修复数据
-                    if (count($list) > 0){
+                    if (count($list) > 0) {
                         $this->log("资料发布了需要修复：{$ceBillNo}");
 
-                        foreach ($list as $skuId => $dataInfo){
+                        foreach ($list as $skuId => $dataInfo) {
                             $detailInfo = DataUtils::getPageDocListInFirstDataV1(
                                 $curlService->s3044()->get("pa_sku_materials/queryPage", [
                                     "ceBillNo" => $ceBillNo,
@@ -4118,18 +4117,18 @@ class SyncCurlController
                                     "limit" => 1
                                 ])
                             );
-                            if ($detailInfo){
+                            if ($detailInfo) {
                                 $detailInfo['fitment'] = $dataInfo['fitment'] ?? [];
                                 $detailInfo['keywords'] = array_unique($dataInfo['keywords'] ?? []);
                                 $detailInfo['cpAsin'] = array_unique($dataInfo['cpAsin'] ?? []);
                                 $detailInfo['modifiedBy'] = "system(sp-fix-angang)";
 
 
-                                $this->log(json_encode($detailInfo,JSON_UNESCAPED_UNICODE));
+                                $this->log(json_encode($detailInfo, JSON_UNESCAPED_UNICODE));
 
 
                                 $ss = $curlService->s3044()->put("pa_sku_materials/{$detailInfo['_id']}", $detailInfo);
-                                if ($ss){
+                                if ($ss) {
                                     $this->log("更新完毕");
                                 }
                             }
@@ -4155,32 +4154,32 @@ class SyncCurlController
         $keywords = [];
         $cpasin = [];
         $fitments = [];
-        for($page = 7;$page <= 7;$page++){
+        for ($page = 7; $page <= 7; $page++) {
             $fileFitContent = (new ExcelUtils())->getXlsxDataV2("../export/skuMaterial/zicheng/{$page}.xlsx");
             if (sizeof($fileFitContent) > 0) {
                 foreach ($fileFitContent as $sheet => $sheetList) {
-                    if ($sheet === '核心词'){
-                        $keywords = array_merge($keywords,$sheetList);
-                    }else if ($sheet === '热销车型'){
-                        $fitments = array_merge($fitments,$sheetList);
-                    }else if ($sheet === 'CP asin'){
-                        $cpasin = array_merge($cpasin,$sheetList);
+                    if ($sheet === '核心词') {
+                        $keywords = array_merge($keywords, $sheetList);
+                    } else if ($sheet === '热销车型') {
+                        $fitments = array_merge($fitments, $sheetList);
+                    } else if ($sheet === 'CP asin') {
+                        $cpasin = array_merge($cpasin, $sheetList);
                     }
                 }
             }
         }
 
-        if (count($keywords) > 0){
+        if (count($keywords) > 0) {
             $excelUtils = new ExcelUtils("skuMaterial/");
-            $filePath = $excelUtils->downloadXlsx(["运营人员","CE#","skuId","核心词"],$keywords,"sku资料呈现核心词_".date("YmdHis").".xlsx");
+            $filePath = $excelUtils->downloadXlsx(["运营人员", "CE#", "skuId", "核心词"], $keywords, "sku资料呈现核心词_" . date("YmdHis") . ".xlsx");
         }
-        if (count($cpasin) > 0){
+        if (count($cpasin) > 0) {
             $excelUtils = new ExcelUtils("skuMaterial/");
-            $filePath = $excelUtils->downloadXlsx(["运营人员","CE#","skuId","asin"],$cpasin,"sku资料呈现CP_Asin_".date("YmdHis").".xlsx");
+            $filePath = $excelUtils->downloadXlsx(["运营人员", "CE#", "skuId", "asin"], $cpasin, "sku资料呈现CP_Asin_" . date("YmdHis") . ".xlsx");
         }
-        if (count($fitments) > 0){
+        if (count($fitments) > 0) {
             $excelUtils = new ExcelUtils("skuMaterial/");
-            $filePath = $excelUtils->downloadXlsx(["运营人员","CE#","skuId","make","model"],$fitments,"sku资料呈现热销车型_".date("YmdHis").".xlsx");
+            $filePath = $excelUtils->downloadXlsx(["运营人员", "CE#", "skuId", "make", "model"], $fitments, "sku资料呈现热销车型_" . date("YmdHis") . ".xlsx");
         }
 
     }
@@ -4196,54 +4195,52 @@ class SyncCurlController
                 "limit" => 1000
             ])
         );
-        if ($list){
+        if ($list) {
             $sameSkuIdMap = [];
-           foreach ($list as &$item){
-               if (!isset($sameSkuIdMap[$item['skuId']])){
-                   if ($item['keywords']){
-                       $item['keywords'] = array_unique($item['keywords']);
-                   }
-                   if ($item['cpAsin']){
-                       $item['cpAsin'] = array_unique($item['cpAsin']);
-                   }
-                   if ($item['fitment']){
-                       $quchongfitment = [];
-                       $uniqFitmentMap = [];
-                       foreach ($item['fitment'] as $info){
-                           $uniqFitment = md5($info['make'] . $info['model']);
-                           if (!isset($uniqFitmentMap[$uniqFitment])){
-                               $quchongfitment[] = [
-                                   "make" => $info['make'],
-                                   "model" => $info['model']
-                               ];
-                               $uniqFitmentMap[$uniqFitment] = 1;
-                           }
-                       }
-                       if ($quchongfitment){
-                           $item['fitment'] = $quchongfitment;
-                       }
-                   }
-                   $sameSkuIdMap[$item['skuId']] = 1;
-                   $this->log(json_encode($item,JSON_UNESCAPED_UNICODE));
+            foreach ($list as &$item) {
+                if (!isset($sameSkuIdMap[$item['skuId']])) {
+                    if ($item['keywords']) {
+                        $item['keywords'] = array_unique($item['keywords']);
+                    }
+                    if ($item['cpAsin']) {
+                        $item['cpAsin'] = array_unique($item['cpAsin']);
+                    }
+                    if ($item['fitment']) {
+                        $quchongfitment = [];
+                        $uniqFitmentMap = [];
+                        foreach ($item['fitment'] as $info) {
+                            $uniqFitment = md5($info['make'] . $info['model']);
+                            if (!isset($uniqFitmentMap[$uniqFitment])) {
+                                $quchongfitment[] = [
+                                    "make" => $info['make'],
+                                    "model" => $info['model']
+                                ];
+                                $uniqFitmentMap[$uniqFitment] = 1;
+                            }
+                        }
+                        if ($quchongfitment) {
+                            $item['fitment'] = $quchongfitment;
+                        }
+                    }
+                    $sameSkuIdMap[$item['skuId']] = 1;
+                    $this->log(json_encode($item, JSON_UNESCAPED_UNICODE));
 
-                   $ss = $curlService->s3044()->put("pa_sku_materials/{$item['_id']}", $item);
-                   if ($ss){
-                       $this->log("更新完毕");
-                   }
-               }else{
-                   $this->log("{$item['skuId']} 重复了,删掉一个");
-                   $curlService->s3044()->delete("pa_sku_materials/{$item['_id']}");
-               }
+                    $ss = $curlService->s3044()->put("pa_sku_materials/{$item['_id']}", $item);
+                    if ($ss) {
+                        $this->log("更新完毕");
+                    }
+                } else {
+                    $this->log("{$item['skuId']} 重复了,删掉一个");
+                    $curlService->s3044()->delete("pa_sku_materials/{$item['_id']}");
+                }
 
-           }
-
+            }
 
 
         }
 
 
     }
-
 
 
     public function fixMergeADSguId()
@@ -4255,8 +4252,8 @@ class SyncCurlController
 
 
             $list = [];
-            foreach ($fileFitContent as $item){
-                if (!empty($item['sku_id'])){
+            foreach ($fileFitContent as $item) {
+                if (!empty($item['sku_id'])) {
                     $list[] = $item['sku_id'];
                 }
             }
@@ -4272,9 +4269,9 @@ class SyncCurlController
                     "custom-skuInfo-tempSkuId"
                 ]
             ]));
-            $map  =[];
-            if ($getKeyResp){
-                foreach ($getKeyResp as $item){
+            $map = [];
+            if ($getKeyResp) {
+                foreach ($getKeyResp as $item) {
                     $map[$item['custom-skuInfo-skuId']] = $item;
                 }
             }
@@ -4312,21 +4309,21 @@ class SyncCurlController
             $qdScmsPrePurchaseMap = [];
             $fix30List = [];
             $hasSguInit = [];
-            foreach ($fileFitContent as $info){
-                if (empty($info['sku_id'])){
+            foreach ($fileFitContent as $info) {
+                if (empty($info['sku_id'])) {
                     $this->log("{$info['temp_sku_id']}没有sku_id");
                     continue;
                 }
-                if (isset($map[$info['sku_id']])){
+                if (isset($map[$info['sku_id']])) {
                     $skuAttrData = $map[$info['sku_id']];
 
-                    if (!empty($skuAttrData['custom-sguInfo-groupTag'])){
+                    if (!empty($skuAttrData['custom-sguInfo-groupTag'])) {
 
 
                         $sguKey = "sgu_init_{$info['batch_no']}_{$skuAttrData['custom-sguInfo-groupTag']}";
                         $this->log("{$sguKey}");
                         $sguId = $this->redis->hGet("sgu_fix_redis", $sguKey);
-                        if (!$sguId){
+                        if (!$sguId) {
                             //当前key重新创建sgu
                             $sguId = $this->createSguInfo();
 
@@ -4336,33 +4333,33 @@ class SyncCurlController
                             //$qdScmsPrePurchaseMap[$sguKey] = $sguId;
                         }
 
-                        if (!empty($sguId)){
+                        if (!empty($sguId)) {
 
                             $this->log("{$sguKey} 生成 {$sguId}");
 
-                            $sguInfo = DataUtils::getQueryListInFirstDataV3($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
+                            $sguInfo = DataUtils::getQueryListInFirstDataV3($curlService->s3015()->get("/sgu-sku-scu-maps/query", [
                                 "skuScuId" => $info['sku_id'],
                                 "limit" => 1,
                             ]));
-                            if ($sguInfo){
+                            if ($sguInfo) {
 
                                 $sguInfo['sguId'] = $sguId;
                                 $sguInfo['modifiedBy'] = "system(zhouangang)";
                                 $curlService->s3015()->put("sgu-sku-scu-maps/{$sguInfo['_id']}", $sguInfo);
 
-                            }else{
+                            } else {
                                 //创建
 
-                                $channelList = explode(",",$skuAttrData['custom-sguInfo-channel']);
+                                $channelList = explode(",", $skuAttrData['custom-sguInfo-channel']);
                                 $channelListData = [];
-                                foreach ($channelList as $ch){
+                                foreach ($channelList as $ch) {
                                     $channelListData[] = [
                                         "groupName" => "",
                                         "groupAttrName" => [],
                                         "groupAttrValue" => [],
                                         "channel" => $ch,
                                         "modifiedBy" => "system(zhouangang)",
-                                        "modifiedOn" => date("Y-m-d H:i:s",time ())."Z"
+                                        "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z"
                                     ];
                                 }
                                 $create = [
@@ -4372,10 +4369,10 @@ class SyncCurlController
                                     "sguId" => $sguId,
                                     "remark" => "sgu自动绑定和初始化",
                                     "channel" => $channelListData,
-                                    "createdOn" => date("Y-m-d H:i:s",time ())."Z",
-                                    "modifiedOn" => date("Y-m-d H:i:s",time ())."Z"
+                                    "createdOn" => date("Y-m-d H:i:s", time()) . "Z",
+                                    "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z"
                                 ];
-                                $curlService->s3015()->post("/sgu-sku-scu-maps",$create);
+                                $curlService->s3015()->post("/sgu-sku-scu-maps", $create);
 
                             }
 
@@ -4389,13 +4386,13 @@ class SyncCurlController
                                 ]
                             ];
 
-                            if(!isset($hasSguInit[$sguId])){
+                            if (!isset($hasSguInit[$sguId])) {
                                 $this->log("{$sguId} 开始初始化");
-                                $sssinof = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
+                                $sssinof = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage", [
                                     "limit" => 1,
                                     "productId" => $sguId
                                 ]));
-                                if (!$sssinof){
+                                if (!$sssinof) {
                                     $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
                                     $resp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/sms/sku/info/init/v1/initSkuInfo", [
                                         "initSkuId" => $info['sku_id'],
@@ -4404,36 +4401,31 @@ class SyncCurlController
                                         "sguId" => $sguId
                                     ]));
                                     $hasSguInit[$sguId] = 1;
-                                }else{
+                                } else {
                                     $hasSguInit[$sguId] = 1;
                                 }
                                 $this->log("{$sguId} 结束初始化");
                             }
 
 
-
-                        }else{
+                        } else {
                             $this->log("{$sguKey} 生成g号失败");
                         }
 
 
-
-                    }else{
+                    } else {
                         $this->log("没有绑定g号，不用初始化");
                     }
 
                 }
 
 
-
-
             }
 
 
-
             //回写3.0
-            if ($fix30List){
-                foreach (array_chunk($fix30List,200) as $chunkFix30List){
+            if ($fix30List) {
+                foreach (array_chunk($fix30List, 200) as $chunkFix30List) {
                     $curlSsll = (new CurlService())->pro()->gateway()->getModule("pa");
                     $getKeyResp = DataUtils::getNewResultData($curlSsll->getWayPost($curlSsll->module . "/ppms/product_dev/sku/v1/directUpdateBatch", [
                         "operator" => "zhouangang",
@@ -4448,9 +4440,6 @@ class SyncCurlController
         }
 
 
-
-
-
     }
 
 
@@ -4463,12 +4452,12 @@ class SyncCurlController
 
 
             $listMap = [];
-            foreach ($fileFitContent as $item){
-                if (!empty($item['sku_id'])){
+            foreach ($fileFitContent as $item) {
+                if (!empty($item['sku_id'])) {
                     $listMap[$item['original_product_dev_main_id']][] = $item['sku_id'];
                 }
             }
-            foreach ($listMap as $mainid => $list){
+            foreach ($listMap as $mainid => $list) {
                 $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
                 $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/ppms/product_dev/sku/v2/findListWithAttr", [
                     "skuIdList" => $list,
@@ -4478,130 +4467,121 @@ class SyncCurlController
                         "custom-sguInfo-channel"
                     ]
                 ]));
-                $map  =[];
-                if ($getKeyResp){
-                    foreach ($getKeyResp as $item){
+                $map = [];
+                if ($getKeyResp) {
+                    foreach ($getKeyResp as $item) {
                         $map[$item['custom-skuInfo-skuId']] = $item;
                     }
                 }
 
-                foreach ($list as $sku){
-                    if (isset($map[$sku])){
+                foreach ($list as $sku) {
+                    if (isset($map[$sku])) {
                         $skuAttrData = $map[$sku];
 
 
-                            $sguKey = "sgu_init_{$mainid}";
-                            $this->log("{$sguKey}");
-                            $sguId = $this->redis->hGet("sgu_fix_redis", $sguKey);
-                            if (!$sguId){
-                                //当前key重新创建sgu
-                                $sguId = $this->createSguInfo();
+                        $sguKey = "sgu_init_{$mainid}";
+                        $this->log("{$sguKey}");
+                        $sguId = $this->redis->hGet("sgu_fix_redis", $sguKey);
+                        if (!$sguId) {
+                            //当前key重新创建sgu
+                            $sguId = $this->createSguInfo();
 
-                                $this->log("{$sku} 绑定 {$sguId}");
+                            $this->log("{$sku} 绑定 {$sguId}");
 
-                                $this->redis->hSet("sgu_fix_redis", $sguKey, $sguId);
-                                //$qdScmsPrePurchaseMap[$sguKey] = $sguId;
-                            }
+                            $this->redis->hSet("sgu_fix_redis", $sguKey, $sguId);
+                            //$qdScmsPrePurchaseMap[$sguKey] = $sguId;
+                        }
 
-                            if (!empty($sguId)){
+                        if (!empty($sguId)) {
 
-                                $this->log("{$sguKey} 生成 {$sguId}");
+                            $this->log("{$sguKey} 生成 {$sguId}");
 
-                                $sguInfo = DataUtils::getQueryListInFirstDataV3($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
-                                    "skuScuId" => $sku,
-                                    "limit" => 1,
-                                ]));
-                                if ($sguInfo){
+                            $sguInfo = DataUtils::getQueryListInFirstDataV3($curlService->s3015()->get("/sgu-sku-scu-maps/query", [
+                                "skuScuId" => $sku,
+                                "limit" => 1,
+                            ]));
+                            if ($sguInfo) {
 
-                                    $sguInfo['sguId'] = $sguId;
-                                    $sguInfo['modifiedBy'] = "system(zhouangang)";
-                                    $curlService->s3015()->put("sgu-sku-scu-maps/{$sguInfo['_id']}", $sguInfo);
+                                $sguInfo['sguId'] = $sguId;
+                                $sguInfo['modifiedBy'] = "system(zhouangang)";
+                                $curlService->s3015()->put("sgu-sku-scu-maps/{$sguInfo['_id']}", $sguInfo);
 
-                                }else{
-                                    //创建
+                            } else {
+                                //创建
 
-                                    $channelList = explode(",",$skuAttrData['custom-sguInfo-channel']);
-                                    $channelListData = [];
-                                    foreach ($channelList as $ch){
-                                        $channelListData[] = [
-                                            "groupName" => "",
-                                            "groupAttrName" => [],
-                                            "groupAttrValue" => [],
-                                            "channel" => $ch,
-                                            "modifiedBy" => "system(zhouangang)",
-                                            "modifiedOn" => date("Y-m-d H:i:s",time ())."Z"
-                                        ];
-                                    }
-                                    $create = [
-                                        "createdBy" => "system(zhouangang)",
+                                $channelList = explode(",", $skuAttrData['custom-sguInfo-channel']);
+                                $channelListData = [];
+                                foreach ($channelList as $ch) {
+                                    $channelListData[] = [
+                                        "groupName" => "",
+                                        "groupAttrName" => [],
+                                        "groupAttrValue" => [],
+                                        "channel" => $ch,
                                         "modifiedBy" => "system(zhouangang)",
-                                        "skuScuId" => $sku,
-                                        "sguId" => $sguId,
-                                        "remark" => "sgu自动绑定和初始化",
-                                        "channel" => $channelListData,
-                                        "createdOn" => date("Y-m-d H:i:s",time ())."Z",
-                                        "modifiedOn" => date("Y-m-d H:i:s",time ())."Z"
+                                        "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z"
                                     ];
-                                    $curlService->s3015()->post("/sgu-sku-scu-maps",$create);
-
                                 }
-
-                                $fix30List[] = [
-                                    "tempSkuId" => $skuAttrData['custom-skuInfo-tempSkuId'],
-                                    "skuAttrList" => [
-                                        [
-                                            "name" => "custom-sguInfo-sguId",
-                                            "value" => $sguId
-                                        ]
-                                    ]
+                                $create = [
+                                    "createdBy" => "system(zhouangang)",
+                                    "modifiedBy" => "system(zhouangang)",
+                                    "skuScuId" => $sku,
+                                    "sguId" => $sguId,
+                                    "remark" => "sgu自动绑定和初始化",
+                                    "channel" => $channelListData,
+                                    "createdOn" => date("Y-m-d H:i:s", time()) . "Z",
+                                    "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z"
                                 ];
+                                $curlService->s3015()->post("/sgu-sku-scu-maps", $create);
 
-                                if(!isset($hasSguInit[$sguId])){
-                                    $this->log("{$sguId} 开始初始化");
-                                    $sssinof = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
-                                        "limit" => 1,
-                                        "productId" => $sguId
-                                    ]));
-                                    if (!$sssinof){
-                                        $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
-                                        $resp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/sms/sku/info/init/v1/initSkuInfo", [
-                                            "initSkuId" => $sku,
-                                            "operatorName" => "system(修复sgu初始化)",
-                                            "productType" => "SGU",
-                                            "sguId" => $sguId
-                                        ]));
-                                        $hasSguInit[$sguId] = 1;
-                                    }else{
-                                        $hasSguInit[$sguId] = 1;
-                                    }
-                                    $this->log("{$sguId} 结束初始化");
-                                }
-
-
-
-                            }else{
-                                $this->log("{$sguKey} 生成g号失败");
                             }
+
+                            $fix30List[] = [
+                                "tempSkuId" => $skuAttrData['custom-skuInfo-tempSkuId'],
+                                "skuAttrList" => [
+                                    [
+                                        "name" => "custom-sguInfo-sguId",
+                                        "value" => $sguId
+                                    ]
+                                ]
+                            ];
+
+                            if (!isset($hasSguInit[$sguId])) {
+                                $this->log("{$sguId} 开始初始化");
+                                $sssinof = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage", [
+                                    "limit" => 1,
+                                    "productId" => $sguId
+                                ]));
+                                if (!$sssinof) {
+                                    $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+                                    $resp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/sms/sku/info/init/v1/initSkuInfo", [
+                                        "initSkuId" => $sku,
+                                        "operatorName" => "system(修复sgu初始化)",
+                                        "productType" => "SGU",
+                                        "sguId" => $sguId
+                                    ]));
+                                    $hasSguInit[$sguId] = 1;
+                                } else {
+                                    $hasSguInit[$sguId] = 1;
+                                }
+                                $this->log("{$sguId} 结束初始化");
+                            }
+
+
+                        } else {
+                            $this->log("{$sguKey} 生成g号失败");
+                        }
 
 
                     }
                 }
-
-
-
-
 
 
             }
 
 
-
-
-
-
             //回写3.0
-            if ($fix30List){
-                foreach (array_chunk($fix30List,200) as $chunkFix30List){
+            if ($fix30List) {
+                foreach (array_chunk($fix30List, 200) as $chunkFix30List) {
                     $curlSsll = (new CurlService())->pro()->gateway()->getModule("pa");
                     $getKeyResp = DataUtils::getNewResultData($curlSsll->getWayPost($curlSsll->module . "/ppms/product_dev/sku/v1/directUpdateBatch", [
                         "operator" => "zhouangang",
@@ -4640,31 +4620,31 @@ class SyncCurlController
             "g26042900ux0034"
         ];
         $curlService = (new CurlService())->pro();
-        $sguInfoList = DataUtils::getQueryList($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
-            "sguId" => implode(",",$list),
+        $sguInfoList = DataUtils::getQueryList($curlService->s3015()->get("/sgu-sku-scu-maps/query", [
+            "sguId" => implode(",", $list),
             "limit" => 1000,
         ]));
 
         $sguIdSkuMap = [];
-        foreach ($sguInfoList as $sguInfo){
+        foreach ($sguInfoList as $sguInfo) {
             $sguIdSkuMap[$sguInfo['sguId']][] = $sguInfo['skuScuId'];
         }
 
-        foreach ($sguIdSkuMap as $sguId => $skus){
+        foreach ($sguIdSkuMap as $sguId => $skus) {
             $this->log("{$sguId} 批量初始化");
-            if (count($skus) > 0){
+            if (count($skus) > 0) {
                 $sku = $skus[0];
-            }else{
+            } else {
                 $this->log("{$sguId} 没有sku");
                 continue;
             }
 
             $this->log("{$sguId} 开始初始化");
-            $sssinof = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage",[
+            $sssinof = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage", [
                 "limit" => 1,
                 "productId" => $sguId
             ]));
-            if (!$sssinof){
+            if (!$sssinof) {
                 $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
                 $resp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/sms/sku/info/init/v1/initSkuInfo", [
                     "initSkuId" => $sku,
@@ -4674,70 +4654,64 @@ class SyncCurlController
                 ]));
 
                 $this->log("{$sguId} 结束初始化");
-            }else{
+            } else {
                 $this->log("{$sguId} 已经初始化");
             }
         }
 
 
-
-
-
-
-
     }
-
 
 
     public function createSguInfo()
     {
         $curlService = (new CurlService())->pro();
-        $res = DataUtils::getResultData($curlService->s3015()->get("soaps/inventory/createSguInfo",['createdBy' => "system(zhouangang)"]));
-        if ($res){
+        $res = DataUtils::getResultData($curlService->s3015()->get("soaps/inventory/createSguInfo", ['createdBy' => "system(zhouangang)"]));
+        if ($res) {
             return $res;
         }
         return "";
     }
 
 
-
-    public function fixProductSku(){
+    public function fixProductSku()
+    {
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/需要删除来货的.xlsx");
         $fitmentSkuMap = [];
         if (sizeof($fileFitContent) > 0) {
 
             $curlService = (new CurlService())->pro();
 
-            $list = array_unique(array_column($fileFitContent,"skuId"));
+            $list = array_unique(array_column($fileFitContent, "skuId"));
 
 
-            $infoList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
-                "productId" => implode(",",$list),
+            $infoList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage", [
+                "productId" => implode(",", $list),
                 "limit" => 500
             ]));
             $map = [];
-            if ($infoList){
-                foreach ($infoList as $info){
+            if ($infoList) {
+                foreach ($infoList as $info) {
                     $map[$info['productId']] = $info;
                 }
             }
 
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
 
-                if (isset($map[$info['skuId']])){
+                if (isset($map[$info['skuId']])) {
                     $deleteAttributeArray = [];
                     $channel = $info['channel'];
 
-                    foreach ($info as $key => $value){
+                    foreach ($info as $key => $value) {
                         //判断$key的开头是delete
-                        if (strpos($key,"delete") === 0){
+                        if (strpos($key, "delete") === 0) {
                             $deleteAttributeArray[] = [
                                 "channel" => $channel,
                                 "label" => $value,
                             ];
                         }
                     }
-                    if (empty($deleteAttributeArray)){
+                    if (empty($deleteAttributeArray)) {
                         $this->log("没有需要删除的attribute");
                         continue;
                     }
@@ -4747,9 +4721,9 @@ class SyncCurlController
                     $productInfo['action'] = "system(删除错误的attribute)251212";
                     $productInfo['userName'] = "system(zhouangang)";
 
-                    $this->log(json_encode($productInfo,JSON_UNESCAPED_UNICODE));
-                    $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
-                    if ($resp){
+                    $this->log(json_encode($productInfo, JSON_UNESCAPED_UNICODE));
+                    $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}", $productInfo);
+                    if ($resp) {
 
                     }
                 }
@@ -4764,7 +4738,7 @@ class SyncCurlController
     {
         $curlService = (new CurlService())->pro();
 
-        $list = DataUtils::getPageList($curlService->s3015()->get("translation_management_categorys/queryPage",[
+        $list = DataUtils::getPageList($curlService->s3015()->get("translation_management_categorys/queryPage", [
             "exampleCategory" => 1342943031,
             "exampleChannel" => "amazon_uk",
             "orderBy" => "-modifiedOn",
@@ -4778,16 +4752,16 @@ class SyncCurlController
             "correspondData" => [],
             "createdBy" => "system(zhouangang)",
             "modifiedBy" => "system(zhouangang)",
-            "createdOn" => date("Y-m-d H:i:s",time())."Z",
-            "modifiedOn" => date("Y-m-d H:i:s",time())."Z"
+            "createdOn" => date("Y-m-d H:i:s", time()) . "Z",
+            "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z"
         ];
         $correspondData = [];
 
         $sameChannelData = [];
-        foreach ($list as $info){
-            if ($info['correspondData']){
-                foreach ($info['correspondData'] as $tree){
-                    if (!isset($sameChannelData[$tree['channel']])){
+        foreach ($list as $info) {
+            if ($info['correspondData']) {
+                foreach ($info['correspondData'] as $tree) {
+                    if (!isset($sameChannelData[$tree['channel']])) {
                         $sameChannelData[$tree['channel']] = 1;
                         $correspondData[] = $tree;
                     }
@@ -4797,12 +4771,13 @@ class SyncCurlController
         }
         $data['correspondData'] = $correspondData;
 
-        $this->log(json_encode($data,JSON_UNESCAPED_UNICODE));
-        $curlService->s3015()->post("translation_management_categorys",$data);
+        $this->log(json_encode($data, JSON_UNESCAPED_UNICODE));
+        $curlService->s3015()->post("translation_management_categorys", $data);
     }
 
 
-    public function fixDengyiyi(){
+    public function fixDengyiyi()
+    {
         $pmo = [
             "DPMO250626003",
             "DPMO250626004",
@@ -4816,26 +4791,25 @@ class SyncCurlController
             "DPMO250819009",
         ];
         $curlService = (new CurlService())->pro();
-        $list = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage",[
-            "batchName_in" => implode(",",$pmo),
+        $list = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
+            "batchName_in" => implode(",", $pmo),
             "limit" => 500
         ]));
-        if ($list){
-            foreach ($list as $info){
-                if ($info['ebayTraceMan'] == 'dengyiyi2'){
+        if ($list) {
+            foreach ($list as $info) {
+                if ($info['ebayTraceMan'] == 'dengyiyi2') {
                     $info['ebayTraceMan'] = 'dengyiyi';
-                    foreach ($info['ebayTraceManList'] as &$item){
-                        if ($item == 'dengyiyi2'){
+                    foreach ($info['ebayTraceManList'] as &$item) {
+                        if ($item == 'dengyiyi2') {
                             $item = 'dengyiyi';
                         }
                     }
-                    $this->log(json_encode($info,JSON_UNESCAPED_UNICODE));
-                    $curlService->s3044()->put("pa_ce_materials/{$info['_id']}",$info);
+                    $this->log(json_encode($info, JSON_UNESCAPED_UNICODE));
+                    $curlService->s3044()->put("pa_ce_materials/{$info['_id']}", $info);
                 }
             }
         }
     }
-
 
 
     public function getssss()
@@ -4846,21 +4820,21 @@ class SyncCurlController
         ];
 
         $exportList = [];
-        foreach ($list as $id){
-            $info = DataUtils::getResultData($curlService->s3015()->get("/sgu-sku-scu-maps/{$id}",[]));
-            if ($info){
+        foreach ($list as $id) {
+            $info = DataUtils::getResultData($curlService->s3015()->get("/sgu-sku-scu-maps/{$id}", []));
+            if ($info) {
                 $hasGroupName = false;
-                foreach ($info['channel'] as $channel){
-                    if ($channel['groupName']){
+                foreach ($info['channel'] as $channel) {
+                    if ($channel['groupName']) {
                         $hasGroupName = true;
                     }
                 }
                 $res = (new RequestUtils("test"))->callAliCloudSls2($info['skuScuId']);
                 $oldSguId = "";
                 $oldSkuId = "";
-                if ($res && $res['data'] && count($res['data']) > 0){
+                if ($res && $res['data'] && count($res['data']) > 0) {
                     $logs = $res['data'][0]['FormString'];
-                    $data = json_decode($logs,true);
+                    $data = json_decode($logs, true);
                     $oldSkuId = $data['skuScuId'];
                     $oldSguId = $data['sguId'];
                 }
@@ -4869,17 +4843,17 @@ class SyncCurlController
                     "sgu_id" => $info['sguId'],
                     "old_sku_id" => $oldSkuId,
                     "old_sgu_id" => $oldSguId,
-                    "hasGroupName" => $hasGroupName ? "有":"无",
+                    "hasGroupName" => $hasGroupName ? "有" : "无",
                     "createTime" => $info['createdOn'],
                     "modifiedOn" => $info['modifiedOn'],
                 ];
             }
         }
 
-        if ($exportList){
+        if ($exportList) {
             $excelUtils = new ExcelUtils();
             $downloadOssLink = "g号修复的被更新的_" . date("YmdHis") . ".xlsx";
-            $downloadOssPath = $excelUtils->downloadXlsx(["sku_id", "sgu_id", "旧A号","旧G号","有分组的","创建日期","修改日期"],$exportList,$downloadOssLink);
+            $downloadOssPath = $excelUtils->downloadXlsx(["sku_id", "sgu_id", "旧A号", "旧G号", "有分组的", "创建日期", "修改日期"], $exportList, $downloadOssLink);
 
         }
 
@@ -4894,8 +4868,8 @@ class SyncCurlController
         if (sizeof($fileFitContent) > 0) {
 
             $list = [];
-            foreach ($fileFitContent as $item){
-                if (!empty($item['sku_id'] && $item['有分组的'] == '有')){
+            foreach ($fileFitContent as $item) {
+                if (!empty($item['sku_id'] && $item['有分组的'] == '有')) {
                     $list[] = $item['sku_id'];
                 }
             }
@@ -4911,34 +4885,33 @@ class SyncCurlController
                     "custom-skuInfo-tempSkuId"
                 ]
             ]));
-            $map  =[];
-            if ($getKeyResp){
-                foreach ($getKeyResp as $item){
+            $map = [];
+            if ($getKeyResp) {
+                foreach ($getKeyResp as $item) {
                     $map[$item['custom-skuInfo-skuId']] = $item;
                 }
             }
 
             $fix30List = [];
 
-            foreach ($fileFitContent as $item){
-                if (!empty($item['sku_id'] && $item['有分组的'] == '有')){
-                    if (!isset($map[$item['sku_id']])){
+            foreach ($fileFitContent as $item) {
+                if (!empty($item['sku_id'] && $item['有分组的'] == '有')) {
+                    if (!isset($map[$item['sku_id']])) {
                         continue;
                     }
                     $tempSkuId = $map[$item['sku_id']]['custom-skuInfo-tempSkuId'];
                     $sguId = $item['旧G号'];
 
                     $curlService = (new CurlService())->pro();
-                    $sguInfo = DataUtils::getQueryListInFirstDataV3($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
+                    $sguInfo = DataUtils::getQueryListInFirstDataV3($curlService->s3015()->get("/sgu-sku-scu-maps/query", [
                         "skuScuId" => $item['sku_id'],
                         "limit" => 1,
                     ]));
-                    if ($sguInfo){
+                    if ($sguInfo) {
                         $sguInfo['sguId'] = $sguId;
                         $sguInfo['modifiedBy'] = "system(zhouangang)";
                         $curlService->s3015()->put("sgu-sku-scu-maps/{$sguInfo['_id']}", $sguInfo);
                     }
-
 
 
                     $fix30List[] = [
@@ -4952,10 +4925,8 @@ class SyncCurlController
                     ];
 
 
-
                 }
             }
-
 
 
 //            if ($fix30List){
@@ -4972,9 +4943,6 @@ class SyncCurlController
         }
 
 
-
-
-
     }
 
 
@@ -4984,25 +4952,25 @@ class SyncCurlController
 
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/22-26生成的sku数据.xlsx");
         if (sizeof($fileFitContent) > 0) {
-            $skuIdList = array_column($fileFitContent,"productid");
+            $skuIdList = array_column($fileFitContent, "productid");
 
             $list = [];
-            foreach (array_chunk($skuIdList,200) as $chunk){
+            foreach (array_chunk($skuIdList, 200) as $chunk) {
                 $getProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryPage", [
-                    "skuId" => implode(",",$chunk),
+                    "skuId" => implode(",", $chunk),
                     "limit" => 200
                 ]));
-                if ($getProductMainResp && count($getProductMainResp['data']) > 0){
-                    $list = array_merge($list,$getProductMainResp['data']);
+                if ($getProductMainResp && count($getProductMainResp['data']) > 0) {
+                    $list = array_merge($list, $getProductMainResp['data']);
                 }
             }
             $skuIdProductLineMap = [];
-            if (count($list) > 0){
-                $skuIdProductLineMap = array_column($list,null,"skuId");
+            if (count($list) > 0) {
+                $skuIdProductLineMap = array_column($list, null, "skuId");
             }
 
             $sampleMap = [];
-            foreach (array_chunk($skuIdList,200) as $chunk){
+            foreach (array_chunk($skuIdList, 200) as $chunk) {
                 $curlServiceS = (new CurlService())->pro();
                 $curlServiceS->gateway()->getModule('wms');
                 $resp = DataUtils::getNewResultData($curlServiceS->getWayPost($curlServiceS->module . "/receive/sample/expect/v1/page", [
@@ -5011,8 +4979,8 @@ class SyncCurlController
                     "pageSize" => 500,
                     "pageNum" => 1,
                 ]));
-                if ($resp['list']){
-                    foreach ($resp['list'] as $item){
+                if ($resp['list']) {
+                    foreach ($resp['list'] as $item) {
                         $sampleMap[$item['skuId']][$item['category']] = $item;
                     }
                 }
@@ -5021,39 +4989,39 @@ class SyncCurlController
 
 
             $export = [];
-            foreach ($fileFitContent as $item){
+            foreach ($fileFitContent as $item) {
                 $data = $item;
-                if (isset($skuIdProductLineMap[$item['productid']])){
+                if (isset($skuIdProductLineMap[$item['productid']])) {
                     $data['noProductLineId'] = "有";
-                }else{
+                } else {
                     $data['noProductLineId'] = "无";
                 }
 
-                if (!isset($sampleMap[$item['productid']])){
+                if (!isset($sampleMap[$item['productid']])) {
                     $data['noSampleBg'] = "无";
                     $data['noSampleDt'] = "无";
-                }else{
-                    if (isset($sampleMap[$item['productid']]['bg'])){
+                } else {
+                    if (isset($sampleMap[$item['productid']]['bg'])) {
                         $data['noSampleBg'] = "有";
-                    }else{
+                    } else {
                         $data['noSampleBg'] = "无";
                     }
 
-                    if (isset($sampleMap[$item['productid']]['dataTeam'])){
+                    if (isset($sampleMap[$item['productid']]['dataTeam'])) {
                         $data['noSampleDt'] = "有";
-                    }else{
+                    } else {
                         $data['noSampleDt'] = "无";
                     }
                 }
 
-                $export[]=$data;
+                $export[] = $data;
 
             }
 
-            if (count($export) > 0){
+            if (count($export) > 0) {
                 $excelUtils = new ExcelUtils();
                 $downloadOssLink = "22-26sku后续问题HHHHHHHH_" . date("YmdHis") . ".xlsx";
-                $downloadOssPath = $excelUtils->downloadXlsx(["productid",	"producttype",	"status",	"createdon","有无产品线","有无bg留样","有无资料留样"],$export,$downloadOssLink);
+                $downloadOssPath = $excelUtils->downloadXlsx(["productid", "producttype", "status", "createdon", "有无产品线", "有无bg留样", "有无资料留样"], $export, $downloadOssLink);
 
             }
 
@@ -5070,20 +5038,20 @@ class SyncCurlController
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/uploads/default/22-26sku后续问题_20250901183523.xlsx");
         if (sizeof($fileFitContent) > 0) {
             $skuIdList = [];
-            foreach ($fileFitContent as $item){
-                if ($item['producttype'] == 'SKU' && $item['有无产品线'] == "无"){
+            foreach ($fileFitContent as $item) {
+                if ($item['producttype'] == 'SKU' && $item['有无产品线'] == "无") {
                     $skuIdList[] = $item['productid'];
                 }
             }
             $productLineNameSkuIdList = [];
-            foreach (array_chunk($skuIdList,200) as $chunk){
+            foreach (array_chunk($skuIdList, 200) as $chunk) {
 
-                $productList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+                $productList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage", [
                     "limit" => 200,
-                    "productId" => implode(",",$chunk)
+                    "productId" => implode(",", $chunk)
                 ]));
-                foreach ($productList as $info){
-                    $cnCategoryList = explode(" -> ",$info['cn_Category']);
+                foreach ($productList as $info) {
+                    $cnCategoryList = explode(" -> ", $info['cn_Category']);
                     $endCategoryName = end($cnCategoryList);
 
                     $productLineNameSkuIdList[$endCategoryName . "-" . $info['category']][$info['developerUserName']][$info['salesUserName']][] = $info['productId'];
@@ -5091,34 +5059,34 @@ class SyncCurlController
             }
 
 
-            foreach ($productLineNameSkuIdList as $aProductLineName => $firstObj){
-                foreach ($firstObj as $developName => $secondObj){
-                    foreach ($secondObj as $salesUserName => $skuIdList){
-                        $this->log("{$aProductLineName} - {$developName} - {$salesUserName} ：". json_encode($skuIdList,JSON_UNESCAPED_UNICODE));
+            foreach ($productLineNameSkuIdList as $aProductLineName => $firstObj) {
+                foreach ($firstObj as $developName => $secondObj) {
+                    foreach ($secondObj as $salesUserName => $skuIdList) {
+                        $this->log("{$aProductLineName} - {$developName} - {$salesUserName} ：" . json_encode($skuIdList, JSON_UNESCAPED_UNICODE));
 
 
-                        if (count($skuIdList) > 0){
+                        if (count($skuIdList) > 0) {
                             $list = [];
 
-                            foreach (array_chunk($skuIdList,200) as $chunk){
+                            foreach (array_chunk($skuIdList, 200) as $chunk) {
                                 $getProductMainResp = DataUtils::getQueryList($curlService->s3009()->get("product-operation-lines/queryPage", [
-                                    "skuId" => implode(",",$chunk),
+                                    "skuId" => implode(",", $chunk),
                                     "limit" => 200
                                 ]));
-                                if ($getProductMainResp && count($getProductMainResp['data']) > 0){
-                                    $list = array_merge($list,$getProductMainResp['data']);
+                                if ($getProductMainResp && count($getProductMainResp['data']) > 0) {
+                                    $list = array_merge($list, $getProductMainResp['data']);
                                 }
                             }
 
                             $skuIdProductLineMap = [];
-                            if (count($list) > 0){
-                                $skuIdProductLineMap = array_column($list,null,"skuId");
+                            if (count($list) > 0) {
+                                $skuIdProductLineMap = array_column($list, null, "skuId");
                             }
 
-                            $resp = $curlService->s3009()->get("product-operation-lines/getProductOperatorMainInfoByProductLineName",[
+                            $resp = $curlService->s3009()->get("product-operation-lines/getProductOperatorMainInfoByProductLineName", [
                                 "productLineName" => $aProductLineName
                             ]);
-                            if (empty($resp['result'])){
+                            if (empty($resp['result'])) {
                                 $uuid = DataUtils::buildGenerateUuidLike();
                                 $this->log("生成product_line_id：{$uuid}");
                                 //echo $uuid;
@@ -5132,11 +5100,11 @@ class SyncCurlController
                                     "productLineName" => $aProductLineName,
                                     "companySequenceId" => "CR201706060001",
                                 ]);
-                                if ($createProductMainResp){
+                                if ($createProductMainResp) {
 
-                                    foreach ($skuIdList as $skuId){
+                                    foreach ($skuIdList as $skuId) {
 
-                                        if (isset($skuIdProductLineMap[$skuId])){
+                                        if (isset($skuIdProductLineMap[$skuId])) {
                                             //先删除
 //                                                $delResp = $curlService->s3009()->post("product-operation-lines/removeSkuIdBySkuId", [
 //                                                    "skuIdArray" => $skuId
@@ -5149,9 +5117,9 @@ class SyncCurlController
                                             $skuData['traceMan'] = $salesUserName;
                                             $skuData['operatorName'] = $salesUserName;
                                             $skuData['userName'] = $salesUserName;
-                                            $curlService->s3009()->put("product-operation-lines/{$skuData['_id']}",$skuData);
+                                            $curlService->s3009()->put("product-operation-lines/{$skuData['_id']}", $skuData);
                                             continue;
-                                        }else{
+                                        } else {
                                             $mainInfo = $createProductMainResp['result'];
                                             $curlService->s3009()->post("product-operation-lines", [
                                                 "companySequenceId" => $mainInfo['companySequenceId'],
@@ -5162,7 +5130,7 @@ class SyncCurlController
                                                 "traceMan" => $salesUserName,
                                                 "createdBy" => $developName,
                                                 "modifiedBy" => $developName,
-                                                "createdOn" => date("Y-m-d H:i:s",time())."Z",
+                                                "createdOn" => date("Y-m-d H:i:s", time()) . "Z",
                                                 "verticalName" => "PA",
                                                 "operatorName" => $salesUserName,
                                                 "skuId" => $skuId,
@@ -5178,18 +5146,18 @@ class SyncCurlController
                                     }
                                 }
 
-                            }else{
+                            } else {
                                 $mainInfo = $resp['result'][0];
-                                foreach ($skuIdList as $skuId){
+                                foreach ($skuIdList as $skuId) {
 
-                                    if (isset($skuIdProductLineMap[$skuId])){
+                                    if (isset($skuIdProductLineMap[$skuId])) {
                                         $skuData = $skuIdProductLineMap[$skuId];
                                         $skuData['developer'] = $developName;
                                         $skuData['traceMan'] = $salesUserName;
                                         $skuData['operatorName'] = $salesUserName;
                                         $skuData['userName'] = $salesUserName;
-                                        $curlService->s3009()->put("product-operation-lines/{$skuData['_id']}",$skuData);
-                                    }else{
+                                        $curlService->s3009()->put("product-operation-lines/{$skuData['_id']}", $skuData);
+                                    } else {
                                         $skuData = [
                                             "companySequenceId" => $mainInfo['companySequenceId'],
                                             "productLineName" => $mainInfo['productLineName'],
@@ -5199,7 +5167,7 @@ class SyncCurlController
                                             "traceMan" => $salesUserName,
                                             "createdBy" => $developName,
                                             "modifiedBy" => $developName,
-                                            "createdOn" => date("Y-m-d H:i:s",time())."Z",
+                                            "createdOn" => date("Y-m-d H:i:s", time()) . "Z",
                                             "verticalName" => "PA",
                                             "operatorName" => $salesUserName,
                                             "skuId" => $skuId,
@@ -5223,13 +5191,9 @@ class SyncCurlController
             }
 
 
-
-
-
         }
 
     }
-
 
 
     public function fixLossSkuV2()
@@ -5241,15 +5205,15 @@ class SyncCurlController
         if (sizeof($fileFitContent) > 0) {
             //$skuIdList = array_column($fileFitContent,"productid");
             $skuIdList = [];
-            foreach ($fileFitContent as $item){
-                if ($item['是否留样'] == '修成30'){
+            foreach ($fileFitContent as $item) {
+                if ($item['是否留样'] == '修成30') {
                     $skuIdList[] = $item['productid'];
                 }
             }
 
-            if (count($skuIdList) > 0){
+            if (count($skuIdList) > 0) {
                 $sampleMap = [];
-                foreach (array_chunk($skuIdList,200) as $chunk){
+                foreach (array_chunk($skuIdList, 200) as $chunk) {
                     $curlServiceS = (new CurlService())->pro();
                     $curlServiceS->gateway()->getModule('wms');
                     $resp = DataUtils::getNewResultData($curlServiceS->getWayPost($curlServiceS->module . "/receive/sample/expect/v1/page", [
@@ -5258,8 +5222,8 @@ class SyncCurlController
                         "pageSize" => 500,
                         "pageNum" => 1,
                     ]));
-                    if ($resp['list']){
-                        foreach ($resp['list'] as $item){
+                    if ($resp['list']) {
+                        foreach ($resp['list'] as $item) {
                             $sampleMap[$item['skuId']][$item['category']] = $item;
                         }
                     }
@@ -5269,7 +5233,7 @@ class SyncCurlController
 
                 $needSampleSkuIdList = [];
                 foreach ($skuIdList as $skuId) {
-                    if (!isset($sampleMap[$skuId])){
+                    if (!isset($sampleMap[$skuId])) {
                         $needSampleSkuIdList[] = [
                             "category" => "dataTeam",
                             "createBy" => "pa-fix-system",
@@ -5286,9 +5250,9 @@ class SyncCurlController
                             "vertical" => "PA",
                             "state" => 30
                         ];
-                    }else{
+                    } else {
 
-                        if (!isset($sampleMap[$skuId]['bg'])){
+                        if (!isset($sampleMap[$skuId]['bg'])) {
                             $needSampleSkuIdList[] = [
                                 "category" => "bg",
                                 "createBy" => "pa-fix-system",
@@ -5299,7 +5263,7 @@ class SyncCurlController
                             ];
                         }
 
-                        if (!isset($sampleMap[$skuId]['dataTeam'])){
+                        if (!isset($sampleMap[$skuId]['dataTeam'])) {
                             $needSampleSkuIdList[] = [
                                 "category" => "dataTeam",
                                 "createBy" => "pa-fix-system",
@@ -5330,18 +5294,14 @@ class SyncCurlController
             }
 
 
-
         }
-
-
-
-
 
 
     }
 
 
-    public function fixEbayTranslationMainSku(){
+    public function fixEbayTranslationMainSku()
+    {
         $curlService = (new CurlService())->pro();
 
 //        foreach (
@@ -5407,8 +5367,8 @@ class SyncCurlController
         }
 
 
-
     }
+
     public function downloadChannelAmazonCategory()
     {
         $curlService = new CurlService();
@@ -5420,7 +5380,7 @@ class SyncCurlController
             $this->log($page);
             $ss = DataUtils::getResultData($curlService->s3015()->get("channel-amazon-categories/queryPage", [
                 "channel" => "amazon_jp",
-                "columns"=>"channel,categoryId,categoryName,leafCategory,browsePathId,browsePathName",
+                "columns" => "channel,categoryId,categoryName,leafCategory,browsePathId,browsePathName",
                 "limit" => 1000,
                 "page" => $page
             ]));
@@ -5441,7 +5401,7 @@ class SyncCurlController
             $page++;
         } while (true);
 
-        if (count($list) > 0){
+        if (count($list) > 0) {
             $excelUtils = new ExcelUtils();
 
             $filePath = $excelUtils->downloadXlsx([
@@ -5454,13 +5414,12 @@ class SyncCurlController
             ], $list, "JP_amazon_category_" . date("YmdHis") . ".xlsx");
 
 
-        }else{
+        } else {
             $this->log("没有导出");
         }
 
 
     }
-
 
 
     public function deleteSpmoDetails()
@@ -5497,7 +5456,6 @@ class SyncCurlController
         } while (true);
 
 
-
     }
 
 
@@ -5506,7 +5464,7 @@ class SyncCurlController
         $curlService = new CurlService();
         $curlService = $curlService->test();
 
-        $list = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+        $list = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage", [
             "verticalId" => "CR201706060001",
             "productType" => "SKU",
             "columns" => "productId",
@@ -5556,16 +5514,16 @@ class SyncCurlController
         $ids = DataUtils::getResultData($curlService->s3015()->get("translation_management_ebay_skus/distinct", [
             "uxField" => "translationMainId",
         ]));
-        if (count($ids) > 0){
+        if (count($ids) > 0) {
             $mainIds = DataUtils::getResultData($curlService->s3015()->get("translation_management_ebays/distinct", [
                 "uxField" => "_id",
             ]));
             $unsetIds = [];
-            foreach ($ids as $id){
-                if (!in_array($id,$mainIds)){
+            foreach ($ids as $id) {
+                if (!in_array($id, $mainIds)) {
                     $this->log("主表不存在: {$id}");
                     $unsetIds[] = $id;
-                }else{
+                } else {
                     $this->log("主表存在");
                 }
             }
@@ -5573,59 +5531,59 @@ class SyncCurlController
         }
 
 
-
     }
 
 
-    public function exportAmazonUsAttribute(){
+    public function exportAmazonUsAttribute()
+    {
         $curlService = (new CurlService())->pro();
 
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/需导Amazon _us部分资料.xlsx");
 
 
-        if (sizeof($fileFitContent) > 0){
+        if (sizeof($fileFitContent) > 0) {
             $skuIdList = array_column($fileFitContent, "SKUID");
             $exportList = [];
-            foreach (array_chunk($skuIdList, 200) as $skuIds){
+            foreach (array_chunk($skuIdList, 200) as $skuIds) {
 
-                $list = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+                $list = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage", [
                     "productId" => implode(",", $skuIds),
                     "columns" => "productId,title,description,weight_net,attribute",
                     "limit" => 200
                 ]));
-                foreach ($list as $info){
+                foreach ($list as $info) {
                     $jinzhong = ($info['weight_net'] ?? 0) * 1000;
 
                     $data = [];
                     $data['skuId'] = $info['productId'];
                     $data['jinzhong'] = $jinzhong;
-                    foreach ($info['attribute'] as $attr){
+                    foreach ($info['attribute'] as $attr) {
                         if (in_array($attr['label'], [
-                            "title",
-                            "description",
-                            "Bullet_1",
-                            "Bullet_2",
-                            "Bullet_3",
-                            "Bullet_4",
-                            "Bullet_5",
-                            "item_length_width/length",
-                            "item_length_width/width",
-                            "item_height",
-                            "Color",
-                            "material"
-                        ]) && $attr['channel'] == "amazon_us"){
+                                "title",
+                                "description",
+                                "Bullet_1",
+                                "Bullet_2",
+                                "Bullet_3",
+                                "Bullet_4",
+                                "Bullet_5",
+                                "item_length_width/length",
+                                "item_length_width/width",
+                                "item_height",
+                                "Color",
+                                "material"
+                            ]) && $attr['channel'] == "amazon_us") {
                             $data[$attr['label']] = $attr['value'];
                         }
                     }
-                    if (!isset($data['title']) || !$data['title']){
+                    if (!isset($data['title']) || !$data['title']) {
                         $data['title'] = $info['title'];
                     }
-                    if (!isset($data['description']) || !$data['description']){
+                    if (!isset($data['description']) || !$data['description']) {
                         $data['description'] = $info['description'];
                     }
                     //字段重新排序
                     $lastData = [];
-                    foreach (['skuId','title','description','Bullet_1','Bullet_2','Bullet_3','Bullet_4','Bullet_5','item_length_width/length','item_length_width/width','item_height','Color','material','jinzhong'] as $field){
+                    foreach (['skuId', 'title', 'description', 'Bullet_1', 'Bullet_2', 'Bullet_3', 'Bullet_4', 'Bullet_5', 'item_length_width/length', 'item_length_width/width', 'item_height', 'Color', 'material', 'jinzhong'] as $field) {
                         $lastData[$field] = $data[$field] ?? "";
                     }
                     $exportList[] = $lastData;
@@ -5636,7 +5594,7 @@ class SyncCurlController
 
         }
 
-        if (sizeof($exportList) > 0){
+        if (sizeof($exportList) > 0) {
             $excelUtils = new ExcelUtils();
             $filePath = $excelUtils->downloadXlsx([
                 "SKUID",
@@ -5657,7 +5615,6 @@ class SyncCurlController
         }
 
 
-
     }
 
     public function exportBusinessModules()
@@ -5667,14 +5624,14 @@ class SyncCurlController
 
         $list = DataUtils::getPageList($curlService->ux168()->get("business_modules/queryPage", [
             "vertical" => "PA",
-            "activeStatus"=>1,
+            "activeStatus" => 1,
             "limit" => 1000,
             "page" => 1
         ]));
-        if (sizeof($list) > 0){
+        if (sizeof($list) > 0) {
 
             $exportList = [];
-            foreach ($list as $info){
+            foreach ($list as $info) {
                 $exportList[] = [
                     "groupId" => $info['groupId'],
                     "supplierId" => $info['supplierId'],
@@ -5693,7 +5650,6 @@ class SyncCurlController
     }
 
 
-
     public function syncBusinessModulesToTest()
     {
 
@@ -5701,34 +5657,34 @@ class SyncCurlController
 
         $list = DataUtils::getPageList($curlService->ux168()->get("business_modules/queryPage", [
             "vertical" => "PA",
-            "activeStatus"=>1,
+            "activeStatus" => 1,
             "limit" => 1000,
             "page" => 1
         ]));
-        if (sizeof($list) > 0){
+        if (sizeof($list) > 0) {
 
             $proListMap = [];
-            foreach ($list as $info){
-                $proListMap[$info['groupId'].$info['supplierId']] = $info;
+            foreach ($list as $info) {
+                $proListMap[$info['groupId'] . $info['supplierId']] = $info;
             }
 
             $curlServicet = (new CurlService())->uat();
             $testList = DataUtils::getPageList($curlServicet->ux168()->get("business_modules/queryPage", [
                 "vertical" => "PA",
-                "activeStatus"=>1,
+                "activeStatus" => 1,
                 "limit" => 1000,
                 "page" => 1
             ]));
-            if (sizeof($testList) > 0){
+            if (sizeof($testList) > 0) {
                 $testListMap = [];
-                foreach ($testList as $info){
-                    $testListMap[$info['groupId'].$info['supplierId']] = $info;
+                foreach ($testList as $info) {
+                    $testListMap[$info['groupId'] . $info['supplierId']] = $info;
                 }
 
-                foreach ($proListMap as $key => $info){
-                    if (!isset($testListMap[$key])){
+                foreach ($proListMap as $key => $info) {
+                    if (!isset($testListMap[$key])) {
                         $curlServicet->ux168()->post("business_modules", $info);
-                    }else{
+                    } else {
                         $curlServicet->ux168()->delete("business_modules/{$testListMap[$key]['_id']}");
                         $curlServicet->ux168()->post("business_modules", $info);
                     }
@@ -5737,8 +5693,6 @@ class SyncCurlController
                 }
 
             }
-
-
 
 
         }
@@ -5756,7 +5710,7 @@ class SyncCurlController
             $skuIdList = array_unique(array_column($fileFitContent, "productid"));
 
             $channelSkuMap = [];
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
                 $channelSkuMap[$info['productid']] = $info['channel'];
             }
 //            $skuIdList = [
@@ -5769,13 +5723,13 @@ class SyncCurlController
             $curlService = (new CurlService())->pro();
 
             $productIdMap = [];
-            foreach (array_chunk($skuIdList,100) as $chunk){
-                $productSkuList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
-                    "productId" => implode(",",$chunk),
+            foreach (array_chunk($skuIdList, 100) as $chunk) {
+                $productSkuList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage", [
+                    "productId" => implode(",", $chunk),
                     "limit" => count($chunk)
                 ]));
-                if ($productSkuList){
-                    foreach ($productSkuList as $info){
+                if ($productSkuList) {
+                    foreach ($productSkuList as $info) {
                         $productIdMap[$info['productId']] = $info;
                     }
                 }
@@ -5783,18 +5737,18 @@ class SyncCurlController
 
 
             $export = [];
-            foreach ($skuIdList as $sku){
-                if (isset($productIdMap[$sku])){
+            foreach ($skuIdList as $sku) {
+                if (isset($productIdMap[$sku])) {
                     $productInfo = $productIdMap[$sku];
 
                     $deleteMap = [];
-                    foreach ($productInfo['attribute'] as $info){
-                        if (in_array($info['label'],[
-                            'MSRPWithTax_currency',
+                    foreach ($productInfo['attribute'] as $info) {
+                        if (in_array($info['label'], [
+                                'MSRPWithTax_currency',
                                 'MSRP_currency',
 //                                'MSRP',
 //                                'MSRPWithTax'
-                            ]) && isset($channelSkuMap[$productInfo['productId']]) && $info['channel'] == $channelSkuMap[$productInfo['productId']]){
+                            ]) && isset($channelSkuMap[$productInfo['productId']]) && $info['channel'] == $channelSkuMap[$productInfo['productId']]) {
                             $this->log($sku . "渠道：{$info['channel']} {$info['label']} 值为: " . $info['value']);
                             $export[] = [
                                 "skuId" => $sku,
@@ -5806,7 +5760,7 @@ class SyncCurlController
                         }
                     }
 
-                    if (count($deleteMap) == 0){
+                    if (count($deleteMap) == 0) {
                         $this->log($sku . "不存在币种属性值的");
                         continue;
                     }
@@ -5825,8 +5779,8 @@ class SyncCurlController
                     //$this->log(json_encode($productInfo['attribute'],JSON_UNESCAPED_UNICODE));
                     $this->log($sku . "该删");
                     //$this->log(json_encode($productInfo,JSON_UNESCAPED_UNICODE));
-                    $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
-                    $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+                    $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}", $productInfo);
+                    $this->log(json_encode($resp, JSON_UNESCAPED_UNICODE));
                 }
             }
 
@@ -5846,7 +5800,6 @@ class SyncCurlController
     }
 
 
-
     public function fastProductSkuCurrent()
     {
         $curlService = (new CurlService())->test();
@@ -5854,19 +5807,19 @@ class SyncCurlController
         $skuIdList = [
             "a23100800ux0272"
         ];
-        $targetChannel = ["amazon_us","amazon_it"];
+        $targetChannel = ["amazon_us", "amazon_it"];
         $targetLabel = [
             'MSRPWithTax_currency',
             'MSRP_currency',
         ];
         $productIdMap = [];
-        foreach (array_chunk($skuIdList,100) as $chunk){
-            $productSkuList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
-                "productId" => implode(",",$chunk),
+        foreach (array_chunk($skuIdList, 100) as $chunk) {
+            $productSkuList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage", [
+                "productId" => implode(",", $chunk),
                 "limit" => count($chunk)
             ]));
-            if ($productSkuList){
-                foreach ($productSkuList as $info){
+            if ($productSkuList) {
+                foreach ($productSkuList as $info) {
                     $productIdMap[$info['productId']] = $info;
                 }
             }
@@ -5874,13 +5827,13 @@ class SyncCurlController
 
 
         $export = [];
-        foreach ($skuIdList as $sku){
-            if (isset($productIdMap[$sku])){
+        foreach ($skuIdList as $sku) {
+            if (isset($productIdMap[$sku])) {
                 $productInfo = $productIdMap[$sku];
 
 
-                foreach ($targetChannel as $ch){
-                    foreach ($targetLabel as $lb){
+                foreach ($targetChannel as $ch) {
+                    foreach ($targetLabel as $lb) {
 
                         $found = false;
                         // 遍历现有属性，查找匹配的channel和label
@@ -5911,12 +5864,11 @@ class SyncCurlController
 
                 $productInfo['userName'] = "system(zhouangang)";
                 $productInfo['action'] = "测试币种，增加不一样的币种";
-                $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
-                $this->log(json_encode($resp,JSON_UNESCAPED_UNICODE));
+                $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}", $productInfo);
+                $this->log(json_encode($resp, JSON_UNESCAPED_UNICODE));
             }
         }
     }
-
 
 
     public function updatePaSkuMaterialV2()
@@ -5926,31 +5878,31 @@ class SyncCurlController
 
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/skuMaterial/111111.xlsx");
 
-        if (count($fileFitContent) > 0){
+        if (count($fileFitContent) > 0) {
             $ceBillNoSalesMap = [];
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
                 $ceBillNoSalesMap[$info['CE/QD单号']] = [
                     "old" => $info['产品运营(调整前)'],
                     "new" => $info['产品运营(调整后)'],
                 ];
             }
 
-            foreach ($ceBillNoSalesMap as $ceBillNo => $salesName){
+            foreach ($ceBillNoSalesMap as $ceBillNo => $salesName) {
                 $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
                     "limit" => 1,
                     "page" => 1,
                     "batchName" => $ceBillNo
                 ]));
-                if (count($l) == 0){
+                if (count($l) == 0) {
                     continue;
                 }
 
-                foreach ($l as $item){
-                    if (isset($ceBillNoSalesMap[$item['batchName']])){
-                        if ($item['saleName'] == $ceBillNoSalesMap[$item['batchName']]['old']){
+                foreach ($l as $item) {
+                    if (isset($ceBillNoSalesMap[$item['batchName']])) {
+                        if ($item['saleName'] == $ceBillNoSalesMap[$item['batchName']]['old']) {
                             $item['saleName'] = $ceBillNoSalesMap[$item['batchName']]['new'];
                         }
-                        if ($item['ebayTraceMan'] == $ceBillNoSalesMap[$item['batchName']]['old']){
+                        if ($item['ebayTraceMan'] == $ceBillNoSalesMap[$item['batchName']]['old']) {
                             $item['ebayTraceMan'] = $ceBillNoSalesMap[$item['batchName']]['new'];
                         }
 
@@ -5972,25 +5924,26 @@ class SyncCurlController
                             }
                             $item['ebayTraceManList'] = array_unique($item['ebayTraceManList']);
                         }
-                        $curlService->s3044()->put("pa_ce_materials/{$item['_id']}",$item);
+                        $curlService->s3044()->put("pa_ce_materials/{$item['_id']}", $item);
 
                         $this->log("修改{$item['ceBillNo']}的负责人为：{$item['saleName']}");
-                        $this->log(json_encode($item['saleNameList'],JSON_UNESCAPED_UNICODE));
-                        $this->log(json_encode($item['ebayTraceManList'],JSON_UNESCAPED_UNICODE));
-                    }else{
+                        $this->log(json_encode($item['saleNameList'], JSON_UNESCAPED_UNICODE));
+                        $this->log(json_encode($item['ebayTraceManList'], JSON_UNESCAPED_UNICODE));
+                    } else {
                         $this->log("{$item['batchName']}没有数据");
                     }
                 }
 
             }
 
-        }else{
+        } else {
             $this->log("没有可以修改的数据");
         }
     }
 
 
-    public function consignmentQD($params){
+    public function consignmentQD($params)
+    {
         $curlService = new CurlService();
         $curlService = $curlService->gateway();
         $env = $curlService->environment;
@@ -6004,23 +5957,24 @@ class SyncCurlController
 
         $curlService->getModule("pa");
         $createResp = DataUtils::getResultData($curlService->getWayPost($curlService->module . "/scms/consignment/workflow/v1/autoHandleWaitAssign", $params['qdList']));
-        if ($createResp){
+        if ($createResp) {
 
-            $this->log(json_encode($createResp,JSON_UNESCAPED_UNICODE));
+            $this->log(json_encode($createResp, JSON_UNESCAPED_UNICODE));
         }
 
 
     }
 
 
-    public function fixProductSkuCategory(){
+    public function fixProductSkuCategory()
+    {
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/1005个sgu需导入中文目录.xlsx");
         $fitmentSkuMap = [];
         if (sizeof($fileFitContent) > 0) {
 
             $issetCategoryMap = [];
-            foreach ($fileFitContent as $info){
-                if ($info['categoryId'] && !isset($issetCategoryMap[$info['categoryId']])){
+            foreach ($fileFitContent as $info) {
+                if ($info['categoryId'] && !isset($issetCategoryMap[$info['categoryId']])) {
                     $request = new RequestUtils('pro');
                     $categoryIdInfo = $request->getCategoryIdInfoV2($info['categoryId']);
 
@@ -6031,28 +5985,28 @@ class SyncCurlController
 
             $curlService = (new CurlService())->pro();
 
-            $list = array_unique(array_column($fileFitContent,"SGU"));
+            $list = array_unique(array_column($fileFitContent, "SGU"));
             $map = [];
-            foreach (array_chunk($list,120) as $chunkList){
-                $infoList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
-                    "productId" => implode(",",$chunkList),
+            foreach (array_chunk($list, 120) as $chunkList) {
+                $infoList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage", [
+                    "productId" => implode(",", $chunkList),
                     "limit" => 120
                 ]));
-                if ($infoList){
-                    foreach ($infoList as $info){
+                if ($infoList) {
+                    foreach ($infoList as $info) {
                         $map[$info['productId']] = $info;
                     }
                 }
             }
 
 
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
 
-                if (isset($map[$info['SGU']])){
+                if (isset($map[$info['SGU']])) {
                     $productInfo = $map[$info['SGU']];
                     $categoryIdInfo = $issetCategoryMap[$info['categoryId']] ?? null;
 
-                    if (!$categoryIdInfo){
+                    if (!$categoryIdInfo) {
                         $this->log("没有找到{$info['categoryId']}对应的中文分类");
                         continue;
                     }
@@ -6064,9 +6018,9 @@ class SyncCurlController
                     $productInfo['action'] = "业务需要导入中文分类";
                     $productInfo['userName'] = "system(zhouangang)";
 
-                    $this->log(json_encode($productInfo,JSON_UNESCAPED_UNICODE));
-                    $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
-                    if ($resp){
+                    $this->log(json_encode($productInfo, JSON_UNESCAPED_UNICODE));
+                    $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}", $productInfo);
+                    if ($resp) {
 
                     }
                 }
@@ -6084,8 +6038,8 @@ class SyncCurlController
         if (sizeof($fileFitContent) > 0) {
 
             $list = [];
-            foreach ($fileFitContent as $item){
-                if (!empty($item['产品序号'])){
+            foreach ($fileFitContent as $item) {
+                if (!empty($item['产品序号'])) {
                     $list[] = $item['产品序号'];
                 }
             }
@@ -6109,7 +6063,7 @@ class SyncCurlController
 
             $fix30List = [];
 
-            foreach ($fileFitContent as $item){
+            foreach ($fileFitContent as $item) {
 
                 $fix30List[] = [
                     "tempSkuId" => $item['产品序号'],
@@ -6143,8 +6097,8 @@ class SyncCurlController
 
             }
 
-            if ($fix30List){
-                foreach (array_chunk($fix30List,200) as $chunkFix30List){
+            if ($fix30List) {
+                foreach (array_chunk($fix30List, 200) as $chunkFix30List) {
                     $curlSsll = (new CurlService())->pro()->gateway()->getModule("pa");
                     $getKeyResp = DataUtils::getNewResultData($curlSsll->getWayPost($curlSsll->module . "/ppms/product_dev/sku/v1/directUpdateBatch", [
                         "operator" => "zhouangang",
@@ -6155,9 +6109,6 @@ class SyncCurlController
 
 
         }
-
-
-
 
 
     }
@@ -6197,7 +6148,7 @@ class SyncCurlController
             $skuIdList = [];
 
 
-            foreach ($info['titleList'] as $title){
+            foreach ($info['titleList'] as $title) {
 
 
                 $params = [
@@ -6232,7 +6183,7 @@ class SyncCurlController
 
 
                             foreach ($mainInfo['skuIdList'] as &$detailInfo) {
-                                if (in_array($detailInfo['skuId'],$skuIdList)){
+                                if (in_array($detailInfo['skuId'], $skuIdList)) {
                                     $detailInfo['status'] = $status;
                                 }
                             }
@@ -6288,19 +6239,16 @@ class SyncCurlController
                         }
 
 
-
                     }
                 } else {
 
                 }
 
 
-
             }
 
 
         }
-
 
 
     }
@@ -6311,20 +6259,19 @@ class SyncCurlController
         $curlService = (new CurlService())->pro();
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/未写入的图片拍摄.xlsx");
         if (sizeof($fileFitContent) > 0) {
-            $skuIdList = array_column($fileFitContent,"productid");
-            $preList = $c->getSkuPhotoProgress($skuIdList,"pro");
+            $skuIdList = array_column($fileFitContent, "productid");
+            $preList = $c->getSkuPhotoProgress($skuIdList, "pro");
             $batch = [];
-            foreach ($preList as $info){
-                if ($info['isExist'] == "可修补"){
+            foreach ($preList as $info) {
+                if ($info['isExist'] == "可修补") {
                     $batch[] = $info;
                 }
             }
-            if (count($batch) > 0){
-                $curlService->s3015()->post("sku_photography_progresss/createBatch",$batch);
+            if (count($batch) > 0) {
+                $curlService->s3015()->post("sku_photography_progresss/createBatch", $batch);
             }
         }
     }
-
 
 
     public function findPaCeSkuMaterialStatusNotSync()
@@ -6347,9 +6294,9 @@ class SyncCurlController
                 break;
             }
             foreach ($l as $info) {
-                if (preg_match('/^(QD|DPMO)/', $info['batchName'])){
+                if (preg_match('/^(QD|DPMO)/', $info['batchName'])) {
                     $ceMap[$info['ceBillNo']] = $info['status'];
-                }else{
+                } else {
                     $this->log("结束了");
                     break 2;
                 }
@@ -6358,20 +6305,20 @@ class SyncCurlController
         } while (true);
 
 
-        if (count($ceMap) > 0){
+        if (count($ceMap) > 0) {
             $curlService = new CurlService();
             $curlService = $curlService->pro();
 
             $ceList = array_keys($ceMap);
 
             $ceSkuMap = [];
-            foreach (array_chunk($ceList,200) as $chunkBatchNameList){
+            foreach (array_chunk($ceList, 200) as $chunkBatchNameList) {
                 $l = DataUtils::getPageDocList($curlService->s3044()->get("pa_sku_materials/queryPage", [
                     "limit" => 1000,
                     "page" => 1,
-                    "ceBillNo_in" => implode(",",$chunkBatchNameList)
+                    "ceBillNo_in" => implode(",", $chunkBatchNameList)
                 ]));
-                if (count($l) == 0){
+                if (count($l) == 0) {
                     continue;
                 }
                 foreach ($l as $item) {
@@ -6380,21 +6327,21 @@ class SyncCurlController
             }
 
             $list = [];
-            foreach ($ceMap as $ceBillNo => $status){
-                if (isset($ceSkuMap[$ceBillNo])){
+            foreach ($ceMap as $ceBillNo => $status) {
+                if (isset($ceSkuMap[$ceBillNo])) {
 
-                    $ceSkuStatus = implode(",",array_keys($ceSkuMap[$ceBillNo]));
-                    if ($ceSkuStatus != $status){
+                    $ceSkuStatus = implode(",", array_keys($ceSkuMap[$ceBillNo]));
+                    if ($ceSkuStatus != $status) {
                         $list[] = [
                             "ceBillNo" => $ceBillNo,
                             "mainStatus" => $status,
-                            "detailStatus" => implode(",",array_keys($ceSkuMap[$ceBillNo]))
+                            "detailStatus" => implode(",", array_keys($ceSkuMap[$ceBillNo]))
                         ];
                     }
                 }
             }
 
-            if ($list){
+            if ($list) {
                 $excelUtils = new ExcelUtils();
                 $filePath = $excelUtils->downloadXlsx([
                     "ceBillNo",
@@ -6404,7 +6351,7 @@ class SyncCurlController
             }
 
 
-        }else{
+        } else {
             $this->log("没有可以修改的数据");
         }
     }
@@ -6449,34 +6396,34 @@ class SyncCurlController
 
         ];
 
-        $dataLIst = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
+        $dataLIst = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage", [
             "limit" => 1000,
             "page" => 1,
-            "productId" => implode(",",$list)
+            "productId" => implode(",", $list)
         ]));
-        if($dataLIst){
-            foreach ($dataLIst as $info){
+        if ($dataLIst) {
+            foreach ($dataLIst as $info) {
                 $curlService->s3015()->delete("product-skus/{$info['_id']}");
             }
         }
 
-        $dataLIst1 = DataUtils::getPageList($curlService->s3015()->get("product_base_infos/queryPage",[
+        $dataLIst1 = DataUtils::getPageList($curlService->s3015()->get("product_base_infos/queryPage", [
             "limit" => 1000,
             "page" => 1,
-            "productId_in" => implode(",",$list)
+            "productId_in" => implode(",", $list)
         ]));
-        if($dataLIst1){
-            foreach ($dataLIst1 as $info){
+        if ($dataLIst1) {
+            foreach ($dataLIst1 as $info) {
                 $curlService->s3015()->delete("product_base_infos/{$info['_id']}");
             }
         }
 
-        $dataLIst12 = DataUtils::getQueryList($curlService->s3015()->get("/sgu-sku-scu-maps/query",[
-            "skuScuId_in" => implode(",",$list),
+        $dataLIst12 = DataUtils::getQueryList($curlService->s3015()->get("/sgu-sku-scu-maps/query", [
+            "skuScuId_in" => implode(",", $list),
             "limit" => 1000,
         ]));
-        if ($dataLIst12){
-            foreach ($dataLIst12 as $sguInfo){
+        if ($dataLIst12) {
+            foreach ($dataLIst12 as $sguInfo) {
                 $curlService->s3015()->delete("sgu-sku-scu-maps/{$sguInfo['_id']}");
             }
         }
@@ -6484,23 +6431,23 @@ class SyncCurlController
     }
 
 
-
-    public function createSkuConsignmentCe(){
+    public function createSkuConsignmentCe()
+    {
 
         $list = [
             "QD202602270003"
         ];
-        foreach ($list as $qdBillNo){
+        foreach ($list as $qdBillNo) {
 
             $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
             $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/scms/pre_purchase/info/v1/createConsignmentCeBillByQdBillNo", [
                 "isCreateNewCeBillNo" => false,
                 "isDelOldCeBillNo" => true,
-                "qdBillNo"=>$qdBillNo,
+                "qdBillNo" => $qdBillNo,
                 "updateBy" => "system(zhouangang)"
             ]));
-            $map  =[];
-            if ($getKeyResp){
+            $map = [];
+            if ($getKeyResp) {
                 $this->log(json_encode($getKeyResp));
             }
         }
@@ -6508,7 +6455,8 @@ class SyncCurlController
     }
 
 
-    public function deleteCeSku(){
+    public function deleteCeSku()
+    {
 
 //        $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
 //
@@ -6545,242 +6493,242 @@ class SyncCurlController
 //        }
 //        die(11) ;
         $skuList = [
-"a26050700ux0452",
-"a26050700ux0453",
-"a26050700ux0454",
-"a26050700ux0455",
-"a26050700ux0456",
-"a26050700ux0457",
-"a26050700ux0458",
-"a26050700ux0459",
-"a26050700ux0460",
-"a26050700ux0461",
-"a26050700ux0462",
-"a26050700ux0463",
-"a26050700ux0464",
-"a26050700ux0465",
-"a26050700ux0466",
-"a26050700ux0467",
-"a26050700ux0468",
-"a26050700ux0469",
-"a26050700ux0470",
-"a26050700ux0471",
-"a26050700ux0472",
-"a26050700ux0473",
-"a26050700ux0474",
-"a26050700ux0485",
-"a26050700ux0487",
-"a26050700ux0489",
-"a26050700ux0491",
-"a26050700ux0493",
-"a26050700ux0495",
-"a26050700ux0504",
-"a26050700ux0505",
-"a26050700ux0506",
-"a26050700ux0507",
-"a26050700ux0508",
-"a26050700ux0509",
-"a26050700ux0514",
-"a26050700ux0516",
-"a26050700ux0518",
-"a26050700ux0519",
-"a26050700ux0520",
-"a26050700ux0521",
-"a26050700ux0522",
-"a26050700ux0523",
-"a26050700ux0526",
-"a26050700ux0528",
-"a26050700ux0530",
-"a26050700ux0531",
-"a26050700ux0532",
-"a26050700ux0533",
-"a26050700ux0534",
-"a26050700ux0535",
-"a26050700ux0536",
-"a26050700ux0537",
-"a26050700ux0538",
-"a26050700ux0539",
-"a26050700ux0546",
-"a26050700ux0547",
-"a26050700ux0548",
-"a26050700ux0549",
-"a26050700ux0550",
-"a26050700ux0552",
-"a26050700ux0554",
-"a26050700ux0551",
-"a26050700ux0553",
-"a26050700ux0555",
-"a26050700ux0556",
-"a26050700ux0557",
-"a26050700ux0558",
-"a26050700ux0560",
-"a26050700ux0562",
-"a26050700ux0564",
-"a26050700ux0566",
-"a26050700ux0568",
-"a26050700ux0570",
-"a26050700ux0573",
-"a26050700ux0571",
-"a26050700ux0574",
-"a26050700ux0576",
-"a26050700ux0579",
-"a26050700ux0582",
-"a26050700ux0586",
-"a26050700ux0590",
-"a26050700ux0559",
-"a26050700ux0561",
-"a26050700ux0563",
-"a26050700ux0565",
-"a26050700ux0567",
-"a26050700ux0569",
-"a26050700ux0572",
-"a26050700ux0575",
-"a26050700ux0578",
-"a26050700ux0581",
-"a26050700ux0584",
-"a26050700ux0589",
-"a26050700ux0594",
-"a26050700ux0598",
-"a26050700ux0601",
-"a26050700ux0605",
-"a26050700ux0587",
-"a26050700ux0592",
-"a26050700ux0596",
-"a26050700ux0602",
-"a26050700ux0606",
-"a26050700ux0609",
-"a26050700ux0612",
-"a26050700ux0615",
-"a26050700ux0618",
-"a26050700ux0621",
-"a26050700ux0624",
-"a26050700ux0627",
-"a26050700ux0631",
-"a26050700ux0585",
-"a26050700ux0591",
-"a26050700ux0595",
-"a26050700ux0599",
-"a26050700ux0604",
-"a26050700ux0607",
-"a26050700ux0610",
-"a26050700ux0613",
-"a26050700ux0616",
-"a26050700ux0619",
-"a26050700ux0622",
-"a26050700ux0625",
-"a26050700ux0628",
-"a26050700ux0632",
-"a26050700ux0635",
-"a26050700ux0638",
-"a26050700ux0641",
-"a26050700ux0577",
-"a26050700ux0580",
-"a26050700ux0583",
-"a26050700ux0588",
-"a26050700ux0593",
-"a26050700ux0597",
-"a26050700ux0600",
-"a26050700ux0603",
-"a26050700ux0608",
-"a26050700ux0611",
-"a26050700ux0614",
-"a26050700ux0617",
-"a26050700ux0620",
-"a26050700ux0623",
-"a26050700ux0626",
-"a26050700ux0630",
-"a26050700ux0634",
-"a26050700ux0637",
-"a26050700ux0640",
-"a26050700ux0643",
-"a26050700ux0645",
-"a26050700ux0647",
-"a26050700ux0649",
-"a26050700ux0651",
-"a26050700ux0654",
-"a26050700ux0656",
-"a26050700ux0658",
-"a26050700ux0660",
-"a26050700ux0662",
-"a26050700ux0629",
-"a26050700ux0633",
-"a26050700ux0636",
-"a26050700ux0639",
-"a26050700ux0642",
-"a26050700ux0644",
-"a26050700ux0646",
-"a26050700ux0648",
-"a26050700ux0650",
-"a26050700ux0652",
-"a26050700ux0653",
-"a26050700ux0655",
-"a26050700ux0657",
-"a26050700ux0659",
-"a26050700ux0661",
-"a26050700ux0663",
-"a26050700ux0669",
-"a26050700ux0671",
-"a26050700ux0673",
-"a26050700ux0675",
-"a26050700ux0677",
-"a26050700ux0679",
-"a26050700ux0680",
-"a26050700ux0683",
-"a26050700ux0686",
-"a26050700ux0689",
-"a26050700ux0692",
-"a26050700ux0695",
-"a26050700ux0698",
-"a26050700ux0701",
-"a26050700ux0704",
-"a26050700ux0707",
-"a26050700ux0710",
-"a26050700ux0664",
-"a26050700ux0665",
-"a26050700ux0666",
-"a26050700ux0667",
-"a26050700ux0668",
-"a26050700ux0670",
-"a26050700ux0672",
-"a26050700ux0674",
-"a26050700ux0676",
-"a26050700ux0678",
-"a26050700ux0682",
-"a26050700ux0684",
-"a26050700ux0687",
-"a26050700ux0690",
-"a26050700ux0693",
-"a26050700ux0696",
-"a26050700ux0699",
-"a26050700ux0702",
-"a26050700ux0705",
-"a26050700ux0708",
-"a26050700ux0711",
-"a26050700ux0713",
-"a26050700ux0715",
-"a26050700ux0717",
-"a26050700ux0719",
-"a26050700ux0721",
-"a26050700ux0723",
-"a26050700ux0725",
-"a26050700ux0728"
+            "a26050700ux0452",
+            "a26050700ux0453",
+            "a26050700ux0454",
+            "a26050700ux0455",
+            "a26050700ux0456",
+            "a26050700ux0457",
+            "a26050700ux0458",
+            "a26050700ux0459",
+            "a26050700ux0460",
+            "a26050700ux0461",
+            "a26050700ux0462",
+            "a26050700ux0463",
+            "a26050700ux0464",
+            "a26050700ux0465",
+            "a26050700ux0466",
+            "a26050700ux0467",
+            "a26050700ux0468",
+            "a26050700ux0469",
+            "a26050700ux0470",
+            "a26050700ux0471",
+            "a26050700ux0472",
+            "a26050700ux0473",
+            "a26050700ux0474",
+            "a26050700ux0485",
+            "a26050700ux0487",
+            "a26050700ux0489",
+            "a26050700ux0491",
+            "a26050700ux0493",
+            "a26050700ux0495",
+            "a26050700ux0504",
+            "a26050700ux0505",
+            "a26050700ux0506",
+            "a26050700ux0507",
+            "a26050700ux0508",
+            "a26050700ux0509",
+            "a26050700ux0514",
+            "a26050700ux0516",
+            "a26050700ux0518",
+            "a26050700ux0519",
+            "a26050700ux0520",
+            "a26050700ux0521",
+            "a26050700ux0522",
+            "a26050700ux0523",
+            "a26050700ux0526",
+            "a26050700ux0528",
+            "a26050700ux0530",
+            "a26050700ux0531",
+            "a26050700ux0532",
+            "a26050700ux0533",
+            "a26050700ux0534",
+            "a26050700ux0535",
+            "a26050700ux0536",
+            "a26050700ux0537",
+            "a26050700ux0538",
+            "a26050700ux0539",
+            "a26050700ux0546",
+            "a26050700ux0547",
+            "a26050700ux0548",
+            "a26050700ux0549",
+            "a26050700ux0550",
+            "a26050700ux0552",
+            "a26050700ux0554",
+            "a26050700ux0551",
+            "a26050700ux0553",
+            "a26050700ux0555",
+            "a26050700ux0556",
+            "a26050700ux0557",
+            "a26050700ux0558",
+            "a26050700ux0560",
+            "a26050700ux0562",
+            "a26050700ux0564",
+            "a26050700ux0566",
+            "a26050700ux0568",
+            "a26050700ux0570",
+            "a26050700ux0573",
+            "a26050700ux0571",
+            "a26050700ux0574",
+            "a26050700ux0576",
+            "a26050700ux0579",
+            "a26050700ux0582",
+            "a26050700ux0586",
+            "a26050700ux0590",
+            "a26050700ux0559",
+            "a26050700ux0561",
+            "a26050700ux0563",
+            "a26050700ux0565",
+            "a26050700ux0567",
+            "a26050700ux0569",
+            "a26050700ux0572",
+            "a26050700ux0575",
+            "a26050700ux0578",
+            "a26050700ux0581",
+            "a26050700ux0584",
+            "a26050700ux0589",
+            "a26050700ux0594",
+            "a26050700ux0598",
+            "a26050700ux0601",
+            "a26050700ux0605",
+            "a26050700ux0587",
+            "a26050700ux0592",
+            "a26050700ux0596",
+            "a26050700ux0602",
+            "a26050700ux0606",
+            "a26050700ux0609",
+            "a26050700ux0612",
+            "a26050700ux0615",
+            "a26050700ux0618",
+            "a26050700ux0621",
+            "a26050700ux0624",
+            "a26050700ux0627",
+            "a26050700ux0631",
+            "a26050700ux0585",
+            "a26050700ux0591",
+            "a26050700ux0595",
+            "a26050700ux0599",
+            "a26050700ux0604",
+            "a26050700ux0607",
+            "a26050700ux0610",
+            "a26050700ux0613",
+            "a26050700ux0616",
+            "a26050700ux0619",
+            "a26050700ux0622",
+            "a26050700ux0625",
+            "a26050700ux0628",
+            "a26050700ux0632",
+            "a26050700ux0635",
+            "a26050700ux0638",
+            "a26050700ux0641",
+            "a26050700ux0577",
+            "a26050700ux0580",
+            "a26050700ux0583",
+            "a26050700ux0588",
+            "a26050700ux0593",
+            "a26050700ux0597",
+            "a26050700ux0600",
+            "a26050700ux0603",
+            "a26050700ux0608",
+            "a26050700ux0611",
+            "a26050700ux0614",
+            "a26050700ux0617",
+            "a26050700ux0620",
+            "a26050700ux0623",
+            "a26050700ux0626",
+            "a26050700ux0630",
+            "a26050700ux0634",
+            "a26050700ux0637",
+            "a26050700ux0640",
+            "a26050700ux0643",
+            "a26050700ux0645",
+            "a26050700ux0647",
+            "a26050700ux0649",
+            "a26050700ux0651",
+            "a26050700ux0654",
+            "a26050700ux0656",
+            "a26050700ux0658",
+            "a26050700ux0660",
+            "a26050700ux0662",
+            "a26050700ux0629",
+            "a26050700ux0633",
+            "a26050700ux0636",
+            "a26050700ux0639",
+            "a26050700ux0642",
+            "a26050700ux0644",
+            "a26050700ux0646",
+            "a26050700ux0648",
+            "a26050700ux0650",
+            "a26050700ux0652",
+            "a26050700ux0653",
+            "a26050700ux0655",
+            "a26050700ux0657",
+            "a26050700ux0659",
+            "a26050700ux0661",
+            "a26050700ux0663",
+            "a26050700ux0669",
+            "a26050700ux0671",
+            "a26050700ux0673",
+            "a26050700ux0675",
+            "a26050700ux0677",
+            "a26050700ux0679",
+            "a26050700ux0680",
+            "a26050700ux0683",
+            "a26050700ux0686",
+            "a26050700ux0689",
+            "a26050700ux0692",
+            "a26050700ux0695",
+            "a26050700ux0698",
+            "a26050700ux0701",
+            "a26050700ux0704",
+            "a26050700ux0707",
+            "a26050700ux0710",
+            "a26050700ux0664",
+            "a26050700ux0665",
+            "a26050700ux0666",
+            "a26050700ux0667",
+            "a26050700ux0668",
+            "a26050700ux0670",
+            "a26050700ux0672",
+            "a26050700ux0674",
+            "a26050700ux0676",
+            "a26050700ux0678",
+            "a26050700ux0682",
+            "a26050700ux0684",
+            "a26050700ux0687",
+            "a26050700ux0690",
+            "a26050700ux0693",
+            "a26050700ux0696",
+            "a26050700ux0699",
+            "a26050700ux0702",
+            "a26050700ux0705",
+            "a26050700ux0708",
+            "a26050700ux0711",
+            "a26050700ux0713",
+            "a26050700ux0715",
+            "a26050700ux0717",
+            "a26050700ux0719",
+            "a26050700ux0721",
+            "a26050700ux0723",
+            "a26050700ux0725",
+            "a26050700ux0728"
         ];
 
         $curlService = (new CurlService())->pro();
-        $infoList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage",[
-            "productId" => implode(",",$skuList),
+        $infoList = DataUtils::getPageList($curlService->s3015()->get("product-skus/queryPage", [
+            "productId" => implode(",", $skuList),
             "limit" => 500
         ]));
         $map = [];
-        if ($infoList){
-            foreach ($infoList as $info){
+        if ($infoList) {
+            foreach ($infoList as $info) {
                 $map[$info['productId']] = $info;
             }
         }
 
-        foreach ($skuList as $sku){
+        foreach ($skuList as $sku) {
 
-            if (isset($map[$sku])){
+            if (isset($map[$sku])) {
                 $productInfo = [
                     "status" => "retired",
                     "userName" => "system(zhouangang)",
@@ -6789,9 +6737,9 @@ class SyncCurlController
                     "modifiedBy" => "system(zhouangang)",
                     "_id" => $map[$sku]['_id'],
                 ];
-                $this->log(json_encode($productInfo,JSON_UNESCAPED_UNICODE));
-                $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}",$productInfo);
-                if ($resp){
+                $this->log(json_encode($productInfo, JSON_UNESCAPED_UNICODE));
+                $resp = $curlService->s3015()->post("product-skus/updateProductSku?_id={$productInfo['_id']}", $productInfo);
+                if ($resp) {
 
                 }
             }
@@ -6803,7 +6751,6 @@ class SyncCurlController
     {
         (new RequestUtils("pro"))->dingTalk("测试钉钉通知是否正常");
     }
-
 
 
     public function downloadPaSkuMaterialSpData()
@@ -6824,8 +6771,8 @@ class SyncCurlController
             if (count($ll) == 0) {
                 break;
             }
-            foreach ($ll as $info){
-                if (!isset($list[$info['skuId']]) && (!empty($info['keywords']) || !empty($info['cpAsin']) || !empty($info['fitment']))){
+            foreach ($ll as $info) {
+                if (!isset($list[$info['skuId']]) && (!empty($info['keywords']) || !empty($info['cpAsin']) || !empty($info['fitment']))) {
                     $list[$info['skuId']] = [
                         "skuId" => $info['skuId'],
                         "keywords" => $info['keywords'],
@@ -6838,34 +6785,34 @@ class SyncCurlController
         } while (true);
 
 
-        if (count($list) > 0){
+        if (count($list) > 0) {
 
             $exportList1 = [];
             $exportList2 = [];
-            foreach ($list as $sku => $info){
+            foreach ($list as $sku => $info) {
                 $fitmentDataList = [];
 
-                if (!empty($info['fitment'])){
-                    foreach ($info['fitment'] as $fitment){
+                if (!empty($info['fitment'])) {
+                    foreach ($info['fitment'] as $fitment) {
                         $fitmentData = "{$fitment['make']} {$fitment['model']}";
                         $fitmentDataList[] = $fitmentData;
                     }
                 }
                 $cpAsinList = [];
-                if (!empty($info['cpAsin'])){
-                    $cpAsinList = implode("/",$info['cpAsin']);
+                if (!empty($info['cpAsin'])) {
+                    $cpAsinList = implode("/", $info['cpAsin']);
                 }
                 $keywordsList = [];
-                if (!empty($info['keywords'])){
+                if (!empty($info['keywords'])) {
                     $keywordsList = $info['keywords'];
                 }
                 $exportList1[] = [
                     "skuid" => $sku,
-                    "fitment" => implode("\n",$fitmentDataList),
+                    "fitment" => implode("\n", $fitmentDataList),
                     "cpAsin" => $cpAsinList,
                 ];
 
-                foreach ($keywordsList as $keywords){
+                foreach ($keywordsList as $keywords) {
                     $exportList2[] = [
                         "skuid" => $sku,
                         "keywords" => $keywords,
@@ -6875,7 +6822,7 @@ class SyncCurlController
 
             }
 
-            if (count($exportList1) > 0){
+            if (count($exportList1) > 0) {
 
                 $excelUtils = new ExcelUtils();
                 $filePath = $excelUtils->downloadXlsx([
@@ -6884,12 +6831,12 @@ class SyncCurlController
                     "CPasin",
                 ], $exportList1, "sku热销车型和cpasin迁移数据导出_" . date("YmdHis") . ".xlsx");
                 $this->log("sku热销车型和cpasin迁移数据导出_");
-            }else{
+            } else {
                 $this->log("没有sku热销车型和cpasin迁移数据导出_");
             }
 
 
-            if (count($exportList2) > 0){
+            if (count($exportList2) > 0) {
 
                 $excelUtils = new ExcelUtils();
                 $filePath = $excelUtils->downloadXlsx([
@@ -6897,20 +6844,14 @@ class SyncCurlController
                     "keyword"
                 ], $exportList2, "sku-keyword迁移数据导出_" . date("YmdHis") . ".xlsx");
                 $this->log("sku-keyword迁移数据导出_");
-            }else{
+            } else {
                 $this->log("没有sku-keyword迁移数据导出_");
             }
 
         }
 
 
-
-
-
-
-
     }
-
 
 
     public function initQdActionLog()
@@ -6923,40 +6864,40 @@ class SyncCurlController
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/qd/迁移数据.xlsx");
         if (sizeof($fileFitContent) > 0) {
             $qdBillNoList = array_column($fileFitContent, 'qd_bill_no');
-            if (count($qdBillNoList) == 0){
+            if (count($qdBillNoList) == 0) {
                 $this->log("没有迁移数据");
                 return;
             }
 
-            foreach (array_chunk($qdBillNoList, 200) as $qdBillNoChunkList){
+            foreach (array_chunk($qdBillNoList, 200) as $qdBillNoChunkList) {
                 $qdlist = DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignmentqdlist/v1/qdPageList", [
                     "pageNum" => 1,
                     "pageSize" => 200,
                     "qdBillNoList" => $qdBillNoChunkList,
                 ]));
-                if ($qdlist && isset($qdlist['list']) && $qdlist['list'] && count($qdlist['list']) > 0){
-                    $list = array_merge($list,array_column($qdlist['list'],'consignmentQdId'));
+                if ($qdlist && isset($qdlist['list']) && $qdlist['list'] && count($qdlist['list']) > 0) {
+                    $list = array_merge($list, array_column($qdlist['list'], 'consignmentQdId'));
                 }
             }
         }
 
-        if ($list){
+        if ($list) {
             //这里可以读表搞一个映射出来
 
 
-            foreach ($list as $qdId){
+            foreach ($list as $qdId) {
                 //记录日志步骤
                 //1. 首次发布; 读取第一个publish_record_id 的数据; 但是要根据寄卖商类型，达标供应商(自动发布的) 和 货源供应商(指定发布)
                 //操作了清单发布
                 $log = [];
-                $detailResp = DataUtils::getNewResultData($curlPaService->getWayFormDataPost($curlPaService->module . "/scms/consignmentqdlist/v1/getQdDetail",[
+                $detailResp = DataUtils::getNewResultData($curlPaService->getWayFormDataPost($curlPaService->module . "/scms/consignmentqdlist/v1/getQdDetail", [
                     "consignmentQdId" => $qdId
                 ]));
 
 
-                if ($detailResp){
+                if ($detailResp) {
 
-                    $logListResp = DataUtils::getNewResultData($curlLogService->getWayPost($curlLogService->module . "/log/v1/query",[
+                    $logListResp = DataUtils::getNewResultData($curlLogService->getWayPost($curlLogService->module . "/log/v1/query", [
                         "page" => [
                             "pageNum" => 1,
                             "pageSize" => 100,
@@ -6969,24 +6910,24 @@ class SyncCurlController
                     ]));
                     $logActionList = [];
                     $existPeoplePublishMap = [];
-                    if ($logListResp && isset($logListResp['list']) && $logListResp['list'] && count($logListResp['list']) > 0){
+                    if ($logListResp && isset($logListResp['list']) && $logListResp['list'] && count($logListResp['list']) > 0) {
                         //$this->log("有日志：{$info['_id']}");
                         $logActionList = DataUtils::parseAndTransformQdLogList($logListResp['list']);
-                        foreach ($logActionList as &$item){
+                        foreach ($logActionList as &$item) {
                             $item['consignmentQdId'] = $qdId;
                             $item['qdBillNo'] = $detailResp['qdBillNo'];
-                            if ($item['action'] == "清单发布"){
+                            if ($item['action'] == "清单发布") {
                                 $existPeoplePublishMap[$item['afterConsignmentQdPublishRecordId']] = 1;
                             }
                         }
                     }
 
 
-                    if ($detailResp['consignmentPublishRecordDetailBOList']){
+                    if ($detailResp['consignmentPublishRecordDetailBOList']) {
                         $publishCountMap = [];
-                        foreach ($detailResp['consignmentPublishRecordDetailBOList'] as $index => $detail){
+                        foreach ($detailResp['consignmentPublishRecordDetailBOList'] as $index => $detail) {
                             $publishCountMap[$index] = $detail;
-                            if($index == 0){
+                            if ($index == 0) {
                                 $log[] = [
                                     "consignmentQdId" => $qdId,
                                     "qdBillNo" => $detailResp['qdBillNo'],
@@ -7003,14 +6944,14 @@ class SyncCurlController
                                     "createTime" => $detail['createTime'],
                                     "createBy" => $detail['createBy'],
                                 ];
-                            }else{
+                            } else {
                                 //>0 有多个清单轮次，这个轮次可以
                                 //拿到上一个轮次的数据
-                                if (isset($existPeoplePublishMap[$detail['consignmentQdPublishRecordId']])){
+                                if (isset($existPeoplePublishMap[$detail['consignmentQdPublishRecordId']])) {
                                     //有人工发布的就不需要认为是重新发布
 
-                                }else{
-                                    $beforeDetail = $publishCountMap[$index-1];
+                                } else {
+                                    $beforeDetail = $publishCountMap[$index - 1];
                                     $log[] = [
                                         "consignmentQdId" => $qdId,
                                         "qdBillNo" => $detailResp['qdBillNo'],
@@ -7032,8 +6973,7 @@ class SyncCurlController
                             }
 
 
-
-                            if (count($detail['supplierQdApplyRecordDetailBOList']) > 0){
+                            if (count($detail['supplierQdApplyRecordDetailBOList']) > 0) {
                                 usort($detail['supplierQdApplyRecordDetailBOList'], function ($a, $b) {
                                     return $b['totalScore'] <=> $a['totalScore'];
                                 });
@@ -7059,7 +6999,7 @@ class SyncCurlController
                             }
                         }
 
-                        foreach ($logActionList as $logAction){
+                        foreach ($logActionList as $logAction) {
                             $log[] = $logAction;
                         }
 
@@ -7068,19 +7008,16 @@ class SyncCurlController
                     }
 
 
-                    if ($log){
+                    if ($log) {
 
 
+                        $this->log(json_encode($log, JSON_UNESCAPED_UNICODE));
 
-                        $this->log(json_encode($log,JSON_UNESCAPED_UNICODE));
-
-                        DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignment/workflow/v1/batchInsertLog",$log));
+                        DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignment/workflow/v1/batchInsertLog", $log));
                     }
 
 
                 }
-
-
 
 
             }
@@ -7101,27 +7038,27 @@ class SyncCurlController
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/qd/自动作废数据.xlsx");
         if (sizeof($fileFitContent) > 0) {
             $qdBillNoList = array_column($fileFitContent, 'qd_bill_no');
-            if (count($qdBillNoList) == 0){
+            if (count($qdBillNoList) == 0) {
                 $this->log("没有迁移数据");
                 return;
             }
 
             $qdIdMap = [];
-            foreach (array_chunk($qdBillNoList, 200) as $qdBillNoChunkList){
+            foreach (array_chunk($qdBillNoList, 200) as $qdBillNoChunkList) {
                 $qdlist = DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignmentqdlist/v1/qdPageList", [
                     "pageNum" => 1,
                     "pageSize" => 200,
                     "qdBillNoList" => $qdBillNoChunkList,
                 ]));
-                if ($qdlist && isset($qdlist['list']) && $qdlist['list'] && count($qdlist['list']) > 0){
-                    foreach ($qdlist['list'] as $qdItem){
+                if ($qdlist && isset($qdlist['list']) && $qdlist['list'] && count($qdlist['list']) > 0) {
+                    foreach ($qdlist['list'] as $qdItem) {
                         $qdIdMap[$qdItem['qdBillNo']] = $qdItem['consignmentQdId'];
                     }
                 }
             }
 
             $log = [];
-            foreach ($fileFitContent as $fileFitContentItem){
+            foreach ($fileFitContent as $fileFitContentItem) {
                 $log[] = [
                     "consignmentQdId" => $qdIdMap[$fileFitContentItem['qd_bill_no']],
                     "qdBillNo" => $fileFitContentItem['qd_bill_no'],
@@ -7141,10 +7078,10 @@ class SyncCurlController
 
             }
 
-            if ($log){
-                $this->log(json_encode($log,JSON_UNESCAPED_UNICODE));
+            if ($log) {
+                $this->log(json_encode($log, JSON_UNESCAPED_UNICODE));
 
-                DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignment/workflow/v1/batchInsertLog",$log));
+                DataUtils::getNewResultData($curlPaService->getWayPost($curlPaService->module . "/scms/consignment/workflow/v1/batchInsertLog", $log));
             }
 
         }
@@ -7153,7 +7090,8 @@ class SyncCurlController
     }
 
 
-    public function deleltePlatformFees(){
+    public function deleltePlatformFees()
+    {
 
 //        http://master-angular-nodejs-poms-list-manage.ux168.cn:60015/api/channel-platform-fees/queryPage
 
@@ -7161,13 +7099,12 @@ class SyncCurlController
         $fileFitContent = (new ExcelUtils())->getXlsxData("../export/US定价参数修改 20260206.xlsx");
 
 
-
         $list = [];
         if (sizeof($fileFitContent) > 0) {
-            foreach ($fileFitContent as $info){
+            foreach ($fileFitContent as $info) {
 
 
-                $data = DataUtils::getResultData($curlService->s3015()->get("channel-platform-fees/{$info['_id']}",[]));
+                $data = DataUtils::getResultData($curlService->s3015()->get("channel-platform-fees/{$info['_id']}", []));
                 //$this->redis->hSet("channelPlatformFeeBak", $info['_id'], json_encode($data,JSON_UNESCAPED_UNICODE));
 
                 $this->log(json_encode($data));
@@ -7204,7 +7141,7 @@ class SyncCurlController
         ];
         $originSku = "a23022300ux0090";
 
-        $channelAndSellerMap = ["amazon_us" => "amazon","amazon_uk"=>"amazon_uk2","amazon_ca"=>"amazon_ca2","amazon_au"=>"amazon_au"];
+        $channelAndSellerMap = ["amazon_us" => "amazon", "amazon_uk" => "amazon_uk2", "amazon_ca" => "amazon_ca2", "amazon_au" => "amazon_au"];
 
 
         $channels = array_keys($channelAndSellerMap);
@@ -7214,10 +7151,10 @@ class SyncCurlController
             "limit" => 1000
         ]));
 
-        if ($list){
+        if ($list) {
 
             $skuChannelMap = [];
-            foreach ($list as $item){
+            foreach ($list as $item) {
                 $skuChannelMap[$item['skuId']][$item['channel']] = $item;
             }
             $orign = DataUtils::getPageList($c->s3015()->get("sku-seller-configs/queryPage", [
@@ -7226,15 +7163,15 @@ class SyncCurlController
                 "limit" => 1000
             ]));
             $map = [];
-            if ($orign){
-                foreach ($orign as $item){
+            if ($orign) {
+                foreach ($orign as $item) {
                     $map[$item['skuId']][$item['channel']] = $item;
                 }
             }
 
-            foreach ($skuChannelMap as $skuId => $channelMap){
-                foreach ($channelMap as $channel => $item){
-                    if (isset($map[$originSku][$channel])){
+            foreach ($skuChannelMap as $skuId => $channelMap) {
+                foreach ($channelMap as $channel => $item) {
+                    if (isset($map[$originSku][$channel])) {
                         $cankao = $map[$originSku][$channel];
 
                         $cankao['_id'] = $item['_id'];
@@ -7246,7 +7183,7 @@ class SyncCurlController
                         $cankao['modifiedBy'] = 'system(zhouangang)';
 
                         //先删后增
-                        $this->log(json_encode($cankao,JSON_UNESCAPED_UNICODE));
+                        $this->log(json_encode($cankao, JSON_UNESCAPED_UNICODE));
 
 
                         $c->s3015()->delete("sku-seller-configs/{$item['_id']}");
@@ -7254,9 +7191,6 @@ class SyncCurlController
                     }
                 }
             }
-
-
-
 
 
         }
@@ -7282,7 +7216,7 @@ class SyncCurlController
             if (count($ll) == 0) {
                 break;
             }
-            foreach ($ll as $info){
+            foreach ($ll as $info) {
                 $qdBillNoList[] = $info['productListNo'];
             }
             $page++;
@@ -7291,36 +7225,36 @@ class SyncCurlController
 
         exit(1111111111);
         $slist = [];
-        foreach (array_chunk($qdBillNoList,50) as $chunk){
+        foreach (array_chunk($qdBillNoList, 50) as $chunk) {
             $ll = DataUtils::getPageList($c->s3015()->get("pa_products/queryPage", [
                 "limit" => 100,
-                "productListNo_in" => implode(",",$chunk)
+                "productListNo_in" => implode(",", $chunk)
             ]));
-            if ($ll){
-                $slist = array_merge($slist,$ll);
+            if ($ll) {
+                $slist = array_merge($slist, $ll);
             }
         }
 
 
-        if ($slist){
+        if ($slist) {
             $exportList = [];
-            foreach ($slist as $info){
+            foreach ($slist as $info) {
                 $export = [];
                 $export['productListNo'] = $info['productListNo'];
                 $export['productlineId'] = $info['productlineId'];
-                if(count($info['ceNumber']) == 0){
+                if (count($info['ceNumber']) == 0) {
                     $export['ceNumber'] = "无";
-                }else{
-                    $export['ceNumber'] = implode(",",array_column($info['ceNumber'],'ceBillNo'));
+                } else {
+                    $export['ceNumber'] = implode(",", array_column($info['ceNumber'], 'ceBillNo'));
                 }
-                if($info['categoryId']){
+                if ($info['categoryId']) {
                     $export['categoryId'] = $info['categoryId'];
-                }else{
+                } else {
                     //没有分类取详情
-                    $detail = DataUtils::getPageListInFirstData($c->s3015()->get("pa_product_details/queryPage",[
+                    $detail = DataUtils::getPageListInFirstData($c->s3015()->get("pa_product_details/queryPage", [
                         "paProductId" => $info['_id']
                     ]));
-                    if ($detail){
+                    if ($detail) {
                         $export['categoryId'] = $detail['categoryId'];
                     }
                 }
@@ -7332,10 +7266,10 @@ class SyncCurlController
                 $exportList[] = $export;
             }
 
-            if ($exportList){
+            if ($exportList) {
                 $excelUtils = new ExcelUtils();
                 $downloadOssLink = "QD单生产环境数据检查_" . date("YmdHis") . ".xlsx";
-                $downloadOssPath = $excelUtils->downloadXlsx(["productListNo", "产品线", "CE单","categoryId","分配寄卖商","寄卖商id","开发","运营"],$exportList,$downloadOssLink);
+                $downloadOssPath = $excelUtils->downloadXlsx(["productListNo", "产品线", "CE单", "categoryId", "分配寄卖商", "寄卖商id", "开发", "运营"], $exportList, $downloadOssLink);
 
 
             }
@@ -7350,21 +7284,39 @@ class SyncCurlController
     {
         $c = (new CurlService())->test();
 
-        $productId = "a26031300ux0005";
-        $list = DataUtils::getPageList($c->s3015()->get("product-skus/queryPage",[
-            "limit" => 1,
-            "productId" => $productId
-        ]));
-        foreach ($list as $info){
-            //$c->s3015()->delete("product-skus/{$info['_id']}");
-            $this->log(json_encode($info,JSON_UNESCAPED_UNICODE));
-        }
-        $resp = $c->s3015()->get("sku-sale-statuses/queryPage", ["skuId" => $productId]);
-        $skuSaleStatusList = DataUtils::getPageListInFirstData($resp);
-        if ($skuSaleStatusList){
-            $this->log(json_encode($skuSaleStatusList,JSON_UNESCAPED_UNICODE));
-           //$c->s3015()->delete("sku-sale-statuses/{$skuSaleStatusList['_id']}");
-        }
+        $list = [
+            "g26052100ux0018"
+        ];
+
+//        foreach ($list as $productId) {
+//
+//            $list = DataUtils::getPageList($c->s3015()->get("product-skus/queryPage", [
+//                "limit" => 1,
+//                "productId" => $productId
+//            ]));
+//            foreach ($list as $info) {
+//                $c->s3015()->delete("product-skus/{$info['_id']}");
+//                $this->log(json_encode($info, JSON_UNESCAPED_UNICODE));
+//            }
+//            $resp = $c->s3015()->get("sku-sale-statuses/queryPage", ["skuId" => $productId]);
+//            $skuSaleStatusList = DataUtils::getPageListInFirstData($resp);
+//            if ($skuSaleStatusList) {
+//                $this->log(json_encode($skuSaleStatusList, JSON_UNESCAPED_UNICODE));
+//                $c->s3015()->delete("sku-sale-statuses/{$skuSaleStatusList['_id']}");
+//            }
+//
+//        }
+
+        $c->s3015()->delete("sgu-sku-scu-maps/6a0ec90236e8c67a2b534017");
+
+
+//        $sguMapData = DataUtils::getQueryListInFirstDataV3($c->s3015()->get("sgu-sku-scu-maps/query",[
+//            "sguId" => $productId
+//        ]));
+//        if($sguMapData){
+//            $c->s3015()->delete("sgu-sku-scu-maps/{$sguMapData['_id']}");
+//        }
+
 
     }
 
@@ -7372,8 +7324,8 @@ class SyncCurlController
 
 $curlController = new SyncCurlController();
 
-$curlController->initSguInfo();
-//$curlController->deleteTestSku();
+//$curlController->initSguInfo();
+$curlController->deleteTestSku();
 //$curlController->checkPaProduct();
 //$curlController->updateSkuSellerConfig();
 //$curlController->deleltePlatformFees();
