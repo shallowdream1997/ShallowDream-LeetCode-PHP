@@ -1,0 +1,1566 @@
+{
+  "createdBy": "ux168_autoSkuInit",
+  "modifiedBy": "zhenghailing2",
+  "weight_net": "0.424",
+  "weight_gross": "0.424",
+  "weight_packing": "0.442",
+  "cost": "40.0",
+  "cnDescription": "",
+  "description": "<strong>Custom Fit</strong><strong>:</strong><ul><li>This dash cover for Honda N-BOX/N-BOX Custom JF5/JF6 is designed to meet the expectations and provide better performance.</li><li>We strive for satisfactory functions on nice materials and precision engineered dash cover mat. With our direct replacement fit, this dashboard cover will save your time and effort on car accessories.</li></ul><strong>Fitment:</strong><ul><li>for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car</li></ul><strong>Specifications:</strong><ul><li>Condition: Brand New</li><li>Material: Flannel, Silicone</li><li>Color: Black</li></ul><strong>Features:</strong><ul><li>Light from the sun and traffic outside the window reflects off the dashboard onto the windshield, and dash cover mat carpet will minimize reflections and provide a clearer driving view.</li><li>The dash cover pad has good sun protection and heat insulation effects, keeping the car cool in summer and warm in winter.</li><li>The dashboard mat made of durable material and with anti-slip particles is not easy to wear and fade, and can cover the dashboard well and not slip off easily.</li><li>The car dashboard protective cover takes only 3 minutes to install. Align it with the reserved openings for air conditioning outlets, speakers, etc. and install it directly.</li></ul><strong>Installation of Dash Cover Mat:</strong><ul><li>1. Clean the dashboard first,</li><li>2. Then place the mat on the top of the dashboard, flatten it,</li><li>3. Align it with the reserved openings for air conditioning outlets, speakers, etc.</li></ul><strong>Notes:</strong><ul><li>This is non-OEM product, accessory ONLY!</li></ul>",
+  "status": "completed",
+  "developerUserName": "wuyaobin",
+  "salesUserName": "huangnaxuan",
+  "infoComplete": [
+    "amazon_uk",
+    "amazon_au",
+    "ebay_uk",
+    "ebay_au",
+    "amazon_us",
+    "amazon_jp"
+  ],
+  "hiddenChannels": [
+    "aliexpress_us"
+  ],
+  "attribute": [
+    {
+      "label": "category",
+      "value": "",
+      "channel": "amazon_be"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "amazon_be"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "amazon_be"
+    },
+    {
+      "label": "itemType",
+      "value": "",
+      "channel": "amazon_be"
+    },
+    {
+      "label": "upc",
+      "value": "",
+      "channel": "amazon_be"
+    },
+    {
+      "label": "productType",
+      "value": "",
+      "channel": "amazon_be"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "amazon_de"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "amazon_de"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "amazon_de"
+    },
+    {
+      "label": "itemType",
+      "value": "",
+      "channel": "amazon_de"
+    },
+    {
+      "label": "upc",
+      "value": "",
+      "channel": "amazon_de"
+    },
+    {
+      "label": "productType",
+      "value": "",
+      "channel": "amazon_de"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "amazon_es"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "amazon_es"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "amazon_es"
+    },
+    {
+      "label": "itemType",
+      "value": "",
+      "channel": "amazon_es"
+    },
+    {
+      "label": "upc",
+      "value": "",
+      "channel": "amazon_es"
+    },
+    {
+      "label": "productType",
+      "value": "",
+      "channel": "amazon_es"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "amazon_fr"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "amazon_fr"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "amazon_fr"
+    },
+    {
+      "label": "itemType",
+      "value": "",
+      "channel": "amazon_fr"
+    },
+    {
+      "label": "upc",
+      "value": "",
+      "channel": "amazon_fr"
+    },
+    {
+      "label": "productType",
+      "value": "",
+      "channel": "amazon_fr"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "amazon_it"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "amazon_it"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "amazon_it"
+    },
+    {
+      "label": "itemType",
+      "value": "",
+      "channel": "amazon_it"
+    },
+    {
+      "label": "upc",
+      "value": "",
+      "channel": "amazon_it"
+    },
+    {
+      "label": "productType",
+      "value": "",
+      "channel": "amazon_it"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "amazon_nl"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "amazon_nl"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "amazon_nl"
+    },
+    {
+      "label": "itemType",
+      "value": "",
+      "channel": "amazon_nl"
+    },
+    {
+      "label": "upc",
+      "value": "",
+      "channel": "amazon_nl"
+    },
+    {
+      "label": "productType",
+      "value": "",
+      "channel": "amazon_nl"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "ebay_de"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "ebay_de"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "ebay_de"
+    },
+    {
+      "label": "upc",
+      "value": "",
+      "channel": "ebay_de"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "ebay_es"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "ebay_es"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "ebay_es"
+    },
+    {
+      "label": "upc",
+      "value": "",
+      "channel": "ebay_es"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "ebay_fr"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "ebay_fr"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "ebay_fr"
+    },
+    {
+      "label": "upc",
+      "value": "",
+      "channel": "ebay_fr"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "ebay_it"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "ebay_it"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "ebay_it"
+    },
+    {
+      "label": "upc",
+      "value": "",
+      "channel": "ebay_it"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "walmart_ca"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "walmart_ca"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "walmart_ca"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "walmart_dsv"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "walmart_dsv"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "walmart_dsv"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "walmart_mx"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "walmart_mx"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "walmart_mx"
+    },
+    {
+      "label": "brand",
+      "channel": "amazon_us",
+      "value": "TUCKBOLD"
+    },
+    {
+      "label": "ItemPackageQuantity",
+      "value": "1",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "AutoPartPosition",
+      "value": "front",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "Color",
+      "value": "Black",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "ColorMap",
+      "value": "Black",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "CompatibleWithVehicleType",
+      "value": "Car",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "FitType",
+      "value": "Vehicle Specific",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "Material",
+      "value": "Flannel, Silicone",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "Size",
+      "value": "43x10x9cm",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "CountryOfOrigin",
+      "value": "CN",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "NumberOfBoxes",
+      "value": "1",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "SearchTerms",
+      "value": "Inner Center Console Dashboard Dash Cover Mat Dash Board Mat Sunshield Cover Pad Carpet for Honda N-BOX/N-BOX Custom JF5/JF6 K-car Dash Cover Dash protector Cover Mat Silicone Anti-Slip Dash Board Cover Protector",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "Search_Terms_1",
+      "value": "Inner Center Console Dashboard Dash Cover Mat Dash Board Mat Sunshield Cover Pad Carpet for Honda N-BOX/N-BOX Custom JF5/JF6 K-car Dash Cover Dash protector Cover Mat Silicone Anti-Slip Dash Board Cover Protector",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "Bullet_1",
+      "value": "Custom Fit. Dashboard Mat Cover for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "Bullet_2",
+      "value": "Functions. Dash board protector cover mat can cover damaged and defective dashboards and prevent them from aging and cracking. Reduces windshield glare, giving you a clearer driving experience. It's non-OEM part, but this dash cover mat is design for precise fitting for Honda N-BOX series and others. ",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "Bullet_3",
+      "value": "Long Lasting Dashboard Mat. Made of flannel material with anti-slip silicone particles, which is softer and comfortable to touch. It fits well with the dashboard, has good sun protection and heat insulation effect, and has anti-slip silicone particles on the back, making it not easy to slip off. It can be washed with warm or cold water and dried in a ventilated place.",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "Bullet_4",
+      "value": "Easy to setup. 1.No adhesive is needed. Clean the dashboard first. 2. Place the mat on the top of the dashboard, flatten it. 3. Align it with the reserved openings for air conditioning outlets, speakers, etc.",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "Bullet_5",
+      "value": "Dash Board Mat Info. Black, 1 Set.",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "ItemPackageQuantity",
+      "value": "1",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "AutoPartPosition",
+      "value": "front",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "Color",
+      "value": "Black",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "ColorMap",
+      "value": "Black",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "CompatibleWithVehicleType",
+      "value": "Car",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "FitType",
+      "value": "Vehicle Specific",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "Material",
+      "value": "Flannel, Silicone",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "Size",
+      "value": "43x10x9cm",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "CountryOfOrigin",
+      "value": "CN",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "NumberOfBoxes",
+      "value": "1",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "SearchTerms",
+      "value": "Inner Center Console Dashboard Dash Cover Mat Dash Board Mat Sunshield Cover Pad Carpet for Honda N-BOX/N-BOX Custom JF5/JF6 K-car Dash Cover Dash protector Cover Mat Silicone Anti-Slip Dash Board Cover Protector",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "Search_Terms_1",
+      "value": "Inner Center Console Dashboard Dash Cover Mat Dash Board Mat Sunshield Cover Pad Carpet for Honda N-BOX/N-BOX Custom JF5/JF6 K-car Dash Cover Dash protector Cover Mat Silicone Anti-Slip Dash Board Cover Protector",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "Bullet_1",
+      "value": "Custom Fit. Dashboard Mat Cover for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "Bullet_2",
+      "value": "Functions. Dash board protector cover mat can cover damaged and defective dashboards and prevent them from aging and cracking. Reduces windshield glare, giving you a clearer driving experience. It's non-OEM part, but this dash cover mat is design for precise fitting for Honda N-BOX series and others. ",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "Bullet_3",
+      "value": "Long Lasting Dashboard Mat. Made of flannel material with anti-slip silicone particles, which is softer and comfortable to touch. It fits well with the dashboard, has good sun protection and heat insulation effect, and has anti-slip silicone particles on the back, making it not easy to slip off. It can be washed with warm or cold water and dried in a ventilated place.",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "Bullet_4",
+      "value": "Easy to setup. 1.No adhesive is needed. Clean the dashboard first. 2. Place the mat on the top of the dashboard, flatten it. 3. Align it with the reserved openings for air conditioning outlets, speakers, etc.",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "Bullet_5",
+      "value": "Dash Board Mat Info. Black, 1 Set.",
+      "channel": "amazon_in"
+    },
+    {
+      "label": "brand",
+      "channel": "amazon_ca",
+      "value": "TUCKBOLD"
+    },
+    {
+      "label": "ItemPackageQuantity",
+      "value": "1",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "AutoPartPosition",
+      "value": "front",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "Color",
+      "value": "Black",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "ColorMap",
+      "value": "Black",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "CompatibleWithVehicleType",
+      "value": "Car",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "FitType",
+      "value": "Vehicle Specific",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "Material",
+      "value": "Flannel, Silicone",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "Size",
+      "value": "43x10x9cm",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "CountryOfOrigin",
+      "value": "CN",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "NumberOfBoxes",
+      "value": "1",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "SearchTerms",
+      "value": "Inner Center Console Dashboard Dash Cover Mat Dash Board Mat Sunshield Cover Pad Carpet for Honda N-BOX/N-BOX Custom JF5/JF6 K-car Dash Cover Dash protector Cover Mat Silicone Anti-Slip Dash Board Cover Protector",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "Search_Terms_1",
+      "value": "Inner Center Console Dashboard Dash Cover Mat Dash Board Mat Sunshield Cover Pad Carpet for Honda N-BOX/N-BOX Custom JF5/JF6 K-car Dash Cover Dash protector Cover Mat Silicone Anti-Slip Dash Board Cover Protector",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "Bullet_1",
+      "value": "Custom Fit. Dashboard Mat Cover for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "Bullet_2",
+      "value": "Functions. Dash board protector cover mat can cover damaged and defective dashboards and prevent them from aging and cracking. Reduces windshield glare, giving you a clearer driving experience. It's non-OEM part, but this dash cover mat is design for precise fitting for Honda N-BOX series and others. ",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "Bullet_3",
+      "value": "Long Lasting Dashboard Mat. Made of flannel material with anti-slip silicone particles, which is softer and comfortable to touch. It fits well with the dashboard, has good sun protection and heat insulation effect, and has anti-slip silicone particles on the back, making it not easy to slip off. It can be washed with warm or cold water and dried in a ventilated place.",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "Bullet_4",
+      "value": "Easy to setup. 1.No adhesive is needed. Clean the dashboard first. 2. Place the mat on the top of the dashboard, flatten it. 3. Align it with the reserved openings for air conditioning outlets, speakers, etc.",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "Bullet_5",
+      "value": "Dash Board Mat Info. Black, 1 Set.",
+      "channel": "amazon_ca"
+    },
+    {
+      "label": "ItemPackageQuantity",
+      "value": "1",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "AutoPartPosition",
+      "value": "front",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "Color",
+      "value": "Black",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "ColorMap",
+      "value": "Black",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "CompatibleWithVehicleType",
+      "value": "Car",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "FitType",
+      "value": "Vehicle Specific",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "Material",
+      "value": "Flannel, Silicone",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "Size",
+      "value": "43x10x9cm",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "CountryOfOrigin",
+      "value": "CN",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "NumberOfBoxes",
+      "value": "1",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "brand",
+      "value": "TUCKBOLD",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "SearchTerms",
+      "value": "Inner Center Console Dashboard Dash Cover Mat Dash Board Mat Sunshield Cover Pad Carpet for Honda N-BOX/N-BOX Custom JF5/JF6 K-car Dash Cover Dash protector Cover Mat Silicone Anti-Slip Dash Board Cover Protector",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "categoryName",
+      "value": "Automotive > Car Parts > Interior Fittings > Dash Covers",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "category",
+      "value": "2484491031",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "productType",
+      "value": "AutoAccessory>AutoPart",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "Search_Terms_1",
+      "value": "Inner Center Console Dashboard Dash Cover Mat Dash Board Mat Sunshield Cover Pad Carpet for Honda N-BOX/N-BOX Custom JF5/JF6 Dash Cover Dash protector Cover Mat Silicone Anti-Slip Dash Board Cover Protector",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "Bullet_1",
+      "value": "Custom Fit. Dashboard Mat Cover for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "Bullet_2",
+      "value": "Functions. Dash board protector cover mat can cover damaged and defective dashboards and prevent them from aging and cracking. Reduces windshield glare, giving you a clearer driving experience. It's non-OEM part, but this dash cover mat is design for precise fitting for Honda N-BOX/N-BOX Custom JF5/JF6 series and others.",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "Bullet_3",
+      "value": "Long Lasting Dashboard Mat. Made of flannel material with anti-slip silicone particles, which is softer and comfortable to touch. It fits well with the dashboard, has good sun protection and heat insulation effect, and has anti-slip silicone particles on the back, making it not easy to slip off. It can be washed with warm or cold water and dried in a ventilated place.",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "Bullet_4",
+      "value": "Easy to setup. 1.Installation stickers are included. Clean the dashboard panel first. 2. Then use the stickers to fix the dash pad in place, flatten it. 3. Align it with the reserved openings for air conditioning outlets, speakers, etc.",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "Bullet_5",
+      "value": "Dash Board Mat Info. Black, 1 Set.",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "ItemPackageQuantity",
+      "value": "1",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "AutoPartPosition",
+      "value": "front",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "Color",
+      "value": "Black",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "ColorMap",
+      "value": "Black",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "CompatibleWithVehicleType",
+      "value": "Car",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "FitType",
+      "value": "Vehicle Specific",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "Material",
+      "value": "Flannel, Silicone",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "Size",
+      "value": "43x10x9cm",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "CountryOfOrigin",
+      "value": "CN",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "NumberOfBoxes",
+      "value": "1",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "brand",
+      "value": "X AUTOHAUX",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "SearchTerms",
+      "value": "Inner Center Console Dashboard Dash Cover Mat Dash Board Mat Sunshield Cover Pad Carpet for Honda N-BOX/N-BOX Custom JF5/JF6 K-car Dash Cover Dash protector Cover Mat Silicone Anti-Slip Dash Board Cover Protector",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "Search_Terms_1",
+      "value": "Inner Center Console Dashboard Dash Cover Mat Dash Board Mat Sunshield Cover Pad Carpet for Honda N-BOX/N-BOX Custom JF5/JF6 Dash Cover Dash protector Cover Mat Silicone Anti-Slip Dash Board Cover Protector",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "Bullet_1",
+      "value": "Custom Fit. Dashboard Mat Cover for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "Bullet_2",
+      "value": "Functions. Dash board protector cover mat can cover damaged and defective dashboards and prevent them from aging and cracking. Reduces windshield glare, giving you a clearer driving experience. It's non-OEM part, but this dash cover mat is design for precise fitting for Honda N-BOX/N-BOX Custom JF5/JF6 series and others.",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "Bullet_3",
+      "value": "Long Lasting Dashboard Mat. Made of flannel material with anti-slip silicone particles, which is softer and comfortable to touch. It fits well with the dashboard, has good sun protection and heat insulation effect, and has anti-slip silicone particles on the back, making it not easy to slip off. It can be washed with warm or cold water and dried in a ventilated place.",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "Bullet_4",
+      "value": "Easy to setup. 1.Installation stickers are included. Clean the dashboard panel first. 2. Then use the stickers to fix the dash pad in place, flatten it. 3. Align it with the reserved openings for air conditioning outlets, speakers, etc.",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "Bullet_5",
+      "value": "Dash Board Mat Info. Black, 1 Set.",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "categoryName",
+      "value": "Automotive > Automotive Accessories > Dash Covers & Pads",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "category",
+      "value": "4958463051",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "productType",
+      "value": "AutoAccessory>AutoAccessoryMisc",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "左右驾问题",
+      "value": "仅适用右驾驶国家",
+      "channel": "local"
+    },
+    {
+      "label": "FitType",
+      "value": "Vehicle Specific",
+      "channel": "local"
+    },
+    {
+      "label": "Product with package size",
+      "value": {
+        "length": "43",
+        "width": "10",
+        "height": "9",
+        "diameter": ""
+      },
+      "channel": "local"
+    },
+    {
+      "label": "Dismantle the product packing",
+      "value": "No",
+      "channel": "local"
+    },
+    {
+      "label": "Pack Size(L*W*H)",
+      "value": {
+        "length": "43",
+        "width": "10",
+        "height": "9"
+      },
+      "channel": "local"
+    },
+    {
+      "label": "Logistics size",
+      "value": {
+        "length": "43",
+        "width": "10",
+        "height": "9",
+        "diameter": ""
+      },
+      "channel": "local"
+    },
+    {
+      "label": "Item Unit Quantity",
+      "value": "1 Set",
+      "channel": "local"
+    },
+    {
+      "label": "Business Type",
+      "value": "产品目录",
+      "channel": "local"
+    },
+    {
+      "label": "来货brand类型",
+      "value": "无",
+      "channel": "local"
+    },
+    {
+      "label": "来货brand类型细节",
+      "value": "无",
+      "channel": "local"
+    },
+    {
+      "label": "CELabel",
+      "value": "无",
+      "channel": "local"
+    },
+    {
+      "label": "CEPackingLabel",
+      "value": "无",
+      "channel": "local"
+    },
+    {
+      "label": "isHasCE",
+      "value": "否",
+      "channel": "local"
+    },
+    {
+      "label": "salesBrand",
+      "value": "TUCKBOLD",
+      "channel": "local"
+    },
+    {
+      "label": "isElectrified",
+      "value": "否",
+      "channel": "local"
+    },
+    {
+      "label": "OE Number",
+      "value": "Does Not Apply",
+      "channel": "local"
+    },
+    {
+      "label": "来货brand位置",
+      "value": "无",
+      "channel": "local"
+    },
+    {
+      "label": "brand",
+      "channel": "walmart_us",
+      "value": "Unique Bargains"
+    },
+    {
+      "label": "50000559",
+      "value": [
+        {
+          "val": "0.97"
+        }
+      ],
+      "channel": "walmart_us"
+    },
+    {
+      "label": "50000560",
+      "value": [
+        {
+          "val": "lb"
+        }
+      ],
+      "channel": "walmart_us"
+    },
+    {
+      "label": "50000550",
+      "value": [
+        {
+          "val": "16.93"
+        }
+      ],
+      "channel": "walmart_us"
+    },
+    {
+      "label": "50000551",
+      "value": [
+        {
+          "val": "in"
+        }
+      ],
+      "channel": "walmart_us"
+    },
+    {
+      "label": "50000553",
+      "value": [
+        {
+          "val": "3.94"
+        }
+      ],
+      "channel": "walmart_us"
+    },
+    {
+      "label": "50000554",
+      "value": [
+        {
+          "val": "in"
+        }
+      ],
+      "channel": "walmart_us"
+    },
+    {
+      "label": "50000556",
+      "value": [
+        {
+          "val": "3.54"
+        }
+      ],
+      "channel": "walmart_us"
+    },
+    {
+      "label": "50000557",
+      "value": [
+        {
+          "val": "in"
+        }
+      ],
+      "channel": "walmart_us"
+    },
+    {
+      "label": "50000669",
+      "value": [
+        {
+          "val": "Vehicle Specific"
+        }
+      ],
+      "channel": "walmart_us"
+    },
+    {
+      "channel": "ebay_hk",
+      "label": "Brand",
+      "value": "X AUTOHAUX"
+    },
+    {
+      "channel": "ebay_hk",
+      "label": "Manufacturer Part Number",
+      "value": "Does Not Apply"
+    },
+    {
+      "channel": "ebay_hk",
+      "label": "Placement on Vehicle",
+      "value": "Front Center Console"
+    },
+    {
+      "channel": "ebay_hk",
+      "label": "Product Name",
+      "value": "Dashboard Cover Carpet"
+    },
+    {
+      "channel": "ebay_hk",
+      "label": "Net Weight",
+      "value": "424g"
+    },
+    {
+      "channel": "ebay_hk",
+      "label": "Shell Color",
+      "value": [
+        " Black"
+      ]
+    },
+    {
+      "channel": "ebay_hk",
+      "label": "Material",
+      "value": [
+        "Flannel",
+        " Silicone"
+      ]
+    },
+    {
+      "channel": "ebay_hk",
+      "label": "Package Content",
+      "value": "1 Pc Dash Board Protector Cover, 1 Pc Sticker"
+    },
+    {
+      "channel": "ebay_hk",
+      "label": "Note",
+      "value": "This is not oem product,accessory only."
+    },
+    {
+      "channel": "ebay_hk",
+      "label": "title",
+      "value": "Dashboard Dash Cover Mat for Honda N-BOX/N-BOX Custom JF5/JF6 23-24 Black 1 Set"
+    },
+    {
+      "channel": "ebay_hk_diy",
+      "label": "Type",
+      "value": "Dashboard Cover Mat"
+    },
+    {
+      "channel": "ebay_hk_diy",
+      "label": "Fitment Type",
+      "value": "Performance/Custom"
+    },
+    {
+      "channel": "ebay_hk",
+      "label": "brand",
+      "value": "X AUTOHAUX"
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "Brand",
+      "value": "X AUTOHAUX"
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "Manufacturer Part Number",
+      "value": "Does Not Apply"
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "Placement on Vehicle",
+      "value": "Front Center Console"
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "Product Name",
+      "value": "Dashboard Cover Carpet"
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "Net Weight",
+      "value": "424g"
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "Shell Color",
+      "value": [
+        "Black"
+      ]
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "Material",
+      "value": [
+        "Flannel",
+        " Silicone"
+      ]
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "Package Content",
+      "value": "1 Pc Dash Board Protector Cover, 1 Pc Sticker"
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "Note",
+      "value": "This is not oem product,accessory only."
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "categoryName",
+      "value": "Vehicle Parts & Accessories > Car Parts & Accessories > Interior Parts & Accessories > Other Interior Parts & Accessories"
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "category",
+      "value": "9887"
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "title",
+      "value": "Dashboard Dash Cover Mat for Honda N-BOX/N-BOX Custom JF5/JF6 Black 1 Set"
+    },
+    {
+      "channel": "ebay_uk_diy",
+      "label": "Type",
+      "value": "Dashboard Cover Mat"
+    },
+    {
+      "channel": "ebay_uk_diy",
+      "label": "Fitment Type",
+      "value": "Performance/Custom"
+    },
+    {
+      "channel": "ebay_au",
+      "label": "Brand",
+      "value": "X AUTOHAUX"
+    },
+    {
+      "channel": "ebay_au",
+      "label": "Manufacturer Part Number",
+      "value": "Does Not Apply"
+    },
+    {
+      "channel": "ebay_au",
+      "label": "Placement on Vehicle",
+      "value": "Front Center Console"
+    },
+    {
+      "channel": "ebay_au",
+      "label": "Product Name",
+      "value": "Dashboard Cover Carpet"
+    },
+    {
+      "channel": "ebay_au",
+      "label": "Net Weight",
+      "value": "424g"
+    },
+    {
+      "channel": "ebay_au",
+      "label": "Shell Color",
+      "value": [
+        "Black"
+      ]
+    },
+    {
+      "channel": "ebay_au",
+      "label": "Material",
+      "value": [
+        "Flannel",
+        " Silicone"
+      ]
+    },
+    {
+      "channel": "ebay_au",
+      "label": "Package Content",
+      "value": "1 Pc Dash Board Protector Cover, 1 Pc Sticker"
+    },
+    {
+      "channel": "ebay_au",
+      "label": "Note",
+      "value": "This is not oem product,accessory only."
+    },
+    {
+      "channel": "ebay_au",
+      "label": "title",
+      "value": "Dashboard Dash Cover Mat for Honda N-BOX/N-BOX Custom JF5/JF6 Black 1 Set"
+    },
+    {
+      "channel": "ebay_au",
+      "label": "categoryName",
+      "value": "Vehicle Parts & Accessories > Car & Truck Parts & Accessories > Interior Parts & Accessories > Other Interior Parts & Accessories"
+    },
+    {
+      "channel": "ebay_au",
+      "label": "category",
+      "value": "9887"
+    },
+    {
+      "channel": "ebay_au_diy",
+      "label": "Type",
+      "value": "Dashboard Cover Mat"
+    },
+    {
+      "channel": "ebay_au_diy",
+      "label": "Fitment Type",
+      "value": "Performance/Custom"
+    },
+    {
+      "channel": "ebay_us",
+      "label": "Brand",
+      "value": "X AUTOHAUX"
+    },
+    {
+      "channel": "ebay_us",
+      "label": "Manufacturer Part Number",
+      "value": "Does Not Apply"
+    },
+    {
+      "channel": "ebay_us",
+      "label": "Placement on Vehicle",
+      "value": "Front Center Console"
+    },
+    {
+      "channel": "ebay_us",
+      "label": "Product Name",
+      "value": "Dashboard Cover Carpet"
+    },
+    {
+      "channel": "ebay_us",
+      "label": "Net Weight",
+      "value": "424g"
+    },
+    {
+      "channel": "ebay_us",
+      "label": "Shell Color",
+      "value": [
+        " Black"
+      ]
+    },
+    {
+      "channel": "ebay_us",
+      "label": "Material",
+      "value": [
+        "Flannel",
+        " Silicone"
+      ]
+    },
+    {
+      "channel": "ebay_us",
+      "label": "Package Content",
+      "value": "1 Pc Dash Board Protector Cover, 1 Pc Sticker"
+    },
+    {
+      "channel": "ebay_us",
+      "label": "Note",
+      "value": "This is not oem product,accessory only."
+    },
+    {
+      "channel": "ebay_us",
+      "label": "title",
+      "value": "Dashboard Dash Cover Mat for Honda N-BOX/N-BOX Custom JF5/JF6 23-24 Black 1 Set"
+    },
+    {
+      "channel": "ebay_us_diy",
+      "label": "Type",
+      "value": "Dashboard Cover Mat"
+    },
+    {
+      "channel": "ebay_us_diy",
+      "label": "Fitment Type",
+      "value": "Performance/Custom"
+    },
+    {
+      "channel": "ebay_us",
+      "label": "brand",
+      "value": "X AUTOHAUX"
+    },
+    {
+      "channel": "ebay_uk",
+      "label": "description",
+      "value": "<strong>Custom Fit</strong><strong>:</strong><ul><li>This dash cover for Honda N-BOX/N-BOX Custom JF5/JF6 is designed to meet the expectations and provide better performance.</li><li>We strive for satisfactory functions on nice materials and precision engineered dash cover mat. With our direct replacement fit, this dashboard cover will save your time and effort on car accessories.</li></ul><strong>Fitment:</strong><ul><li>for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car</li></ul><strong>Specifications:</strong><ul><li>Condition: Brand New</li><li>Material: Flannel, Silicone</li><li>Color: Black</li></ul><strong>Features:</strong><ul><li>Light from the sun and traffic outside the window reflects off the dashboard onto the windshield, and dash cover mat carpet will minimize reflections and provide a clearer driving view.</li><li>The dash cover pad has good sun protection and heat insulation effects, keeping the car cool in summer and warm in winter.</li><li>The dashboard mat made of durable material and with anti-slip particles is not easy to wear and fade, and can cover the dashboard well and not slip off easily.</li><li>The car dashboard protective cover takes only 3 minutes to install. Align it with the reserved openings for air conditioning outlets, speakers, etc. and install it directly.</li></ul><strong>Installation of Dash Cover Mat:</strong><ul><li>1. Clean the dashboard first,</li><li>2. Then place the mat on the top of the dashboard, flatten it,</li><li>3. Align it with the reserved openings for air conditioning outlets, speakers, etc.</li></ul><strong>Notes:</strong><ul><li>This is non-OEM product, accessory ONLY!</li></ul>"
+    },
+    {
+      "channel": "ebay_au",
+      "label": "description",
+      "value": "<strong>Custom Fit</strong><strong>:</strong><ul><li>This dash cover for Honda N-BOX/N-BOX Custom JF5/JF6 is designed to meet the expectations and provide better performance.</li><li>We strive for satisfactory functions on nice materials and precision engineered dash cover mat. With our direct replacement fit, this dashboard cover will save your time and effort on car accessories.</li></ul><strong>Fitment:</strong><ul><li>for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car</li></ul><strong>Specifications:</strong><ul><li>Condition: Brand New</li><li>Material: Flannel, Silicone</li><li>Color: Black</li></ul><strong>Features:</strong><ul><li>Light from the sun and traffic outside the window reflects off the dashboard onto the windshield, and dash cover mat carpet will minimize reflections and provide a clearer driving view.</li><li>The dash cover pad has good sun protection and heat insulation effects, keeping the car cool in summer and warm in winter.</li><li>The dashboard mat made of durable material and with anti-slip particles is not easy to wear and fade, and can cover the dashboard well and not slip off easily.</li><li>The car dashboard protective cover takes only 3 minutes to install. Align it with the reserved openings for air conditioning outlets, speakers, etc. and install it directly.</li></ul><strong>Installation of Dash Cover Mat:</strong><ul><li>1. Clean the dashboard first,</li><li>2. Then place the mat on the top of the dashboard, flatten it,</li><li>3. Align it with the reserved openings for air conditioning outlets, speakers, etc.</li></ul><strong>Notes:</strong><ul><li>This is non-OEM product, accessory ONLY!</li></ul>"
+    },
+    {
+      "channel": "ebay_uk_diy",
+      "label": "Fitment",
+      "value": "for Honda N-BOX/N-BOX Custom JF5/JF6 23-24 K-car"
+    },
+    {
+      "channel": "ebay_au_diy",
+      "label": "Fitment",
+      "value": "for Honda N-BOX/N-BOX Custom JF5/JF6 23-24 K-car"
+    },
+    {
+      "channel": "aliexpress_us",
+      "label": "title",
+      "value": "Dashboard Dash Cover Mat for Honda N-BOX/N-BOX Custom JF5/JF6 23-24 Black 1 Set"
+    },
+    {
+      "channel": "aliexpress_us",
+      "label": "description",
+      "value": "<strong>Custom Fit</strong><strong>:</strong><ul><li>This dash cover for Honda N-BOX/N-BOX Custom JF5/JF6 is designed to meet the expectations and provide better performance.</li><li>We strive for satisfactory functions on nice materials and precision engineered dash cover mat. With our direct replacement fit, this dashboard cover will save your time and effort on car accessories.</li></ul><strong>Fitment:</strong><ul><li>for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car</li></ul><strong>Specifications:</strong><ul><li>Condition: Brand New</li><li>Material: Flannel, Silicone</li><li>Color: Black</li></ul><strong>Features:</strong><ul><li>Light from the sun and traffic outside the window reflects off the dashboard onto the windshield, and dash cover mat carpet will minimize reflections and provide a clearer driving view.</li><li>The dash cover pad has good sun protection and heat insulation effects, keeping the car cool in summer and warm in winter.</li><li>The dashboard mat made of durable material and with anti-slip particles is not easy to wear and fade, and can cover the dashboard well and not slip off easily.</li><li>The car dashboard protective cover takes only 3 minutes to install. Align it with the reserved openings for air conditioning outlets, speakers, etc. and install it directly.</li></ul><strong>Installation of Dash Cover Mat:</strong><ul><li>1. Clean the dashboard first,</li><li>2. Then place the mat on the top of the dashboard, flatten it,</li><li>3. Align it with the reserved openings for air conditioning outlets, speakers, etc.</li></ul><strong>Notes:</strong><ul><li>This is non-OEM product, accessory ONLY!</li></ul>"
+    },
+    {
+      "label": "title",
+      "value": "Dash Cover for Honda N-BOX/N-BOX Custom JF5/JF6 Non-Slip | Center Console Dashboard Cover Mat Black with Sticker 1 Set",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "description",
+      "value": "<strong>Custom Fit</strong><strong>:</strong><ul><li>This dash cover for Honda N-BOX/N-BOX Custom JF5/JF6 is designed to meet the expectations and provide better performance.</li><li>We strive for satisfactory functions on nice materials and precision engineered dash cover mat. With our direct replacement fit, this dashboard cover will save your time and effort on car accessories.</li></ul><strong>Fitment:</strong><ul><li>for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car</li></ul><strong>Specifications:</strong><ul><li>Condition: Brand New</li><li>Material: Flannel, Silicone</li><li>Color: Black</li></ul><strong>Features:</strong><ul><li>Light from the sun and traffic outside the window reflects off the dashboard onto the windshield, and dash cover mat carpet will minimize reflections and provide a clearer driving view.</li><li>The dash cover pad has good sun protection and heat insulation effects, keeping the car cool in summer and warm in winter.</li><li>The dashboard mat made of durable material and with anti-slip particles is not easy to wear and fade, and can cover the dashboard well and not slip off easily.</li><li>The car dashboard protective cover takes only 3 minutes to install. Align it with the reserved openings for air conditioning outlets, speakers, etc. and install it directly.</li></ul><strong>Installation of Dash Cover Mat:</strong><ul><li>1. Clean the dashboard first,</li><li>2. Then place the mat on the top of the dashboard, flatten it,</li><li>3. Align it with the reserved openings for air conditioning outlets, speakers, etc.</li></ul><strong>Notes:</strong><ul><li>This is non-OEM product, accessory ONLY!</li></ul>",
+      "channel": "amazon_uk"
+    },
+    {
+      "label": "title",
+      "value": "Dash Cover for Honda N-BOX/N-BOX Custom JF5/JF6 Non-Slip | Center Console Dashboard Cover Mat Black with Sticker 1 Set",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "description",
+      "value": "<strong>Custom Fit</strong><strong>:</strong><ul><li>This dash cover for Honda N-BOX/N-BOX Custom JF5/JF6 is designed to meet the expectations and provide better performance.</li><li>We strive for satisfactory functions on nice materials and precision engineered dash cover mat. With our direct replacement fit, this dashboard cover will save your time and effort on car accessories.</li></ul><strong>Fitment:</strong><ul><li>for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car</li></ul><strong>Specifications:</strong><ul><li>Condition: Brand New</li><li>Material: Flannel, Silicone</li><li>Color: Black</li></ul><strong>Features:</strong><ul><li>Light from the sun and traffic outside the window reflects off the dashboard onto the windshield, and dash cover mat carpet will minimize reflections and provide a clearer driving view.</li><li>The dash cover pad has good sun protection and heat insulation effects, keeping the car cool in summer and warm in winter.</li><li>The dashboard mat made of durable material and with anti-slip particles is not easy to wear and fade, and can cover the dashboard well and not slip off easily.</li><li>The car dashboard protective cover takes only 3 minutes to install. Align it with the reserved openings for air conditioning outlets, speakers, etc. and install it directly.</li></ul><strong>Installation of Dash Cover Mat:</strong><ul><li>1. Clean the dashboard first,</li><li>2. Then place the mat on the top of the dashboard, flatten it,</li><li>3. Align it with the reserved openings for air conditioning outlets, speakers, etc.</li></ul><strong>Notes:</strong><ul><li>This is non-OEM product, accessory ONLY!</li></ul>",
+      "channel": "amazon_au"
+    },
+    {
+      "label": "title",
+      "value": "Dash Cover for Honda N-BOX/N-BOX Custom JF5/JF6 Non-Slip | Center Console Dashboard Cover Mat Black with Sticker 1 Set",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "description",
+      "value": "<strong>Custom Fit</strong><strong>:</strong><ul><li>This dash cover for Honda N-BOX/N-BOX Custom JF5/JF6 is designed to meet the expectations and provide better performance.</li><li>We strive for satisfactory functions on nice materials and precision engineered dash cover mat. With our direct replacement fit, this dashboard cover will save your time and effort on car accessories.</li></ul><strong>Fitment:</strong><ul><li>for Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 K-car</li></ul><strong>Specifications:</strong><ul><li>Condition: Brand New</li><li>Material: Flannel, Silicone</li><li>Color: Black</li></ul><strong>Features:</strong><ul><li>Light from the sun and traffic outside the window reflects off the dashboard onto the windshield, and dash cover mat carpet will minimize reflections and provide a clearer driving view.</li><li>The dash cover pad has good sun protection and heat insulation effects, keeping the car cool in summer and warm in winter.</li><li>The dashboard mat made of durable material and with anti-slip particles is not easy to wear and fade, and can cover the dashboard well and not slip off easily.</li><li>The car dashboard protective cover takes only 3 minutes to install. Align it with the reserved openings for air conditioning outlets, speakers, etc. and install it directly.</li></ul><strong>Installation of Dash Cover Mat:</strong><ul><li>1. Clean the dashboard first,</li><li>2. Then place the mat on the top of the dashboard, flatten it,</li><li>3. Align it with the reserved openings for air conditioning outlets, speakers, etc.</li></ul><strong>Notes:</strong><ul><li>This is non-OEM product, accessory ONLY!</li></ul>",
+      "channel": "amazon_us"
+    },
+    {
+      "label": "category",
+      "value": "",
+      "channel": "walmart_us"
+    },
+    {
+      "label": "categoryName",
+      "value": "",
+      "channel": "walmart_us"
+    },
+    {
+      "label": "title",
+      "value": "",
+      "channel": "walmart_us"
+    },
+    {
+      "label": "Net Weight",
+      "value": "424g",
+      "channel": "ebay_us"
+    },
+    {
+      "label": "productType",
+      "channel": "amazon_jp",
+      "value": "AutoAccessory>AutoAccessoryMisc"
+    },
+    {
+      "label": "SearchTerms",
+      "channel": "amazon_jp",
+      "value": "ダッシュボードマット 車内 ダッシュボードカバー ダッシュボード 日焼け防止 映り込み防止 傷防止 ズレ防止 保護マット 保護マット ダッシュプロテクター ダッシュボードカーペット 日焼け防止 映り込み防止 傷防止 ズレ防止 内装パーツ インテリアアクセサリー カスタム アクセサリー"
+    },
+    {
+      "label": "FitType",
+      "channel": "amazon_jp",
+      "value": "Vehicle Specific"
+    },
+    {
+      "label": "NumberOfBoxes",
+      "channel": "amazon_jp",
+      "value": "1"
+    },
+    {
+      "label": "CountryOfOrigin",
+      "channel": "amazon_jp",
+      "value": "CN"
+    },
+    {
+      "label": "PPUCountType",
+      "channel": "amazon_jp",
+      "value": "Count"
+    },
+    {
+      "label": "Color",
+      "channel": "amazon_jp",
+      "value": "ブラック"
+    },
+    {
+      "label": "ColorMap",
+      "channel": "amazon_jp",
+      "value": "Black"
+    },
+    {
+      "label": "title",
+      "channel": "amazon_jp",
+      "value": "ホンダに対応 N-BOX/N-BOXカスタム用 JF5/JF6用 2023-2024用 ダッシュボードマット 車内 ダッシュボードカバー 保護マット インテリア 内装 カスタム パーツ アクセサリー 日焼け防止/映り込み防止/傷防止/ズレ防止 ポリエステル素材 ブラック 1Pセット"
+    },
+    {
+      "label": "description",
+      "channel": "amazon_jp",
+      "value": "<strong>カスタムフィット</strong><strong>:</strong><ul><li>このホンダに対応N-BOX/N-BOXカスタム用JF5/JF6用ダッシュカバーは期待に応え、より優れたパフォーマンスを提供するよう設計されています。</li><li>私たちは、素材の質と精密に設計されたダッシュカバーマットに満足いく機能を提供することを目指しています。直接交換フィットにより、このダッシュボードカバーは車のアクセサリーにかかる時間と労力を節約します。</li></ul><strong>適合:</strong><ul><li>ホンダに対応N-BOX/N-BOXカスタム用JF5/JF6 2023-2024 K車</li></ul><strong>仕様:</strong><ul><li>状態: 新品</li><li>素材: フランネル、シリコン</li><li>カラー: ブラック</li></ul><strong>特長:</strong><ul><li>太陽光や窓の外の交通から反射された光がダッシュボードに当たり、ダッシュカバーマットカーペットは反射を最小限に抑え、よりクリアな運転視界を提供します。</li><li>ダッシュカバーパッドは優れた日焼け防止効果と断熱効果を持ち、夏は車内を涼しく、冬は暖かく保ちます。</li><li>耐久性のある素材で作られたダッシュボードマットは、滑り止め粒子付きで摩耗や色あせしにくく、ダッシュボードをしっかりと覆い、簡単に滑り落ちることはありません。</li><li>車のダッシュボード保護カバーは3分で取り付けられます。エアコンの出口、スピーカーなどの予約された開口部に合わせて、直接取り付けます。</li></ul><strong>ダッシュカバーマットの取り付け:</strong><ul><li>1. まずダッシュボードをきれいにします。</li><li>2. 次にマットをダッシュボードの上に置き、平らにします。</li><li>3. エアコンの出口、スピーカーなどの予約された開口部に合わせます。</li></ul><strong>注意:</strong><ul><li>これは非OEM製品で、アクセサリーのみです！</li></ul>"
+    },
+    {
+      "label": "Bullet_1",
+      "channel": "amazon_jp",
+      "value": "【適合車種】：ホンダに対応N-BOX/N-BOXカスタム用JF5/JF6 2023-2024（右ハンドル専用）セット内容：ダッシュボードマット×1pcs、カラー：ブラック。※年式・グレード・オプションにより適合しない場合がございます、形状をご確認いただいたうえ、お買い求めください。"
+    },
+    {
+      "label": "Bullet_2",
+      "channel": "amazon_jp",
+      "value": "【優れた素材】：耐久性、耐熱性に優れるフランネル素材を採用し、適度な柔軟性があり、厳し環境の中でも安心して使用していただけます。滑り止め層・断熱層・映り込み軽減層の三層構造ので、ダッシュボードを完璧に保護。長期間使用しても色あせたり縮んだりすることなく、裏面に滑り止め加工を施しておりますのでズレ防止もバッチリです。"
+    },
+    {
+      "label": "Bullet_3",
+      "channel": "amazon_jp",
+      "value": "【フロントガラスの映り込み防止】：ダッシュボードは常に直射日光にさらされると傷みやすいです。ダッシュボードマットを使用すれば、車内の温度を下げる効果があり、フロントガラスの反射も大幅に軽減され、目を保護し、運転をより快適で安全なものにします。"
+    },
+    {
+      "label": "Bullet_4",
+      "channel": "amazon_jp",
+      "value": "【完全保護設計】：ダッシュボードを取り付けることで、ご愛車のダッシュボードを紫外線から保護し、亀裂、変色、ほこり、汚れ、傷を効果的に防ぎます。ダッシュボードに直接日光が当たるのを防ぎ、車内の温度上昇を防ぎます。ご愛車を最大限に守るできます。"
+    },
+    {
+      "label": "Bullet_5",
+      "channel": "amazon_jp",
+      "value": "【簡単取付】：滑り止めには耐熱性の高いシリコン滑り止め粒子を使用しているので滑りません。被せるだけ！初心者や女性でも簡単に取り付けて、ダッシュボードに置き、位置を調整できます。　注意：折り畳んで梱包した後、折りシワが残る場合がございますが、しばらく放置するとシワは徐々に消えていきます。予めご了承ください。"
+    },
+    {
+      "label": "Search_Terms_1",
+      "channel": "amazon_jp",
+      "value": "ダッシュボードマット 車内 ダッシュボードカバー"
+    },
+    {
+      "label": "Search_Terms_2",
+      "channel": "amazon_jp",
+      "value": "ダッシュボード 日焼け防止 映り込み防止 傷防止 ズレ防止 保護マット"
+    },
+    {
+      "label": "Search_Terms_3",
+      "channel": "amazon_jp",
+      "value": "保護マット ダッシュプロテクター ダッシュボードカーペット"
+    },
+    {
+      "label": "Search_Terms_4",
+      "channel": "amazon_jp",
+      "value": "日焼け防止 映り込み防止 傷防止 ズレ防止"
+    },
+    {
+      "label": "Search_Terms_5",
+      "channel": "amazon_jp",
+      "value": "内装パーツ インテリアアクセサリー カスタム アクセサリー"
+    },
+    {
+      "label": "category",
+      "channel": "amazon_jp",
+      "value": "2565821051"
+    },
+    {
+      "label": "categoryName",
+      "channel": "amazon_jp",
+      "value": "車＆バイク > カーアクセサリ > ダッシュボードマット"
+    },
+    {
+      "label": "brand",
+      "channel": "amazon_jp",
+      "value": "TUCKBOLD"
+    },
+    {
+      "channel": "amazon_jp",
+      "value": "1",
+      "label": "NumberOfItems"
+    },
+    {
+      "channel": "wish_us",
+      "label": "categoryName",
+      "value": "Automotive > Interior Accessories > Covers > Dash Covers"
+    },
+    {
+      "channel": "wish_us",
+      "label": "brand",
+      "value": "X AUTOHAUX"
+    }
+  ],
+  "category": "14180",
+  "categoryPaths": "10312,14162,14163,14180",
+  "cn_Category": "交通工具配件及附件 -> 车身件 -> 内饰件 -> 仪表罩",
+  "title": "Dash Cover for Honda N-BOX/N-BOX Custom JF5/JF6 Non-Slip | Center Console Dashboard Cover Mat Black with Sticker 1 Set",
+  "cnTitle": "汽车仪表避光垫 车型：Honda N-BOX/N-BOX Custom JF5/JF6 2023-2024 k系车 材质：法兰绒 免粘贴 右驾 黑色（产品中性不带车型/logo） 卖法： 1set",
+  "verticalId": "CR201706060001",
+  "productType": "SKU",
+  "productId": "a24090600ux2787",
+  "platform": "all",
+  "purchasedBrand": "",
+  "purchaseLink": "https://www.amazon.co.jp/dp/B0D48PMHT7",
+  "supplyCommissionerName": "",
+  "_id": "66e161ff7f2c0b23bb06e5d8",
+  "reviewingList": [
+    {
+      "reviewingName": "info",
+      "createdBy": "wuxiaowen",
+      "createdOn": "2024-10-15T15:47:53.460Z",
+      "modifiedBy": "wuxiaowen",
+      "modifiedOn": "2024-10-15T15:47:53.460Z",
+      "_id": "699eca6775dd4c4666fc256b"
+    },
+    {
+      "reviewingName": "infoReview",
+      "createdBy": "yanghongzhi",
+      "createdOn": "2024-10-28T10:58:28.938Z",
+      "modifiedBy": "yanghongzhi",
+      "modifiedOn": "2024-10-28T10:58:28.938Z",
+      "_id": "699eca6775dd4c4666fc256a"
+    },
+    {
+      "reviewingName": "pic",
+      "createdBy": "huangshengtao",
+      "createdOn": "2024-10-25T10:55:33.812Z",
+      "modifiedBy": "huangshengtao",
+      "modifiedOn": "2024-10-25T23:29:29.323Z",
+      "_id": "699eca6775dd4c4666fc2569"
+    },
+    {
+      "reviewingName": "picReview",
+      "createdBy": "lianghuixin",
+      "createdOn": "2024-10-28T15:13:27.001Z",
+      "modifiedBy": "lianghuixin",
+      "modifiedOn": "2024-10-28T15:13:27.001Z",
+      "_id": "699eca6775dd4c4666fc2568"
+    },
+    {
+      "reviewingName": "manager",
+      "createdBy": "",
+      "createdOn": null,
+      "modifiedBy": "",
+      "modifiedOn": null,
+      "_id": "699eca6775dd4c4666fc2567"
+    },
+    {
+      "reviewingName": "firstVero",
+      "createdBy": "xuxiaomin",
+      "createdOn": "2024-10-28T16:17:29.685Z",
+      "modifiedBy": "xuxiaomin",
+      "modifiedOn": "2024-10-28T16:17:29.685Z",
+      "_id": "699eca6775dd4c4666fc2566"
+    },
+    {
+      "reviewingName": "secondVero",
+      "createdBy": "wangshiying",
+      "createdOn": "2024-10-28T17:02:52.399Z",
+      "modifiedBy": "wangshiying",
+      "modifiedOn": "2024-10-28T17:02:52.399Z",
+      "_id": "699eca6775dd4c4666fc2565"
+    }
+  ],
+  "createdOn": "2024-09-11T17:25:19.906Z",
+  "modifiedOn": "2026-02-25T18:09:43.070Z",
+  "__v": 4,
+  "isCurrentUserOwner": false
+}

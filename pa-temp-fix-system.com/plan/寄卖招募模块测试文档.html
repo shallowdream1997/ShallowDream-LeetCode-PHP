@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>寄卖招募模块 - 测试文档</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --primary: #1a73e8;
+    --success: #0f9d58;
+    --warning: #f4b400;
+    --danger: #ea4335;
+    --bg: #f8f9fa;
+    --card-bg: #fff;
+    --border: #dadce0;
+    --text: #202124;
+    --text-secondary: #5f6368;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: #fff; padding: 40px; border-radius: 16px; margin-bottom: 24px; }
+  .header h1 { font-size: 28px; margin-bottom: 8px; }
+  .header p { opacity: .85; font-size: 14px; }
+  .header .meta { display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
+  .header .meta span { font-size: 13px; background: rgba(255,255,255,.15); padding: 4px 12px; border-radius: 20px; }
+
+  /* TOC */
+  .toc { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .toc h2 { font-size: 18px; margin-bottom: 12px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 4px 16px; }
+  .toc-grid a { color: var(--primary); text-decoration: none; font-size: 14px; padding: 2px 0; display: block; }
+  .toc-grid a:hover { text-decoration: underline; }
+  .toc-grid .toc-h3 { padding-left: 20px; font-size: 13px; }
+
+  /* Section */
+  .section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 20px; }
+  .section h2 { font-size: 22px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 3px solid var(--primary); display: flex; align-items: center; gap: 8px; }
+  .section h2 .badge { font-size: 13px; font-weight: 400; background: var(--primary); color: #fff; padding: 1px 10px; border-radius: 12px; }
+  .section h3 { font-size: 17px; margin: 20px 0 10px; color: var(--primary); }
+  .section h4 { font-size: 15px; margin: 14px 0 8px; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th, td { padding: 8px 12px; text-align: left; border: 1px solid var(--border); }
+  th { background: #f1f3f4; font-weight: 600; white-space: nowrap; }
+  td { vertical-align: top; }
+  .table-wrap { overflow-x: auto; }
+
+  /* Mermaid */
+  .mermaid-wrap, .mermaid { margin: 16px 0; text-align: center; }
+  .mermaid-wrap svg { max-width: 100%; }
+
+  /* JSON */
+  .json-block { background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; font-size: 13px; font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; overflow-x: auto; margin: 10px 0; white-space: pre; tab-size: 2; }
+  .json-block .key { color: #9cdcfe; }
+  .json-block .str { color: #ce9178; }
+  .json-block .num { color: #b5cea8; }
+  .json-block .bool { color: #569cd6; }
+  .json-block .null { color: #569cd6; }
+
+  /* Tags */
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+  .tag-green { background: #e6f4ea; color: #1e7e34; }
+  .tag-red { background: #fce8e6; color: #c5221f; }
+  .tag-blue { background: #e8f0fe; color: #1a73e8; }
+  .tag-orange { background: #fef7e0; color: #e37400; }
+
+  /* Data flow */
+  .data-flow { background: #f1f8e9; border: 1px solid #aed581; border-radius: 8px; padding: 14px; margin: 10px 0; font-family: 'Consolas', monospace; font-size: 13px; white-space: pre; line-height: 1.5; }
+  .data-flow .arrow { color: #7cb342; font-weight: 700; }
+  .data-flow .table-name { color: #1565c0; font-weight: 600; }
+  .data-flow .field-change { color: #e65100; }
+  .data-flow .new { color: #2e7d32; font-weight: 600; }
+
+  /* Steps */
+  .steps { counter-reset: step-counter; list-style: none; padding: 0; }
+  .steps li { counter-increment: step-counter; padding: 8px 0 8px 40px; position: relative; font-size: 14px; border-bottom: 1px dashed #e0e0e0; }
+  .steps li::before { content: counter(step-counter); position: absolute; left: 0; top: 8px; width: 28px; height: 28px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+  .steps li:last-child { border-bottom: none; }
+  .steps .sql { display: block; font-family: 'Consolas', monospace; background: #f5f5f5; padding: 6px 10px; border-radius: 4px; margin-top: 4px; font-size: 12px; }
+
+  /* Verify points */
+  .verify { background: #fff8e1; border-left: 4px solid var(--warning); padding: 10px 14px; margin: 10px 0; border-radius: 0 6px 6px 0; font-size: 13px; }
+  .verify strong { color: #e37400; }
+
+  /* Test case card */
+  .test-case { background: #fafafa; border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 16px 0; }
+  .test-case .tc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+  .test-case .tc-header h4 { margin: 0; font-size: 15px; }
+  .test-case .tc-meta { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* Concurrency box */
+  .concurrency { background: #fce4ec; border: 1px solid #f48fb1; border-radius: 8px; padding: 14px; margin: 10px 0; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.6; white-space: pre; }
+
+  /* Checklist */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { padding: 4px 0 4px 28px; position: relative; font-size: 13px; }
+  .checklist li::before { content: "☐"; position: absolute; left: 0; color: var(--primary); font-size: 16px; }
+
+  /* Badge */
+  .badge-pri { background: var(--primary); color: #fff; padding: 2px 10px; border-radius: 10px; font-size: 12px; }
+  .badge-suc { background: var(--success); color: #fff; padding: 2px 10px; border-radius: 10px; font-size: 12px; }
+  .badge-warn { background: var(--warning); color: #fff; padding: 2px 10px; border-radius: 10px; font-size: 12px; }
+
+  /* Field mapping */
+  .field-map { display: grid; grid-template-columns: auto auto 1fr; gap: 4px 12px; margin: 10px 0; font-size: 13px; }
+  .field-map .fm-header { font-weight: 600; background: #f1f3f4; padding: 6px 10px; border-radius: 4px; }
+  .field-map .fm-field { padding: 4px 10px; font-family: 'Consolas', monospace; color: #1565c0; }
+  .field-map .fm-source { padding: 4px 10px; }
+  .field-map .fm-desc { padding: 4px 10px; color: var(--text-secondary); }
+  .field-map .fm-row:nth-child(even) { background: #f8f9fa; border-radius: 4px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    body { padding: 12px; }
+    .header { padding: 24px; }
+    .header h1 { font-size: 22px; }
+    .section { padding: 18px; }
+    .toc-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Print */
+  @media print {
+    body { padding: 0; background: #fff; }
+    .section { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+    .header { background: #1a73e8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .tag, .badge-pri, .badge-suc, .badge-warn { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .json-block { background: #f5f5f5 !important; color: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .json-block .key { color: #0451a5; }
+    .json-block .str { color: #a31515; }
+    .json-block .num { color: #098658; }
+    .json-block .bool { color: #0000ff; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ==================== HEADER ==================== -->
+<div class="header">
+  <h1>📋 寄卖招募模块测试文档</h1>
+  <p>自营转寄卖 - 招募管理全功能测试，涵盖功能测试、集成测试、并发测试与异常场景</p>
+  <div class="meta">
+    <span>📅 版本: 2026-05-20</span>
+    <span>🔖 版本号: v1.0</span>
+    <span>📂 模块: pa-scms-service</span>
+    <span>👤 负责人: QA</span>
+  </div>
+</div>
+
+<!-- ==================== TOC ==================== -->
+<div class="toc">
+  <h2>📑 目录</h2>
+  <div class="toc-grid">
+    <a href="#s1">1. 测试概述</a>
+    <a href="#s2">2. 核心数据表</a>
+    <a href="#s3">3. 业务流程图</a>
+    <a class="toc-h3" href="#s3-1">3.1 全链路流程图</a>
+    <a class="toc-h3" href="#s3-2">3.2 并发保护序列图</a>
+    <a class="toc-h3" href="#s3-3">3.3 CE开单序列图</a>
+    <a href="#s4">4. 前置条件与测试数据</a>
+    <a href="#s5">5. API 总览</a>
+    <a href="#s6">6. 功能测试用例</a>
+    <a class="toc-h3" href="#s6-1">6.1 加入招募车</a>
+    <a class="toc-h3" href="#s6-2">6.2 撤回招募车</a>
+    <a class="toc-h3" href="#s6-3">6.3 招募车列表分页</a>
+    <a class="toc-h3" href="#s6-4">6.4 招募结果详情</a>
+    <a class="toc-h3" href="#s6-5">6.5 批量开CE单</a>
+    <a class="toc-h3" href="#s6-6">6.6 按ID开CE单</a>
+    <a class="toc-h3" href="#s6-7">6.7 下载附件</a>
+    <a class="toc-h3" href="#s6-8">6.8 下拉选项</a>
+    <a class="toc-h3" href="#s6-9">6.9 招募清单列表</a>
+    <a href="#s7">7. 并发测试</a>
+    <a href="#s8">8. 异常场景与边界测试</a>
+    <a href="#s9">9. 页面字段数据来源映射</a>
+    <a class="toc-h3" href="#s9-1">9.1 招募清单列表页</a>
+    <a class="toc-h3" href="#s9-2">9.2 招募车列表页</a>
+    <a class="toc-h3" href="#s9-3">9.3 枚举下拉选项</a>
+    <a href="#s10">10. 测试结果记录</a>
+  </div>
+</div>
+
+<!-- ==================== 1. 测试概述 ==================== -->
+<div class="section" id="s1">
+  <h2>1. 测试概述 <span class="badge">概述</span></h2>
+  <p>本文档涵盖 <strong>寄卖招募模块</strong> 全部API的测试用例，包括：</p>
+  <ul style="padding-left:20px;margin:10px 0;">
+    <li><strong>功能测试</strong> — 每个API的正常流程与参数组合验证</li>
+    <li><strong>集成测试</strong> — 跨表数据一致性、状态流转正确性</li>
+    <li><strong>并发测试</strong> — Redis锁保护下的竞争池原子性、并发加入/撤销</li>
+    <li><strong>边界测试</strong> — 竞争池满员、重复操作、空列表、不存在记录等</li>
+  </ul>
+  <p>测试范围：<code>pa-scms-service</code> 模块的 <code>/v1/cart/*</code> 和 <code>/v1/list/*</code> 共 <strong>9个API</strong>。</p>
+</div>
+
+<!-- ==================== 2. 核心数据表 ==================== -->
+<div class="section" id="s2">
+  <h2>2. 核心数据表 <span class="badge">模型</span></h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>表名</th><th>简称</th><th>核心作用</th><th>关键字段</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>scms_consignment_recruit_list</code></td>
+          <td><span class="tag tag-blue">recruit_list</span></td>
+          <td>招募清单主表，每行代表一个采购招募需求</td>
+          <td><code>id, recruit_no, factory_id, list_status, supplier_apply_count</code></td>
+        </tr>
+        <tr>
+          <td><code>scms_consignment_recruit_list_sku</code></td>
+          <td><span class="tag tag-green">recruit_list_sku</span></td>
+          <td>招募清单SKU明细，每行代表清单中包含的一个SKU</td>
+          <td><code>id, recruit_id, sku_id, cost_price</code></td>
+        </tr>
+        <tr>
+          <td><code>scms_consignment_recruit_apply</code></td>
+          <td><span class="tag tag-orange">recruit_apply</span></td>
+          <td>招募申请记录，每行代表一个寄卖商对清单的申请</td>
+          <td><code>id, recruit_id, supplier_id, apply_status, ce_bill_no</code></td>
+        </tr>
+        <tr>
+          <td><code>scms_consignment_recruit_action_log</code></td>
+          <td><span class="tag tag-red">action_log</span></td>
+          <td>操作日志，记录关键操作流水</td>
+          <td><code>id, recruit_id, apply_id, action, operator_id</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>表关系</h4>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+erDiagram
+    recruit_list ||--o{ recruit_list_sku : contains
+    recruit_list ||--o{ recruit_apply : has
+    recruit_apply ||--o{ action_log : logs
+
+    recruit_list {
+        bigint id PK
+        varchar recruit_no UK "清单编号"
+        bigint factory_id "货源工厂ID"
+        int list_status "10=待发布, 20=招募中, 25=已抢完..."
+        int supplier_apply_count "竞争池人数"
+    }
+    recruit_list_sku {
+        bigint id PK
+        bigint recruit_id FK "关联清单"
+        bigint sku_id
+        decimal cost_price "寄卖单价"
+    }
+    recruit_apply {
+        bigint id PK
+        bigint recruit_id FK "关联清单"
+        bigint supplier_id "寄卖商ID"
+        int apply_status "10=已加入, 20=已开CE..."
+        varchar ce_bill_no "CE单号"
+        datetime first_qc_pass_time "首次质检通过时间"
+    }
+    action_log {
+        bigint id PK
+        bigint recruit_id FK
+        bigint apply_id FK
+        varchar action "操作类型"
+    }
+    </pre>
+  </div>
+</div>
+
+<!-- ==================== 3. 业务流程图 ==================== -->
+<div class="section" id="s3">
+  <h2>3. 业务流程图 <span class="badge">流程</span></h2>
+
+  <h3 id="s3-1">3.1 全链路流程图</h3>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph TB
+    subgraph 寄卖商操作
+      A[登录系统] --> B[招募清单列表页]
+      B --> D[加入招募车<br/>joinCart]
+      D --> E[招募车列表页]
+      E --> F[开样品CE单<br/>createCe/appendSkuToCe]
+      E --> G[查看结果详情<br/>awardDetail]
+      E --> H[撤销招募车<br/>withdrawCart]
+      E --> I[下载附件<br/>downloadFile]
+    end
+
+    subgraph 后台系统
+      D --> J{Redis锁}
+      J -->|抢锁成功| K{竞争池未满?}
+      K -->|是| L[新增申请记录<br/>竞争池+1]
+      K -->|否| M[返回: 已满]
+      J -->|抢锁失败| N[返回: 稍后重试]
+
+      H --> O{Redis锁}
+      O -->|成功| P[物理删除申请<br/>竞争池-1]
+
+      F --> Q[createCeCore]
+      Q --> R[查全部SKU]
+      R --> S[查样品信息]
+      S --> T[创建CE主表]
+      T --> U[循环创建CE明细]
+      U --> V[更新申请状态=20]
+    end
+    </pre>
+  </div>
+
+  <h3 id="s3-2">3.2 并发加入保护序列图</h3>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+sequenceDiagram
+    participant S1 as 寄卖商A
+    participant S2 as 寄卖商B
+    participant API as API层
+    participant Redis as Redis锁
+    participant DB as 数据库
+
+    S1->>API: 加入招募车
+    S2->>API: 加入招募车(同时)
+
+    API->>Redis: 申请锁 key=lock:{recruitId}
+    API->>Redis: 申请锁 key=lock:{recruitId}
+    Note over API,Redis: 锁保证串行执行
+
+    Redis-->>API: 请求A获锁, B等待
+
+    API->>DB: SELECT supplier_apply_count=2
+    API->>DB: UPDATE count+1 WHERE count<5
+    DB-->>API: 影响1行 → count=3
+    API->>DB: INSERT apply_record
+    API->>Redis: 释放锁
+
+    Redis-->>API: 请求B获锁
+    API->>DB: SELECT supplier_apply_count=3
+    API->>DB: UPDATE count+1 WHERE count<5
+    DB-->>API: 影响1行 → count=4
+    API->>DB: INSERT apply_record
+    API->>Redis: 释放锁
+    </pre>
+  </div>
+
+  <h3 id="s3-3">3.3 CE开单序列图</h3>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+sequenceDiagram
+    participant FE as 前端/外部
+    participant Biz as 业务层
+    participant List as recruit_list
+    participant Sku as recruit_list_sku
+    participant Sample as 样品服务
+    participant CE as CE服务
+    participant Apply as recruit_apply
+
+    FE->>Biz: createCe(recruitId, supplierId)
+    Biz->>List: 查询清单
+    Biz->>Apply: 查询申请记录
+    Biz->>Apply: 验证 status=10 且无 ceBillNo
+    Biz->>Sku: SELECT * WHERE recruit_id=?
+    Sku-->>Biz: 全部SKU列表
+    Biz->>Sample: getSampleSkuInfoMap(skuIds)
+    Sample-->>Biz: 样品信息 Map
+    Biz->>CE: createCeMaster(factoryId, supplierId...)
+    CE-->>Biz: ceBillNo
+    loop 每个SKU
+      Biz->>CE: createCeDetails(ceBillNo, skuId, ...)
+    end
+    Biz->>Apply: UPDATE status=20, ceBillNo, ceCreateTime
+    Biz-->>FE: CeCreateResultDTO
+    </pre>
+  </div>
+</div>
+
+<!-- ==================== 4. 前置条件与测试数据 ==================== -->
+<div class="section" id="s4">
+  <h2>4. 前置条件与测试数据 <span class="badge">准备</span></h2>
+
+  <h3>4.1 基础测试数据</h3>
+  <p>以下数据为测试默认场景，每个用例中差异化数据在各用例内部描述。</p>
+
+  <h4>recruit_list（招募清单表）</h4>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>id</th><th>recruit_no</th><th>factory_id</th><th>factory_name</th><th>list_status</th><th>supplier_apply_count</th><th>sku_count</th><th>estimated_cost</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>SC20260601001</td><td>101</td><td>浙江XX汽配工厂</td><td>20(招募中)</td><td>2</td><td>30</td><td>150000.00</td></tr>
+        <tr><td>2</td><td>SC20260601002</td><td>102</td><td>广东XX电子工厂</td><td>20(招募中)</td><td>0</td><td>50</td><td>200000.00</td></tr>
+        <tr><td>3</td><td>SC20260601003</td><td>101</td><td>浙江XX汽配工厂</td><td>10(待发布)</td><td>0</td><td>20</td><td>80000.00</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>recruit_apply（预设的申请记录）</h4>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>id</th><th>recruit_id</th><th>supplier_id</th><th>supplier_name</th><th>group_id</th><th>apply_status</th><th>ce_bill_no</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>1</td><td>1001</td><td>甲贸易有限公司</td><td>2001</td><td>10(已加入)</td><td>null</td></tr>
+        <tr><td>2</td><td>1</td><td>1002</td><td>乙进出口公司</td><td>2002</td><td>10(已加入)</td><td>null</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>寄卖商数据</h4>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>supplier_id</th><th>supplier_name</th><th>group_id</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>1001</td><td>甲贸易有限公司</td><td>2001</td><td>已加入清单1的供应商</td></tr>
+        <tr><td>1002</td><td>乙进出口公司</td><td>2002</td><td>已加入清单1的供应商</td></tr>
+        <tr><td>1003</td><td>丙供应链公司</td><td>2003</td><td>尚未加入的供应商（用于加入测试）</td></tr>
+        <tr><td>1004</td><td>丁商贸有限公司</td><td>2004</td><td>尚未加入的供应商（用于并发测试）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>4.2 测试环境要求</h3>
+  <div class="checklist">
+    <li>数据库已初始化上述基础数据</li>
+    <li>Redis 服务正常运行</li>
+    <li>CE 样品服务（<code>sampleSkuIdInfoService</code>）mock 或连通</li>
+    <li>CE 主表/明细创建服务（<code>ceBillService</code>）mock 或连通</li>
+    <li>供应商信息服务（<code>supplierService</code>）mock 或连通</li>
+  </div>
+</div>
+
+<!-- ==================== 5. API 总览 ==================== -->
+<div class="section" id="s5">
+  <h2>5. API 总览 <span class="badge">接口</span></h2>
+  <p><strong>Base URL</strong>: <code>/scms/consignment/recruit/supplier/v1</code></p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>接口</th><th>方法</th><th>URL</th><th>核心功能</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>招募清单列表分页</td><td>POST</td><td>/list/page</td><td>查看可加入的招募清单，含统计与筛选</td></tr>
+        <tr><td>2</td><td>加入招募车</td><td>POST</td><td>/cart/join</td><td>加入清单（Redis锁保护）</td></tr>
+        <tr><td>3</td><td>撤回招募车</td><td>POST</td><td>/cart/withdraw</td><td>撤回申请（物理删除）</td></tr>
+        <tr><td>4</td><td>招募车列表分页</td><td>POST</td><td>/cart/page</td><td>查看已加入的申请记录</td></tr>
+        <tr><td>5</td><td>招募结果详情</td><td>POST</td><td>/cart/awardDetail</td><td>查看各供应商排名</td></tr>
+        <tr><td>6</td><td>批量开CE单</td><td>POST</td><td>/cart/appendSku</td><td>按清单编号列表批量开单</td></tr>
+        <tr><td>7</td><td>按ID开CE单</td><td>POST</td><td>/cart/createCe</td><td>按清单ID开单（对外API）</td></tr>
+        <tr><td>8</td><td>下拉选项</td><td>GET</td><td>/selectItemList</td><td>枚举下拉数据</td></tr>
+        <tr><td>9</td><td>下载附件</td><td>POST</td><td>/download</td><td>下载清单附件</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 6. 功能测试用例 ==================== -->
+<div class="section" id="s6">
+  <h2>6. 功能测试用例 <span class="badge">测试</span></h2>
+
+  <!-- 6.1 joinCart -->
+  <div class="test-case" id="s6-1">
+    <div class="tc-header">
+      <h4>TC-01：加入招募车 — 正常流程</h4>
+      <div class="tc-meta">
+        <span class="tag tag-blue">P0</span>
+        <span class="tag tag-green">POST</span>
+      </div>
+    </div>
+
+    <p><strong>API</strong>: <code>POST /cart/join</code></p>
+
+    <h4>前置条件</h4>
+    <ul style="padding-left:20px;margin:8px 0;">
+      <li>招募清单 SC20260601001 状态为「招募中」(20)，竞争池人数=2</li>
+      <li>供应商 1003（丙供应链）尚未加入该清单</li>
+    </ul>
+
+    <h4>请求</h4>
+    <div class="json-block">{
+  "<span class="key">recruitNo</span>": "<span class="str">SC20260601001</span>",
+  "<span class="key">supplierId</span>": <span class="num">1003</span>,
+  "<span class="key">groupId</span>": <span class="num">2003</span>
+}</div>
+
+    <h4>后台处理步骤</h4>
+    <ol class="steps">
+      <li>根据 <code>recruitNo</code> 查询 <code>recruit_list</code> → <code>id=1, list_status=20, supplier_apply_count=2</code></li>
+      <li>申请Redis锁 <code>key="consignment:recruit:lock:1"</code> → 抢锁成功</li>
+      <li>查询是否已重复加入 <code>SELECT * FROM recruit_apply WHERE recruit_id=1 AND supplier_id=1003 AND is_deleted=0</code> → 无记录</li>
+      <li>乐观锁更新竞争池 <code>UPDATE recruit_list SET supplier_apply_count=supplier_apply_count+1 WHERE id=1 AND supplier_apply_count &lt; 5</code> → 影响1行 (2→3)</li>
+      <li>新增申请记录 → <code>INSERT INTO recruit_apply (recruit_id, supplier_id, apply_status=10, ...)</code></li>
+      <li>释放Redis锁</li>
+    </ol>
+
+    <h4>数据走向</h4>
+    <div class="data-flow">┌─ <span class="table-name">recruit_list</span> ──────────────────┐    ┌─ <span class="table-name">recruit_apply</span> ──────────────────┐
+│ id=1                                      │    │ id=3 <span class="new">← NEW</span>                       │
+│ supplier_apply_count: <span class="field-change">2 → 3</span>                │    │ recruit_id: 1                        │
+│ list_status: 20 (招募中)                    │    │ supplier_id: 1003                     │
+└───────────────────────────────────────────┘    │ supplier_name: 丙供应链公司             │
+                                                  │ apply_status: <span class="field-change">10 (已加入)</span>        │
+                                                  │ ce_bill_no: null                       │
+                                                  └────────────────────────────────────────┘</div>
+
+    <div class="verify">
+      <strong>验证点</strong><br>
+      ✅ 接口返回 <code>{"data": {"value": true}}</code><br>
+      ✅ <code>recruit_list.supplier_apply_count</code> = 3（比之前+1）<br>
+      ✅ <code>recruit_apply</code> 新增一条记录，<code>apply_status=10</code><br>
+      ✅ 再次调用同一接口应返回失败（重复加入检测）
+    </div>
+  </div>
+
+  <!-- 6.2 withdrawCart -->
+  <div class="test-case" id="s6-2">
+    <div class="tc-header">
+      <h4>TC-02：撤回招募车 — 正常流程</h4>
+      <div class="tc-meta">
+        <span class="tag tag-blue">P0</span>
+        <span class="tag tag-green">POST</span>
+      </div>
+    </div>
+
+    <p><strong>API</strong>: <code>POST /cart/withdraw</code></p>
+
+    <h4>前置条件</h4>
+    <ul style="padding-left:20px;margin:8px 0;">
+      <li>供应商 1001（甲贸易）已加入清单 SC20260601001，<code>apply_id=1, status=10</code></li>
+      <li>竞争池人数=3（含甲）</li>
+    </ul>
+
+    <h4>请求</h4>
+    <div class="json-block">{
+  "<span class="key">recruitNo</span>": "<span class="str">SC20260601001</span>",
+  "<span class="key">supplierId</span>": <span class="num">1001</span>,
+  "<span class="key">groupId</span>": <span class="num">2001</span>
+}</div>
+
+    <h4>后台处理步骤</h4>
+    <ol class="steps">
+      <li>根据 <code>recruitNo</code> 查询 <code>recruit_list</code> → <code>id=1</code></li>
+      <li>根据 <code>recruitId+supplierId</code> 查询申请 → <code>apply_id=1, status=10</code></li>
+      <li>申请Redis锁 <code>key="consignment:recruit:lock:1"</code></li>
+      <li>物理删除申请：<code>DELETE FROM scms_consignment_recruit_apply WHERE id=1</code></li>
+      <li>竞争池降级：<code>UPDATE recruit_list SET supplier_apply_count = IFNULL(supplier_apply_count, 0) - 1 WHERE id=1</code> → 3→2</li>
+      <li>释放Redis锁</li>
+    </ol>
+
+    <h4>数据走向</h4>
+    <div class="data-flow">┌─ <span class="table-name">recruit_apply</span> ──────────────────┐    ┌─ <span class="table-name">recruit_list</span> ──────────────────┐
+│ id=1 <span class="field-change">(DELETED)</span> ░░░░░░░░░░░░░░░░░░░│    │ id=1                              │
+│ recruit_id=1  ░░░░░░░░░░░░░░░░░░░│──物理删除──│ supplier_apply_count: <span class="field-change">3 → 2</span>│
+│ supplier_id=1001 ░░░░░░░░░░░░░░░│    │                                    │
+└────────────────────────────────────────┘    └────────────────────────────────────┘</div>
+
+    <div class="verify">
+      <strong>验证点</strong><br>
+      ✅ 接口返回 <code>{"data": {"value": true}}</code><br>
+      ✅ <code>recruit_apply</code> 表中 <code>id=1</code> 记录已被物理删除（不复存在）<br>
+      ✅ <code>recruit_list.supplier_apply_count</code> = 2（减少1）<br>
+      ✅ 再次调用同一接口应返回"申请不存在"
+    </div>
+  </div>
+
+  <!-- 6.3 cartPage -->
+  <div class="test-case" id="s6-3">
+    <div class="tc-header">
+      <h4>TC-03：招募车列表分页 — 正常流程</h4>
+      <div class="tc-meta">
+        <span class="tag tag-blue">P0</span>
+        <span class="tag tag-green">POST</span>
+      </div>
+    </div>
+
+    <p><strong>API</strong>: <code>POST /cart/page</code></p>
+
+    <h4>前置条件</h4>
+    <ul style="padding-left:20px;margin:8px 0;">
+      <li>供应商 1001（甲贸易）有一条已加入的申请记录（recruit_id=1）</li>
+    </ul>
+
+    <h4>请求（无筛选查询全部）</h4>
+    <div class="json-block">{
+  "<span class="key">pageNo</span>": <span class="num">1</span>,
+  "<span class="key">pageSize</span>": <span class="num">10</span>,
+  "<span class="key">supplierId</span>": <span class="num">1001</span>,
+  "<span class="key">groupId</span>": <span class="num">2001</span>
+}</div>
+
+    <h4>筛选组合测试</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>筛选条件</th><th>预期</th></tr></thead>
+        <tbody>
+          <tr><td>TC-03-1</td><td><code>applyStatusList=[10]</code></td><td>仅返回已加入的记录</td></tr>
+          <tr><td>TC-03-2</td><td><code>listStatusList=[20,25]</code></td><td>仅返回招募中/已抢完的清单对应的申请</td></tr>
+          <tr><td>TC-03-3</td><td><code>factoryId=101</code></td><td>仅返回货源工厂ID=101的清单关联的申请</td></tr>
+          <tr><td>TC-03-4</td><td><code>skuIdList=[5001,5002]</code></td><td>仅返回包含指定SKU的清单对应的申请</td></tr>
+          <tr><td>TC-03-5</td><td><code>awardResult=1</code></td><td>仅返回评选结果为获胜的记录</td></tr>
+          <tr><td>TC-03-6</td><td>全部筛选条件组合</td><td>所有条件同时生效</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>验证响应字段</h4>
+    <div class="verify">
+      <strong>检查项</strong><br>
+      ✅ 返回 <code>list</code> 数组中每项包含所有展示字段（sequenceNo, recruitNo, factoryName, ceStatus, applyStatusName, awardResultName 等）<br>
+      ✅ <code>stat</code> 统计信息正确（totalSourceCount, totalSkuCount）<br>
+      ✅ <code>page</code> 分页信息正确<br>
+      ✅ <code>ceStatus</code> 推断逻辑正确（有ceBillNo无ceSendTime→"已开单" 等）<br>
+      ✅ <code>applyStatusName</code> 映射正确<br>
+      ✅ <code>awardResultName</code> 映射正确（0→未评选, 1→获胜, 2→落选）
+    </div>
+  </div>
+
+  <!-- 6.4 awardDetail -->
+  <div class="test-case" id="s6-4">
+    <div class="tc-header">
+      <h4>TC-04：招募结果详情 — 正常流程</h4>
+      <div class="tc-meta">
+        <span class="tag tag-blue">P0</span>
+        <span class="tag tag-green">POST</span>
+      </div>
+    </div>
+
+    <p><strong>API</strong>: <code>POST /cart/awardDetail</code></p>
+
+    <h4>前置条件</h4>
+    <ul style="padding-left:20px;margin:8px 0;">
+      <li>清单 SC20260601001 下有3家供应商的申请记录</li>
+      <li>供应商1001（甲）覆盖率95% → 评选获胜（awardResult=1, rankNo=1）</li>
+      <li>供应商1002（乙）覆盖率82% → 落选（awardResult=2, rankNo=2）</li>
+      <li>供应商1003（丙）覆盖率65% → 未评选（awardResult=0, rankNo=3）</li>
+    </ul>
+
+    <h4>请求</h4>
+    <div class="json-block">{
+  "<span class="key">recruitNo</span>": "<span class="str">SC20260601001</span>",
+  "<span class="key">supplierId</span>": <span class="num">1001</span>,
+  "<span class="key">groupId</span>": <span class="num">2001</span>
+}</div>
+
+    <h4>预期响应</h4>
+    <div class="json-block">{
+  "<span class="key">code</span>": <span class="num">200</span>,
+  "<span class="key">message</span>": "<span class="str">success</span>",
+  "<span class="key">data</span>": {
+    "<span class="key">items</span>": [
+      { "<span class="key">rankNo</span>": <span class="num">1</span>, "<span class="key">supplierName</span>": "<span class="str">甲贸易有限公司</span>", "<span class="key">skuCoverageRate</span>": <span class="num">95.00</span>, "<span class="key">awardResult</span>": <span class="num">1</span>, "<span class="key">applyStatusName</span>": "<span class="str">分配完成</span>" },
+      { "<span class="key">rankNo</span>": <span class="num">2</span>, "<span class="key">supplierName</span>": "<span class="str">***</span>", "<span class="key">skuCoverageRate</span>": <span class="num">82.00</span>, "<span class="key">awardResult</span>": <span class="num">2</span>, "<span class="key">applyStatusName</span>": "<span class="str">已加入</span>" },
+      { "<span class="key">rankNo</span>": <span class="num">3</span>, "<span class="key">supplierName</span>": "<span class="str">***</span>", "<span class="key">skuCoverageRate</span>": <span class="num">65.00</span>, "<span class="key">awardResult</span>": <span class="num">0</span>, "<span class="key">applyStatusName</span>": "<span class="str">已加入</span>" }
+    ]
+  }
+}</div>
+
+    <div class="verify">
+      <strong>验证点</strong><br>
+      ✅ 排名按 <code>skuCoverageRate</code> 降序排列<br>
+      ✅ 自己的供应商名称显示全名（甲贸易有限公司），其他供应商显示 <code>***</code><br>
+      ✅ <code>awardResult</code> 返回编码值（0/1/2）<br>
+      ✅ <code>applyStatusName</code> 返回中文描述<br>
+      ✅ 总数与清单下申请数一致
+    </div>
+
+    <h4>脱敏规则验证</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>请求的供应商</th><th>查看其他供应商名称</th><th>预期</th></tr></thead>
+        <tbody>
+          <tr><td>supplierId=1001</td><td>1002（乙进出口公司）</td><td><code>***</code></td></tr>
+          <tr><td>supplierId=1001</td><td>1003（丙供应链公司）</td><td><code>***</code></td></tr>
+          <tr><td>supplierId=1001</td><td>1001自己</td><td>全名「甲贸易有限公司」</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 6.5 appendSkuToCe -->
+  <div class="test-case" id="s6-5">
+    <div class="tc-header">
+      <h4>TC-05：批量开CE单 — 正常流程</h4>
+      <div class="tc-meta">
+        <span class="tag tag-blue">P0</span>
+        <span class="tag tag-green">POST</span>
+      </div>
+    </div>
+
+    <p><strong>API</strong>: <code>POST /cart/appendSku</code></p>
+
+    <h4>前置条件</h4>
+    <ul style="padding-left:20px;margin:8px 0;">
+      <li>供应商1001对清单1已有申请（apply_status=10, ce_bill_no=null）</li>
+      <li>供应商1001对清单2已有申请（apply_status=10, ce_bill_no=null）</li>
+      <li>清单1有30个SKU，清单2有50个SKU</li>
+    </ul>
+
+    <h4>请求</h4>
+    <div class="json-block">{
+  "<span class="key">recruitNoList</span>": ["<span class="str">SC20260601001</span>", "<span class="str">SC20260601002</span>"],
+  "<span class="key">supplierId</span>": <span class="num">1001</span>,
+  "<span class="key">groupId</span>": <span class="num">2001</span>
+}</div>
+
+    <h4>后台处理步骤（每个recruitNo）</h4>
+    <ol class="steps">
+      <li>根据 <code>recruitNo</code> 查询 <code>recruit_list</code><div class="sql">SELECT * FROM scms_consignment_recruit_list WHERE recruit_no='SC20260601001'</div></li>
+      <li>根据 <code>recruitId + supplierId</code> 查询申请 → 验证 <code>apply_status=10</code> 且 <code>ce_bill_no IS NULL</code></li>
+      <li>获取该清单全部SKU<div class="sql">SELECT * FROM scms_consignment_recruit_list_sku WHERE recruit_id=1</div></li>
+      <li>收集所有 <code>skuId</code>，调用样品服务 <code>getSampleSkuInfoMapBySkuIdList(skuIds)</code></li>
+      <li>创建CE主表 → 调用 <code>ceBillService.createCeMaster()</code> → 获取 <code>ceBillNo</code></li>
+      <li>为每个SKU创建CE明细 → 循环调用 <code>ceBillService.createCeDetails()</code></li>
+      <li>更新申请记录<div class="sql">UPDATE scms_consignment_recruit_apply SET apply_status=20, ce_bill_no='CE20260601001', ce_create_time=NOW() WHERE id=apply_id</div></li>
+    </ol>
+
+    <h4>数据走向</h4>
+    <div class="data-flow">┌─ <span class="table-name">recruit_apply</span> ──────────────────┐    ┌─ <span class="table-name">CE主表(外部)</span> ─────────────────┐
+│ apply_status: <span class="field-change">10 → 20</span>                      │    │ ce_bill_no: CE20260601001            │
+│ ce_bill_no: <span class="field-change">null → CE20260601001</span>        │    │ supplier_id: 1001                    │
+│ ce_create_time: <span class="field-change">null → NOW</span>               │    │ factory_id: 101                      │
+└────────────────────────────────────────┘    └────────────────────────────────────────┘
+
+┌─ <span class="table-name">recruit_list_sku</span> ────────────────┐    ┌─ <span class="table-name">CE明细表(外部)</span> ────────────────┐
+│ sku_id=5001  cost=25.00 │───createCeDetails──│ ce_bill_no: CE20260601001              │
+│ sku_id=5002  cost=30.00 │     (循环30次)     │ sku_id: 5001  temp_id: xxx  cost:25.00 │
+│ ...共30条                │                    │ ...30条明细                               │
+└──────────────────────────┘                    └──────────────────────────────────────────┘</div>
+
+    <div class="verify">
+      <strong>验证点</strong><br>
+      ✅ 接口返回 <code>{"data": {"value": true}}</code><br>
+      ✅ 两个清单的申请 <code>apply_status</code> 均变为 20（已开CE）<br>
+      ✅ 两个申请的 <code>ce_bill_no</code> 和 <code>ce_create_time</code> 均有值<br>
+      ✅ CE系统中分别有对应主表和明细记录<br>
+      ✅ 清单2（50SKU）应创建50条明细
+    </div>
+
+    <h4>边界场景</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>场景</th><th>预期</th></tr></thead>
+        <tbody>
+          <tr><td>TC-05-1</td><td>清单列表为空 <code>recruitNoList=[]</code></td><td>返回 <code>false</code></td></tr>
+          <tr><td>TC-05-2</td><td>某个清单已有CE单号</td><td>跳过该清单，其他正常创建</td></tr>
+          <tr><td>TC-05-3</td><td>某个申请状态不为10</td><td>跳过该清单，返回原因</td></tr>
+          <tr><td>TC-05-4</td><td>清单不存在</td><td>跳过，继续处理下一个</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 6.6 createCe -->
+  <div class="test-case" id="s6-6">
+    <div class="tc-header">
+      <h4>TC-06：按ID开CE单 — 对外API</h4>
+      <div class="tc-meta">
+        <span class="tag tag-orange">P1</span>
+        <span class="tag tag-green">POST</span>
+      </div>
+    </div>
+
+    <p><strong>API</strong>: <code>POST /cart/createCe</code></p>
+
+    <h4>前置条件</h4>
+    <ul style="padding-left:20px;margin:8px 0;">
+      <li>供应商1003对清单3有申请（apply_status=10, ce_bill_no=null）</li>
+    </ul>
+
+    <h4>请求</h4>
+    <div class="json-block">{
+  "<span class="key">recruitId</span>": <span class="num">3</span>,
+  "<span class="key">supplierId</span>": <span class="num">1003</span>,
+  "<span class="key">groupId</span>": <span class="num">2003</span>
+}</div>
+
+    <h4>预期成功响应</h4>
+    <div class="json-block">{
+  "<span class="key">code</span>": <span class="num">200</span>,
+  "<span class="key">message</span>": "<span class="str">success</span>",
+  "<span class="key">data</span>": {
+    "<span class="key">ceBillNo</span>": "<span class="str">CE20260601003</span>",
+    "<span class="key">success</span>": <span class="bool">true</span>,
+    "<span class="key">message</span>": <span class="null">null</span>
+  }
+}</div>
+
+    <h4>预期失败响应（已有CE单）</h4>
+    <div class="json-block">{
+  "<span class="key">code</span>": <span class="num">200</span>,
+  "<span class="key">message</span>": "<span class="str">success</span>",
+  "<span class="key">data</span>": {
+    "<span class="key">ceBillNo</span>": <span class="null">null</span>,
+    "<span class="key">success</span>": <span class="bool">false</span>,
+    "<span class="key">message</span>": "<span class="str">该申请已有CE单</span>"
+  }
+}</div>
+
+    <div class="verify">
+      <strong>验证点</strong><br>
+      ✅ 成功时 <code>ceBillNo</code> 有值，<code>success=true</code><br>
+      ✅ 核心逻辑与 TC-05 共享同一段 <code>createCeCore</code><br>
+      ✅ 重复调用返回 <code>success=false</code> + 错误消息<br>
+      ✅ 申请不存在时返回对应的错误消息<br>
+      ✅ 申请状态不为10时返回错误消息
+    </div>
+  </div>
+
+  <!-- 6.7 downloadFile -->
+  <div class="test-case" id="s6-7">
+    <div class="tc-header">
+      <h4>TC-07：下载附件 — 正常流程</h4>
+      <div class="tc-meta">
+        <span class="tag tag-orange">P1</span>
+        <span class="tag tag-green">POST</span>
+      </div>
+    </div>
+
+    <p><strong>API</strong>: <code>POST /download</code></p>
+
+    <h4>请求</h4>
+    <div class="json-block">{
+  "<span class="key">recruitNo</span>": "<span class="str">SC20260601001</span>",
+  "<span class="key">supplierId</span>": <span class="num">1001</span>,
+  "<span class="key">groupId</span>": <span class="num">2001</span>
+}</div>
+
+    <h4>预期响应</h4>
+    <div class="json-block">{
+  "<span class="key">code</span>": <span class="num">200</span>,
+  "<span class="key">message</span>": "<span class="str">success</span>",
+  "<span class="key">data</span>": {
+    "<span class="key">value</span>": "<span class="str">https://oss.example.com/consignment/recruit/2026/06/SC20260601001.xlsx</span>"
+  }
+}</div>
+
+    <div class="verify">
+      <strong>验证点</strong><br>
+      ✅ 返回的URL可下载文件（需检查OSS连通性）<br>
+      ✅ 供应商名称从供应商服务实时获取（不依赖缓存）<br>
+      ✅ 非自己的供应商名称返回 <code>***</code>
+    </div>
+  </div>
+
+  <!-- 6.8 selectItemList -->
+  <div class="test-case" id="s6-8">
+    <div class="tc-header">
+      <h4>TC-08：下拉选项 — 枚举数据验证</h4>
+      <div class="tc-meta">
+        <span class="tag tag-orange">P1</span>
+        <span class="tag tag-blue">GET</span>
+      </div>
+    </div>
+
+    <p><strong>API</strong>: <code>GET /selectItemList?field={field}</code></p>
+
+    <h4>各 field 返回值验证</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>field</th><th>预期返回</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>awardResult</code></td>
+            <td>
+              <code>未评选=0</code>, <code>获胜=1</code>, <code>落选=2</code><br>
+              <span class="tag tag-green">来源:</span> ConsignmentAwardResultEnum
+            </td>
+          </tr>
+          <tr>
+            <td><code>listStatus</code></td>
+            <td>
+              <code>待发布=10</code>, <code>招募中=20</code>, <code>已抢完=25</code>, <code>待审核=30</code>, <code>审核通过=40</code>, <code>评选中=50</code>, <code>评选完成=60</code>, <code>已分配=70</code>, <code>已过期=90</code>, <code>已作废=100</code><br>
+              <span class="tag tag-green">来源:</span> ConsignmentRecruitListStatusEnum
+            </td>
+          </tr>
+          <tr>
+            <td><code>applyStatus</code></td>
+            <td>
+              <code>已加入=10</code>, <code>已开CE=20</code>, <code>等待评选=30</code>, <code>分配完成=40</code>, <code>超时清出=90</code>, <code>放弃/作废=100</code><br>
+              <span class="tag tag-green">来源:</span> ConsignmentRecruitApplyStatusEnum
+            </td>
+          </tr>
+          <tr>
+            <td><code>ceStatus</code></td>
+            <td>
+              <code>未开单</code>, <code>已开单</code>, <code>已发货</code>, <code>处理完成</code><br>
+              <span class="tag tag-green">来源:</span> ConsignmentRecruitCeStatusEnum
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="verify">
+      <strong>验证点</strong><br>
+      ✅ 每个 field 返回正确数量的枚举项<br>
+      ✅ 枚举编码（code/value）与数据库中存储的值一致<br>
+      ✅ 描述（desc/key）为前端展示的中文名称<br>
+      ✅ 无效 field 返回空数组
+    </div>
+  </div>
+
+  <!-- 6.9 list/page -->
+  <div class="test-case" id="s6-9">
+    <div class="tc-header">
+      <h4>TC-09：招募清单列表分页</h4>
+      <div class="tc-meta">
+        <span class="tag tag-blue">P0</span>
+        <span class="tag tag-green">POST</span>
+      </div>
+    </div>
+
+    <p><strong>API</strong>: <code>POST /list/page</code></p>
+
+    <h4>请求</h4>
+    <div class="json-block">{
+  "<span class="key">pageNo</span>": <span class="num">1</span>,
+  "<span class="key">pageSize</span>": <span class="num">10</span>,
+  "<span class="key">supplierId</span>": <span class="num">1003</span>,
+  "<span class="key">groupId</span>": <span class="num">2003</span>
+}</div>
+
+    <h4>筛选组合测试</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>筛选条件</th><th>预期</th></tr></thead>
+        <tbody>
+          <tr><td>TC-09-1</td><td><code>sameSourceOnly=true</code></td><td>仅返回供应商1003同源的清单</td></tr>
+          <tr><td>TC-09-2</td><td><code>factoryId=101</code></td><td>仅返回工厂101的清单</td></tr>
+          <tr><td>TC-09-3</td><td><code>skuIdList=[5001,5002]</code></td><td>仅返回包含这些SKU的清单</td></tr>
+          <tr><td>TC-09-4</td><td>时间范围筛选</td><td>仅返回时间范围内的清单</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="verify">
+      <strong>验证点</strong><br>
+      ✅ 返回数据含所有展示字段<br>
+      ✅ <code>joined</code> 字段正确标识当前供应商是否已加入<br>
+      ✅ <code>sameSource</code> 字段正确标识是否为同源<br>
+      ✅ <code>stat</code> 统计信息正确（totalSourceCount, totalSkuCount, myCartCount）<br>
+      ✅ <code>skuList</code> 展开行内容完整
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 7. 并发测试 ==================== -->
+<div class="section" id="s7">
+  <h2>7. 并发测试 <span class="badge">并发</span></h2>
+
+  <!-- 7.1 并发加入 -->
+  <div class="test-case">
+    <div class="tc-header">
+      <h4>TC-C01：并发加入招募车（竞争池满员）</h4>
+      <div class="tc-meta">
+        <span class="tag tag-red">P0</span>
+        <span class="tag tag-green">并发</span>
+      </div>
+    </div>
+
+    <h4>场景描述</h4>
+    <p>同一时刻，5个不同的寄卖商同时申请加入同一清单（池容量5人，已有2人，剩余3个名额）。</p>
+
+    <h4>测试数据</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>请求</th><th>supplier_id</th><th>group_id</th><th>预期结果</th></tr></thead>
+        <tbody>
+          <tr><td>请求A</td><td>1005</td><td>2005</td><td><span class="tag tag-green">成功</span> 竞争池 2→3</td></tr>
+          <tr><td>请求B</td><td>1006</td><td>2006</td><td><span class="tag tag-green">成功</span> 竞争池 3→4</td></tr>
+          <tr><td>请求C</td><td>1007</td><td>2007</td><td><span class="tag tag-green">成功</span> 竞争池 4→5</td></tr>
+          <tr><td>请求D</td><td>1008</td><td>2008</td><td><span class="tag tag-red">失败</span> 竞争池已满</td></tr>
+          <tr><td>请求E</td><td>1009</td><td>2009</td><td><span class="tag tag-red">失败</span> 竞争池已满</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>并发执行流程</h4>
+    <div class="concurrency">step 1: 5个请求同时到达，各自申请Redis锁
+                            锁 key = "consignment:recruit:lock:1"（超时3秒）
+      
+step 2: Redis锁保证同一时间只有一个请求执行（串行化）
+
+step 3: 请求A 持有锁
+        → SELECT supplier_apply_count = 2
+        → UPDATE SET count+1 WHERE count&lt;5  → 影响1行 → count: 2→3
+        → INSERT apply_record (supplier_id=1005, ...)
+        → 释放锁
+
+step 4: 请求B 持有锁
+        → SELECT supplier_apply_count = 3
+        → UPDATE SET count+1 WHERE count&lt;5  → 影响1行 → count: 3→4
+        → INSERT apply_record (supplier_id=1006, ...)
+        → 释放锁
+
+step 5: 请求C 持有锁
+        → SELECT supplier_apply_count = 4
+        → UPDATE SET count+1 WHERE count&lt;5  → 影响1行 → count: 4→5
+        → INSERT apply_record (supplier_id=1007, ...)
+        → 释放锁
+
+step 6: 请求D 持有锁
+        → SELECT supplier_apply_count = 5
+        → UPDATE SET count+1 WHERE count&lt;5  → 影响0行 → 已满，返回失败
+        → 释放锁
+
+step 7: 请求E 持有锁（同理，竞争池已满返回失败）</div>
+
+    <div class="verify">
+      <strong>验证点</strong><br>
+      ✅ 前3个请求返回 <code>true</code>，后2个返回 <code>false</code> 或业务异常<br>
+      ✅ 最终 <code>supplier_apply_count</code> = 5<br>
+      ✅ 第6个请求（无论哪个供应商）均因竞争池已满失败<br>
+      ✅ <code>recruit_apply</code> 表仅新增3条记录（1005, 1006, 1007）<br>
+      ✅ 不存在重复提交导致的同供应商多条记录
+    </div>
+  </div>
+
+  <!-- 7.2 并发撤销 -->
+  <div class="test-case">
+    <div class="tc-header">
+      <h4>TC-C02：并发撤销招募车</h4>
+      <div class="tc-meta">
+        <span class="tag tag-red">P0</span>
+        <span class="tag tag-green">并发</span>
+      </div>
+    </div>
+
+    <h4>场景描述</h4>
+    <p>3个已加入的供应商（1001, 1002, 1003）同时撤回同一个清单的招募车。</p>
+
+    <h4>并发执行流程</h4>
+    <div class="concurrency">step 1: 3个请求各自申请Redis锁 key="consignment:recruit:lock:1"
+
+step 2: 请求A (supplier_id=1001) 成功获锁
+        → 物理删除 apply_id=1
+        → UPDATE recruit_list SET supplier_apply_count = 3-1=2
+        → 释放锁
+
+step 3: 请求B (supplier_id=1002) 成功获锁
+        → 物理删除 apply_id=2
+        → UPDATE recruit_list SET supplier_apply_count = 2-1=1
+        → 释放锁
+
+step 4: 请求C (supplier_id=1003) 成功获锁
+        → 物理删除 apply_id=3
+        → UPDATE recruit_list SET supplier_apply_count = 1-1=0
+        → 释放锁</div>
+
+    <div class="verify">
+      <strong>验证点</strong><br>
+      ✅ 3个请求均返回 <code>true</code><br>
+      ✅ 最终 <code>supplier_apply_count</code> = 0<br>
+      ✅ 全部申请记录被物理删除（不是 <code>is_deleted=1</code>）<br>
+      ✅ 再次查询该记录不存在（<code>SELECT *</code> 返回空）
+    </div>
+  </div>
+
+  <!-- 7.3 满员边界 -->
+  <div class="test-case">
+    <div class="tc-header">
+      <h4>TC-C03：竞争池满员边界测试</h4>
+      <div class="tc-meta">
+        <span class="tag tag-orange">P1</span>
+        <span class="tag tag-green">边界</span>
+      </div>
+    </div>
+
+    <h4>场景描述</h4>
+    <p>竞争池已有5人（已满），此时又有供应商尝试加入。</p>
+
+    <h4>请求</h4>
+    <div class="json-block">{
+  "<span class="key">recruitNo</span>": "<span class="str">SC20260601001</span>",
+  "<span class="key">supplierId</span>": <span class="num">1010</span>,
+  "<span class="key">groupId</span>": <span class="num">2010</span>
+}</div>
+
+    <div class="verify">
+      <strong>验证点</strong><br>
+      ✅ 接口抛出业务异常："当前清单竞争池已满，无法加入"<br>
+      ✅ 或接口返回 <code>{"data": {"value": false}}</code><br>
+      ✅ <code>supplier_apply_count</code> 保持不变（仍为5）<br>
+      ✅ <code>recruit_apply</code> 表无新增记录
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 8. 异常场景 ==================== -->
+<div class="section" id="s8">
+  <h2>8. 异常场景与边界测试 <span class="badge">异常</span></h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>场景</th><th>操作</th><th>预期结果</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>E-01</td>
+          <td>重复加入检测</td>
+          <td>加入成功后立即再次调用同一接口</td>
+          <td>返回业务异常或 <code>false</code>，<code>recruit_apply</code> 无重复记录</td>
+        </tr>
+        <tr>
+          <td>E-02</td>
+          <td>撤回后立即重新加入</td>
+          <td>撤回招募车后不刷新页面，立即再次加入同一清单</td>
+          <td><span class="tag tag-green">加入成功</span>，撤回是物理删除，不会与旧记录冲突</td>
+        </tr>
+        <tr>
+          <td>E-03</td>
+          <td>已开CE不可重复开单</td>
+          <td>对已开CE的申请再次调用 appendSkuToCe / createCe</td>
+          <td>批量模式跳过该记录；单ID模式返回 <code>success=false</code><br><code>ce_bill_no</code> 不变，CE主表未重复创建</td>
+        </tr>
+        <tr>
+          <td>E-04</td>
+          <td>清单不存在</td>
+          <td>传入不存在的 <code>recruitNo</code> 或 <code>recruitId</code></td>
+          <td>返回失败提示："清单不存在" 或对应错误消息</td>
+        </tr>
+        <tr>
+          <td>E-05</td>
+          <td>清单状态无效</td>
+          <td>对状态不为"招募中"的清单执行加入/开CE操作</td>
+          <td>返回失败提示："状态不允许" 或 "当前清单不在招募期"</td>
+        </tr>
+        <tr>
+          <td>E-06</td>
+          <td>竞争池降级不产生负数</td>
+          <td>竞争池为0时主动撤销招募车（极端情况）</td>
+          <td><code>IFNULL(supplier_apply_count, 0) - 1</code> 不会出现负数，MySQL执行为0</td>
+        </tr>
+        <tr>
+          <td>E-07</td>
+          <td>申请不存在（撤回已撤的）</td>
+          <td>对已撤回（物理删除）的记录再次调用撤回</td>
+          <td>提示"申请不存在或已删除"</td>
+        </tr>
+        <tr>
+          <td>E-08</td>
+          <td>供应商不存在</td>
+          <td>传入不存在的 <code>supplierId</code></td>
+          <td><code>supplierService.getSupplierInfo()</code> 返回空，供应商名称为空字符串或默认值</td>
+        </tr>
+        <tr>
+          <td>E-09</td>
+          <td>必填参数缺失</td>
+          <td>请求 DTO 缺少 <code>recruitNo</code> / <code>supplierId</code> 等必填字段</td>
+          <td>参数校验异常，返回 <code>400 Bad Request</code> 或服务端校验提示</td>
+        </tr>
+        <tr>
+          <td>E-10</td>
+          <td>Redis锁获取超时</td>
+          <td>某请求长时间持有锁，其他请求超时（3秒）</td>
+          <td>超时请求返回失败提示"系统繁忙，请稍后重试"</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>时序状态转移验证</h4>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+stateDiagram-v2
+    [*] --> 已加入: joinCart
+    已加入 --> 已开CE: createCe / appendSkuToCe
+    已加入 --> [*]: withdrawCart (物理删除)
+    已开CE --> 等待评选: 评选池(外部)
+    等待评选 --> 分配完成: 评选获胜
+    等待评选 --> 放弃: 评选落选
+    </pre>
+  </div>
+</div>
+
+<!-- ==================== 9. 页面字段数据来源映射 ==================== -->
+<div class="section" id="s9">
+  <h2>9. 页面字段数据来源映射 <span class="badge">映射</span></h2>
+
+  <h3 id="s9-1">9.1 招募清单列表页</h3>
+  <p><strong>API</strong>: <code>POST /list/page</code> → <code>SupplierRecruitListItemRespDTO</code></p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>前端字段</th><th>数据来源</th><th>获取/计算逻辑</th></tr></thead>
+      <tbody>
+        <tr><td>序号</td><td><code>sequenceNo</code></td><td>页面内计算：<code>(pageNo-1)*pageSize + index + 1</code></td></tr>
+        <tr><td>发布开始时间</td><td><code>recruit_list.publish_begin_time</code></td><td>直接映射</td></tr>
+        <tr><td>招募清单编号</td><td><code>recruit_list.recruit_no</code></td><td>直接映射，也是其他API的入参</td></tr>
+        <tr><td>货源工厂名称</td><td><code>recruit_list.factory_name</code></td><td>直接映射</td></tr>
+        <tr><td>产品分类名称</td><td>分类服务查询</td><td>从分类服务查询分类路径，取根分类名称</td></tr>
+        <tr><td>产品线</td><td>分类服务查询</td><td>从分类服务查询分类路径，取末级分类名称</td></tr>
+        <tr><td>清单SKU数量</td><td><code>recruit_list.sku_count</code></td><td>直接映射</td></tr>
+        <tr><td>预计寄卖总价</td><td><code>recruit_list.estimated_cost</code></td><td>直接映射</td></tr>
+        <tr><td>预估月销量</td><td><code>recruit_list.estimated_month_sale_qty</code></td><td>直接映射</td></tr>
+        <tr><td>预估月销售额</td><td><code>recruit_list.estimated_month_sale_amount</code></td><td>直接映射</td></tr>
+        <tr><td>平均MOQ</td><td><code>recruit_list.avg_moq</code></td><td>直接映射</td></tr>
+        <tr><td>竞争池人数</td><td><code>recruit_list.supplier_apply_count</code></td><td>直接映射</td></tr>
+        <tr><td>同源母鸡数</td><td>统计查询</td><td>统计该供应商在该货源工厂下已有的SKU总数</td></tr>
+        <tr><td>清单状态名称</td><td><code>listStatusName</code></td><td>根据 <code>list_status</code> 映射 <code>ConsignmentRecruitListStatusEnum</code></td></tr>
+        <tr><td>是否已加入</td><td><code>joined</code></td><td>查询 <code>recruit_apply</code> 是否存在 <code>recruit_id+supplier_id</code> 且 <code>is_deleted=0</code></td></tr>
+        <tr><td>是否同源</td><td><code>sameSource</code></td><td><code>sameSourceCount &gt; 0 → true</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="s9-2">9.2 招募车列表页</h3>
+  <p><strong>API</strong>: <code>POST /cart/page</code> → <code>CartItemRespDTO</code></p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>前端字段</th><th>数据来源</th><th>获取/计算逻辑</th></tr></thead>
+      <tbody>
+        <tr><td>序号</td><td><code>sequenceNo</code></td><td>页面内计算</td></tr>
+        <tr><td>发布招采时间</td><td><code>recruit_list.publish_begin_time</code></td><td>关联清单表</td></tr>
+        <tr><td>招募清单编号</td><td><code>recruit_apply.recruit_no</code></td><td>直接映射，关联入参</td></tr>
+        <tr><td>货源工厂名称</td><td><code>recruit_list.factory_name</code></td><td>通过 <code>recruit_id</code> 关联</td></tr>
+        <tr><td>分类路径</td><td><code>recruit_list.category_full_path_id</code></td><td>直接映射</td></tr>
+        <tr><td>清单SKU数量</td><td><code>recruit_list.sku_count</code></td><td>关联清单表</td></tr>
+        <tr><td>预计寄卖总价</td><td><code>recruit_list.estimated_cost</code></td><td>关联清单表</td></tr>
+        <tr><td>预估月销售件数</td><td><code>recruit_list.estimated_month_sale_qty</code></td><td>关联清单表</td></tr>
+        <tr><td>预估月销售金额</td><td><code>recruit_list.estimated_month_sale_amount</code></td><td>关联清单表</td></tr>
+        <tr><td>竞争池人数</td><td><code>recruit_list.supplier_apply_count</code></td><td>关联清单表</td></tr>
+        <tr><td>同源母鸡数</td><td>统计查询</td><td>统计该供应商在该货源工厂下已有的SKU总数</td></tr>
+        <tr><td>SKU覆盖率</td><td><code>recruit_apply.sku_coverage_rate</code></td><td>直接映射</td></tr>
+        <tr><td>同源加权率</td><td><code>recruit_apply.same_source_weight_rate</code></td><td>直接映射</td></tr>
+        <tr><td>最终覆盖率</td><td><code>recruit_apply.final_coverage_rate</code></td><td>直接映射</td></tr>
+        <tr><td>清单状态名称</td><td><code>listStatusName</code></td><td>根据 <code>list_status</code> 映射枚举</td></tr>
+        <tr><td>申请状态名称</td><td><code>applyStatusName</code></td><td>根据 <code>apply_status</code> 映射 <code>ConsignmentRecruitApplyStatusEnum</code></td></tr>
+        <tr><td>招募结果名称</td><td><code>awardResultName</code></td><td>根据 <code>award_result</code> 映射 <code>ConsignmentAwardResultEnum</code>（0→未评选, 1→获胜, 2→落选）</td></tr>
+        <tr><td>CE状态</td><td><code>ceStatus</code></td><td><strong>推断逻辑</strong>（见下方）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>CE状态推断逻辑</h4>
+  <div class="data-flow">IF firstQcPassTime IS NOT NULL → "处理完成"  (ConsignmentRecruitCeStatusEnum.COMPLETED)
+ELSE IF ceSendTime IS NOT NULL       → "已发货"    (ConsignmentRecruitCeStatusEnum.SHIPPED)
+ELSE IF ceBillNo IS NOT NULL         → "已开单"    (ConsignmentRecruitCeStatusEnum.OPENED)
+ELSE                                  → "未开单"    (ConsignmentRecruitCeStatusEnum.NOT_OPENED)</div>
+
+  <h3 id="s9-3">9.3 枚举下拉选项接口映射</h3>
+  <p><strong>API</strong>: <code>GET /selectItemList?field={field}</code></p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>field</th><th>返回数据</th><th>枚举来源</th><th>用于页面</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>awardResult</code></td>
+          <td>未评选=0, 获胜=1, 落选=2</td>
+          <td><code>ConsignmentAwardResultEnum</code></td>
+          <td>招募车页"评选结果"筛选下拉</td>
+        </tr>
+        <tr>
+          <td><code>listStatus</code></td>
+          <td>待发布=10, 招募中=20, 已抢完=25, ...</td>
+          <td><code>ConsignmentRecruitListStatusEnum</code></td>
+          <td>招募车/清单页"清单状态"筛选下拉</td>
+        </tr>
+        <tr>
+          <td><code>applyStatus</code></td>
+          <td>已加入=10, 已开CE=20, 等待评选=30, ...</td>
+          <td><code>ConsignmentRecruitApplyStatusEnum</code></td>
+          <td>招募车页"申请状态"筛选下拉</td>
+        </tr>
+        <tr>
+          <td><code>ceStatus</code></td>
+          <td>未开单, 已开单, 已发货, 处理完成</td>
+          <td><code>ConsignmentRecruitCeStatusEnum</code></td>
+          <td>招募车页"CE状态"筛选下拉</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== 10. 测试结果记录 ==================== -->
+<div class="section" id="s10">
+  <h2>10. 测试结果记录 <span class="badge">记录</span></h2>
+  <p style="margin-bottom:12px;">使用下表记录每次测试的执行结果，逐项核对通过状态。</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>用例编号</th>
+          <th>测试场景</th>
+          <th>测试日期</th>
+          <th>测试人</th>
+          <th>结果</th>
+          <th>缺陷/备注</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>TC-01</td><td>加入招募车 — 正常流程</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>TC-02</td><td>撤回招募车 — 正常流程</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>TC-03</td><td>招募车列表分页（含筛选）</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>TC-04</td><td>招募结果详情（含脱敏验证）</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>TC-05</td><td>批量开CE单（含边界）</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>TC-06</td><td>按ID开CE单（对外API）</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>TC-07</td><td>下载附件</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>TC-08</td><td>下拉选项枚举验证</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>TC-09</td><td>招募清单列表分页（含筛选）</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr style="border-top:2px solid #1a73e8;">
+          <td>TC-C01</td><td>并发加入招募车（5请求）</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>TC-C02</td><td>并发撤销招募车（3请求）</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>TC-C03</td><td>竞争池满员边界</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr style="border-top:2px solid #ea4335;">
+          <td>E-01</td><td>重复加入检测</td>
+          <td></td><td></td>
+          <td><span style="color:#999;">未执行</span></td>
+          <td></td>
+        </tr>
+        <tr><td>E-02</td><td>撤回后重新加入</td><td></td><td></td><td><span style="color:#999;">未执行</span></td><td></td></tr>
+        <tr><td>E-03</td><td>已开CE不可重复开单</td><td></td><td></td><td><span style="color:#999;">未执行</span></td><td></td></tr>
+        <tr><td>E-04</td><td>清单不存在</td><td></td><td></td><td><span style="color:#999;">未执行</span></td><td></td></tr>
+        <tr><td>E-05</td><td>清单状态无效</td><td></td><td></td><td><span style="color:#999;">未执行</span></td><td></td></tr>
+        <tr><td>E-06</td><td>竞争池降级不产生负数</td><td></td><td></td><td><span style="color:#999;">未执行</span></td><td></td></tr>
+        <tr><td>E-07</td><td>申请不存在（撤回已撤的）</td><td></td><td></td><td><span style="color:#999;">未执行</span></td><td></td></tr>
+        <tr><td>E-08</td><td>供应商不存在</td><td></td><td></td><td><span style="color:#999;">未执行</span></td><td></td></tr>
+        <tr><td>E-09</td><td>必填参数缺失</td><td></td><td></td><td><span style="color:#999;">未执行</span></td><td></td></tr>
+        <tr><td>E-10</td><td>Redis锁超时</td><td></td><td></td><td><span style="color:#999;">未执行</span></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div style="text-align:center;padding:24px;color:var(--text-secondary);font-size:13px;border-top:1px solid var(--border);margin-top:24px;">
+  <p>寄卖招募模块 - 测试文档 v1.0 | 2026-05-20 | 后端代码同步更新</p>
+  <p style="margin-top:4px;">文档中的Mermaid流程图需浏览器支持 &lt;script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"&gt;&lt;/script&gt;</p>
+</div>
+
+</div><!-- /container -->
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'neutral',
+    flowchart: { htmlLabels: true, curve: 'basis', useMaxWidth: true },
+    sequence: { showSequenceNumbers: true },
+    themeVariables: {
+      primaryColor: '#1a73e8',
+      primaryTextColor: '#fff',
+      primaryBorderColor: '#0d47a1',
+      lineColor: '#5f6368',
+      secondaryColor: '#e8f0fe',
+      tertiaryColor: '#f1f3f4'
+    }
+  });
+</script>
+
+</body>
+</html>

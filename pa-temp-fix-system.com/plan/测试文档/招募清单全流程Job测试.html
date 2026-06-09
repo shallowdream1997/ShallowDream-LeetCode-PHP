@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>招募清单全流程Job测试</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; padding: 20px; }
+.container { max-width: 1100px; margin: 0 auto; }
+h1 { text-align: center; margin-bottom: 8px; color: #1a1a2e; font-size: 24px; }
+.subtitle { text-align: center; color: #666; margin-bottom: 24px; font-size: 14px; }
+.config-bar { background: #fff; border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.config-bar label { font-weight: 600; white-space: nowrap; }
+.config-bar input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+.flow-chart { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.flow-chart h2 { font-size: 16px; margin-bottom: 12px; color: #1a1a2e; }
+.flow-steps { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.flow-step { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+.flow-arrow { color: #999; font-size: 18px; }
+.s10 { background: #e8f5e9; color: #2e7d32; }
+.s20 { background: #e3f2fd; color: #1565c0; }
+.s25 { background: #fff3e0; color: #e65100; }
+.s35 { background: #f3e5f5; color: #7b1fa2; }
+.s50 { background: #fce4ec; color: #c62828; }
+.s60 { background: #e0f2f1; color: #00695c; }
+.s100 { background: #eceff1; color: #546e7a; }
+.section { margin-bottom: 20px; }
+.section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; padding-left: 8px; border-left: 4px solid #3b82f6; color: #1a1a2e; }
+.job-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+.job-card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.1); transition: box-shadow .2s; }
+.job-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+.job-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.job-card-title { font-weight: 700; font-size: 14px; }
+.job-card-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+.job-card-desc { font-size: 12px; color: #666; margin-bottom: 10px; line-height: 1.5; }
+.job-card-meta { font-size: 11px; color: #999; margin-bottom: 10px; }
+.job-card-meta span { margin-right: 12px; }
+.btn-trigger { width: 100%; padding: 10px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; }
+.btn-trigger:hover { opacity: 0.85; transform: translateY(-1px); }
+.btn-trigger:active { transform: translateY(0); }
+.btn-trigger:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-blue { background: #3b82f6; color: #fff; }
+.btn-green { background: #10b981; color: #fff; }
+.btn-purple { background: #8b5cf6; color: #fff; }
+.btn-orange { background: #f59e0b; color: #fff; }
+.btn-red { background: #ef4444; color: #fff; }
+.btn-gray { background: #6b7280; color: #fff; }
+.result-box { margin-top: 10px; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-family: monospace; display: none; }
+.result-box.show { display: block; }
+.result-ok { background: #d1fae5; color: #065f46; }
+.result-err { background: #fee2e2; color: #991b1b; }
+.result-loading { background: #fef3c7; color: #92400e; }
+.log-panel { background: #1a1a2e; color: #e2e8f0; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px; max-height: 400px; overflow-y: auto; margin-top: 20px; }
+.log-panel .log-entry { padding: 4px 0; border-bottom: 1px solid #2d3748; }
+.log-panel .log-time { color: #64748b; margin-right: 8px; }
+.log-panel .log-ok { color: #34d399; }
+.log-panel .log-err { color: #f87171; }
+.log-panel .log-info { color: #60a5fa; }
+.clear-log { background: #374151; color: #d1d5db; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 8px; }
+.run-all-bar { text-align: center; margin: 20px 0; }
+.btn-run-all { padding: 14px 40px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all .2s; }
+.btn-run-all:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,.4); }
+.btn-run-all:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>招募清单全流程 Job 手动触发</h1>
+  <p class="subtitle">按顺序执行各Job，验证清单从 待发布(10) 到 分配中(50) 的完整状态流转（6个Job）</p>
+
+  <div class="config-bar">
+    <label>API基础地址:</label>
+    <input id="baseUrl" type="text" value="http://localhost:8080" placeholder="如 http://10.0.0.1:8080">
+    <button onclick="testConnection()" style="padding:8px 16px;background:#3b82f6;color:#fff;border:none;border-radius:6px;cursor:pointer;">测试连接</button>
+  </div>
+
+  <div class="flow-chart">
+    <h2>状态流转图</h2>
+    <div class="flow-steps">
+      <span class="flow-step s10">10 待发布</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step s20">20 招募中</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step s25">25 已抢完</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step s35">35 评选中</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step s50">50 分配中</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step s60">60 清单完成</span>
+    </div>
+    <div style="margin-top:8px;font-size:12px;color:#999;">
+      分支: 20/25 无人申请 → <span class="flow-step s100" style="font-size:11px;">100 作废</span>
+      &nbsp;|&nbsp; 50/60 回收 → <span class="flow-step s100" style="font-size:11px;">100 作废</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">按执行顺序排列的Job触发卡片</div>
+    <div class="job-grid" id="jobGrid"></div>
+  </div>
+
+  <div class="run-all-bar">
+    <button class="btn-run-all" id="btnRunAll" onclick="runAllSequential()">按顺序全部执行</button>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+    <h2 style="font-size:16px;">执行日志</h2>
+    <button class="clear-log" onclick="clearLog()">清空日志</button>
+  </div>
+  <div class="log-panel" id="logPanel"></div>
+</div>
+
+<script>
+const JOBS = [
+  { id: 'triggerAutoPublish', name: '自动发布', badge: '10→20', badgeColor: '#1565c0', desc: '将待发布清单(10)发布为招募中(20)，创建publish轮次。前置：存在status=10的清单且SKU已组单，周三十点执行。', api: '/v1/triggerAutoPublish', schedule: '周三 10:00', btnClass: 'btn-blue', order: 1 },
+  { id: 'triggerEvalStart', name: '评选开始', badge: '20/25→35', badgeColor: '#7b1fa2', desc: 'Step1 全局清理超时apply(status=10超3天→90) | Step2 清单(20/25→35) + publish→35 | Step3 同步已开CE单apply(status=20→30)。开CE单成功即可进入等待评选，无需等质检。', api: '/v1/triggerEvalStart', schedule: '00:05（合并CeTimeoutClean 03:00）', btnClass: 'btn-purple', order: 2 },
+  { id: 'triggerCeArrivalCheck', name: 'CE到货质检查询', badge: '更新覆盖率', badgeColor: '#10b981', desc: '仅查status=30(等待评选)的apply。通过ceBillNo查到货明细，用surfaceOn字段判断质检完成，sameSourceSkuCount>0加10%同源加权，14天等待期到则触发评选。', api: '/v1/triggerCeArrivalCheck', schedule: '12:00 / 18:00', btnClass: 'btn-green', order: 3 },
+  { id: 'triggerAutoAward', name: '自动评选分配', badge: '→50', badgeColor: '#c62828', desc: '对已截止申请的清单(20/25/35)按覆盖率评选：CASE A有人≥80%直接胜 / CASE B14天到期最高者胜 / CASE C继续等待。', api: '/v1/triggerAutoAward', schedule: '21:00', btnClass: 'btn-red', order: 4 },
+  { id: 'triggerNoApplyClean', name: '无人清单作废', badge: '→100', badgeColor: '#546e7a', desc: '清理已发布但无人申请的清单(20/25→100回收)。SKU释放回池(recruit_id=0, sku_status=10)。不含35。', api: '/v1/triggerNoApplyClean', schedule: '21:15', btnClass: 'btn-gray', order: 5 },
+  { id: 'triggerRecycleCheck', name: '清单回收检查', badge: '50/60→100', badgeColor: '#546e7a', desc: '检查已分配清单(50/60)获胜者覆盖率，连续不达标(<80%)则回收作废。每月1日执行，SKU释放回池。', api: '/v1/triggerRecycleCheck', schedule: '每月1日', btnClass: 'btn-gray', order: 6 },
+];
+
+function renderCards() {
+  const grid = document.getElementById('jobGrid');
+  grid.innerHTML = JOBS.map(j => `
+    <div class="job-card" id="card-${j.id}">
+      <div class="job-card-header">
+        <span class="job-card-title">${j.order}. ${j.name}</span>
+        <span class="job-card-badge" style="background:${j.badgeColor}22;color:${j.badgeColor};">${j.badge}</span>
+      </div>
+      <div class="job-card-desc">${j.desc}</div>
+      <div class="job-card-meta"><span>⏰ ${j.schedule}</span><span>📡 POST ${j.api}</span></div>
+      <button class="btn-trigger ${j.btnClass}" id="btn-${j.id}" onclick="triggerJob('${j.id}','${j.api}','${j.name}')">执行 ${j.name}</button>
+      <div class="result-box" id="result-${j.id}"></div>
+    </div>
+  `).join('');
+}
+
+function getBaseUrl() { return document.getElementById('baseUrl').value.replace(/\/+$/, ''); }
+
+function addLog(type, msg) {
+  const panel = document.getElementById('logPanel');
+  const time = new Date().toLocaleTimeString();
+  const cls = type === 'ok' ? 'log-ok' : type === 'err' ? 'log-err' : 'log-info';
+  panel.innerHTML += `<div class="log-entry"><span class="log-time">${time}</span><span class="${cls}">${msg}</span></div>`;
+  panel.scrollTop = panel.scrollHeight;
+}
+
+function clearLog() { document.getElementById('logPanel').innerHTML = ''; }
+
+function showResult(jobId, ok, text) {
+  const box = document.getElementById(`result-${jobId}`);
+  box.className = `result-box show ${ok ? 'result-ok' : 'result-err'}`;
+  box.textContent = text;
+}
+
+function showLoading(jobId) {
+  const box = document.getElementById(`result-${jobId}`);
+  box.className = 'result-box show result-loading';
+  box.textContent = '⏳ 执行中...';
+}
+
+async function triggerJob(jobId, apiPath, jobName) {
+  const btn = document.getElementById(`btn-${jobId}`);
+  btn.disabled = true;
+  showLoading(jobId);
+  addLog('info', `▶ 开始执行: ${jobName} (${apiPath})`);
+  const start = Date.now();
+  try {
+    const resp = await fetch(`${getBaseUrl()}/scms/consignment/recruit/autojob${apiPath}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }
+    });
+    const data = await resp.json();
+    const elapsed = Date.now() - start;
+    if (data.state && data.state.code === 200 && data.data) {
+      const d = data.data;
+      const summary = `总:${d.totalCount} 成功:${d.successCount} 失败:${d.failCount}${d.message ? ' | ' + d.message : ''} (${elapsed}ms)`;
+      showResult(jobId, true, `✅ ${summary}`);
+      addLog('ok', `✅ ${jobName}: ${summary}`);
+    } else {
+      const errMsg = (data.state && data.state.msg) || JSON.stringify(data);
+      showResult(jobId, false, `❌ ${errMsg}`);
+      addLog('err', `❌ ${jobName}: ${errMsg}`);
+    }
+  } catch (e) {
+    showResult(jobId, false, `❌ 网络异常: ${e.message}`);
+    addLog('err', `❌ ${jobName}: 网络异常 - ${e.message}`);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function runAllSequential() {
+  const btn = document.getElementById('btnRunAll');
+  btn.disabled = true;
+  btn.textContent = '执行中...';
+  addLog('info', '═══════ 开始按顺序执行全部Job ═══════');
+  for (const j of JOBS) {
+    await triggerJob(j.id, j.api, j.name);
+    await new Promise(r => setTimeout(r, 500));
+  }
+  addLog('info', '═══════ 全部Job执行完毕 ═══════');
+  btn.disabled = false;
+  btn.textContent = '按顺序全部执行';
+}
+
+async function testConnection() {
+  addLog('info', `测试连接: ${getBaseUrl()}`);
+  try {
+    const resp = await fetch(`${getBaseUrl()}/scms/consignment/recruit/autojob/v1/triggerAutoPublish`, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+    if (resp.ok) { addLog('ok', '连接成功 ✅'); }
+    else { addLog('err', `HTTP ${resp.status}`); }
+  } catch (e) { addLog('err', `连接失败: ${e.message}`); }
+}
+
+renderCards();
+</script>
+</body>
+</html>
