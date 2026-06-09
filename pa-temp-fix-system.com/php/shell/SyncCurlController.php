@@ -7324,8 +7324,8 @@ class SyncCurlController
 
 $curlController = new SyncCurlController();
 
-//$curlController->initSguInfo();
-$curlController->deleteTestSku();
+$curlController->initSguInfo();
+//$curlController->deleteTestSku();
 //$curlController->checkPaProduct();
 //$curlController->updateSkuSellerConfig();
 //$curlController->deleltePlatformFees();

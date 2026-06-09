@@ -89,7 +89,7 @@ class ExcelUtils
      * @throws PHPExcel_Reader_Exception
      * @throws PHPExcel_Writer_Exception
      */
-    public function downloadXlsx($customHeaders,$list,$fileName = "")
+    public function downloadXlsx($customHeaders,$list,$fileName = "", $textColumns = [])
     {
         if (empty($fileName)){
             $fileName  = "默认导出文件_".date("YmdHis").".xlsx";
@@ -115,7 +115,11 @@ class ExcelUtils
         foreach ($list as $row) {
             $columnIndex = 0;
             foreach ($row as $cellValue) {
-                $sheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $cellValue);
+                if (in_array($columnIndex, $textColumns)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($columnIndex, $rowIndex, $cellValue, PHPExcel_Cell_DataType::TYPE_STRING);
+                } else {
+                    $sheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $cellValue);
+                }
                 $columnIndex++;
             }
             $rowIndex++;
