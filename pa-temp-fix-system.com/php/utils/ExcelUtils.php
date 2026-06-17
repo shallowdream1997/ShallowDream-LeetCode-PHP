@@ -1,8 +1,6 @@
 <?php
 require dirname(__FILE__) . '/../../vendor/autoload.php';
 
-require_once(dirname(__FILE__) . "/../../extends/PHPExcel-1.8/Classes/PHPExcel.php");
-
 //use PhpOffice\PhpSpreadsheet\Spreadsheet;
 //use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriteXlsx;
 //use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
@@ -15,11 +13,15 @@ require_once(dirname(__FILE__) . "/../../extends/PHPExcel-1.8/Classes/PHPExcel.p
 class ExcelUtils
 {
     public $downPath;
+    private const XLSX_MAIN_NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+    private const XLSX_REL_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+    private const XLSX_PACKAGE_REL_NS = 'http://schemas.openxmlformats.org/package/2006/relationships';
 
     public function __construct($downPath = "")
     {
         $downDefaultFile = __DIR__ . "/../export/uploads/";
         $this->downPath = !empty($downPath) ? $downDefaultFile . $downPath : $downDefaultFile . "default/";
+        $this->ensureExportDirectory();
     }
 
     /**
@@ -40,6 +42,7 @@ class ExcelUtils
      */
     public function download(array $titleList, array $data, $fileName = "")
     {
+        $this->ensurePHPExcelLoaded();
         $downDefaultFileName = "导出默认文件_" . date('YmdHis') . ".xlsx";
         $downFileName = !empty($fileName) ? $fileName : $downDefaultFileName;
 
@@ -91,6 +94,7 @@ class ExcelUtils
      */
     public function downloadXlsx($customHeaders,$list,$fileName = "", $textColumns = [])
     {
+        $this->ensurePHPExcelLoaded();
         if (empty($fileName)){
             $fileName  = "默认导出文件_".date("YmdHis").".xlsx";
         }
@@ -148,13 +152,20 @@ class ExcelUtils
      */
     public function _readXlsFile($fileName)
     {
+        if ($this->isXlsxFile($fileName)) {
+            return $this->_readXlsxFileStream($fileName);
+        }
+
+        $this->ensurePHPExcelLoaded();
         $returnArray = array();
-        $objPHPExcel = PHPExcel_IOFactory::load($fileName);
         $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
         $cacheSettings = array(
-            'memoryCacheSize' => '1024MB'
+            'memoryCacheSize' => '64MB'
         );
         PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
+        $objReader = PHPExcel_IOFactory::createReaderForFile($fileName);
+        $objReader->setReadDataOnly(true);
+        $objPHPExcel = $objReader->load($fileName);
         $sheetNames = $objPHPExcel->getSheetNames();
         foreach ($sheetNames as $sheetId => $sheetName) {
             $sheetData = array();
@@ -179,8 +190,23 @@ class ExcelUtils
             }
             $returnArray[$sheetName] = $sheetData;
         }
+        $objPHPExcel->disconnectWorksheets();
+        unset($objPHPExcel);
 
         return $returnArray;
+    }
+
+    public function eachXlsxRow($filename, callable $callback, $sheet = null)
+    {
+        if ($this->isXlsxFile($filename)) {
+            $this->_streamXlsxRows($filename, $callback, $sheet);
+            return;
+        }
+
+        $rows = $this->getXlsxData($filename, $sheet ?: 'Sheet1');
+        foreach ($rows as $row) {
+            $callback($row);
+        }
     }
 
     /**
@@ -249,6 +275,7 @@ class ExcelUtils
     public function _readCSV($csvPath)
     {
         try {
+            $this->ensurePHPExcelLoaded();
             $reader = new PHPExcel_Reader_CSV();
             $reader->setInputEncoding('UTF-8');
             $reader->setDelimiter(',');
@@ -384,6 +411,261 @@ class ExcelUtils
 
         // 去除前后空格
         return is_string($value) ? trim($value) : $value;
+    }
+
+    private function isXlsxFile($fileName)
+    {
+        return strtolower(pathinfo($fileName, PATHINFO_EXTENSION)) === 'xlsx';
+    }
+
+    private function _readXlsxFileStream($fileName)
+    {
+        $returnArray = array();
+        $this->_streamXlsxRows($fileName, function ($row, $sheetName) use (&$returnArray) {
+            if (!isset($returnArray[$sheetName])) {
+                $returnArray[$sheetName] = array();
+            }
+            $returnArray[$sheetName][] = $row;
+        });
+
+        return $returnArray;
+    }
+
+    private function _streamXlsxRows($fileName, callable $callback, $targetSheet = null)
+    {
+        $zip = new ZipArchive();
+        if ($zip->open($fileName) !== true) {
+            throw new Exception("无法打开Excel文件: {$fileName}");
+        }
+
+        try {
+            $sharedStrings = $this->_loadXlsxSharedStrings($zip);
+            $sheetPaths = $this->_getXlsxSheetPaths($zip);
+
+            foreach ($sheetPaths as $sheetName => $sheetPath) {
+                if ($targetSheet !== null && $sheetName !== $targetSheet) {
+                    continue;
+                }
+                $this->_streamXlsxSheetRows($zip, $sheetPath, $sharedStrings, $sheetName, $callback);
+            }
+        } finally {
+            $zip->close();
+        }
+    }
+
+    private function _loadXlsxSharedStrings(ZipArchive $zip)
+    {
+        $sharedStringsXml = $zip->getFromName('xl/sharedStrings.xml');
+        if ($sharedStringsXml === false) {
+            return array();
+        }
+
+        $reader = new XMLReader();
+        $reader->XML($sharedStringsXml, null, LIBXML_NONET | LIBXML_COMPACT);
+        $sharedStrings = array();
+
+        while ($reader->read()) {
+            if ($reader->nodeType === XMLReader::ELEMENT && $reader->localName === 'si') {
+                $sharedStrings[] = $this->_readXlsxSharedStringItem($reader);
+            }
+        }
+
+        $reader->close();
+
+        return $sharedStrings;
+    }
+
+    private function _readXlsxSharedStringItem(XMLReader $reader)
+    {
+        $depth = $reader->depth;
+        $value = '';
+
+        while ($reader->read()) {
+            if ($reader->nodeType === XMLReader::ELEMENT && $reader->localName === 't') {
+                $value .= $reader->readString();
+                continue;
+            }
+
+            if ($reader->nodeType === XMLReader::END_ELEMENT && $reader->localName === 'si' && $reader->depth === $depth) {
+                break;
+            }
+        }
+
+        return trim($value);
+    }
+
+    private function _getXlsxSheetPaths(ZipArchive $zip)
+    {
+        $workbookXml = $zip->getFromName('xl/workbook.xml');
+        $relsXml = $zip->getFromName('xl/_rels/workbook.xml.rels');
+        if ($workbookXml === false || $relsXml === false) {
+            throw new Exception('Excel工作簿结构不完整');
+        }
+
+        $workbook = simplexml_load_string($workbookXml);
+        $rels = simplexml_load_string($relsXml);
+        if ($workbook === false || $rels === false) {
+            throw new Exception('Excel工作簿解析失败');
+        }
+
+        $workbook->registerXPathNamespace('main', self::XLSX_MAIN_NS);
+        $workbook->registerXPathNamespace('rel', self::XLSX_REL_NS);
+        $rels->registerXPathNamespace('rel', self::XLSX_PACKAGE_REL_NS);
+
+        $relationshipMap = array();
+        $relationshipNodes = $rels->xpath('/rel:Relationships/rel:Relationship');
+        if ($relationshipNodes !== false) {
+            foreach ($relationshipNodes as $relationshipNode) {
+                $attributes = $relationshipNode->attributes();
+                $target = (string) $attributes['Target'];
+                $relationshipMap[(string) $attributes['Id']] = strpos($target, 'xl/') === 0 ? $target : 'xl/' . ltrim($target, '/');
+            }
+        }
+
+        $sheetPaths = array();
+        $sheetNodes = $workbook->xpath('/main:workbook/main:sheets/main:sheet');
+        if ($sheetNodes !== false) {
+            foreach ($sheetNodes as $sheetNode) {
+                $attributes = $sheetNode->attributes('r', true);
+                $relationshipId = (string) $attributes['id'];
+                $sheetName = (string) $sheetNode['name'];
+                if (isset($relationshipMap[$relationshipId])) {
+                    $sheetPaths[$sheetName] = $relationshipMap[$relationshipId];
+                }
+            }
+        }
+
+        return $sheetPaths;
+    }
+
+    private function _streamXlsxSheetRows(ZipArchive $zip, $sheetPath, array $sharedStrings, $sheetName, callable $callback)
+    {
+        $sheetXml = $zip->getFromName($sheetPath);
+        if ($sheetXml === false) {
+            return;
+        }
+
+        $reader = new XMLReader();
+        $reader->XML($sheetXml, null, LIBXML_NONET | LIBXML_COMPACT);
+        $headers = array();
+        $headerRowIndex = null;
+
+        while ($reader->read()) {
+            if ($reader->nodeType !== XMLReader::ELEMENT || $reader->localName !== 'row') {
+                continue;
+            }
+
+            $rowIndex = (int) $reader->getAttribute('r');
+            $cells = $this->_readXlsxRowCells($reader, $sharedStrings);
+            if (empty($cells)) {
+                continue;
+            }
+
+            if ($headerRowIndex === null) {
+                $headers = $cells;
+                $headerRowIndex = $rowIndex;
+                continue;
+            }
+
+            $rowData = array();
+            foreach ($headers as $columnIndex => $columnName) {
+                if ($columnName === '' || $columnName === null) {
+                    continue;
+                }
+                $rowData[$columnName] = isset($cells[$columnIndex]) ? $cells[$columnIndex] : '';
+            }
+
+            $callback($rowData, $sheetName, $rowIndex);
+        }
+
+        $reader->close();
+    }
+
+    private function _readXlsxRowCells(XMLReader $reader, array $sharedStrings)
+    {
+        $rowDepth = $reader->depth;
+        $cells = array();
+
+        while ($reader->read()) {
+            if ($reader->nodeType === XMLReader::ELEMENT && $reader->localName === 'c') {
+                $cellReference = (string) $reader->getAttribute('r');
+                $columnLetters = rtrim($cellReference, '0123456789');
+                $columnIndex = $this->_columnLettersToIndex($columnLetters);
+                $cellType = (string) $reader->getAttribute('t');
+                $cells[$columnIndex] = $this->_readXlsxCellValue($reader, $cellType, $sharedStrings);
+                continue;
+            }
+
+            if ($reader->nodeType === XMLReader::END_ELEMENT && $reader->localName === 'row' && $reader->depth === $rowDepth) {
+                break;
+            }
+        }
+
+        ksort($cells);
+
+        return $cells;
+    }
+
+    private function _readXlsxCellValue(XMLReader $reader, $cellType, array $sharedStrings)
+    {
+        $cellDepth = $reader->depth;
+        $rawValue = '';
+
+        while ($reader->read()) {
+            if ($reader->nodeType === XMLReader::ELEMENT && ($reader->localName === 'v' || $reader->localName === 't')) {
+                $rawValue .= $reader->readString();
+                continue;
+            }
+
+            if ($reader->nodeType === XMLReader::END_ELEMENT && $reader->localName === 'c' && $reader->depth === $cellDepth) {
+                break;
+            }
+        }
+
+        if ($cellType === 's') {
+            $sharedStringIndex = (int) $rawValue;
+            return isset($sharedStrings[$sharedStringIndex]) ? $sharedStrings[$sharedStringIndex] : '';
+        }
+
+        if ($cellType === 'b') {
+            return $rawValue === '1';
+        }
+
+        return trim($rawValue);
+    }
+
+    private function _columnLettersToIndex($columnLetters)
+    {
+        $columnLetters = strtoupper($columnLetters);
+        $length = strlen($columnLetters);
+        $index = 0;
+
+        for ($i = 0; $i < $length; $i++) {
+            $index = ($index * 26) + (ord($columnLetters[$i]) - 64);
+        }
+
+        return $index - 1;
+    }
+
+    private function ensurePHPExcelLoaded()
+    {
+        if (!class_exists('PHPExcel', false)) {
+            require_once(dirname(__FILE__) . "/../../extends/PHPExcel-1.8/Classes/PHPExcel.php");
+        }
+    }
+
+    private function ensureExportDirectory()
+    {
+        $exportRootDir = __DIR__ . "/../export/uploads";
+        if (!is_dir($exportRootDir)) {
+            mkdir($exportRootDir, 0777, true);
+        }
+        @chmod($exportRootDir, 0777);
+
+        if (!is_dir($this->downPath)) {
+            mkdir($this->downPath, 0777, true);
+        }
+        @chmod($this->downPath, 0777);
     }
 
 

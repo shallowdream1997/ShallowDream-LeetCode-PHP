@@ -17,6 +17,7 @@ class MyLogger {
     public function __construct($logFile = ""){
         $logDefaultFile = dirname(__FILE__) . "/../../php/log/default/".date('Ymd').".log";
         $this->logFile = !empty($logFile) ? dirname(__FILE__) . "/../../php/log/".$logFile."_".date('Ymd').".log" : $logDefaultFile;
+        $this->ensureLogDirectory();
     }
 
     public function log($message) {
@@ -50,5 +51,20 @@ class MyLogger {
 
         // 写入日志
         $logger->info($message);
+    }
+
+    private function ensureLogDirectory() {
+        $logDir = dirname($this->logFile);
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0777, true);
+        }
+
+        @chmod($logDir, 0777);
+
+        $rootLogDir = dirname(__FILE__) . "/../../php/log";
+        if (!is_dir($rootLogDir)) {
+            mkdir($rootLogDir, 0777, true);
+        }
+        @chmod($rootLogDir, 0777);
     }
 }

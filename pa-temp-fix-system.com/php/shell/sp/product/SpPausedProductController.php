@@ -46,18 +46,17 @@ class SpPausedProductController
         $curlService = (new CurlService())->pro();
         $redisService = new RedisService();
         $spApi = new SpApi();
+        $sellerIdAdId = [];
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/广告关停清单{$channel}_{$page}.xlsx");
+            $excelUtils->eachXlsxRow("./excel/广告关停清单{$channel}_{$page}.xlsx", function ($item) use (&$sellerIdAdId) {
+                if (!empty($item['adid'])) {
+                    $sellerIdAdId[$item['sellerid']][] = $item['adid'];
+                }
+            });
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
-        if (count($contentList) > 0) {
-            $sellerIdAdId = [];
-            foreach ($contentList as $item){
-                if (!empty($item['adid'])){
-                    $sellerIdAdId[$item['sellerid']][] = $item['adid'];
-                }
-            }
+        if (count($sellerIdAdId) > 0) {
             $exportList = [];
             foreach ($sellerIdAdId as $sellerId => $adIds){
                 $sellerAdList = $redisService->hGetAll("spProduct_{$sellerId}");
@@ -141,18 +140,17 @@ class SpPausedProductController
         $curlService = (new CurlService())->pro();
         $redisService = new RedisService();
         $spApi = new SpApi();
+        $sellerIdAdId = [];
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/广告关停清单{$channel}_{$page}.xlsx");
+            $excelUtils->eachXlsxRow("./excel/广告关停清单{$channel}_{$page}.xlsx", function ($item) use (&$sellerIdAdId) {
+                if (!empty($item['adid'])) {
+                    $sellerIdAdId[$item['sellerid']][] = $item['adid'];
+                }
+            });
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
-        if (count($contentList) > 0) {
-            $sellerIdAdId = [];
-            foreach ($contentList as $item){
-                if (!empty($item['adid'])){
-                    $sellerIdAdId[$item['sellerid']][] = $item['adid'];
-                }
-            }
+        if (count($sellerIdAdId) > 0) {
             $exportList = [];
             foreach ($sellerIdAdId as $sellerId => $adIds){
                 $sellerAdList = $redisService->hGetAll("spProduct_{$sellerId}");
