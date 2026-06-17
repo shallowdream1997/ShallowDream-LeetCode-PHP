@@ -153,4 +153,4 @@ if (isset($params['page']) && trim($params['page'] != '')) {
     $page = $params['page'];
 }
 $con = new SpUpdateKeywordBidController();
-$con->updateKeywordBid($channel);
+$con->updateKeywordBid($channel,$page);
