@@ -249,23 +249,30 @@ class SpApi
         return $resp1;
     }
 
-    public function mongoUpdateTarget($_id,$targetId,$bid)
+    public function mongoUpdateTarget($_id,$targetId,$state,$bid = null)
     {
+        $updateParams = [
+            "targetId" => $targetId,
+            "state" => $state,
+            "modifiedBy" => $this->messages,
+            "modifiedOn" => date("Y-m-d H:i:s",time())."Z",
+            "status" => "2",
+            "messages" => $this->messages
+        ];
+        if ($bid !== null) {
+            $updateParams['bid'] = $bid;
+        }
 
         $resp1 = $this->curlService->s3023()->post("amazon_sp_targets/updateBiddableTargets", [
             "id" => $_id,
             "isPassNotification" => "false",
             "from" => $this->messages,
-            "updateParams" => [
-                "targetId" => $targetId,
-                "bid" => $bid,
-                "modifiedBy" => $this->messages,
-            ],
+            "updateParams" => $updateParams,
         ]);
         if ($resp1['result'] && isset($resp1['result']['target']) && count($resp1['result']['target']) > 0) {
-            $this->log("updateBiddableTargets：成功：{$resp1['result']['target']['channel']} - {$resp1['result']['target']['value']} - {$resp1['result']['target']['type']}");
+            $this->log("updateTarget：成功：{$resp1['result']['target']['channel']} - {$resp1['result']['target']['value']} - {$resp1['result']['target']['state']} - {$resp1['result']['target']['type']}");
         }else{
-            $this->log("updateBiddableTargets: 失败");
+            $this->log("updateTarget：失败");
         }
     }
 
@@ -304,6 +311,34 @@ class SpApi
             $this->log("失败");
         }
         return $targetIds;
+    }
+
+    public function updateTarget($sellerId, $updateArr)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/productTargeting/putTargets/{$sellerId}", $updateArr));
+        $this->log(json_encode($returnMessage, JSON_UNESCAPED_UNICODE));
+
+        $targetResult = [];
+        $targetInfoMap = [];
+        if (isset($returnMessage['data']) && count($returnMessage['data']) > 0) {
+            foreach ($returnMessage['data'] as $item) {
+                if (isset($item['code']) && $item['code'] == "SUCCESS" && isset($item['targetId'])) {
+                    $targetInfoMap[$item['targetId']] = true;
+                }
+            }
+        }
+
+        foreach ($updateArr as $item) {
+            if (isset($targetInfoMap[$item['targetId']])) {
+                $this->log("处理target成功：{$sellerId} {$item['targetId']}");
+                $targetResult['success'][] = $item['targetId'];
+            } else {
+                $this->log("处理target失败：{$sellerId} {$item['targetId']}");
+                $targetResult['error'][] = $item['targetId'];
+            }
+        }
+
+        return $targetResult;
     }
 
     public function buildCreateTargetAsinList($campaignId,$adGroupId,$bid,$cpAsin)
