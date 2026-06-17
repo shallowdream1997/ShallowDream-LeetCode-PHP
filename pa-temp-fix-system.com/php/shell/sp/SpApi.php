@@ -906,19 +906,27 @@ class SpApi
         return DataUtils::getResultData($this->curlService->s3023()->post("amazon_sp_keywords/", $createMongo));
     }
 
-    public function mongoUpdateKeyword($_id,$keywordId)
+    public function mongoUpdateKeyword($_id,$keywordId,$state = "",$bid = null)
     {
+        $updateParams = [
+            "keywordId" => $keywordId,
+            "modifiedBy" => $this->messages,
+            "modifiedOn" => date("Y-m-d H:i:s",time())."Z",
+            "status" => "2",
+            "messages" => $this->messages
+        ];
+        if ($state !== "") {
+            $updateParams['state'] = $state;
+        }
+        if ($bid !== null) {
+            $updateParams['bid'] = $bid;
+        }
+
         $resp = $this->curlService->s3023()->post("amazon_sp_keywords/updateBiddableKeywords", [
             "id" => $_id,
-            "from" => "php restful",
+            "from" => $this->messages,
             "isPassNotification" => "false",
-            "updateParams" => [
-                "keywordId" => $keywordId,
-                "modifiedBy" => $this->messages,
-                "modifiedOn" => date("Y-m-d H:i:s",time())."Z",
-                "status" => "2",
-                "messages" => $this->messages
-            ]
+            "updateParams" => $updateParams
         ]);
         if ($resp['result'] && isset($resp['result']['keyword']) && count($resp['result']['keyword']) > 0) {
             $this->log("updateBiddableKeywords：成功：{$resp['result']['keyword']['channel']} - {$resp['result']['keyword']['keywordText']} - {$resp['result']['keyword']['matchType']}");
@@ -982,6 +990,34 @@ class SpApi
         }
 
         return $ids;
+    }
+
+    public function updateKeyword($sellerId, $updateArr)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/keywords/putKeywords/{$sellerId}", $updateArr));
+        $this->log(json_encode($returnMessage, JSON_UNESCAPED_UNICODE));
+
+        $keywordResult = [];
+        $keywordInfoMap = [];
+        if (isset($returnMessage['data']) && count($returnMessage['data']) > 0) {
+            foreach ($returnMessage['data'] as $item) {
+                if (isset($item['code']) && $item['code'] == "SUCCESS" && isset($item['keywordId'])) {
+                    $keywordInfoMap[$item['keywordId']] = true;
+                }
+            }
+        }
+
+        foreach ($updateArr as $item) {
+            if (isset($keywordInfoMap[$item['keywordId']])) {
+                $this->log("处理keyword成功：{$sellerId} {$item['keywordId']}");
+                $keywordResult['success'][] = $item['keywordId'];
+            } else {
+                $this->log("处理keyword失败：{$sellerId} {$item['keywordId']}");
+                $keywordResult['error'][] = $item['keywordId'];
+            }
+        }
+
+        return $keywordResult;
     }
 
 

@@ -649,6 +649,9 @@ class ExcelUtils
 
     private function ensurePHPExcelLoaded()
     {
+        if (function_exists('ini_set')) {
+            @ini_set('pcre.jit', '0');
+        }
         if (!class_exists('PHPExcel', false)) {
             require_once(dirname(__FILE__) . "/../../extends/PHPExcel-1.8/Classes/PHPExcel.php");
         }
