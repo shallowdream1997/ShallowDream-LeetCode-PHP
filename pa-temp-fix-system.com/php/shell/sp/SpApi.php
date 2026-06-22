@@ -232,13 +232,13 @@ class SpApi
             "companyId" => "CR201706060001",
             "campaignId" => $campaignId,
             "adGroupId" => $adGroupId,
-            "targetId" => $targetConfig['targetId'],
+            "targetId" => isset($targetConfig['targetId']) ? $targetConfig['targetId'] : "",
             "channel" => $this->specialSellerIdConver($sellerId),
             "type" => "asinSameAs",
             "value" => $asin,
             "expressionType" => "manual",
             "state" => "enabled",
-            "bid" => $targetConfig['bid'],
+            "bid" => isset($targetConfig['bid']) ? $targetConfig['bid'] : null,
             "createdBy" => $this->messages,
             "modifiedBy" => $this->messages,
             "status" => 2,
@@ -276,11 +276,14 @@ class SpApi
         }
     }
 
-    public function listTargetAsin($sellerId,$campaignId,$adGroupId,$targetIdList = "")
+    public function listTargetAsin($sellerId,$campaignId,$adGroupId,$targetIdList = "", $asinFilter = "")
     {
         $condition = ["campaignIdFilter" => $campaignId, "adGroupIdFilter" => $adGroupId];
         if($targetIdList != ""){
             $condition["targetIdFilter"] = $targetIdList;
+        }
+        if ($asinFilter !== "") {
+            $condition["asinFilter"] = $asinFilter;
         }
 
         $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/productTargeting/getTargets/{$sellerId}", $condition));
@@ -469,6 +472,34 @@ class SpApi
             $adGroupNameInfo = $resp['data'][0];
         }
         return $adGroupNameInfo;
+    }
+
+    public function getAmazonAdGroupInfoById($sellerId, $adGroupId)
+    {
+        $condition = [
+            "adGroupIdFilter" => $adGroupId,
+        ];
+        $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/adGroups/getAdGroupsExtend/{$sellerId}", $condition));
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0) {
+            return $resp['data'][0];
+        }
+        return [];
+    }
+
+    public function getAmazonAdGroupInfoByIds($sellerId, $adGroupIds)
+    {
+        if (count($adGroupIds) <= 0) {
+            return [];
+        }
+
+        $condition = [
+            "adGroupIdFilter" => implode(",", $adGroupIds),
+        ];
+        $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/adGroups/getAdGroupsExtend/{$sellerId}", $condition));
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0) {
+            return $resp['data'];
+        }
+        return [];
     }
 
     public function enabledAdGroup($sellerId,$campaignId,$adGroupName,$defaultBid)
@@ -970,6 +1001,46 @@ class SpApi
         }
     }
 
+    public function mongoCreateNegativeKeyword($sellerId, $campaignId, $adGroupId, $keywordText, $matchType, $keywordId)
+    {
+        $createMongo = [
+            "channel" => $this->specialSellerIdConver($sellerId),
+            "keywordId" => $keywordId,
+            "status" => "2",
+            "messages" => $this->messages,
+            "campaignId" => $campaignId,
+            "adGroupId" => $adGroupId,
+            "keywordText" => $keywordText,
+            "state" => "enabled",
+            "matchType" => $matchType,
+            "createdBy" => $this->messages,
+            "modifiedBy" => $this->messages,
+            "remark" => ""
+        ];
+        return DataUtils::getResultData($this->curlService->s3023()->post("amazon_sp_negativeKeywords/", $createMongo));
+    }
+
+    public function mongoCreateNegativeTarget($sellerId, $campaignId, $adGroupId, $asin, $targetId = "")
+    {
+        $createMongo = [
+            "companyId" => "CR201706060001",
+            "campaignId" => $campaignId,
+            "adGroupId" => $adGroupId,
+            "targetId" => $targetId,
+            "channel" => $this->specialSellerIdConver($sellerId),
+            "type" => "asinSameAs",
+            "value" => strtolower($asin),
+            "expressionType" => "manual",
+            "state" => "enabled",
+            "bid" => null,
+            "createdBy" => $this->messages,
+            "modifiedBy" => $this->messages,
+            "status" => "2",
+            "targetName" => strtolower($asin)
+        ];
+        return DataUtils::getResultData($this->curlService->s3023()->post("amazon_sp_negative_targets/", $createMongo));
+    }
+
     public function listKeyword($sellerId,$campaignId,$adGroupId,$matchTypeFilter = "",$keywordTextFilter ="")
     {
         $condition = [
@@ -1027,6 +1098,50 @@ class SpApi
         return $ids;
     }
 
+    public function createKeywords($sellerId, $createKeywords)
+    {
+        return $this->createEntityBatch(
+            $sellerId,
+            "amazon/ad/keywords/postKeywords/{$sellerId}",
+            $createKeywords,
+            "keywordId",
+            "keyword"
+        );
+    }
+
+    public function createNegativeKeywords($sellerId, $createKeywords)
+    {
+        return $this->createEntityBatch(
+            $sellerId,
+            "amazon/ad/negativeKeywords/postNegativeKeywords/{$sellerId}",
+            $createKeywords,
+            "keywordId",
+            "negativeKeyword"
+        );
+    }
+
+    public function createTargets($sellerId, $createTargets)
+    {
+        return $this->createEntityBatch(
+            $sellerId,
+            "amazon/ad/productTargeting/postTargets/{$sellerId}",
+            $createTargets,
+            "targetId",
+            "target"
+        );
+    }
+
+    public function createNegativeTargets($sellerId, $createTargets)
+    {
+        return $this->createEntityBatch(
+            $sellerId,
+            "amazon/ad/negativeProductTargeting/postNegativeTargets/{$sellerId}",
+            $createTargets,
+            "targetId",
+            "negativeTarget"
+        );
+    }
+
     public function updateKeyword($sellerId, $updateArr)
     {
         $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/keywords/putKeywords/{$sellerId}", $updateArr));
@@ -1059,7 +1174,7 @@ class SpApi
     //=================================keyword end===========================================///
 
 
-    public function listNegativeKeyword($sellerId,$campaignId,$adGroupId,$state)
+    public function listNegativeKeyword($sellerId,$campaignId,$adGroupId,$state, $matchTypeFilter = "", $keywordTextFilter = "")
     {
         $condition = [];
         if ($campaignId){
@@ -1070,6 +1185,12 @@ class SpApi
         }
         if ($state){
             $condition['stateFilter'] = $state;
+        }
+        if ($matchTypeFilter){
+            $condition['matchTypeFilter'] = $matchTypeFilter;
+        }
+        if ($keywordTextFilter){
+            $condition['keywordTextFilter'] = (string)$keywordTextFilter;
         }
         $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/negativeKeywords/getNegativeKeywordsExtend/{$sellerId}", $condition));
         $list = [];
@@ -1176,7 +1297,7 @@ class SpApi
         }
     }
 
-    public function listNegativeTarget($sellerId,$campaignId,$adGroupId,$targetIdList = "",$state = "")
+    public function listNegativeTarget($sellerId,$campaignId,$adGroupId,$targetIdList = "",$state = "", $asinFilter = "")
     {
         $condition = [];
         if ($campaignId){
@@ -1190,6 +1311,9 @@ class SpApi
         }
         if($targetIdList){
             $condition["targetIdFilter"] = $targetIdList;
+        }
+        if ($asinFilter) {
+            $condition["asinFilter"] = $asinFilter;
         }
 
         $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/negativeProductTargeting/getNegativeTargets/{$sellerId}", $condition));
@@ -1395,6 +1519,43 @@ class SpApi
             "精准否定" => "negativeExact",
         ];
         return $typeMap[$type] ?? null;
+    }
+
+    private function createEntityBatch($sellerId, $url, $payloads, $idField, $label)
+    {
+        $result = [
+            "success" => [],
+            "error" => []
+        ];
+        if (count($payloads) <= 0) {
+            return $result;
+        }
+
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->post($url, $payloads));
+        $this->log(json_encode($returnMessage, JSON_UNESCAPED_UNICODE));
+
+        $data = $returnMessage['data'] ?? [];
+        foreach ($payloads as $index => $payload) {
+            $item = $data[$index] ?? [];
+            if (isset($item['code']) && $item['code'] == "SUCCESS" && isset($item[$idField])) {
+                $result['success'][] = [
+                    "index" => $index,
+                    "id" => $item[$idField],
+                    "payload" => $payload,
+                    "response" => $item,
+                ];
+                $this->log("创建{$label}成功：{$sellerId} {$item[$idField]}");
+            } else {
+                $result['error'][] = [
+                    "index" => $index,
+                    "payload" => $payload,
+                    "response" => $item,
+                ];
+                $this->log("创建{$label}失败：{$sellerId} " . json_encode($payload, JSON_UNESCAPED_UNICODE));
+            }
+        }
+
+        return $result;
     }
 
     //===================================== 批量查询方法 start ===================================================

@@ -334,10 +334,17 @@ class ExcelUtils
     public function _readXlsFileV2($fileName)
     {
         $returnArray = array();
+        $this->ensurePHPExcelLoaded();
+        if (function_exists('ini_set')) {
+            @ini_set('memory_limit', '2048M');
+        }
+        if (function_exists('set_time_limit')) {
+            @set_time_limit(0);
+        }
 
         // 设置缓存以提高大文件处理性能
         $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
-        $cacheSettings = array('memoryCacheSize' => '1024MB');
+        $cacheSettings = array('memoryCacheSize' => '1536MB');
         PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
 
         // 加载文件
@@ -367,7 +374,7 @@ class ExcelUtils
                 $data = array();
                 foreach ($columnArray as $key => $columnName) {
                     $cell = $sheet->getCellByColumnAndRow($key, $j);
-                    $data[$columnName] = $this->_getCellValue($cell);
+                    $data[$columnName] = $this->_getCellValue($cell, $columnName);
                 }
                 $sheetData[] = $data;
             }
@@ -381,15 +388,22 @@ class ExcelUtils
     /**
      * 获取单元格值，处理长数字不转为科学计数法
      * @param PHPExcel_Cell $cell 单元格对象
+     * @param string $columnName 列名
      * @return mixed 处理后的值
      */
-    protected function _getCellValue(PHPExcel_Cell $cell)
+    protected function _getCellValue(PHPExcel_Cell $cell, $columnName = '')
     {
         $value = $cell->getValue();
+        $columnName = is_string($columnName) ? trim($columnName) : '';
 
         // 处理富文本
         if ($value instanceof PHPExcel_RichText) {
             $value = $value->getPlainText();
+        }
+
+        if ($this->isTextSensitiveColumnName($columnName)) {
+            $formattedValue = $cell->getFormattedValue();
+            return $this->normalizeExcelTextValue($formattedValue);
         }
 
         // 处理长数字
@@ -411,6 +425,68 @@ class ExcelUtils
 
         // 去除前后空格
         return is_string($value) ? trim($value) : $value;
+    }
+
+    protected function isTextSensitiveColumnName($columnName)
+    {
+        if ($columnName === '') {
+            return false;
+        }
+
+        $normalizedName = strtolower(trim($columnName));
+        $normalizedName = str_replace(array(' ', '-', '.'), '_', $normalizedName);
+
+        if ($normalizedName === 'id' || substr($normalizedName, -3) === '_id') {
+            return true;
+        }
+
+        $keywords = array(
+            'campaignid',
+            'campaign_id',
+            'adgroupid',
+            'ad_group_id',
+            'targetid',
+            'target_id',
+            'keywordid',
+            'keyword_id',
+            'productadid',
+            'product_ad_id',
+            'portfolioid',
+            'portfolio_id',
+            'recordid',
+            'record_id',
+        );
+
+        return in_array($normalizedName, $keywords, true);
+    }
+
+    protected function normalizeExcelTextValue($value)
+    {
+        if ($value instanceof PHPExcel_RichText) {
+            $value = $value->getPlainText();
+        }
+
+        if ($value === null) {
+            return '';
+        }
+
+        $value = trim((string)$value);
+        if ($value === '') {
+            return '';
+        }
+
+        if (stripos($value, 'E+') !== false || stripos($value, 'E-') !== false) {
+            if (preg_match('/^-?\d+(?:\.0+)?$/', $value)) {
+                return preg_replace('/\.0+$/', '', $value);
+            }
+            return $value;
+        }
+
+        if (preg_match('/^-?\d+\.0+$/', $value)) {
+            return preg_replace('/\.0+$/', '', $value);
+        }
+
+        return $value;
     }
 
     private function isXlsxFile($fileName)
