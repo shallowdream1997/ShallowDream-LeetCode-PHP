@@ -1513,10 +1513,23 @@ class SpApi
     {
         $typeMap = [
             "广泛" => "broad",
+            "广泛匹配" => "broad",
+            "BROAD" => "broad",
+            "broad" => "broad",
             "词组" => "phrase",
+            "词组匹配" => "phrase",
+            "PHRASE" => "phrase",
+            "phrase" => "phrase",
             "精准" => "exact",
+            "精准匹配" => "exact",
+            "EXACT" => "exact",
+            "exact" => "exact",
             "词组否定" => "negativePhrase",
+            "NEGATIVE_PHRASE" => "negativePhrase",
+            "negativePhrase" => "negativePhrase",
             "精准否定" => "negativeExact",
+            "NEGATIVE_EXACT" => "negativeExact",
+            "negativeExact" => "negativeExact",
         ];
         return $typeMap[$type] ?? null;
     }

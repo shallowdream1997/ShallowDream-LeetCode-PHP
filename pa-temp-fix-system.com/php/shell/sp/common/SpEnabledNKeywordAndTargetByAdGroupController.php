@@ -208,7 +208,7 @@ class SpEnabledNKeywordAndTargetByAdGroupController
         }
 
         if ($type === 'negativeKeyword') {
-            $name = trim((string)($row['name'] ?? ''));
+            $name = trim((string)($row['keyword'] ?? ''));
             $matchType = $this->normalizeNegativeKeywordMatchType($row['type'] ?? '');
             if ($name === '' || $matchType === null) {
                 return null;
@@ -224,7 +224,7 @@ class SpEnabledNKeywordAndTargetByAdGroupController
             ];
         }
 
-        $name = strtoupper(trim((string)($row['否定asin'] ?? '')));
+        $name = strtoupper(trim((string)($row['asin'] ?? '')));
         if ($name === '') {
             return null;
         }
