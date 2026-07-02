@@ -1,0 +1,666 @@
+{
+  "enabled": false,
+  "effectiveTime": "2026-01-01T00:00:00+08:00",
+  "supportedChannels": [
+    "ebay_us",
+    "ebay_uk",
+    "ebay_au",
+    "ebay_de"
+  ],
+  "developmentChannelPolicy": {
+    "targetedChannels": [
+      "ebay_us",
+      "ebay_uk",
+      "ebay_au",
+      "ebay_de"
+    ],
+    "nonTargetedMatchMode": "NOT_IN_TARGETED_CHANNELS"
+  },
+  "allocationPolicy": {
+    "matchCategoryLevel": 2,
+    "manualOverrideProtected": true,
+    "ruleChangeReplayHistory": false,
+    "noRuleFallbackSellerEnabled": false,
+    "historyStartDate": "2026-01-01"
+  },
+  "accountMappings": [
+    {
+      "regionType": "GREATER_CHINA",
+      "channel": "ebay_us",
+      "categories": [
+        {
+          "categoryName": "车灯件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "车身件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "发动机配件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "紧固件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车车身与外饰件(新分类2026)",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "橡塑件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": "productcollect",
+      "directSellerId": null,
+      "warehouseSellerName": "x-autohaux_us",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "GREATER_CHINA",
+      "channel": "ebay_us",
+      "categories": [
+        {
+          "categoryName": "布匹类",
+          "categoryId": null
+        },
+        {
+          "categoryName": "传感器",
+          "categoryId": null
+        },
+        {
+          "categoryName": "底盘件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车电子电气设备",
+          "categoryId": null
+        },
+        {
+          "categoryName": "工程机械车辆配件及附件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": "umotor-mall",
+      "directSellerId": null,
+      "warehouseSellerName": "auto_fit_online",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "GREATER_CHINA",
+      "channel": "ebay_us",
+      "categories": [
+        {
+          "categoryName": "密封件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "悬挂系",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": "autopart_near_me",
+      "directSellerId": null,
+      "warehouseSellerName": "xautoparts_us",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "GREATER_CHINA",
+      "channel": "ebay_us",
+      "categories": [
+        {
+          "categoryName": "船泊配件及附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "滤清器",
+          "categoryId": null
+        },
+        {
+          "categoryName": "摩托车附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "摩托车配件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "农用车辆配件及附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "自行车配件及附件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": "autopart_near_me",
+      "directSellerId": null,
+      "warehouseSellerName": "ebay_us_pamotor",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "GREATER_CHINA",
+      "channel": "ebay_uk",
+      "categories": [
+        {
+          "categoryName": "车灯件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "车身件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "传感器",
+          "categoryId": null
+        },
+        {
+          "categoryName": "船泊配件及附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "发动机配件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "紧固件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "密封件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车车身与外饰件(新分类2026)",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车电子电气设备",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "橡塑件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": "ceo1shop",
+      "directSellerId": null,
+      "warehouseSellerName": "x-autohaux_uk",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "GREATER_CHINA",
+      "channel": "ebay_uk",
+      "categories": [
+        {
+          "categoryName": "底盘件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "滤清器",
+          "categoryId": null
+        },
+        {
+          "categoryName": "摩托车附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "摩托车配件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "农用车辆配件及附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "自行车配件及附件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": "ceo1shop",
+      "directSellerId": null,
+      "warehouseSellerName": "supautoparts",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "GREATER_CHINA",
+      "channel": "ebay_uk",
+      "categories": [
+        {
+          "categoryName": "布匹类",
+          "categoryId": null
+        },
+        {
+          "categoryName": "悬挂系",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": "ceo1shop",
+      "directSellerId": null,
+      "warehouseSellerName": "pautosoluhub",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "GREATER_CHINA",
+      "channel": "ebay_au",
+      "categories": [
+        {
+          "categoryName": "布匹类",
+          "categoryId": null
+        },
+        {
+          "categoryName": "车身件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "传感器",
+          "categoryId": null
+        },
+        {
+          "categoryName": "底盘件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "发动机配件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "滤清器",
+          "categoryId": null
+        },
+        {
+          "categoryName": "密封件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车车身与外饰件(新分类2026)",
+          "categoryId": null
+        },
+        {
+          "categoryName": "橡塑件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": "carpartshop1",
+      "directSellerId": null,
+      "warehouseSellerName": "autoparts--au",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "GREATER_CHINA",
+      "channel": "ebay_au",
+      "categories": [
+        {
+          "categoryName": "车灯件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "船泊配件及附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "紧固件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "摩托车附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "摩托车配件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "农用车辆配件及附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车电子电气设备",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "悬挂系",
+          "categoryId": null
+        },
+        {
+          "categoryName": "自行车配件及附件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": "carpartshop1",
+      "directSellerId": null,
+      "warehouseSellerName": "netnichecom-0",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "GREATER_CHINA",
+      "channel": "ebay_de",
+      "categories": [
+        {
+          "categoryName": "布匹类",
+          "categoryId": null
+        },
+        {
+          "categoryName": "车灯件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "车身件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "传感器",
+          "categoryId": null
+        },
+        {
+          "categoryName": "船泊配件及附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "紧固件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "摩托车附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "摩托车配件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "橡塑件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "自行车配件及附件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": "niceicon",
+      "directSellerId": null,
+      "warehouseSellerName": "shinykingdom",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "GREATER_CHINA",
+      "channel": "ebay_de",
+      "categories": [
+        {
+          "categoryName": "底盘件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "发动机配件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "滤清器",
+          "categoryId": null
+        },
+        {
+          "categoryName": "密封件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车车身与外饰件(新分类2026)",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车电子电气设备",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车附件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": "niceicon",
+      "directSellerId": null,
+      "warehouseSellerName": "x-autohaux_de",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "LOCAL",
+      "channel": "ebay_us",
+      "categories": [
+        {
+          "categoryName": "布匹类",
+          "categoryId": null
+        },
+        {
+          "categoryName": "车身件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "紧固件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": null,
+      "directSellerId": null,
+      "warehouseSellerName": "tasharinacorp",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "LOCAL",
+      "channel": "ebay_us",
+      "categories": [
+        {
+          "categoryName": "车灯件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "船泊配件及附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "底盘件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "滤清器",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车车身与外饰件(新分类2026)",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车附件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": null,
+      "directSellerId": null,
+      "warehouseSellerName": "automall_tech",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "LOCAL",
+      "channel": "ebay_us",
+      "categories": [
+        {
+          "categoryName": "密封件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "汽车电子电气设备",
+          "categoryId": null
+        },
+        {
+          "categoryName": "橡塑件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": null,
+      "directSellerId": null,
+      "warehouseSellerName": "carpopart",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "LOCAL",
+      "channel": "ebay_us",
+      "categories": [
+        {
+          "categoryName": "发动机配件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": null,
+      "directSellerId": null,
+      "warehouseSellerName": "uauto1",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "LOCAL",
+      "channel": "ebay_us",
+      "categories": [
+        {
+          "categoryName": "摩托车附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "摩托车配件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "自行车配件及附件",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": null,
+      "directSellerId": null,
+      "warehouseSellerName": "ebay_us_careudepot",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "LOCAL",
+      "channel": "ebay_us",
+      "categories": [
+        {
+          "categoryName": "传感器",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": null,
+      "directSellerId": null,
+      "warehouseSellerName": "switchpart",
+      "warehouseSellerId": null,
+      "enabled": true
+    },
+    {
+      "regionType": "LOCAL",
+      "channel": "ebay_us",
+      "categories": [
+        {
+          "categoryName": "工程机械车辆配件及附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "农用车辆配件及附件",
+          "categoryId": null
+        },
+        {
+          "categoryName": "悬挂系",
+          "categoryId": null
+        }
+      ],
+      "directSellerName": null,
+      "directSellerId": null,
+      "warehouseSellerName": "ebay_us_xautohub",
+      "warehouseSellerId": null,
+      "enabled": true
+    }
+  ],
+  "salesThreshold": {
+    "dataMissingPolicy": "FAIL",
+    "divideByZeroPolicy": "NULL",
+    "marginCalculation": "SALE_AMOUNT_DIV_SALE_COUNT",
+    "sold30d": {
+      "field": "sale_count_30d",
+      "operator": "EQ",
+      "value": 0
+    },
+    "sold60d": {
+      "field": "sale_count_60d",
+      "operator": "GT",
+      "value": 2
+    },
+    "margin30d": {
+      "saleAmountField": "sale_amount_30d",
+      "saleCountField": "sale_count_30d",
+      "operator": "GT",
+      "value": null,
+      "enabled": false
+    },
+    "margin60d": {
+      "saleAmountField": "sale_amount_60d",
+      "saleCountField": "sale_count_60d",
+      "operator": "GT",
+      "value": 0.15,
+      "enabled": true
+    },
+    "zeroSoldRelistRule": {
+      "enabled": true,
+      "productLevel": "S",
+      "listingMode": "DIRECT",
+      "listingDaysOperator": "GTE",
+      "listingDaysValue": 30,
+      "soldMetric": "sold30d"
+    }
+  },
+  "historyCheck": {
+    "enabled": true,
+    "createdFrom": "2026-01-01T00:00:00+08:00",
+    "defaultDryRun": true,
+    "autoAllocateEnabled": false
+  },
+  "retryPolicy": {
+    "enabled": true,
+    "maxRetryCount": 3,
+    "retryIntervalMinutes": [
+      5,
+      30,
+      120
+    ],
+    "scanBatchSize": 200,
+    "retryableFailureCodes": [
+      "DBAPI_TIMEOUT",
+      "NETWORK_ERROR",
+      "DOWNSTREAM_UNAVAILABLE",
+      "DATABASE_TRANSIENT_ERROR",
+      "MQ_TRANSIENT_ERROR"
+    ]
+  }
+}

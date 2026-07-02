@@ -61,6 +61,10 @@ class CurlService
             case "pa_service":
                 $this->module = "pa-biz-service";
                 break;
+            case "platform_item_service":
+            case "platform-item-service":
+                $this->module = "platform-item-service";
+                break;
         }
 
         return $this;
@@ -1009,7 +1013,6 @@ class CurlService
 
     }
 }
-
 
 
 
