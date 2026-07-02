@@ -1,5 +1,26 @@
 {
-  "enabled": false,
+  "_doc": "TASK 文档版配置样例。为便于阅读，增加了 _doc / _comment 说明字段；运行时配置可去掉这些说明字段后再入库。",
+  "_enumExplain": {
+    "sourceType": {
+      "GREATER_CHINA": "A号直发仓账号分配，只改 sku-seller-config，不创建S号",
+      "sku_upload": "A号上传后进入S号/海外仓账号分流流程"
+    },
+    "allocationStage": {
+      "DIRECT": "直发仓阶段",
+      "WAREHOUSE": "海外仓阶段"
+    },
+    "regionType": {
+      "LOCAL": "本土海外仓账号",
+      "GREATER_CHINA": "大中华海外仓账号"
+    },
+    "allocationStatus": {
+      "SUCCESS": "本次分流已成功，可继续执行落地动作",
+      "WAIT_STOCK_CHECK": "进入海外仓到货检查池，暂不落最终账号",
+      "FAILED": "分流失败",
+      "FAILED_RETRYABLE": "可重试失败"
+    }
+  },
+  "enabled": true,
   "effectiveTime": "2026-01-01T00:00:00+08:00",
   "supportedChannels": [
     "ebay_us",
@@ -8,6 +29,7 @@
     "ebay_de"
   ],
   "developmentChannelPolicy": {
+    "_comment": "用于判断当前SKU是否属于专项渠道开发。当前代码逻辑：developmentChannel 命中 targetedChannels 且与请求 channel 一致时，视为 TARGETED。",
     "targetedChannels": [
       "ebay_us",
       "ebay_uk",
@@ -17,12 +39,17 @@
     "nonTargetedMatchMode": "NOT_IN_TARGETED_CHANNELS"
   },
   "allocationPolicy": {
+    "_comment": "整体分流策略。matchCategoryLevel=2 表示按二级分类匹配；manualOverrideProtected=true 表示人工改过账号后不允许自动覆盖；historyStartDate 表示历史检查起始边界。",
     "matchCategoryLevel": 2,
     "manualOverrideProtected": true,
     "ruleChangeReplayHistory": false,
     "noRuleFallbackSellerEnabled": false,
-    "historyStartDate": "2026-01-01"
+    "historyStartDate": "2026-01-01",
+    "allowedSkuPrefixes": [
+      "a25"
+    ]
   },
+  "_comment_accountMappings": "账号映射矩阵。先按 channel + secondCategoryId 命中分类，再按 regionType 选择直发账号、本土海外仓账号或大中华海外仓账号。",
   "accountMappings": [
     {
       "regionType": "GREATER_CHINA",
@@ -30,37 +57,44 @@
       "categories": [
         {
           "categoryName": "车灯件",
-          "categoryId": null
+          "categoryId": 14093,
+          "categoryFullPath": "交通工具配件及附件 -> 车灯件"
         },
         {
           "categoryName": "车身件",
-          "categoryId": null
+          "categoryId": 14162,
+          "categoryFullPath": "交通工具配件及附件 -> 车身件"
         },
         {
           "categoryName": "发动机配件",
-          "categoryId": null
+          "categoryId": 14304,
+          "categoryFullPath": "交通工具配件及附件 -> 发动机配件"
         },
         {
           "categoryName": "紧固件",
-          "categoryId": null
+          "categoryId": 14403,
+          "categoryFullPath": "交通工具配件及附件 -> 紧固件"
         },
         {
           "categoryName": "汽车车身与外饰件(新分类2026)",
-          "categoryId": null
+          "categoryId": 32542,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车车身与外饰件(新分类2026)"
         },
         {
           "categoryName": "汽车附件",
-          "categoryId": null
+          "categoryId": 14703,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车附件"
         },
         {
           "categoryName": "橡塑件",
-          "categoryId": null
+          "categoryId": 14463,
+          "categoryFullPath": "交通工具配件及附件 -> 橡塑件"
         }
       ],
       "directSellerName": "productcollect",
-      "directSellerId": null,
+      "directSellerId": "productcollect",
       "warehouseSellerName": "x-autohaux_us",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "x-autohaux_us",
       "enabled": true
     },
     {
@@ -69,29 +103,34 @@
       "categories": [
         {
           "categoryName": "布匹类",
-          "categoryId": null
+          "categoryId": 20976,
+          "categoryFullPath": "交通工具配件及附件 -> 布匹类"
         },
         {
           "categoryName": "传感器",
-          "categoryId": null
+          "categoryId": 10257,
+          "categoryFullPath": "仪器仪表 -> 传感器"
         },
         {
           "categoryName": "底盘件",
-          "categoryId": null
+          "categoryId": 14233,
+          "categoryFullPath": "交通工具配件及附件 -> 底盘件"
         },
         {
           "categoryName": "汽车电子电气设备",
-          "categoryId": null
+          "categoryId": 14441,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车电子电气设备"
         },
         {
           "categoryName": "工程机械车辆配件及附件",
-          "categoryId": null
+          "categoryId": 30017,
+          "categoryFullPath": "交通工具配件及附件 -> 工程机械车辆配件及附件"
         }
       ],
       "directSellerName": "umotor-mall",
-      "directSellerId": null,
+      "directSellerId": "umotor-mall",
       "warehouseSellerName": "auto_fit_online",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "auto_fit_online",
       "enabled": true
     },
     {
@@ -100,17 +139,19 @@
       "categories": [
         {
           "categoryName": "密封件",
-          "categoryId": null
+          "categoryId": 10030,
+          "categoryFullPath": "工业设备 -> 通用零部件 -> 密封件"
         },
         {
           "categoryName": "悬挂系",
-          "categoryId": null
+          "categoryId": 14271,
+          "categoryFullPath": "交通工具配件及附件 -> 底盘件 -> 悬挂系"
         }
       ],
-      "directSellerName": "autopart_near_me",
-      "directSellerId": null,
+      "directSellerName": "care4you_store",
+      "directSellerId": "care4you_store",
       "warehouseSellerName": "xautoparts_us",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "xautoparts_us",
       "enabled": true
     },
     {
@@ -119,33 +160,44 @@
       "categories": [
         {
           "categoryName": "船泊配件及附件",
-          "categoryId": null
+          "categoryId": 10421,
+          "categoryFullPath": "交通工具配件及附件 -> 船泊配件及附件"
         },
         {
           "categoryName": "滤清器",
-          "categoryId": null
+          "categoryId": 14417,
+          "categoryFullPath": "交通工具配件及附件 -> 滤清器"
         },
         {
           "categoryName": "摩托车附件",
-          "categoryId": null
+          "categoryId": 14089,
+          "categoryFullPath": "交通工具配件及附件 -> 摩托车附件"
         },
         {
           "categoryName": "摩托车配件",
-          "categoryId": null
+          "categoryId": 14090,
+          "categoryFullPath": "交通工具配件及附件 -> 摩托车配件"
         },
         {
           "categoryName": "农用车辆配件及附件",
-          "categoryId": null
+          "categoryId": 30004,
+          "categoryFullPath": "交通工具配件及附件 -> 农用车辆配件及附件"
         },
         {
           "categoryName": "自行车配件及附件",
-          "categoryId": null
+          "categoryId": 14707,
+          "categoryFullPath": "交通工具配件及附件 -> 自行车配件及附件"
+        },
+        {
+          "categoryName": "密封件",
+          "categoryId": 14423,
+          "categoryFullPath": "交通工具配件及附件 -> 密封件"
         }
       ],
-      "directSellerName": "autopart_near_me",
-      "directSellerId": null,
+      "directSellerName": "care4you_store",
+      "directSellerId": "care4you_store",
       "warehouseSellerName": "ebay_us_pamotor",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "ebay_us_pamotor",
       "enabled": true
     },
     {
@@ -154,53 +206,64 @@
       "categories": [
         {
           "categoryName": "车灯件",
-          "categoryId": null
+          "categoryId": 14093,
+          "categoryFullPath": "交通工具配件及附件 -> 车灯件"
         },
         {
           "categoryName": "车身件",
-          "categoryId": null
+          "categoryId": 14162,
+          "categoryFullPath": "交通工具配件及附件 -> 车身件"
         },
         {
           "categoryName": "传感器",
-          "categoryId": null
+          "categoryId": 10257,
+          "categoryFullPath": "仪器仪表 -> 传感器"
         },
         {
           "categoryName": "船泊配件及附件",
-          "categoryId": null
+          "categoryId": 10421,
+          "categoryFullPath": "交通工具配件及附件 -> 船泊配件及附件"
         },
         {
           "categoryName": "发动机配件",
-          "categoryId": null
+          "categoryId": 14304,
+          "categoryFullPath": "交通工具配件及附件 -> 发动机配件"
         },
         {
           "categoryName": "紧固件",
-          "categoryId": null
+          "categoryId": 14403,
+          "categoryFullPath": "交通工具配件及附件 -> 紧固件"
         },
         {
           "categoryName": "密封件",
-          "categoryId": null
+          "categoryId": 10030,
+          "categoryFullPath": "工业设备 -> 通用零部件 -> 密封件"
         },
         {
           "categoryName": "汽车车身与外饰件(新分类2026)",
-          "categoryId": null
+          "categoryId": 32542,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车车身与外饰件(新分类2026)"
         },
         {
           "categoryName": "汽车电子电气设备",
-          "categoryId": null
+          "categoryId": 14441,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车电子电气设备"
         },
         {
           "categoryName": "汽车附件",
-          "categoryId": null
+          "categoryId": 14703,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车附件"
         },
         {
           "categoryName": "橡塑件",
-          "categoryId": null
+          "categoryId": 14463,
+          "categoryFullPath": "交通工具配件及附件 -> 橡塑件"
         }
       ],
       "directSellerName": "ceo1shop",
-      "directSellerId": null,
+      "directSellerId": "ceo1shop",
       "warehouseSellerName": "x-autohaux_uk",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "x-autohaux_uk",
       "enabled": true
     },
     {
@@ -209,33 +272,39 @@
       "categories": [
         {
           "categoryName": "底盘件",
-          "categoryId": null
+          "categoryId": 14233,
+          "categoryFullPath": "交通工具配件及附件 -> 底盘件"
         },
         {
           "categoryName": "滤清器",
-          "categoryId": null
+          "categoryId": 14417,
+          "categoryFullPath": "交通工具配件及附件 -> 滤清器"
         },
         {
           "categoryName": "摩托车附件",
-          "categoryId": null
+          "categoryId": 14089,
+          "categoryFullPath": "交通工具配件及附件 -> 摩托车附件"
         },
         {
           "categoryName": "摩托车配件",
-          "categoryId": null
+          "categoryId": 14090,
+          "categoryFullPath": "交通工具配件及附件 -> 摩托车配件"
         },
         {
           "categoryName": "农用车辆配件及附件",
-          "categoryId": null
+          "categoryId": 30004,
+          "categoryFullPath": "交通工具配件及附件 -> 农用车辆配件及附件"
         },
         {
           "categoryName": "自行车配件及附件",
-          "categoryId": null
+          "categoryId": 14707,
+          "categoryFullPath": "交通工具配件及附件 -> 自行车配件及附件"
         }
       ],
       "directSellerName": "ceo1shop",
-      "directSellerId": null,
+      "directSellerId": "ceo1shop",
       "warehouseSellerName": "supautoparts",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "supautoparts",
       "enabled": true
     },
     {
@@ -244,17 +313,19 @@
       "categories": [
         {
           "categoryName": "布匹类",
-          "categoryId": null
+          "categoryId": 20976,
+          "categoryFullPath": "交通工具配件及附件 -> 布匹类"
         },
         {
           "categoryName": "悬挂系",
-          "categoryId": null
+          "categoryId": 14271,
+          "categoryFullPath": "交通工具配件及附件 -> 底盘件 -> 悬挂系"
         }
       ],
       "directSellerName": "ceo1shop",
-      "directSellerId": null,
+      "directSellerId": "ceo1shop",
       "warehouseSellerName": "pautosoluhub",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "pautosoluhub",
       "enabled": true
     },
     {
@@ -263,45 +334,54 @@
       "categories": [
         {
           "categoryName": "布匹类",
-          "categoryId": null
+          "categoryId": 20976,
+          "categoryFullPath": "交通工具配件及附件 -> 布匹类"
         },
         {
           "categoryName": "车身件",
-          "categoryId": null
+          "categoryId": 14162,
+          "categoryFullPath": "交通工具配件及附件 -> 车身件"
         },
         {
           "categoryName": "传感器",
-          "categoryId": null
+          "categoryId": 10257,
+          "categoryFullPath": "仪器仪表 -> 传感器"
         },
         {
           "categoryName": "底盘件",
-          "categoryId": null
+          "categoryId": 14233,
+          "categoryFullPath": "交通工具配件及附件 -> 底盘件"
         },
         {
           "categoryName": "发动机配件",
-          "categoryId": null
+          "categoryId": 14304,
+          "categoryFullPath": "交通工具配件及附件 -> 发动机配件"
         },
         {
           "categoryName": "滤清器",
-          "categoryId": null
+          "categoryId": 14417,
+          "categoryFullPath": "交通工具配件及附件 -> 滤清器"
         },
         {
           "categoryName": "密封件",
-          "categoryId": null
+          "categoryId": 10030,
+          "categoryFullPath": "工业设备 -> 通用零部件 -> 密封件"
         },
         {
           "categoryName": "汽车车身与外饰件(新分类2026)",
-          "categoryId": null
+          "categoryId": 32542,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车车身与外饰件(新分类2026)"
         },
         {
           "categoryName": "橡塑件",
-          "categoryId": null
+          "categoryId": 14463,
+          "categoryFullPath": "交通工具配件及附件 -> 橡塑件"
         }
       ],
-      "directSellerName": "carpartshop1",
-      "directSellerId": null,
+      "directSellerName": "ebay_au_carpartshop",
+      "directSellerId": "ebay_au_carpartshop",
       "warehouseSellerName": "autoparts--au",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "autoparts--au",
       "enabled": true
     },
     {
@@ -310,49 +390,64 @@
       "categories": [
         {
           "categoryName": "车灯件",
-          "categoryId": null
+          "categoryId": 14093,
+          "categoryFullPath": "交通工具配件及附件 -> 车灯件"
         },
         {
           "categoryName": "船泊配件及附件",
-          "categoryId": null
+          "categoryId": 10421,
+          "categoryFullPath": "交通工具配件及附件 -> 船泊配件及附件"
         },
         {
           "categoryName": "紧固件",
-          "categoryId": null
+          "categoryId": 14403,
+          "categoryFullPath": "交通工具配件及附件 -> 紧固件"
         },
         {
           "categoryName": "摩托车附件",
-          "categoryId": null
+          "categoryId": 14089,
+          "categoryFullPath": "交通工具配件及附件 -> 摩托车附件"
         },
         {
           "categoryName": "摩托车配件",
-          "categoryId": null
+          "categoryId": 14090,
+          "categoryFullPath": "交通工具配件及附件 -> 摩托车配件"
         },
         {
           "categoryName": "农用车辆配件及附件",
-          "categoryId": null
+          "categoryId": 30004,
+          "categoryFullPath": "交通工具配件及附件 -> 农用车辆配件及附件"
         },
         {
           "categoryName": "汽车电子电气设备",
-          "categoryId": null
+          "categoryId": 14441,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车电子电气设备"
         },
         {
           "categoryName": "汽车附件",
-          "categoryId": null
+          "categoryId": 14703,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车附件"
         },
         {
           "categoryName": "悬挂系",
-          "categoryId": null
+          "categoryId": 14271,
+          "categoryFullPath": "交通工具配件及附件 -> 底盘件 -> 悬挂系"
         },
         {
           "categoryName": "自行车配件及附件",
-          "categoryId": null
+          "categoryId": 14707,
+          "categoryFullPath": "交通工具配件及附件 -> 自行车配件及附件"
+        },
+        {
+          "categoryName": "密封件",
+          "categoryId": 14423,
+          "categoryFullPath": "交通工具配件及附件 -> 密封件"
         }
       ],
-      "directSellerName": "carpartshop1",
-      "directSellerId": null,
+      "directSellerName": "ebay_au_carpartshop",
+      "directSellerId": "ebay_au_carpartshop",
       "warehouseSellerName": "netnichecom-0",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "netnichecom-0",
       "enabled": true
     },
     {
@@ -361,49 +456,59 @@
       "categories": [
         {
           "categoryName": "布匹类",
-          "categoryId": null
+          "categoryId": 20976,
+          "categoryFullPath": "交通工具配件及附件 -> 布匹类"
         },
         {
           "categoryName": "车灯件",
-          "categoryId": null
+          "categoryId": 14093,
+          "categoryFullPath": "交通工具配件及附件 -> 车灯件"
         },
         {
           "categoryName": "车身件",
-          "categoryId": null
+          "categoryId": 14162,
+          "categoryFullPath": "交通工具配件及附件 -> 车身件"
         },
         {
           "categoryName": "传感器",
-          "categoryId": null
+          "categoryId": 10257,
+          "categoryFullPath": "仪器仪表 -> 传感器"
         },
         {
           "categoryName": "船泊配件及附件",
-          "categoryId": null
+          "categoryId": 10421,
+          "categoryFullPath": "交通工具配件及附件 -> 船泊配件及附件"
         },
         {
           "categoryName": "紧固件",
-          "categoryId": null
+          "categoryId": 14403,
+          "categoryFullPath": "交通工具配件及附件 -> 紧固件"
         },
         {
           "categoryName": "摩托车附件",
-          "categoryId": null
+          "categoryId": 14089,
+          "categoryFullPath": "交通工具配件及附件 -> 摩托车附件"
         },
         {
           "categoryName": "摩托车配件",
-          "categoryId": null
+          "categoryId": 14090,
+          "categoryFullPath": "交通工具配件及附件 -> 摩托车配件"
         },
         {
           "categoryName": "橡塑件",
-          "categoryId": null
+          "categoryId": 14463,
+          "categoryFullPath": "交通工具配件及附件 -> 橡塑件"
         },
         {
           "categoryName": "自行车配件及附件",
-          "categoryId": null
+          "categoryId": 14707,
+          "categoryFullPath": "交通工具配件及附件 -> 自行车配件及附件"
         }
       ],
       "directSellerName": "niceicon",
-      "directSellerId": null,
+      "directSellerId": "niceicon",
       "warehouseSellerName": "shinykingdom",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "shinykingdom",
       "enabled": true
     },
     {
@@ -412,37 +517,44 @@
       "categories": [
         {
           "categoryName": "底盘件",
-          "categoryId": null
+          "categoryId": 14233,
+          "categoryFullPath": "交通工具配件及附件 -> 底盘件"
         },
         {
           "categoryName": "发动机配件",
-          "categoryId": null
+          "categoryId": 14304,
+          "categoryFullPath": "交通工具配件及附件 -> 发动机配件"
         },
         {
           "categoryName": "滤清器",
-          "categoryId": null
+          "categoryId": 14417,
+          "categoryFullPath": "交通工具配件及附件 -> 滤清器"
         },
         {
           "categoryName": "密封件",
-          "categoryId": null
+          "categoryId": 10030,
+          "categoryFullPath": "工业设备 -> 通用零部件 -> 密封件"
         },
         {
           "categoryName": "汽车车身与外饰件(新分类2026)",
-          "categoryId": null
+          "categoryId": 32542,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车车身与外饰件(新分类2026)"
         },
         {
           "categoryName": "汽车电子电气设备",
-          "categoryId": null
+          "categoryId": 14441,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车电子电气设备"
         },
         {
           "categoryName": "汽车附件",
-          "categoryId": null
+          "categoryId": 14703,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车附件"
         }
       ],
       "directSellerName": "niceicon",
-      "directSellerId": null,
+      "directSellerId": "niceicon",
       "warehouseSellerName": "x-autohaux_de",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "x-autohaux_de",
       "enabled": true
     },
     {
@@ -451,21 +563,24 @@
       "categories": [
         {
           "categoryName": "布匹类",
-          "categoryId": null
+          "categoryId": 20976,
+          "categoryFullPath": "交通工具配件及附件 -> 布匹类"
         },
         {
           "categoryName": "车身件",
-          "categoryId": null
+          "categoryId": 14162,
+          "categoryFullPath": "交通工具配件及附件 -> 车身件"
         },
         {
           "categoryName": "紧固件",
-          "categoryId": null
+          "categoryId": 14403,
+          "categoryFullPath": "交通工具配件及附件 -> 紧固件"
         }
       ],
       "directSellerName": null,
       "directSellerId": null,
       "warehouseSellerName": "tasharinacorp",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "tasharinacorp",
       "enabled": true
     },
     {
@@ -474,33 +589,39 @@
       "categories": [
         {
           "categoryName": "车灯件",
-          "categoryId": null
+          "categoryId": 14093,
+          "categoryFullPath": "交通工具配件及附件 -> 车灯件"
         },
         {
           "categoryName": "船泊配件及附件",
-          "categoryId": null
+          "categoryId": 10421,
+          "categoryFullPath": "交通工具配件及附件 -> 船泊配件及附件"
         },
         {
           "categoryName": "底盘件",
-          "categoryId": null
+          "categoryId": 14233,
+          "categoryFullPath": "交通工具配件及附件 -> 底盘件"
         },
         {
           "categoryName": "滤清器",
-          "categoryId": null
+          "categoryId": 14417,
+          "categoryFullPath": "交通工具配件及附件 -> 滤清器"
         },
         {
           "categoryName": "汽车车身与外饰件(新分类2026)",
-          "categoryId": null
+          "categoryId": 32542,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车车身与外饰件(新分类2026)"
         },
         {
           "categoryName": "汽车附件",
-          "categoryId": null
+          "categoryId": 14703,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车附件"
         }
       ],
       "directSellerName": null,
       "directSellerId": null,
       "warehouseSellerName": "automall_tech",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "automall_tech",
       "enabled": true
     },
     {
@@ -509,21 +630,24 @@
       "categories": [
         {
           "categoryName": "密封件",
-          "categoryId": null
+          "categoryId": 10030,
+          "categoryFullPath": "工业设备 -> 通用零部件 -> 密封件"
         },
         {
           "categoryName": "汽车电子电气设备",
-          "categoryId": null
+          "categoryId": 14441,
+          "categoryFullPath": "交通工具配件及附件 -> 汽车电子电气设备"
         },
         {
           "categoryName": "橡塑件",
-          "categoryId": null
+          "categoryId": 14463,
+          "categoryFullPath": "交通工具配件及附件 -> 橡塑件"
         }
       ],
       "directSellerName": null,
       "directSellerId": null,
       "warehouseSellerName": "carpopart",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "carpopart",
       "enabled": true
     },
     {
@@ -532,13 +656,14 @@
       "categories": [
         {
           "categoryName": "发动机配件",
-          "categoryId": null
+          "categoryId": 14304,
+          "categoryFullPath": "交通工具配件及附件 -> 发动机配件"
         }
       ],
       "directSellerName": null,
       "directSellerId": null,
       "warehouseSellerName": "uauto1",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "uauto1",
       "enabled": true
     },
     {
@@ -547,21 +672,24 @@
       "categories": [
         {
           "categoryName": "摩托车附件",
-          "categoryId": null
+          "categoryId": 14089,
+          "categoryFullPath": "交通工具配件及附件 -> 摩托车附件"
         },
         {
           "categoryName": "摩托车配件",
-          "categoryId": null
+          "categoryId": 14090,
+          "categoryFullPath": "交通工具配件及附件 -> 摩托车配件"
         },
         {
           "categoryName": "自行车配件及附件",
-          "categoryId": null
+          "categoryId": 14707,
+          "categoryFullPath": "交通工具配件及附件 -> 自行车配件及附件"
         }
       ],
       "directSellerName": null,
       "directSellerId": null,
       "warehouseSellerName": "ebay_us_careudepot",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "ebay_us_careudepot",
       "enabled": true
     },
     {
@@ -570,13 +698,14 @@
       "categories": [
         {
           "categoryName": "传感器",
-          "categoryId": null
+          "categoryId": 10257,
+          "categoryFullPath": "仪器仪表 -> 传感器"
         }
       ],
       "directSellerName": null,
       "directSellerId": null,
       "warehouseSellerName": "switchpart",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "switchpart",
       "enabled": true
     },
     {
@@ -585,68 +714,227 @@
       "categories": [
         {
           "categoryName": "工程机械车辆配件及附件",
-          "categoryId": null
+          "categoryId": 30017,
+          "categoryFullPath": "交通工具配件及附件 -> 工程机械车辆配件及附件"
         },
         {
           "categoryName": "农用车辆配件及附件",
-          "categoryId": null
+          "categoryId": 30004,
+          "categoryFullPath": "交通工具配件及附件 -> 农用车辆配件及附件"
         },
         {
           "categoryName": "悬挂系",
-          "categoryId": null
+          "categoryId": 14271,
+          "categoryFullPath": "交通工具配件及附件 -> 底盘件 -> 悬挂系"
         }
       ],
       "directSellerName": null,
       "directSellerId": null,
       "warehouseSellerName": "ebay_us_xautohub",
-      "warehouseSellerId": null,
+      "warehouseSellerId": "ebay_us_xautohub",
       "enabled": true
     }
   ],
   "salesThreshold": {
+    "_comment": "销量与毛利阈值配置。结果表不再单独落 sold30d / sold60d / marginValue 固定字段，改为把实际判定值写入 ruleSnapshot.evaluation。flowRules 优先使用 metrics 数组表达任意窗口天数和阈值；下方 salesThreshold 仅保留公共说明和可复用口径。",
     "dataMissingPolicy": "FAIL",
     "divideByZeroPolicy": "NULL",
     "marginCalculation": "SALE_AMOUNT_DIV_SALE_COUNT",
-    "sold30d": {
-      "field": "sale_count_30d",
-      "operator": "EQ",
-      "value": 0
-    },
-    "sold60d": {
-      "field": "sale_count_60d",
-      "operator": "GT",
-      "value": 2
-    },
-    "margin30d": {
-      "saleAmountField": "sale_amount_30d",
-      "saleCountField": "sale_count_30d",
-      "operator": "GT",
-      "value": null,
-      "enabled": false
-    },
-    "margin60d": {
-      "saleAmountField": "sale_amount_60d",
-      "saleCountField": "sale_count_60d",
-      "operator": "GT",
-      "value": 0.15,
-      "enabled": true
-    },
     "zeroSoldRelistRule": {
+      "_comment": "PRD 中的30天零销量重刊规则保留在这里。当前主分流流程未直接消费这条规则，但文档层面先保留定义。",
       "enabled": true,
-      "productLevel": "S",
+      "productLevel": "S级",
       "listingMode": "DIRECT",
       "listingDaysOperator": "GTE",
       "listingDaysValue": 30,
-      "soldMetric": "sold30d"
+      "metrics": [
+        {
+          "type": "sold",
+          "windowDays": 30,
+          "operator": "EQ",
+          "value": 0
+        }
+      ]
+    },
+    "metricDslExample": {
+      "type": "sold",
+      "windowDays": 30,
+      "operator": "EQ",
+      "value": 0,
+      "_comment": "支持 sold / sale / pl / margin；windowDays 可配置 15/30/60/90 等任意天数"
+    },
+    "queryMetricWindows": [
+      15,
+      30,
+      60,
+      90
+    ],
+    "metricDslExamples": [
+      {
+        "type": "sold",
+        "windowDays": 15,
+        "operator": "EQ",
+        "value": 0
+      },
+      {
+        "type": "sold",
+        "windowDays": 60,
+        "operator": "GTE",
+        "value": 0
+      },
+      {
+        "type": "margin",
+        "windowDays": 60,
+        "operator": "GT",
+        "value": 0
+      }
+    ]
+  },
+  "flowRules": {
+    "_comment": "流程规则入口。优先使用 metrics 数组表达任意窗口天数和阈值判断；旧的 soldMetric / marginMetric 字段仅用于兼容历史配置。",
+    "targetedSLevelLocalScu": {
+      "_comment": "专项渠道开发 + S级：直接创建S号，并分配本土海外仓账号。",
+      "enabled": true,
+      "developmentMode": "TARGETED",
+      "productLevels": [
+        "S级"
+      ],
+      "resultRegionType": "LOCAL",
+      "resultStage": "WAREHOUSE",
+      "action": "CREATE_SCU_AND_ASSIGN_LOCAL_WAREHOUSE"
+    },
+    "targetedSListingDaysOver30": {
+      "_comment": "专项渠道开发 + S级 + 上架天数超过30天：这里只做门槛判断，用于决定是否继续判断30天销量。",
+      "enabled": true,
+      "developmentModes": [
+        "TARGETED"
+      ],
+      "productLevels": [
+        "S级"
+      ],
+      "listingDaysOperator": "GT",
+      "listingDaysValue": 30
+    },
+    "targetedSOver30ZeroSoldCreateGreaterChina": {
+      "_comment": "专项渠道开发 + S级 + 上架天数超过30天 + 30天 sold=0：创建大中华区S号并分配账号。",
+      "enabled": true,
+      "developmentModes": [
+        "TARGETED"
+      ],
+      "productLevels": [
+        "S级"
+      ],
+      "listingDaysOperator": "GT",
+      "listingDaysValue": 30,
+      "resultRegionType": "GREATER_CHINA",
+      "resultStage": "WAREHOUSE",
+      "action": "CREATE_SCU_AND_ASSIGN_GREATER_CHINA_WAREHOUSE",
+      "metrics": [
+        {
+          "type": "sold",
+          "windowDays": 30,
+          "operator": "EQ",
+          "value": 0
+        }
+      ]
+    },
+    "targetedSOver30ArrivalCheck": {
+      "_comment": "专项渠道开发 + S级 + 上架天数超过30天，但30天 sold 不等于0：进入海外仓到货检查流程。",
+      "enabled": true,
+      "developmentModes": [
+        "TARGETED"
+      ],
+      "productLevels": [
+        "S级"
+      ],
+      "listingDaysOperator": "GT",
+      "listingDaysValue": 30,
+      "resultRegionType": "GREATER_CHINA",
+      "resultStage": "WAREHOUSE",
+      "resultStatus": "WAIT_STOCK_CHECK",
+      "action": "CHECK_OVERSEA_ARRIVAL_AND_SWITCH_A_SELLER"
+    },
+    "nonTargetedOrABLevelGreaterChinaScu": {
+      "_comment": "非专项开发，或专项但不属于“专项S走本土仓”场景时，满足60天销量/毛利条件后，创建S号并分配大中华海外仓账号。",
+      "enabled": true,
+      "developmentModes": [
+        "NON_TARGETED",
+        "TARGETED"
+      ],
+      "productLevels": [
+        "S级",
+        "A级",
+        "B级"
+      ],
+      "excludeWhen": {
+        "developmentMode": "TARGETED",
+        "productLevels": [
+          "S级"
+        ]
+      },
+      "resultRegionType": "GREATER_CHINA",
+      "resultStage": "WAREHOUSE",
+      "action": "CREATE_SCU_AND_ASSIGN_GREATER_CHINA_WAREHOUSE",
+      "metrics": [
+        {
+          "type": "sold",
+          "windowDays": 60,
+          "operator": "GTE",
+          "value": 0
+        },
+        {
+          "type": "margin",
+          "windowDays": 60,
+          "operator": "GTE",
+          "value": 0.15
+        }
+      ]
+    },
+    "defaultGreaterChinaScu": {
+      "_comment": "默认兜底规则。前面都不命中时，失败入库等待轮询，直到满足条件。",
+      "enabled": true,
+      "resultRegionType": "GREATER_CHINA",
+      "resultStage": "WAREHOUSE",
+      "resultStatus": "FAILED_RETRYABLE",
+      "action": "PERSIST_AND_POLL"
     }
   },
+  "arrivalRules": {
+    "_comment": "海外仓到货检查规则。当前代码会在 WAIT_STOCK_CHECK 场景下优先走 CETS SOAP 库存接口 getStockInventoryBySkuIdListAndStockIdList 判断是否已到仓；channelStockMappings 是渠道默认仓映射，若 accountMappings 单条规则本身配置了 warehouseStockCode / warehouseStockId，则优先使用单条规则配置。",
+    "enabled": true,
+    "dataSource": "cets_stock_inventory_soap",
+    "channelStockMappings": {
+      "ebay_us": {
+        "stockCode": "US_04",
+        "stockId": "15"
+      },
+      "ebay_uk": {
+        "stockCode": "UK_06",
+        "stockId": "70"
+      },
+      "ebay_au": {
+        "stockCode": "AU_06",
+        "stockId": "73"
+      },
+      "ebay_de": {
+        "stockCode": "",
+        "stockId": ""
+      }
+    },
+    "arrivedResult": "SWITCH_TO_WAREHOUSE_SELLER",
+    "notArrivedResult": "POLLING_POOL",
+    "manualTransferApplyRequired": true,
+    "skipAutoCreateTransferApplyWhenMissing": true
+  },
   "historyCheck": {
+    "_comment": "历史检查配置。用于从指定时间起回扫旧SKU，并决定默认是否 dryRun。",
     "enabled": true,
     "createdFrom": "2026-01-01T00:00:00+08:00",
     "defaultDryRun": true,
     "autoAllocateEnabled": false
   },
   "retryPolicy": {
+    "_comment": "失败重试策略。仅适用于瞬时性错误，例如DBAPI超时、网络波动、下游服务不可用。",
     "enabled": true,
     "maxRetryCount": 3,
     "retryIntervalMinutes": [
@@ -662,5 +950,136 @@
       "DATABASE_TRANSIENT_ERROR",
       "MQ_TRANSIENT_ERROR"
     ]
+  },
+  "workflow": {
+    "_comment": "运行时流程编排配置。按 sourceType 选择流程图，节点顺序遍历执行；CONDITION 负责分支判断，ACTION 负责产生一步业务动作，END 负责返回最终态。",
+    "version": "2026-06-25",
+    "flows": {
+      "seller_assign": {
+        "_comment": "A号直发仓账号分配。先检查账号映射是否存在，再执行分配动作。",
+        "flowStart": "accountMappingCheck",
+        "nodes": {
+          "accountMappingCheck": {
+            "type": "CONDITION",
+            "mode": "ACCOUNT_MAPPING_CHECK",
+            "onPass": "assignDirectSeller",
+            "onReject": "endNoAccount"
+          },
+          "assignDirectSeller": {
+            "type": "ACTION",
+            "action": "ASSIGN_DIRECT_SELLER",
+            "next": "end"
+          },
+          "end": {
+            "type": "END",
+            "result": "SUCCESS"
+          },
+          "endNoAccount": {
+            "type": "END",
+            "result": "SKIPPED",
+            "message": "账号映射未命中，无可用账号，不做结果入库"
+          }
+        }
+      },
+      "sku_upload": {
+        "_comment": "A号上传后的流程编排。先检查账号映射是否存在，再执行分流规则判断。",
+        "flowStart": "accountMappingCheck",
+        "nodes": {
+          "accountMappingCheck": {
+            "type": "CONDITION",
+            "mode": "ACCOUNT_MAPPING_CHECK",
+            "onPass": "preCheck",
+            "onReject": "endNoAccount"
+          },
+          "preCheck": {
+            "type": "CONDITION",
+            "mode": "PRE_RULE",
+            "allowRules": [
+              "targetedSLevelLocalScu",
+              "nonTargetedOrABLevelGreaterChinaScu"
+            ],
+            "onPass": "targetedLocalBranch",
+            "onReject": "endSkip"
+          },
+          "targetedLocalBranch": {
+            "type": "CONDITION",
+            "mode": "RULE",
+            "rule": "targetedSLevelLocalScu",
+            "onPass": "createLocalScu",
+            "onReject": "greaterChinaBranch"
+          },
+          "createLocalScu": {
+            "type": "ACTION",
+            "rule": "targetedSLevelLocalScu",
+            "action": "CREATE_SCU_AND_ASSIGN_LOCAL_WAREHOUSE",
+            "next": "targetedListingDaysCheck"
+          },
+          "targetedListingDaysCheck": {
+            "type": "CONDITION",
+            "mode": "RULE",
+            "rule": "targetedSListingDaysOver30",
+            "onPass": "targetedZeroSoldCheck",
+            "onReject": "failAndPoll"
+          },
+          "targetedZeroSoldCheck": {
+            "type": "CONDITION",
+            "mode": "RULE",
+            "rule": "targetedSOver30ZeroSoldCreateGreaterChina",
+            "onPass": "createGreaterChinaScuByZeroSold",
+            "onReject": "arrivalCheck"
+          },
+          "createGreaterChinaScuByZeroSold": {
+            "type": "ACTION",
+            "rule": "targetedSOver30ZeroSoldCreateGreaterChina",
+            "action": "CREATE_SCU_AND_ASSIGN_GREATER_CHINA_WAREHOUSE",
+            "next": "endSuccess"
+          },
+          "arrivalCheck": {
+            "type": "ACTION",
+            "rule": "targetedSOver30ArrivalCheck",
+            "action": "CHECK_OVERSEA_ARRIVAL_AND_SWITCH_A_SELLER",
+            "next": "endSuccess"
+          },
+          "greaterChinaBranch": {
+            "type": "CONDITION",
+            "mode": "RULE",
+            "rule": "nonTargetedOrABLevelGreaterChinaScu",
+            "onPass": "createGreaterChinaScu",
+            "onReject": "failAndPoll"
+          },
+          "createGreaterChinaScu": {
+            "type": "ACTION",
+            "rule": "nonTargetedOrABLevelGreaterChinaScu",
+            "action": "CREATE_SCU_AND_ASSIGN_GREATER_CHINA_WAREHOUSE",
+            "next": "endSuccess"
+          },
+          "failAndPoll": {
+            "type": "ACTION",
+            "action": "PERSIST_AND_POLL",
+            "resultStatus": "FAILED_RETRYABLE",
+            "next": "endFailed"
+          },
+          "endFailed": {
+            "type": "END",
+            "result": "FAILED_RETRYABLE",
+            "message": "未满足上架天数或后续业务条件，失败入库等待轮询"
+          },
+          "endSkip": {
+            "type": "END",
+            "result": "SKIPPED",
+            "message": "未命中专项开发+产品分级前置规则，直接返回"
+          },
+          "endNoAccount": {
+            "type": "END",
+            "result": "SKIPPED",
+            "message": "账号映射未命中，无可用账号，不做结果入库"
+          },
+          "endSuccess": {
+            "type": "END",
+            "result": "SUCCESS"
+          }
+        }
+      }
+    }
   }
 }

@@ -76,6 +76,42 @@ class SpApi
         return $res;
     }
 
+    public function getMongoCampaignInfoListByCampaignIds($campaignIds)
+    {
+        $campaignMap = [];
+        $needQueryIds = [];
+
+        foreach ($campaignIds as $campaignId) {
+            $campaignId = trim((string)$campaignId);
+            if ($campaignId === "") {
+                continue;
+            }
+
+            $cache = $this->redis->hGet("campaignSpCampaignIdData", $campaignId);
+            if ($cache) {
+                $campaignMap[$campaignId] = json_decode($cache, true);
+            } else {
+                $needQueryIds[] = $campaignId;
+            }
+        }
+
+        foreach (array_chunk(array_values(array_unique($needQueryIds)), 200) as $chunk) {
+            $list = DataUtils::getPageList($this->curlService->s3023()->get("amazon_sp_campaigns/queryPage", [
+                "campaignId_in" => implode(",", $chunk),
+                "limit" => 200
+            ]));
+            foreach ($list as $item) {
+                if (!isset($item['campaignId']) || trim((string)$item['campaignId']) === "") {
+                    continue;
+                }
+                $campaignMap[$item['campaignId']] = $item;
+                $this->redis->hSet("campaignSpCampaignIdData", $item['campaignId'], json_encode($item, JSON_UNESCAPED_UNICODE));
+            }
+        }
+
+        return $campaignMap;
+    }
+
     public function mongoCreateCampaignInfo($sellerId,$fixCampaign,$campaignId,$oldCampaignInfo)
     {
         $createCampaign = [
@@ -190,6 +226,34 @@ class SpApi
         }else{
             return false;
         }
+    }
+
+    public function updateCampaignBudget($sellerId, $updateArr)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->put("amazon/ad/campaigns/putCampaigns/{$sellerId}", $updateArr));
+        $this->log(json_encode($returnMessage, JSON_UNESCAPED_UNICODE));
+
+        $campaignResult = [];
+        $campaignInfoMap = [];
+        if (isset($returnMessage['data']) && count($returnMessage['data']) > 0) {
+            foreach ($returnMessage['data'] as $item) {
+                if (isset($item['code']) && $item['code'] == "SUCCESS" && isset($item['campaignId'])) {
+                    $campaignInfoMap[$item['campaignId']] = true;
+                }
+            }
+        }
+
+        foreach ($updateArr as $item) {
+            if (isset($campaignInfoMap[$item['campaignId']])) {
+                $this->log("处理campaign预算成功：{$sellerId} {$item['campaignId']}");
+                $campaignResult['success'][] = $item['campaignId'];
+            } else {
+                $this->log("处理campaign预算失败：{$sellerId} {$item['campaignId']}");
+                $campaignResult['error'][] = $item['campaignId'];
+            }
+        }
+
+        return $campaignResult;
     }
     //===================================== campaign end ===================================================///
 

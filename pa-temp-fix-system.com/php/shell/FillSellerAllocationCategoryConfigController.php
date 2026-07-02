@@ -129,7 +129,7 @@ class FillSellerAllocationCategoryConfigController
 
 $parameters = DataUtils::ExplainArgv(@$argv, array());
 $params = (count(@$argv) > 1) ? $parameters : $_REQUEST;
-$env = trim((string)($params['env'] ?? 'test'));
+$env = trim((string)($params['env'] ?? 'pro'));
 $inputFile = trim((string)($params['input'] ?? dirname(__FILE__) . "/../export/sellerAllocationConfig.json"));
 $outputFile = trim((string)($params['output'] ?? dirname(__FILE__) . "/../export/sellerAllocationConfig.completed.json"));
 
