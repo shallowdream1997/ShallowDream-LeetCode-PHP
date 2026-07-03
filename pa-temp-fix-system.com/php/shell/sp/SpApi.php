@@ -181,6 +181,57 @@ class SpApi
         }
         return $campaignNameInfo;
     }
+
+    public function getAmazonCampaignInfoByCampaignId($sellerId, $campaignId)
+    {
+        $condition = [
+            "campaignIdFilter" => $campaignId
+        ];
+
+        $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/campaigns/getCampaigns/{$sellerId}", $condition));
+        $campaignInfo = [];
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0) {
+            foreach ($resp['data'] as $item) {
+                if (isset($item['campaignId']) && (string)$item['campaignId'] === (string)$campaignId) {
+                    $campaignInfo = $item;
+                    break;
+                }
+            }
+            if (count($campaignInfo) <= 0) {
+                $campaignInfo = $resp['data'][0];
+            }
+        }
+        return $campaignInfo;
+    }
+
+    public function getAmazonCampaignInfoMapByCampaignIds($sellerId, $campaignIds)
+    {
+        $campaignMap = [];
+        $campaignIds = array_values(array_unique(array_filter(array_map(function ($campaignId) {
+            return trim((string)$campaignId);
+        }, $campaignIds))));
+
+        if (count($campaignIds) <= 0) {
+            return $campaignMap;
+        }
+
+        foreach (array_chunk($campaignIds, 100) as $chunk) {
+            $condition = [
+                "campaignIdFilter" => implode(",", $chunk)
+            ];
+
+            $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/campaigns/getCampaigns/{$sellerId}", $condition));
+            if ($resp && isset($resp['data']) && count($resp['data']) > 0) {
+                foreach ($resp['data'] as $item) {
+                    if (isset($item['campaignId']) && trim((string)$item['campaignId']) !== "") {
+                        $campaignMap[(string)$item['campaignId']] = $item;
+                    }
+                }
+            }
+        }
+
+        return $campaignMap;
+    }
     
     public function enabledCampaign($sellerId,$campaignName,$targetingType,$budget,$bidStrategy)
     {

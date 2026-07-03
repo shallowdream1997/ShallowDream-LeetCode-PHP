@@ -93,10 +93,16 @@ class SpUpdateCampaignBudgetController
         throw new Exception("未找到可用的campaign预算excel文件，请传-file参数指定文件");
     }
 
-    public function updateCampaignBudget($channel = "", $page = 0, $file = "")
+    private function isTruthy($value)
+    {
+        $value = strtolower(trim((string)$value));
+        return in_array($value, ["1", "true", "yes", "y", "on"]);
+    }
+
+    public function updateCampaignBudget($channel = "", $page = 0, $file = "", $dryRun = false)
     {
         $filePath = $this->resolveExcelFile($channel, (int)$page, $file);
-        $this->log("开始处理campaign预算：{$filePath}");
+        $this->log("开始处理campaign预算：{$filePath}" . ($dryRun ? " [dry_run]" : ""));
 
         $taskMap = [];
         $campaignIds = [];
@@ -154,7 +160,7 @@ class SpUpdateCampaignBudgetController
         $mongoCampaignMap = $this->spApi->getMongoCampaignInfoListByCampaignIds(array_values(array_unique($campaignIds)));
         $sellerUpdateMap = [];
         $exportList = [];
-
+        $previewList = [];
         foreach ($taskMap as $task) {
             $campaignId = $task['campaignId'];
             $mongoInfo = $mongoCampaignMap[$campaignId] ?? [];
@@ -179,7 +185,46 @@ class SpUpdateCampaignBudgetController
                 "campaignId" => $campaignId,
                 "dailyBudget" => $task['dailyBudget'],
                 "campaignName" => $task['campaignName'],
+                "mongoId" => $mongoInfo['_id'] ?? "",
+                "mongoChannel" => $mongoInfo['channel'] ?? "",
             ];
+        }
+
+        foreach ($sellerUpdateMap as $sellerId => $updateList) {
+            $campaignInfoMap = $this->spApi->getAmazonCampaignInfoMapByCampaignIds($sellerId, array_column($updateList, 'campaignId'));
+            foreach ($updateList as $item) {
+                $amazonCampaignInfo = $campaignInfoMap[(string)$item['campaignId']] ?? [];
+                $currentBudget = isset($amazonCampaignInfo['dailyBudget']) && $amazonCampaignInfo['dailyBudget'] !== ""
+                    ? (float)$amazonCampaignInfo['dailyBudget']
+                    : null;
+                $targetBudget = (float)$item['dailyBudget'];
+                $previewList[] = [
+                    "sellerId" => $sellerId,
+                    "campaignId" => $item['campaignId'],
+                    "currentDailyBudget" => $currentBudget,
+                    "targetDailyBudget" => $targetBudget,
+                    "budgetIsSame" => ($currentBudget !== null && abs($currentBudget - $targetBudget) < 0.00001) ? "Y" : "N",
+                ];
+            }
+        }
+
+        if ($dryRun) {
+            $this->log("dry_run模式，不执行Amazon API和mongo更新；待处理数量: " . count($previewList));
+            foreach ($previewList as $item) {
+                $this->log("模拟更新 => " . json_encode($item, JSON_UNESCAPED_UNICODE));
+            }
+
+            if (count($previewList) > 0) {
+                $exportExcelUtils = new ExcelUtils("sp/");
+                $exportExcelUtils->downloadXlsx([
+                    "sellerId",
+                    "campaignId",
+                    "currentDailyBudget",
+                    "targetDailyBudget",
+                    "budgetIsSame",
+                ], $previewList, "模拟调整campaign预算_" . date("YmdHis") . ".xlsx");
+            }
+            return;
         }
 
         foreach ($sellerUpdateMap as $sellerId => $updateList) {
@@ -247,6 +292,7 @@ $params = (count(@$argv) > 1) ? $parameters : $_REQUEST;
 $channel = "";
 $page = 0;
 $file = "";
+$dryRun = false;
 if (isset($params['channel']) && trim($params['channel']) != '') {
     $channel = $params['channel'];
 }
@@ -256,5 +302,9 @@ if (isset($params['page']) && trim($params['page']) != '') {
 if (isset($params['file']) && trim($params['file']) != '') {
     $file = trim($params['file']);
 }
+if (isset($params['dry_run'])) {
+    $dryRun = $conDryRun = strtolower(trim((string)$params['dry_run']));
+    $dryRun = in_array($conDryRun, ["1", "true", "yes", "y", "on"]);
+}
 $con = new SpUpdateCampaignBudgetController();
-$con->updateCampaignBudget($channel, $page, $file);
+$con->updateCampaignBudget($channel, $page, $file, $dryRun);
