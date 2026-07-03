@@ -44,18 +44,31 @@ class FillSellerAllocationCategoryConfigController
             if (empty($mapping['categories']) || !is_array($mapping['categories'])) {
                 continue;
             }
-            foreach ($mapping['categories'] as &$category) {
+            $filledCategories = [];
+            foreach ($mapping['categories'] as $category) {
                 $categoryName = trim((string)($category['categoryName'] ?? ''));
                 if ($categoryName === '') {
+                    $filledCategories[] = $category;
                     continue;
                 }
-                $categoryInfo = $categoryResultMap[$categoryName] ?? null;
-                $category['categoryId'] = $categoryInfo['categoryId'] ?? null;
-                if (isset($categoryInfo['categoryFullPath'])) {
-                    $category['categoryFullPath'] = $categoryInfo['categoryFullPath'];
+                $categoryInfoList = $categoryResultMap[$categoryName] ?? [];
+                if (!is_array($categoryInfoList) || count($categoryInfoList) <= 0) {
+                    $category['categoryId'] = null;
+                    $category['categoryFullPath'] = null;
+                    $filledCategories[] = $category;
+                    continue;
+                }
+
+                foreach ($categoryInfoList as $categoryInfo) {
+                    $newCategory = $category;
+                    $newCategory['categoryId'] = $categoryInfo['categoryId'] ?? null;
+                    if (isset($categoryInfo['categoryFullPath'])) {
+                        $newCategory['categoryFullPath'] = $categoryInfo['categoryFullPath'];
+                    }
+                    $filledCategories[] = $newCategory;
                 }
             }
-            unset($category);
+            $mapping['categories'] = $filledCategories;
         }
         unset($mapping);
 
@@ -91,39 +104,87 @@ class FillSellerAllocationCategoryConfigController
 
         if (!is_array($data) || count($data) <= 0) {
             $this->log("分类未查到: {$categoryName}");
-            return [
-                "categoryId" => null,
-                "categoryFullPath" => null,
-            ];
+            return [];
         }
 
-        $matched = $this->pickBestCategoryMatch($categoryName, $data);
-        $this->log("分类匹配: {$categoryName} => " . json_encode($matched, JSON_UNESCAPED_UNICODE));
-        return [
-            "categoryId" => $matched['categoryId'] ?? null,
-            "categoryFullPath" => $matched['categoryFullPath'] ?? null,
-        ];
+        $matchedList = $this->pickCategoryMatches($categoryName, $data);
+        $this->log("分类匹配: {$categoryName} => " . json_encode($matchedList, JSON_UNESCAPED_UNICODE));
+        return $matchedList;
     }
 
-    private function pickBestCategoryMatch($categoryName, $data)
+    private function pickCategoryMatches($categoryName, $data)
     {
+        $secondLevelExactMatches = [];
+        $exactLeafMatches = [];
         foreach ($data as $item) {
             $fullPath = (string)($item['categoryFullPath'] ?? '');
-            $parts = array_map('trim', explode('->', $fullPath));
+            $parts = $this->splitCategoryPath($fullPath);
             $leafName = trim((string)end($parts));
             if ($leafName === $categoryName) {
-                return $item;
+                $match = [
+                    "categoryId" => $item['categoryId'] ?? null,
+                    "categoryFullPath" => $item['categoryFullPath'] ?? null,
+                ];
+                $exactLeafMatches[] = $match;
+                if (count($parts) === 2) {
+                    $secondLevelExactMatches[] = $match;
+                }
             }
         }
+        $secondLevelExactMatches = $this->uniqueCategoryMatches($secondLevelExactMatches);
+        if (count($secondLevelExactMatches) > 0) {
+            return $secondLevelExactMatches;
+        }
 
+        $exactLeafMatches = $this->uniqueCategoryMatches($exactLeafMatches);
+        if (count($exactLeafMatches) > 0) {
+            return $exactLeafMatches;
+        }
+
+        $containsMatches = [];
         foreach ($data as $item) {
             $fullPath = (string)($item['categoryFullPath'] ?? '');
             if (mb_strpos($fullPath, $categoryName) !== false) {
-                return $item;
+                $containsMatches[] = [
+                    "categoryId" => $item['categoryId'] ?? null,
+                    "categoryFullPath" => $item['categoryFullPath'] ?? null,
+                ];
             }
         }
+        $containsMatches = $this->uniqueCategoryMatches($containsMatches);
+        if (count($containsMatches) > 0) {
+            return $containsMatches;
+        }
 
-        return $data[0];
+        return [[
+            "categoryId" => $data[0]['categoryId'] ?? null,
+            "categoryFullPath" => $data[0]['categoryFullPath'] ?? null,
+        ]];
+    }
+
+    private function splitCategoryPath($fullPath)
+    {
+        $parts = array_map('trim', explode('->', (string)$fullPath));
+        return array_values(array_filter($parts, function ($part) {
+            return $part !== '';
+        }));
+    }
+
+    private function uniqueCategoryMatches($matches)
+    {
+        $unique = [];
+        $result = [];
+        foreach ($matches as $match) {
+            $categoryId = (string)($match['categoryId'] ?? '');
+            $fullPath = (string)($match['categoryFullPath'] ?? '');
+            $key = $categoryId . "|" . $fullPath;
+            if (isset($unique[$key])) {
+                continue;
+            }
+            $unique[$key] = true;
+            $result[] = $match;
+        }
+        return $result;
     }
 }
 

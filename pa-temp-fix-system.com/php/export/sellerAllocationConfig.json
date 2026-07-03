@@ -76,6 +76,11 @@
           "categoryFullPath": "交通工具配件及附件 -> 紧固件"
         },
         {
+          "categoryName": "紧固件",
+          "categoryId": 15382,
+          "categoryFullPath": "五金工具 -> 紧固件"
+        },
+        {
           "categoryName": "汽车车身与外饰件(新分类2026)",
           "categoryId": 32542,
           "categoryFullPath": "交通工具配件及附件 -> 汽车车身与外饰件(新分类2026)"
@@ -112,6 +117,16 @@
           "categoryFullPath": "仪器仪表 -> 传感器"
         },
         {
+          "categoryName": "传感器",
+          "categoryId": 11832,
+          "categoryFullPath": "电子元器件 -> 传感器"
+        },
+        {
+          "categoryName": "传感器",
+          "categoryId": 14214,
+          "categoryFullPath": "交通工具配件及附件 -> 传感器"
+        },
+        {
           "categoryName": "底盘件",
           "categoryId": 14233,
           "categoryFullPath": "交通工具配件及附件 -> 底盘件"
@@ -139,13 +154,13 @@
       "categories": [
         {
           "categoryName": "密封件",
-          "categoryId": 10030,
-          "categoryFullPath": "工业设备 -> 通用零部件 -> 密封件"
+          "categoryId": 14423,
+          "categoryFullPath": "交通工具配件及附件 -> 密封件"
         },
         {
           "categoryName": "悬挂系",
-          "categoryId": 14271,
-          "categoryFullPath": "交通工具配件及附件 -> 底盘件 -> 悬挂系"
+          "categoryId": 27501,
+          "categoryFullPath": "交通工具配件及附件 -> 悬挂系"
         }
       ],
       "directSellerName": "care4you_store",
@@ -220,6 +235,16 @@
           "categoryFullPath": "仪器仪表 -> 传感器"
         },
         {
+          "categoryName": "传感器",
+          "categoryId": 11832,
+          "categoryFullPath": "电子元器件 -> 传感器"
+        },
+        {
+          "categoryName": "传感器",
+          "categoryId": 14214,
+          "categoryFullPath": "交通工具配件及附件 -> 传感器"
+        },
+        {
           "categoryName": "船泊配件及附件",
           "categoryId": 10421,
           "categoryFullPath": "交通工具配件及附件 -> 船泊配件及附件"
@@ -235,9 +260,14 @@
           "categoryFullPath": "交通工具配件及附件 -> 紧固件"
         },
         {
+          "categoryName": "紧固件",
+          "categoryId": 15382,
+          "categoryFullPath": "五金工具 -> 紧固件"
+        },
+        {
           "categoryName": "密封件",
-          "categoryId": 10030,
-          "categoryFullPath": "工业设备 -> 通用零部件 -> 密封件"
+          "categoryId": 14423,
+          "categoryFullPath": "交通工具配件及附件 -> 密封件"
         },
         {
           "categoryName": "汽车车身与外饰件(新分类2026)",
@@ -318,8 +348,8 @@
         },
         {
           "categoryName": "悬挂系",
-          "categoryId": 14271,
-          "categoryFullPath": "交通工具配件及附件 -> 底盘件 -> 悬挂系"
+          "categoryId": 27501,
+          "categoryFullPath": "交通工具配件及附件 -> 悬挂系"
         }
       ],
       "directSellerName": "ceo1shop",
@@ -348,6 +378,16 @@
           "categoryFullPath": "仪器仪表 -> 传感器"
         },
         {
+          "categoryName": "传感器",
+          "categoryId": 11832,
+          "categoryFullPath": "电子元器件 -> 传感器"
+        },
+        {
+          "categoryName": "传感器",
+          "categoryId": 14214,
+          "categoryFullPath": "交通工具配件及附件 -> 传感器"
+        },
+        {
           "categoryName": "底盘件",
           "categoryId": 14233,
           "categoryFullPath": "交通工具配件及附件 -> 底盘件"
@@ -364,8 +404,8 @@
         },
         {
           "categoryName": "密封件",
-          "categoryId": 10030,
-          "categoryFullPath": "工业设备 -> 通用零部件 -> 密封件"
+          "categoryId": 14423,
+          "categoryFullPath": "交通工具配件及附件 -> 密封件"
         },
         {
           "categoryName": "汽车车身与外饰件(新分类2026)",
@@ -404,6 +444,11 @@
           "categoryFullPath": "交通工具配件及附件 -> 紧固件"
         },
         {
+          "categoryName": "紧固件",
+          "categoryId": 15382,
+          "categoryFullPath": "五金工具 -> 紧固件"
+        },
+        {
           "categoryName": "摩托车附件",
           "categoryId": 14089,
           "categoryFullPath": "交通工具配件及附件 -> 摩托车附件"
@@ -430,8 +475,8 @@
         },
         {
           "categoryName": "悬挂系",
-          "categoryId": 14271,
-          "categoryFullPath": "交通工具配件及附件 -> 底盘件 -> 悬挂系"
+          "categoryId": 27501,
+          "categoryFullPath": "交通工具配件及附件 -> 悬挂系"
         },
         {
           "categoryName": "自行车配件及附件",
@@ -475,6 +520,16 @@
           "categoryFullPath": "仪器仪表 -> 传感器"
         },
         {
+          "categoryName": "传感器",
+          "categoryId": 11832,
+          "categoryFullPath": "电子元器件 -> 传感器"
+        },
+        {
+          "categoryName": "传感器",
+          "categoryId": 14214,
+          "categoryFullPath": "交通工具配件及附件 -> 传感器"
+        },
+        {
           "categoryName": "船泊配件及附件",
           "categoryId": 10421,
           "categoryFullPath": "交通工具配件及附件 -> 船泊配件及附件"
@@ -483,6 +538,11 @@
           "categoryName": "紧固件",
           "categoryId": 14403,
           "categoryFullPath": "交通工具配件及附件 -> 紧固件"
+        },
+        {
+          "categoryName": "紧固件",
+          "categoryId": 15382,
+          "categoryFullPath": "五金工具 -> 紧固件"
         },
         {
           "categoryName": "摩托车附件",
@@ -532,8 +592,8 @@
         },
         {
           "categoryName": "密封件",
-          "categoryId": 10030,
-          "categoryFullPath": "工业设备 -> 通用零部件 -> 密封件"
+          "categoryId": 14423,
+          "categoryFullPath": "交通工具配件及附件 -> 密封件"
         },
         {
           "categoryName": "汽车车身与外饰件(新分类2026)",
@@ -575,6 +635,11 @@
           "categoryName": "紧固件",
           "categoryId": 14403,
           "categoryFullPath": "交通工具配件及附件 -> 紧固件"
+        },
+        {
+          "categoryName": "紧固件",
+          "categoryId": 15382,
+          "categoryFullPath": "五金工具 -> 紧固件"
         }
       ],
       "directSellerName": null,
@@ -630,8 +695,8 @@
       "categories": [
         {
           "categoryName": "密封件",
-          "categoryId": 10030,
-          "categoryFullPath": "工业设备 -> 通用零部件 -> 密封件"
+          "categoryId": 14423,
+          "categoryFullPath": "交通工具配件及附件 -> 密封件"
         },
         {
           "categoryName": "汽车电子电气设备",
@@ -700,6 +765,16 @@
           "categoryName": "传感器",
           "categoryId": 10257,
           "categoryFullPath": "仪器仪表 -> 传感器"
+        },
+        {
+          "categoryName": "传感器",
+          "categoryId": 11832,
+          "categoryFullPath": "电子元器件 -> 传感器"
+        },
+        {
+          "categoryName": "传感器",
+          "categoryId": 14214,
+          "categoryFullPath": "交通工具配件及附件 -> 传感器"
         }
       ],
       "directSellerName": null,
@@ -724,8 +799,8 @@
         },
         {
           "categoryName": "悬挂系",
-          "categoryId": 14271,
-          "categoryFullPath": "交通工具配件及附件 -> 底盘件 -> 悬挂系"
+          "categoryId": 27501,
+          "categoryFullPath": "交通工具配件及附件 -> 悬挂系"
         }
       ],
       "directSellerName": null,
