@@ -190,25 +190,26 @@ class SpUpdateCampaignBudgetController
             ];
         }
 
-        foreach ($sellerUpdateMap as $sellerId => $updateList) {
-            $campaignInfoMap = $this->spApi->getAmazonCampaignInfoMapByCampaignIds($sellerId, array_column($updateList, 'campaignId'));
-            foreach ($updateList as $item) {
-                $amazonCampaignInfo = $campaignInfoMap[(string)$item['campaignId']] ?? [];
-                $currentBudget = isset($amazonCampaignInfo['dailyBudget']) && $amazonCampaignInfo['dailyBudget'] !== ""
-                    ? (float)$amazonCampaignInfo['dailyBudget']
-                    : null;
-                $targetBudget = (float)$item['dailyBudget'];
-                $previewList[] = [
-                    "sellerId" => $sellerId,
-                    "campaignId" => $item['campaignId'],
-                    "currentDailyBudget" => $currentBudget,
-                    "targetDailyBudget" => $targetBudget,
-                    "budgetIsSame" => ($currentBudget !== null && abs($currentBudget - $targetBudget) < 0.00001) ? "Y" : "N",
-                ];
-            }
-        }
 
         if ($dryRun) {
+
+            foreach ($sellerUpdateMap as $sellerId => $updateList) {
+                $campaignInfoMap = $this->spApi->getAmazonCampaignInfoMapByCampaignIds($sellerId, array_column($updateList, 'campaignId'));
+                foreach ($updateList as $item) {
+                    $amazonCampaignInfo = $campaignInfoMap[(string)$item['campaignId']] ?? [];
+                    $currentBudget = isset($amazonCampaignInfo['dailyBudget']) && $amazonCampaignInfo['dailyBudget'] !== ""
+                        ? (float)$amazonCampaignInfo['dailyBudget']
+                        : null;
+                    $targetBudget = (float)$item['dailyBudget'];
+                    $previewList[] = [
+                        "sellerId" => $sellerId,
+                        "campaignId" => $item['campaignId'],
+                        "currentDailyBudget" => $currentBudget,
+                        "targetDailyBudget" => $targetBudget,
+                        "budgetIsSame" => ($currentBudget !== null && abs($currentBudget - $targetBudget) < 0.00001) ? "Y" : "N",
+                    ];
+                }
+            }
             $this->log("dry_run模式，不执行Amazon API和mongo更新；待处理数量: " . count($previewList));
             foreach ($previewList as $item) {
                 $this->log("模拟更新 => " . json_encode($item, JSON_UNESCAPED_UNICODE));
@@ -222,7 +223,7 @@ class SpUpdateCampaignBudgetController
                     "currentDailyBudget",
                     "targetDailyBudget",
                     "budgetIsSame",
-                ], $previewList, "模拟调整campaign预算_" . date("YmdHis") . ".xlsx");
+                ], $previewList, "模拟调整campaign预算_" . date("YmdHis") . ".xlsx", [1]);
             }
             return;
         }
