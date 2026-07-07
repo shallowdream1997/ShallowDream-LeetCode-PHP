@@ -229,22 +229,38 @@ class SpPausedProductController
 
 
 
+    /**
+     * 读取混合channel的Excel文件，按channel参数过滤后关停product广告
+     * Excel格式: channel | seller_id | ad_id
+     * 用法: php SpPausedProductController.php method=v2 file="M4-M6 关停清单v2.xlsx" channel=amazon_us
+     * @param string $file Excel文件名(在./excel/目录下)
+     * @param string $channel 必填，按channel过滤数据，可选值: amazon_us, amazon_uk, amazon_ca等
+     */
     public function pausedProductV2s($file = "",$channel = ""){
-        $this->log("开始处理:{$file}");
+        if (empty($channel)) {
+            $this->log("channel参数必填，可选值: amazon_us, amazon_uk, amazon_ca");
+            die("channel参数必填，可选值: amazon_us, amazon_uk, amazon_ca\n");
+        }
+        $this->log("pausedProductV2s 开始处理 file:{$file} channel:{$channel}");
         $excelUtils = new ExcelUtils();
         $curlService = (new CurlService())->pro();
         $redisService = new RedisService();
         $spApi = new SpApi();
         $sellerIdAdId = [];
+        $totalAdIdCount = 0;
         try {
-            $excelUtils->eachXlsxRow("./excel/{$file}", function ($item,$channel) use (&$sellerIdAdId) {
-                if (!empty($item['ad_id']) && $item['channel'] == $channel) {
+            $excelUtils->eachXlsxRow("./excel/{$file}", function ($item) use (&$sellerIdAdId, &$totalAdIdCount, $channel) {
+                if (!empty($item['ad_id']) && isset($item['channel']) && $item['channel'] == $channel) {
                     $sellerIdAdId[$item['seller_id']][] = $item['ad_id'];
+                    $totalAdIdCount++;
                 }
             });
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
+
+        $this->log("channel:{$channel} 共 " . count($sellerIdAdId) . " 个seller, {$totalAdIdCount} 个adId");
+
         if (count($sellerIdAdId) > 0) {
             $exportList = [];
             foreach ($sellerIdAdId as $sellerId => $adIds){
@@ -266,7 +282,7 @@ class SpPausedProductController
 
                 foreach (array_chunk($lastIds,200) as $chunk){
                     $list = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_products/queryPage", [
-                        "channel" => $sellerId,
+                        "channel" => $spApi->specialSellerIdConver($sellerId),
                         "adId_in" => implode(',', $chunk),
                         "limit" => 200
                     ]));
@@ -315,11 +331,13 @@ class SpPausedProductController
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "adid",
-                ], $exportList, "关停失败的adId_" . date("YmdHis") . ".xlsx");
+                ], $exportList, "关停失败的adId_{$channel}_" . date("YmdHis") . ".xlsx");
             }
 
+            $this->log("pausedProductV2s channel:{$channel} 处理完毕");
+        } else {
+            $this->log("pausedProductV2s channel:{$channel} 无数据");
         }
-
     }
 
 
@@ -330,15 +348,22 @@ $params = (count(@$argv) > 1) ? $parameters : $_REQUEST;
 $channel = "";
 $page = 0;
 $file = "";
-if (isset($params['channel']) && trim($params['channel'] != '')) {
+$method = "";
+if (isset($params['channel']) && trim($params['channel']) != '') {
     $channel = $params['channel'];
 }
-if (isset($params['page']) && trim($params['page'] != '')) {
+if (isset($params['page']) && trim($params['page']) != '') {
     $page = $params['page'];
 }
-if (isset($params['file']) && trim($params['file'] != '')) {
+if (isset($params['file']) && trim($params['file']) != '') {
     $file = $params['file'];
 }
+if (isset($params['method']) && trim($params['method']) != '') {
+    $method = $params['method'];
+}
 $con = new SpPausedProductController();
-//$con->pausedProducts($channel, $page);
-$con->pausedProductV2s($file,$channel);
+if ($method == 'v2') {
+    $con->pausedProductV2s($file, $channel);
+} else {
+    $con->pausedProducts($channel, $page);
+}
