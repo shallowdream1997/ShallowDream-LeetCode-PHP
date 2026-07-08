@@ -230,6 +230,108 @@ class SpPausedProductController
 
 
     /**
+     * 校验product广告状态是否正确修改为paused
+     * 通过Amazon API查询product ad的实际状态，与期望状态对比
+     * 用法: php SpPausedProductController.php method=verify file="M4-M6 关停清单v4.xlsx" channel=amazon_us
+     * @param string $file Excel文件名(在./excel/目录下)
+     * @param string $channel 必填，按channel过滤数据，可选值: amazon_us, amazon_uk, amazon_ca等
+     */
+    public function verifyPausedProducts($file = "", $channel = ""){
+        $this->log("verifyPausedProducts 开始校验 file:{$file} channel:" . ($channel ?: '全部'));
+        $excelUtils = new ExcelUtils();
+        $spApi = new SpApi();
+        $sellerIdAdId = [];
+        $totalAdIdCount = 0;
+        try {
+            $excelUtils->eachXlsxRow("./excel/{$file}", function ($item) use (&$sellerIdAdId, &$totalAdIdCount, $channel) {
+                if (!empty($item['ad_id']) && (empty($channel) || (isset($item['channel']) && $item['channel'] == $channel))) {
+                    $sellerIdAdId[$item['seller_id']][] = $item['ad_id'];
+                    $totalAdIdCount++;
+                }
+            });
+        } catch (Exception $e) {
+            die($e->getLine() . " : " . $e->getMessage());
+        }
+
+        $this->log("channel:" . ($channel ?: '全部') . " 共 " . count($sellerIdAdId) . " 个seller, {$totalAdIdCount} 个adId");
+
+        if (count($sellerIdAdId) > 0) {
+            $exportList = [];
+            $verifiedCount = 0;
+            $pausedCount = 0;
+            $notPausedCount = 0;
+            $notFoundCount = 0;
+
+            foreach ($sellerIdAdId as $sellerId => $adIds){
+                $this->log("{$sellerId} 开始校验 " . count($adIds) . " 个adId");
+
+                // 分批查询Amazon API，每批最多100个adId（Amazon API限制）
+                foreach (array_chunk($adIds, 100) as $chunk){
+                    $adIdsStr = implode(",", $chunk);
+                    $this->log("查询Amazon API: {$sellerId} adIds: {$adIdsStr}");
+
+                    $adListInfo = $spApi->listProductV2($sellerId, $adIdsStr);
+
+                    foreach ($chunk as $adId){
+                        $verifiedCount++;
+                        if (isset($adListInfo[$adId])){
+                            $actualState = $adListInfo[$adId];
+                            if ($actualState == "paused"){
+                                $pausedCount++;
+                                $this->log("✅ {$sellerId} adId:{$adId} 状态正确: {$actualState}");
+                            } else {
+                                $notPausedCount++;
+                                $this->log("❌ {$sellerId} adId:{$adId} 状态异常: 期望paused, 实际{$actualState}");
+                                $exportList[] = [
+                                    "seller_id" => $sellerId,
+                                    "ad_id" => "'" . $adId,
+                                    "actual_state" => $actualState,
+                                    "expected_state" => "paused",
+                                ];
+                            }
+                        } else {
+                            $notFoundCount++;
+                            $this->log("⚠️ {$sellerId} adId:{$adId} Amazon API未返回该adId数据");
+                            $exportList[] = [
+                                "seller_id" => $sellerId,
+                                "ad_id" => "'" . $adId,
+                                "actual_state" => "not_found",
+                                "expected_state" => "paused",
+                            ];
+                        }
+                    }
+                }
+            }
+
+            // 输出校验汇总
+            $this->log("========== 校验汇总 ==========");
+            $this->log("总校验数: {$verifiedCount}");
+            $this->log("✅ 已暂停(paused): {$pausedCount}");
+            $this->log("❌ 未暂停(非paused状态): {$notPausedCount}");
+            $this->log("⚠️ 未找到(not_found): {$notFoundCount}");
+
+            // 导出异常数据到Excel
+            if (count($exportList) > 0){
+                $excelUtils = new ExcelUtils("sp/");
+                $filePath = $excelUtils->downloadXlsx([
+                    "seller_id",
+                    "ad_id",
+                    "actual_state",
+                    "expected_state",
+                ], $exportList, "校验异常_product_" . ($channel ?: 'all') . "_" . date("YmdHis") . ".xlsx");
+                $this->log("异常数据已导出: {$filePath}");
+            } else {
+                $this->log("所有product广告状态校验通过，无异常数据");
+            }
+
+            $this->log("verifyPausedProducts channel:" . ($channel ?: '全部') . " 校验完毕");
+        } else {
+            $this->log("verifyPausedProducts channel:" . ($channel ?: '全部') . " 无数据");
+        }
+    }
+
+
+    /**
      * 读取混合channel的Excel文件，按channel参数过滤后关停product广告
      * Excel格式: channel | seller_id | ad_id
      * 用法: php SpPausedProductController.php method=v2 file="M4-M6 关停清单v2.xlsx" channel=amazon_us
@@ -364,6 +466,8 @@ if (isset($params['method']) && trim($params['method']) != '') {
 $con = new SpPausedProductController();
 if ($method == 'v2') {
     $con->pausedProductV2s($file, $channel);
+} elseif ($method == 'verify') {
+    $con->verifyPausedProducts($file, $channel);
 } else {
     $con->pausedProducts($channel, $page);
 }
