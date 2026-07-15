@@ -459,6 +459,30 @@ class SpApi
         return $targetResult;
     }
 
+    /**
+     * 通过targetId批量查询target的实际状态和bid
+     * @param string $sellerId
+     * @param string $targetIds 逗号分隔的targetId
+     * @return array [targetId => ['state' => 'paused'|'enabled', 'bid' => float]]
+     */
+    public function listTargetV2($sellerId, $targetIds)
+    {
+        $condition = [
+            "targetIdFilter" => $targetIds,
+        ];
+        $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/productTargeting/getTargets/{$sellerId}", $condition));
+        $targetListInfo = [];
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0) {
+            foreach ($resp['data'] as $item) {
+                $targetListInfo[$item['targetId']] = [
+                    'state' => $item['state'],
+                    'bid' => isset($item['bid']) ? $item['bid'] : '',
+                ];
+            }
+        }
+        return $targetListInfo;
+    }
+
     public function buildCreateTargetAsinList($campaignId,$adGroupId,$bid,$cpAsin)
     {
         $createTargetList = [];
@@ -1283,6 +1307,30 @@ class SpApi
         }
 
         return $keywordResult;
+    }
+
+    /**
+     * 通过keywordId批量查询keyword的实际状态和bid
+     * @param string $sellerId
+     * @param string $keywordIds 逗号分隔的keywordId
+     * @return array [keywordId => ['state' => 'paused'|'enabled', 'bid' => float]]
+     */
+    public function listKeywordV2($sellerId, $keywordIds)
+    {
+        $condition = [
+            "keywordIdFilter" => $keywordIds,
+        ];
+        $resp = DataUtils::getResultData($this->curlService->phphk()->post("amazon/ad/keywords/getKeywordsExtended/{$sellerId}", $condition));
+        $keywordListInfo = [];
+        if ($resp && isset($resp['data']) && count($resp['data']) > 0) {
+            foreach ($resp['data'] as $item) {
+                $keywordListInfo[$item['keywordId']] = [
+                    'state' => $item['state'],
+                    'bid' => isset($item['bid']) ? $item['bid'] : '',
+                ];
+            }
+        }
+        return $keywordListInfo;
     }
 
 
