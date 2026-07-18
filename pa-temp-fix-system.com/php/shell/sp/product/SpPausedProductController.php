@@ -12,7 +12,7 @@ class SpPausedProductController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/product");
     }
 
     private function log(string $string = "")
@@ -48,7 +48,7 @@ class SpPausedProductController
         $spApi = new SpApi();
         $sellerIdAdId = [];
         try {
-            $excelUtils->eachXlsxRow("./excel/广告关停清单{$channel}_{$page}.xlsx", function ($item) use (&$sellerIdAdId) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/广告关停清单{$channel}_{$page}.xlsx", function ($item) use (&$sellerIdAdId) {
                 if (!empty($item['adid'])) {
                     $sellerIdAdId[$item['sellerid']][] = $item['adid'];
                 }
@@ -122,7 +122,7 @@ class SpPausedProductController
             }
 
             if (count($exportList) > 0){
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/product/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "adid",
@@ -142,7 +142,7 @@ class SpPausedProductController
         $spApi = new SpApi();
         $sellerIdAdId = [];
         try {
-            $excelUtils->eachXlsxRow("./excel/广告关停清单{$channel}_{$page}.xlsx", function ($item) use (&$sellerIdAdId) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/广告关停清单{$channel}_{$page}.xlsx", function ($item) use (&$sellerIdAdId) {
                 if (!empty($item['adid'])) {
                     $sellerIdAdId[$item['sellerid']][] = $item['adid'];
                 }
@@ -216,7 +216,7 @@ class SpPausedProductController
             }
 
             if (count($exportList) > 0){
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/product/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "adid",
@@ -243,7 +243,7 @@ class SpPausedProductController
         $sellerIdAdId = [];
         $totalAdIdCount = 0;
         try {
-            $excelUtils->eachXlsxRow("./excel/{$file}", function ($item) use (&$sellerIdAdId, &$totalAdIdCount, $channel) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$sellerIdAdId, &$totalAdIdCount, $channel) {
                 if (!empty($item['ad_id']) && (empty($channel) || (isset($item['channel']) && $item['channel'] == $channel))) {
                     $sellerIdAdId[$item['seller_id']][] = $item['ad_id'];
                     $totalAdIdCount++;
@@ -312,7 +312,7 @@ class SpPausedProductController
 
             // 导出异常数据到Excel
             if (count($exportList) > 0){
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/product/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "ad_id",
@@ -351,7 +351,7 @@ class SpPausedProductController
         $sellerIdAdId = [];
         $totalAdIdCount = 0;
         try {
-            $excelUtils->eachXlsxRow("./excel/{$file}", function ($item) use (&$sellerIdAdId, &$totalAdIdCount, $channel) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$sellerIdAdId, &$totalAdIdCount, $channel) {
                 if (!empty($item['ad_id']) && isset($item['channel']) && $item['channel'] == $channel) {
                     $sellerIdAdId[$item['seller_id']][] = $item['ad_id'];
                     $totalAdIdCount++;
@@ -429,7 +429,7 @@ class SpPausedProductController
             }
 
             if (count($exportList) > 0){
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/product/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "adid",

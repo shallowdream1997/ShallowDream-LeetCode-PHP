@@ -12,7 +12,7 @@ class SpUpdateCampaignController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/campaign");
     }
 
     private function log(string $string = "")

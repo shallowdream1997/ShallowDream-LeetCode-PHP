@@ -14,7 +14,7 @@ class SpUpdateCampaignBudgetController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/campaign");
         $this->spApi = new SpApi();
         $this->excelUtils = new ExcelUtils();
     }
@@ -59,21 +59,22 @@ class SpUpdateCampaignBudgetController
 
     private function resolveExcelFile($channel = "", $page = 0, $file = "")
     {
+        $baseDir = __DIR__ . "/excel/";
         if ($file !== "") {
             if (is_file($file)) {
                 return $file;
             }
-            $relativeFile = "./excel/" . ltrim($file, "/");
+            $relativeFile = $baseDir . ltrim($file, "/");
             if (is_file($relativeFile)) {
                 return $relativeFile;
             }
         }
 
         $candidates = [
-            "./excel/campaign预算调整清单_{$channel}_{$page}.xlsx",
-            "./excel/campaign预算回调清单_{$channel}_{$page}.xlsx",
-            "./excel/广告活动预算调整_{$channel}_{$page}.xlsx",
-            "./excel/广告活动预算回调_{$channel}_{$page}.xlsx",
+            $baseDir . "campaign预算调整清单_{$channel}_{$page}.xlsx",
+            $baseDir . "campaign预算回调清单_{$channel}_{$page}.xlsx",
+            $baseDir . "广告活动预算调整_{$channel}_{$page}.xlsx",
+            $baseDir . "广告活动预算回调_{$channel}_{$page}.xlsx",
         ];
         foreach ($candidates as $candidate) {
             if (is_file($candidate)) {
@@ -81,7 +82,7 @@ class SpUpdateCampaignBudgetController
             }
         }
 
-        $files = glob("./excel/*.xlsx");
+        $files = glob($baseDir . "*.xlsx");
         sort($files);
         if (count($files) === 1) {
             return $files[0];
@@ -216,7 +217,7 @@ class SpUpdateCampaignBudgetController
             }
 
             if (count($previewList) > 0) {
-                $exportExcelUtils = new ExcelUtils("sp/");
+                $exportExcelUtils = new ExcelUtils("sp/campaign/");
                 $exportExcelUtils->downloadXlsx([
                     "sellerId",
                     "campaignId",
@@ -277,7 +278,7 @@ class SpUpdateCampaignBudgetController
         }
 
         if (count($exportList) > 0) {
-            $exportExcelUtils = new ExcelUtils("sp/");
+            $exportExcelUtils = new ExcelUtils("sp/campaign/");
             $exportExcelUtils->downloadXlsx([
                 "seller_id",
                 "campaign_id",

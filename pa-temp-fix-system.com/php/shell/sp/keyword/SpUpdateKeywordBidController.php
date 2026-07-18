@@ -12,7 +12,7 @@ class SpUpdateKeywordBidController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/keyword");
     }
 
     private function log(string $string = "")
@@ -50,7 +50,7 @@ class SpUpdateKeywordBidController
         $spApi = new SpApi();
         $sellerKeywordBidMap = [];
         try {
-            $excelUtils->eachXlsxRow("./excel/keyword_id调整bid清单_{$channel}_{$page}.xlsx", function ($item) use (&$sellerKeywordBidMap) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/keyword_id调整bid清单_{$channel}_{$page}.xlsx", function ($item) use (&$sellerKeywordBidMap) {
                 $sellerId = trim($item['seller_id'] ?? '');
                 $keywordId = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? 0)), "'");
                 $bid = trim((string)($item['bid'] ?? ''));
@@ -130,7 +130,7 @@ class SpUpdateKeywordBidController
         }
 
         if (count($exportList) > 0) {
-            $excelUtils = new ExcelUtils("sp/");
+            $excelUtils = new ExcelUtils("sp/keyword/");
             $excelUtils->downloadXlsx([
                 "seller_id",
                 "keywordId",
@@ -159,7 +159,7 @@ class SpUpdateKeywordBidController
         $sellerIdBidMap = [];
         $totalIdCount = 0;
         try {
-            $excelUtils->eachXlsxRow("./excel/{$file}", function ($item) use (&$sellerIdBidMap, &$totalIdCount, $channel) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$sellerIdBidMap, &$totalIdCount, $channel) {
                 $sellerId = trim($item['seller_id'] ?? '');
                 $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? 0)), "'");
                 $bid = trim((string)($item['bid'] ?? ''));
@@ -321,7 +321,7 @@ class SpUpdateKeywordBidController
         }
 
         if (count($exportList) > 0) {
-            $excelUtils = new ExcelUtils("sp/");
+            $excelUtils = new ExcelUtils("sp/keyword/");
             $excelUtils->downloadXlsx([
                 "seller_id",
                 "id",
@@ -351,7 +351,7 @@ class SpUpdateKeywordBidController
         $sellerIdBidMap = [];
         $totalIdCount = 0;
         try {
-            $excelUtils->eachXlsxRow("./excel/{$file}", function ($item) use (&$sellerIdBidMap, &$totalIdCount, $channel) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$sellerIdBidMap, &$totalIdCount, $channel) {
                 $sellerId = trim($item['seller_id'] ?? '');
                 $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? 0)), "'");
                 $bid = trim((string)($item['bid'] ?? ''));
@@ -502,7 +502,7 @@ class SpUpdateKeywordBidController
 
             // 导出异常数据到Excel
             if (count($exportList) > 0) {
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/keyword/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "id",

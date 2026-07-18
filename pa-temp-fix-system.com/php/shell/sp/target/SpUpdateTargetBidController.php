@@ -12,7 +12,7 @@ class SpUpdateTargetBidController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/target");
     }
 
     private function log(string $string = "")
@@ -50,7 +50,7 @@ class SpUpdateTargetBidController
         $spApi = new SpApi();
         $sellerTargetBidMap = [];
         try {
-            $excelUtils->eachXlsxRow("./excel/target_id调整bid清单_{$channel}_{$page}.xlsx", function ($item) use (&$sellerTargetBidMap) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/target_id调整bid清单_{$channel}_{$page}.xlsx", function ($item) use (&$sellerTargetBidMap) {
                 $sellerId = trim($item['seller_id'] ?? '');
                 $targetId = trim((string)($item['target_id'] ?? ''), "'");
                 $bid = trim((string)($item['bid'] ?? ''));
@@ -128,7 +128,7 @@ class SpUpdateTargetBidController
         }
 
         if (count($exportList) > 0) {
-            $excelUtils = new ExcelUtils("sp/");
+            $excelUtils = new ExcelUtils("sp/target/");
             $excelUtils->downloadXlsx([
                 "seller_id",
                 "targetId",

@@ -14,7 +14,7 @@ class SpArchivedErrorAdGroupController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/adgroup");
         $this->redis = new RedisService();
     }
 
@@ -66,7 +66,7 @@ class SpArchivedErrorAdGroupController
 
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/待归档asin广告清单.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/待归档asin广告清单.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -248,7 +248,7 @@ class SpArchivedErrorAdGroupController
 
 
                 if (count($exportList) > 0){
-                    $excelUtils = new ExcelUtils("sp/");
+                    $excelUtils = new ExcelUtils("sp/adgroup/");
                     $filePath = $excelUtils->downloadXlsx([
                         "sellerId",
                         "adGroupId",
@@ -270,7 +270,7 @@ class SpArchivedErrorAdGroupController
 
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/3号到4号的所有广告.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/3号到4号的所有广告.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -371,7 +371,7 @@ class SpArchivedErrorAdGroupController
 
 
                 if (count($exportList) > 0){
-                    $excelUtils = new ExcelUtils("sp/");
+                    $excelUtils = new ExcelUtils("sp/adgroup/");
                     $filePath = $excelUtils->downloadXlsx([
                         "sellerId",
                         "keywordId",
@@ -383,7 +383,7 @@ class SpArchivedErrorAdGroupController
             }
 
             if ($enabledKeywords){
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/adgroup/");
                 $filePath = $excelUtils->downloadXlsx([
                     "sellerId",
                     "keywordId",
@@ -407,7 +407,7 @@ class SpArchivedErrorAdGroupController
 
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/要归档的adgroupid广告.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/要归档的adgroupid广告.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -451,7 +451,7 @@ class SpArchivedErrorAdGroupController
 
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/3号到4号的所有广告.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/3号到4号的所有广告.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -500,7 +500,7 @@ class SpArchivedErrorAdGroupController
 
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/8-19号错误的自动化广告_auto广告.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/8-19号错误的自动化广告_auto广告.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -745,7 +745,7 @@ class SpArchivedErrorAdGroupController
                 if ($exportList) {
                     $this->log("开始导出");
 
-                    $excelUtils = new ExcelUtils("sp/");
+                    $excelUtils = new ExcelUtils("sp/adgroup/");
                     $filePath = $excelUtils->downloadXlsx([
                         "sellerId",
                         "type",
@@ -786,7 +786,7 @@ class SpArchivedErrorAdGroupController
 
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/8-19号错误的自动化广告_keyword广告.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/8-19号错误的自动化广告_keyword广告.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -1031,7 +1031,7 @@ class SpArchivedErrorAdGroupController
                 if ($exportList) {
                     $this->log("开始导出");
 
-                    $excelUtils = new ExcelUtils("sp/");
+                    $excelUtils = new ExcelUtils("sp/adgroup/");
                     $filePath = $excelUtils->downloadXlsx([
                         "sellerId",
                         "type",

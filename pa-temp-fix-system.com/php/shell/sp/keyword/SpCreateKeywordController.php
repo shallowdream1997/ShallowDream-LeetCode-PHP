@@ -12,7 +12,7 @@ class SpCreateKeywordController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/keyword");
     }
 
     private function log(string $string = "")
@@ -39,7 +39,7 @@ class SpCreateKeywordController
         $groupedData = [];
         $totalCount = 0;
         try {
-            $excelUtils->eachXlsxRow("./excel/{$file}", function ($item) use (&$groupedData, &$totalCount, $channel) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$groupedData, &$totalCount, $channel) {
                 $itemChannel = trim($item['channel'] ?? '');
                 $sellerId = trim($item['seller_id'] ?? '');
                 $adGroupId = trim(sprintf('%.0f', (float)($item['ad_group_id'] ?? 0)), "'");
@@ -184,7 +184,7 @@ class SpCreateKeywordController
 
         // 导出失败数据
         if (count($exportList) > 0) {
-            $excelUtils = new ExcelUtils("sp/");
+            $excelUtils = new ExcelUtils("sp/keyword/");
             $filePath = $excelUtils->downloadXlsx([
                 "seller_id",
                 "ad_group_id",

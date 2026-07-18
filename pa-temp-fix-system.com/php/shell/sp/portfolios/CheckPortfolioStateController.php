@@ -11,7 +11,7 @@ class CheckPortfolioStateController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/portfolios");
     }
 
     private function log(string $string = "")
@@ -25,7 +25,7 @@ class CheckPortfolioStateController
         $curlService = (new CurlService())->pro();
 
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/portfolios.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/portfolios.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -145,7 +145,7 @@ class CheckPortfolioStateController
 
         // 导出结果
         if (count($exportList) > 0) {
-            $excelUtils = new ExcelUtils("sp/");
+            $excelUtils = new ExcelUtils("sp/portfolios/");
             $filePath = $excelUtils->downloadXlsx([
                 "portfolioId",
                 "channel",
@@ -170,7 +170,7 @@ class CheckPortfolioStateController
         $curlService = (new CurlService())->pro();
 
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/portfolios.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/portfolios.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -328,7 +328,7 @@ class CheckPortfolioStateController
 
         // 导出更新结果
         if (count($updateResults) > 0) {
-            $excelUtils = new ExcelUtils("sp/");
+            $excelUtils = new ExcelUtils("sp/portfolios/");
             $filePath = $excelUtils->downloadXlsx([
                 'portfolioId',
                 'channel',

@@ -12,7 +12,7 @@ class SpPausedKeywordController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/keyword");
     }
 
     private function log(string $string = "")
@@ -50,7 +50,7 @@ class SpPausedKeywordController
         $spApi = new SpApi();
         $sellerKeywordIds = [];
         try {
-            $excelUtils->eachXlsxRow("./excel/keyword_Id关停清单_{$channel}_{$page}.xlsx", function ($item) use (&$sellerKeywordIds) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/keyword_Id关停清单_{$channel}_{$page}.xlsx", function ($item) use (&$sellerKeywordIds) {
                 $sellerId = trim($item['seller_id'] ?? '');
                 $keywordId = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? 0)), "'");
                 if ($sellerId !== "" && $keywordId !== "" && $keywordId !== "0") {
@@ -125,7 +125,7 @@ class SpPausedKeywordController
         }
 
         if (count($exportList) > 0) {
-            $excelUtils = new ExcelUtils("sp/");
+            $excelUtils = new ExcelUtils("sp/keyword/");
             $excelUtils->downloadXlsx([
                 "seller_id",
                 "keywordId",
@@ -153,7 +153,7 @@ class SpPausedKeywordController
         $sellerIds = [];
         $totalIdCount = 0;
         try {
-            $excelUtils->eachXlsxRow("./excel/{$file}", function ($item) use (&$sellerIds, &$totalIdCount, $channel) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$sellerIds, &$totalIdCount, $channel) {
                 $sellerId = trim($item['seller_id'] ?? '');
                 $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? 0)), "'");
                 if ($sellerId !== "" && $id !== "" && $id !== "0" && (empty($channel) || (isset($item['channel']) && $item['channel'] == $channel))) {
@@ -306,7 +306,7 @@ class SpPausedKeywordController
         }
 
         if (count($exportList) > 0) {
-            $excelUtils = new ExcelUtils("sp/");
+            $excelUtils = new ExcelUtils("sp/keyword/");
             $excelUtils->downloadXlsx([
                 "seller_id",
                 "id",
@@ -335,7 +335,7 @@ class SpPausedKeywordController
         $sellerIds = [];
         $totalIdCount = 0;
         try {
-            $excelUtils->eachXlsxRow("./excel/{$file}", function ($item) use (&$sellerIds, &$totalIdCount, $channel) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$sellerIds, &$totalIdCount, $channel) {
                 $sellerId = trim($item['seller_id'] ?? '');
                 $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? 0)), "'");
                 if ($sellerId !== "" && $id !== "" && $id !== "0" && (empty($channel) || (isset($item['channel']) && $item['channel'] == $channel))) {
@@ -453,7 +453,7 @@ class SpPausedKeywordController
 
             // 导出异常数据到Excel
             if (count($exportList) > 0) {
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/keyword/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "id",

@@ -13,7 +13,7 @@ class SpSyncPomsController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/common");
     }
 
     public function updatePaSpSellerRules()
@@ -21,7 +21,7 @@ class SpSyncPomsController
         $excelUtils = new ExcelUtils();
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("excel/PA-amazon广告自动化配置-20260416.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/PA-amazon广告自动化配置-20260416.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -292,7 +292,7 @@ JSON;
         $excelUtils = new ExcelUtils();
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("excel/产品清单车型库清单0427.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/产品清单车型库清单0427.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -398,7 +398,7 @@ JSON;
             $this->mongoDeleteSP($mustDeleteKeywordIds, "keyword");
 
             if ($exportList) {
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/common/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "adGroupId",
@@ -412,7 +412,7 @@ JSON;
             if ($exportList1) {
                 $this->log->log2("开始导出");
 
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/common/");
                 $filePath = $excelUtils->downloadXlsx([
                     "sellerId",
                     "type",

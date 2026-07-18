@@ -12,7 +12,7 @@ class SpPausedTargetController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/target");
     }
 
     private function log(string $string = "")
@@ -50,7 +50,7 @@ class SpPausedTargetController
         $spApi = new SpApi();
         $sellerTargetIds = [];
         try {
-            $excelUtils->eachXlsxRow("./excel/target_Id关停清单_{$channel}_{$page}.xlsx", function ($item) use (&$sellerTargetIds) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/target_Id关停清单_{$channel}_{$page}.xlsx", function ($item) use (&$sellerTargetIds) {
                 $sellerId = trim($item['seller_id'] ?? '');
                 $targetId = trim((string)($item['target_id'] ?? ''), "'");
                 if ($sellerId !== "" && $targetId !== "") {
@@ -123,7 +123,7 @@ class SpPausedTargetController
         }
 
         if (count($exportList) > 0) {
-            $excelUtils = new ExcelUtils("sp/");
+            $excelUtils = new ExcelUtils("sp/target/");
             $excelUtils->downloadXlsx([
                 "seller_id",
                 "targetId",

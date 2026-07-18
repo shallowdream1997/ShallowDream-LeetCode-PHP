@@ -20,7 +20,11 @@ class ExcelUtils
     public function __construct($downPath = "")
     {
         $downDefaultFile = __DIR__ . "/../export/uploads/";
-        $this->downPath = !empty($downPath) ? $downDefaultFile . $downPath : $downDefaultFile . "default/";
+        // SP脚本导出路径：sp/{type}/ → php/shell/sp/{type}/export/（自包含，便于独立）
+        if (!empty($downPath) && strpos($downPath, 'sp/') === 0) {
+            $downDefaultFile = __DIR__ . "/../shell/" . $downPath . "export/";
+        }
+        $this->downPath = !empty($downPath) ? $downDefaultFile : $downDefaultFile . "default/";
         $this->ensureExportDirectory();
     }
 
@@ -735,12 +739,6 @@ class ExcelUtils
 
     private function ensureExportDirectory()
     {
-        $exportRootDir = __DIR__ . "/../export/uploads";
-        if (!is_dir($exportRootDir)) {
-            mkdir($exportRootDir, 0777, true);
-        }
-        @chmod($exportRootDir, 0777);
-
         if (!is_dir($this->downPath)) {
             mkdir($this->downPath, 0777, true);
         }

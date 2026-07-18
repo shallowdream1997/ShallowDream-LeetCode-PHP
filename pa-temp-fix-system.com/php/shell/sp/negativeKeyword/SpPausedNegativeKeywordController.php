@@ -12,7 +12,7 @@ class SpPausedNegativeKeywordController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/negativeKeyword");
     }
 
     private function log(string $string = "")
@@ -123,7 +123,7 @@ class SpPausedNegativeKeywordController
             }
 
             if (count($exportList) > 0){
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/negativeKeyword/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "keywordId",

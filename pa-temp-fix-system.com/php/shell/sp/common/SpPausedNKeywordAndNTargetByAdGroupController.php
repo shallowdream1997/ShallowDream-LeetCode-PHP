@@ -12,7 +12,7 @@ class SpPausedNKeywordAndNTargetByAdGroupController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/common");
     }
 
     private function log(string $string = "")
@@ -150,7 +150,7 @@ class SpPausedNKeywordAndNTargetByAdGroupController
 
 
             if (count($exportList) > 0){
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/common/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "campaignId",
@@ -265,7 +265,7 @@ class SpPausedNKeywordAndNTargetByAdGroupController
 
 
             if (count($exportList) > 0){
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/common/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "keywordId",

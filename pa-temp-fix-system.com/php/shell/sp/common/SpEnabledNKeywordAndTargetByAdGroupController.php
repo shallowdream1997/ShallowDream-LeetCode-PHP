@@ -25,7 +25,7 @@ class SpEnabledNKeywordAndTargetByAdGroupController
     public function __construct()
     {
         $this->bootstrapRuntimeSettings();
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/common");
         $this->spApi = new SpApi();
         $this->excelUtils = new ExcelUtils();
         $this->redis = new RedisService();
@@ -110,7 +110,7 @@ class SpEnabledNKeywordAndTargetByAdGroupController
         }
 
         if (count($exportList) > 0) {
-            $exportExcel = new ExcelUtils("sp/");
+            $exportExcel = new ExcelUtils("sp/common/");
             $exportExcel->downloadXlsx([
                 "type",
                 "channel",

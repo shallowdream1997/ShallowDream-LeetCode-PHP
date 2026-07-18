@@ -12,7 +12,7 @@ class SpInitSellerController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/seller");
     }
 
     private function log(string $string = "")

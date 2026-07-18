@@ -14,7 +14,7 @@ class SpEnabledKeywordController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/keyword");
         $this->redis = new RedisService();
     }
 
@@ -29,7 +29,7 @@ class SpEnabledKeywordController
 
         $spApi = new SpApi();
         try {
-            $contentList = $excelUtils->getXlsxData("./excel/OE广告投放_1.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/OE广告投放_1.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }

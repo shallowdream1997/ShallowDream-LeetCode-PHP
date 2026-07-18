@@ -12,7 +12,7 @@ class SpPausedNegativeTargetController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/negativeTarget");
     }
 
     private function log(string $string = "")
@@ -123,7 +123,7 @@ class SpPausedNegativeTargetController
             }
 
             if (count($exportList) > 0){
-                $excelUtils = new ExcelUtils("sp/");
+                $excelUtils = new ExcelUtils("sp/negativeTarget/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "targetId",

@@ -12,7 +12,7 @@ class SpEnabledCampaignController
 
     public function __construct()
     {
-        $this->log = new MyLogger("sp");
+        $this->log = new MyLogger("sp/common");
     }
 
     private function log(string $string = "")
@@ -26,7 +26,7 @@ class SpEnabledCampaignController
         $spApi = new SpApi();
 
         try {
-            $contentList = $excelUtils->getXlsxData("excel/20260418补充asin广告.xlsx");
+            $contentList = $excelUtils->getXlsxData(__DIR__."/excel/20260418补充asin广告.xlsx");
         } catch (Exception $e) {
             die($e->getLine() . " : " . $e->getMessage());
         }
@@ -66,7 +66,7 @@ class SpEnabledCampaignController
                      "归档重开_2"
                  ] as $title) {
             try {
-                $contentList = $excelUtils->getXlsxData("excel/{$title}.xlsx");
+                $contentList = $excelUtils->getXlsxData(__DIR__."/excel/{$title}.xlsx");
             } catch (Exception $e) {
                 die($e->getLine() . " : " . $e->getMessage());
             }

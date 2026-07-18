@@ -16,6 +16,7 @@ class MyLogger {
     private $logFile;
     public function __construct($logFile = ""){
         $logDefaultFile = dirname(__FILE__) . "/../../php/log/default/".date('Ymd').".log";
+        // 支持 "/" 分隔的子目录路径，如 "sp/keyword" → php/log/sp/keyword_YYYYMMDD.log
         $this->logFile = !empty($logFile) ? dirname(__FILE__) . "/../../php/log/".$logFile."_".date('Ymd').".log" : $logDefaultFile;
         $this->ensureLogDirectory();
     }
@@ -26,13 +27,6 @@ class MyLogger {
     }
 
     public function log2($message){
-        // 创建日志器
-//        $logger = new Logger('FixLogger');
-//
-//        $logger->pushHandler(new StreamHandler($this->logFile, Logger::INFO));
-//        echo $message."\n";
-//        $logger->info($message);
-
         file_put_contents($this->logFile, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL, FILE_APPEND);
         error_log($message);
     }
