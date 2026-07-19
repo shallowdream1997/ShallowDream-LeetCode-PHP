@@ -33,7 +33,7 @@ class CrudService
         $this->redis = new RedisService();
     }
 
-    public function getModule($modlue)
+    public function getModule($module)
     {
         switch ($modlue) {
             case "wms":
@@ -72,6 +72,7 @@ class CrudService
         $curlService = new CurlService();
         $resp = DataUtils::getResultData($curlService->$env()->$port()->delete($model, $id));
         $this->log("删除{$model}，{$id}返回结果：" . json_encode($resp, JSON_UNESCAPED_UNICODE));
+        return $resp;
     }
 
     /**

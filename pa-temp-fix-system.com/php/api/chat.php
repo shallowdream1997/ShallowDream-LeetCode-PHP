@@ -49,21 +49,33 @@ echo json_encode($result, JSON_UNESCAPED_UNICODE);
 
 function saveChatSession($sessionId, $state)
 {
-    $redis = new RedisService();
-    $redis->set(CHAT_SESSION_PREFIX . $sessionId, json_encode($state), CHAT_SESSION_TTL);
+    try {
+        $redis = new RedisService();
+        $redis->set(CHAT_SESSION_PREFIX . $sessionId, json_encode($state), CHAT_SESSION_TTL);
+    } catch (Exception $e) {
+        // Redis 不可用时静默失败，不中断服务
+    }
 }
 
 function loadChatSession($sessionId)
 {
-    $redis = new RedisService();
-    $data = $redis->get(CHAT_SESSION_PREFIX . $sessionId);
-    return $data ? json_decode($data, true) : null;
+    try {
+        $redis = new RedisService();
+        $data = $redis->get(CHAT_SESSION_PREFIX . $sessionId);
+        return $data ? json_decode($data, true) : null;
+    } catch (Exception $e) {
+        return null;
+    }
 }
 
 function clearChatSession($sessionId)
 {
-    $redis = new RedisService();
-    $redis->del(CHAT_SESSION_PREFIX . $sessionId);
+    try {
+        $redis = new RedisService();
+        $redis->del(CHAT_SESSION_PREFIX . $sessionId);
+    } catch (Exception $e) {
+        // Redis 不可用时静默失败
+    }
 }
 
 // ========== 指令解析 ==========
@@ -477,10 +489,30 @@ function handleRun($scriptName, $argsStr, $env, $sessionId = null)
     }
 
     // 构造 $_SERVER['argv'] 和 $_REQUEST
+    // 需要根据脚本的参数解析模式来构造 argv：
+    // 模式A（ExplainArgv）：php script.php -key value -key2 value2
+    // 模式B（$argv[1]选方法）：php script.php methodName
+    // 模式C（位置参数）：php script.php value1 value2
+    $fileContent = @file_get_contents($filePath);
     $argv = ['php'];
-    foreach ($args as $key => $value) {
-        $argv[] = "-{$key}";
-        $argv[] = "{$value}";
+    if ($fileContent && preg_match('/\$argv\[1\]\s*\?\s*/', $fileContent) && !preg_match('/ExplainArgv/', $fileContent)) {
+        // 模式B：$argv[1] 作为方法名（sync 拆分脚本、ProductSkuController）
+        // 第一个参数是方法名，其余作为位置参数
+        $methodArg = isset($args['method']) ? $args['method'] : '';
+        unset($args['method']);
+        if ($methodArg) {
+            $argv[] = $methodArg;
+        }
+        // 其余参数追加为位置参数
+        foreach ($args as $key => $value) {
+            $argv[] = "{$key}={$value}";
+        }
+    } else {
+        // 模式A/C：ExplainArgv 格式 -key value
+        foreach ($args as $key => $value) {
+            $argv[] = "-{$key}";
+            $argv[] = "{$value}";
+        }
     }
     $_SERVER['argv'] = $argv;
     $_REQUEST = array_merge($_REQUEST, $args);

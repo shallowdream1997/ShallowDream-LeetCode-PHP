@@ -160,7 +160,12 @@ class SpUpdateAdGroupController
 }
 
 $con = new SpUpdateAdGroupController();
-$sellerId = $argv['1'];
+$sellerId = isset($argv[1]) ? $argv[1] : '';
+if (empty($sellerId)) {
+    echo "用法: php SpUpdateAdGroupController.php <sellerId>\n";
+    echo "示例: php SpUpdateAdGroupController.php amazon_us_ac1\n";
+    exit(1);
+}
 //foreach ([
 //             "amazon_ca_ac1",
 //             "amazon_ca_hero",

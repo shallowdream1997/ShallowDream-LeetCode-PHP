@@ -66,3 +66,19 @@ class SyncJob1Controller
     }
 
 }
+
+// === 入口 ===
+$method = isset($argv[1]) ? $argv[1] : 'requestPortfolio';
+$controller = new SyncJob1Controller();
+if (method_exists($controller, $method)) {
+    $controller->$method();
+} else {
+    echo "可用方法：\n";
+    $ref = new ReflectionClass($controller);
+    foreach ($ref->getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+        $name = $m->getName();
+        if (strpos($name, '__') !== 0) {
+            echo "  $name\n";
+        }
+    }
+}

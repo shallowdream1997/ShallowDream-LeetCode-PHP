@@ -90,7 +90,7 @@ class SpEnabledKeywordController
 $parameters = DataUtils::ExplainArgv(@$argv, array());
 $params = (count(@$argv) > 1) ? $parameters : $_REQUEST;
 $channel = "";
-if (isset($params['channel']) && trim($params['channel'] != '')) {
+if (isset($params['channel']) && trim($params['channel']) != '') {
     $channel = $params['channel'];
 }
 $con = new SpEnabledKeywordController();

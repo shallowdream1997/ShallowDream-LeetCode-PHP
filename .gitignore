@@ -1,6 +1,24 @@
 /vendor/
-/php/log/
-/php/export/
 .DS_Store
 composer.phar
 composer-setup.php
+
+# 备份文件
+pa-temp-fix-system.com/beifen/
+
+# 导出文件（整个目录）
+pa-temp-fix-system.com/php/export/
+
+# SP脚本导出目录
+pa-temp-fix-system.com/php/shell/sp/keyword/export/
+pa-temp-fix-system.com/php/shell/sp/target/export/
+pa-temp-fix-system.com/php/shell/sp/campaign/export/
+pa-temp-fix-system.com/php/shell/sp/common/export/
+pa-temp-fix-system.com/php/shell/sp/adgroup/export/
+pa-temp-fix-system.com/php/shell/sp/product/export/
+
+# 日志文件
+pa-temp-fix-system.com/php/log/
+
+# IDE
+.idea/

@@ -203,7 +203,7 @@ class SyncProductSku
 $parameters = DataUtils::ExplainArgv(@$argv, array());
 $params = (count(@$argv) > 1) ? $parameters : $_REQUEST;
 $skuIdList = "";
-if (isset($params['skuIdList']) && trim($params['skuIdList'] != '')) {
+if (isset($params['skuIdList']) && trim($params['skuIdList']) != '') {
     $skuIdList = $params['skuIdList'];
 }
 $curlController = new SyncProductSku();
