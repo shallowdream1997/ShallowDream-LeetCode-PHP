@@ -1,10 +1,6 @@
 <?php
-require_once(dirname(__FILE__) . "/../../../../php/requiredfile/requiredfile.php");
-require_once(dirname(__FILE__) . "/../../../../php/class/Logger.php");
-require_once(dirname(__FILE__) . "/../../../../php/utils/DataUtils.php");
-require_once(dirname(__FILE__) . "/../../../../php/curl/CurlService.php");
-require_once(dirname(__FILE__) . "/../../../../php/utils/RequestUtils.php");
-require_once(dirname(__FILE__) . "/../SpApi.php");
+
+require_once dirname(__FILE__) . '/../../../../php/bootstrap.php';
 
 class SpUpdateCampaignController
 {

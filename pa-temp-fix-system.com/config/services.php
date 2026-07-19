@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * 微服务地址配置
+ * 按 environment → service 映射
+ * 从 CurlService 硬编码提取，便于维护
+ */
+return [
+    'local' => [
+        's3015' => 'http://172.16.29.23:3015',
+        's3047' => 'http://172.16.29.23:3047',
+        's3044' => 'http://172.16.29.23:3044',
+        's3009' => 'http://172.16.29.23:3009',
+        's3023' => 'http://172.16.29.23:3023',
+        's3013' => 'http://172.16.29.23:3013',
+        'phphk' => 'http://172.16.29.23:8000',
+        'phpali' => 'http://172.16.29.23:8000',
+        'ux168' => 'http://172.16.29.23:3013',
+        's3010' => 'http://172.16.29.23:3010',
+        's3016' => 'http://172.16.29.23:3016',
+        'gateway' => 'http://localhost:9021',
+    ],
+    'test' => [
+        's3015' => 'http://172.16.10.62:30015',
+        's3047' => 'http://172.16.10.62:30047',
+        's3044' => 'http://172.16.10.62:30044',
+        's3009' => 'http://172.16.10.62:30009',
+        's3023' => 'http://172.16.10.62:30023',
+        's3013' => 'http://172.16.10.62:30013',
+        'phphk' => 'http://172.16.10.40:8000',
+        'phpali' => 'http://172.16.10.40:8000',
+        'ux168' => 'http://172.16.10.62:30013',
+        's3010' => 'http://172.16.10.62:30010',
+        's3016' => 'http://172.16.10.62:30016',
+        'gateway' => 'https://gateway-test.ux168.cn',
+        'aiCategoryApi' => 'http://172.16.75.238:12121',
+        'smsSupport' => 'http://platform-sms-support-application.all-test.svc.cluster.local:9021',
+    ],
+    'uat' => [
+        's3015' => 'http://172.16.11.221:30015',
+        's3047' => 'http://172.16.11.221:30047',
+        's3044' => 'http://172.16.11.221:30044',
+        's3009' => 'http://172.16.11.221:30009',
+        's3023' => 'http://172.16.11.221:30023',
+        's3013' => 'http://172.16.11.221:30013',
+        'phphk' => 'http://172.16.10.66:8000',
+        'phpali' => 'http://172.16.10.66:8000',
+        'ux168' => 'http://172.16.11.221:30013',
+        's3010' => 'http://172.16.11.221:30010',
+        's3016' => 'http://172.16.11.221:30016',
+        'gateway' => 'https://gateway-uat.ux168.cn',
+        'smsSupport' => 'http://platform-sms-support-application.all-uat.svc.cluster.local:9021',
+    ],
+    'pro' => [
+        's3015' => 'https://master-script-nodejs-poms-list-manage.ux168.cn',
+        's3047' => 'https://master-nodejs-poms-big-data-nest.ux168.cn',
+        's3044' => 'https://master-nodejs-poms-list-nest.ux168.cn',
+        's3009' => 'https://master-nodejs-poms.ux168.cn',
+        's3023' => 'https://master-nodejs-poms-sold.ux168.cn',
+        's3013' => 'http://master.nodejs.168.ux168.cn:60013/',
+        'phphk' => 'https://hk-alivpc-slim-poms.ux168.cn',
+        'phpali' => 'https://alivpc-slim-poms.ux168.cn',
+        'ux168' => 'https://master-nodejs-168.ux168.cn',
+        's3010' => 'https://master-nodejs-cets.ux168.cn',
+        's3035' => 'https://master-nodejs-poms-log.ux168.cn',
+        's3016' => 'http://master.nodejs.poms.qms.ux168.cn:60016',
+        'gateway' => 'https://gateway.ux168.cn',
+        'aiCategoryApi' => 'https://ai-category-recommend.ux168.cn',
+        'smsSupport' => 'https://platform-sms-support-application.ux168.cn',
+    ],
+];

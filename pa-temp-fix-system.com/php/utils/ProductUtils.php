@@ -1,6 +1,4 @@
 <?php
-require_once(dirname(__FILE__) ."/../../php/class/Logger.php");
-
 /**
  * 产品表处理的工具类
  * Class ProductUtils

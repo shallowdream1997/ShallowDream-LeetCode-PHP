@@ -1,6 +1,6 @@
 <?php
-require_once(dirname(__FILE__) ."/../../php/requiredfile/requiredChorm.php");
-require_once(dirname(__FILE__) . "/../../php/constant/Constant.php");
+
+require_once dirname(__FILE__) . '/../../php/bootstrap.php';
 class Calc
 {
     public function calcSalary($actualHour, $otHour,$otOut8Count)

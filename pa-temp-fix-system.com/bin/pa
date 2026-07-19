@@ -1,0 +1,161 @@
+#!/usr/bin/env php
+<?php
+/**
+ * PA Shell CLI 统一入口
+ *
+ * 用法：
+ *   php bin/pa list                    # 列出所有可用脚本
+ *   php bin/pa run <script> [args...]  # 执行指定脚本
+ *   php bin/pa help                    # 显示帮助
+ *
+ * 示例：
+ *   php bin/pa list
+ *   php bin/pa run sp.keyword.pause
+ *   php bin/pa run sp.campaign.budget --env=pro
+ *   php bin/pa run calc
+ */
+
+// 加载 bootstrap
+require_once dirname(__FILE__) . '/../php/bootstrap.php';
+
+$scriptRegistry = buildScriptRegistry();
+
+$argv = $_SERVER['argv'];
+array_shift($argv); // 移除 bin/pa 自身
+
+$command = $argv[0] ?? 'help';
+
+switch ($command) {
+    case 'list':
+    case 'ls':
+        echo "可用脚本列表：\n\n";
+        $groups = [];
+        foreach ($scriptRegistry as $name => $path) {
+            $parts = explode('.', $name);
+            $group = count($parts) > 1 ? $parts[0] : 'other';
+            $groups[$group][] = ['name' => $name, 'path' => $path];
+        }
+        foreach ($groups as $group => $scripts) {
+            echo "【{$group}】\n";
+            foreach ($scripts as $s) {
+                $relPath = str_replace(dirname(__FILE__) . '/../', '', $s['path']);
+                echo "  " . str_pad($s['name'], 45) . " → " . $relPath . "\n";
+            }
+            echo "\n";
+        }
+        echo "共 " . count($scriptRegistry) . " 个脚本\n";
+        break;
+
+    case 'run':
+        $scriptName = $argv[1] ?? null;
+        if (!$scriptName) {
+            echo "错误：请指定脚本名称。使用 `php bin/pa list` 查看可用脚本。\n";
+            exit(1);
+        }
+        if (!isset($scriptRegistry[$scriptName])) {
+            // 模糊匹配
+            $matches = [];
+            foreach ($scriptRegistry as $name => $path) {
+                if (strpos($name, $scriptName) !== false) {
+                    $matches[$name] = $path;
+                }
+            }
+            if (count($matches) === 1) {
+                $scriptName = array_key_first($matches);
+            } elseif (count($matches) > 1) {
+                echo "错误：'{$scriptName}' 匹配到多个脚本：\n";
+                foreach ($matches as $name => $path) {
+                    echo "  - {$name}\n";
+                }
+                echo "请使用更精确的名称。\n";
+                exit(1);
+            } else {
+                echo "错误：脚本 '{$scriptName}' 不存在。使用 `php bin/pa list` 查看可用脚本。\n";
+                exit(1);
+            }
+        }
+        // 传递剩余参数
+        $scriptArgs = array_slice($argv, 2);
+        $_SERVER['argv'] = array_merge(['php'], $scriptArgs);
+        echo "执行脚本：{$scriptName}\n";
+        echo "文件路径：{$scriptRegistry[$scriptName]}\n";
+        echo "参数：" . (empty($scriptArgs) ? '无' : implode(' ', $scriptArgs)) . "\n";
+        echo str_repeat('-', 60) . "\n";
+        require $scriptRegistry[$scriptName];
+        break;
+
+    case 'serve':
+        $host = $argv[1] ?? '0.0.0.0';
+        $port = $argv[2] ?? '9090';
+        $docRoot = dirname(__FILE__) . '/..';
+        $router = $docRoot . '/php/api/router.php';
+        echo "PA Chat Server 启动: http://{$host}:{$port}\n";
+        echo "聊天界面: http://{$host}:{$port}/template/chat.html\n";
+        echo "API 文档:\n";
+        echo "  GET  /api/scripts         脚本列表\n";
+        echo "  GET  /api/scripts?q=关键词 搜索脚本\n";
+        echo "  POST /api/chat            聊天指令\n";
+        echo "  POST /api/proxy           微服务代理\n";
+        echo "按 Ctrl+C 停止\n\n";
+        passthru(escapeshellcmd("php -d pcre.jit=0 -S {$host}:{$port} {$router}"));
+        break;
+
+    case 'help':
+    default:
+        echo "PA Shell CLI - Amazon SP广告运维工具\n\n";
+        echo "用法：\n";
+        echo "  php bin/pa list                    列出所有脚本\n";
+        echo "  php bin/pa run <script> [args...]  执行脚本\n";
+        echo "  php bin/pa serve [host] [port]     启动Web聊天服务\n";
+        echo "  php bin/pa help                    显示帮助\n\n";
+        echo "脚本命名规则：\n";
+        echo "  - 顶层脚本：calc, shell, sync 等\n";
+        echo "  - SP模块脚本：sp.keyword.pause, sp.campaign.budget 等\n";
+        break;
+}
+
+/**
+ * 构建脚本注册表
+ * @return array 短名 → 文件路径
+ */
+function buildScriptRegistry()
+{
+    $baseDir = dirname(__FILE__) . '/../php/shell';
+    $registry = [];
+
+    // 扫描 shell/ 下的直接脚本（如 Calc.php）
+    foreach (glob($baseDir . '/*.php') as $file) {
+        $name = basename($file, '.php');
+        $registry[strtolower($name)] = $file;
+    }
+
+    // 扫描 shell/ 下的子目录脚本（1层：ebay/, fix/, gateway/, product/, sync/）
+    foreach (glob($baseDir . '/*/*.php') as $file) {
+        $group = basename(dirname($file));
+        $className = basename($file, '.php');
+        // 生成短名：ebay.del_ebay_bill_round_controller → ebay.del_ebay_bill_round
+        $shortName = preg_replace('/Controller$/', '', $className);
+        $shortName = preg_replace('/([a-z])([A-Z])/', '$1_$2', $shortName);
+        $registry[strtolower($group) . '.' . strtolower($shortName)] = $file;
+    }
+
+    // 扫描 shell/sp/ 下的直接脚本（1层）
+    foreach (glob($baseDir . '/sp/*.php') as $file) {
+        $className = basename($file, '.php');
+        $shortName = preg_replace('/Controller$/', '', $className);
+        $shortName = preg_replace('/([a-z])([A-Z])/', '$1_$2', $shortName);
+        $registry['sp.' . strtolower($shortName)] = $file;
+    }
+
+    // 扫描 shell/sp/ 下的子模块脚本（2层：sp/keyword/, sp/campaign/ 等）
+    foreach (glob($baseDir . '/sp/*/*.php') as $file) {
+        $type = basename(dirname($file));
+        $className = basename($file, '.php');
+        $shortName = preg_replace('/^Sp|Controller$/', '', $className);
+        $shortName = preg_replace('/([a-z])([A-Z])/', '$1_$2', $shortName);
+        $registry['sp.' . strtolower($type) . '.' . strtolower($shortName)] = $file;
+    }
+
+    ksort($registry);
+    return $registry;
+}

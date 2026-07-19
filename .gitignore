@@ -1,1 +1,6 @@
-/log/
+/vendor/
+/php/log/
+/php/export/
+.DS_Store
+composer.phar
+composer-setup.php

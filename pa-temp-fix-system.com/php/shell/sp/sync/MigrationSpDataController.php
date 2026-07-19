@@ -1,5 +1,6 @@
 <?php
-require_once dirname(__FILE__) . '/../../../requiredfile/requiredChorm.php';
+
+require_once dirname(__FILE__) . '/../../../../php/bootstrap.php';
 
 /**
  * 广告回迁文件校验与提交控制器

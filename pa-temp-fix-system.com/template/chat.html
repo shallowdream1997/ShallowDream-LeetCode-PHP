@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PA Shell Chat - 运维助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --pa-primary: #4f46e5;
+            --pa-primary-light: #6366f1;
+            --pa-bg: #f8fafc;
+            --pa-chat-bg: #ffffff;
+            --pa-user-bubble: #4f46e5;
+            --pa-bot-bubble: #f1f5f9;
+            --pa-border: #e2e8f0;
+            --pa-success: #10b981;
+            --pa-warning: #f59e0b;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--pa-bg);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* 顶部导航 */
+        .top-bar {
+            background: linear-gradient(135deg, var(--pa-primary), var(--pa-primary-light));
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(79,70,229,0.3);
+            z-index: 10;
+        }
+        .top-bar h5 { margin: 0; font-weight: 600; }
+        .top-bar .env-select {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 13px;
+        }
+        .top-bar .env-select option { color: #333; }
+
+        /* 聊天区域 */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .chat-msg {
+            display: flex;
+            margin-bottom: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-msg.user { justify-content: flex-end; }
+        .chat-msg.bot { justify-content: flex-start; }
+
+        .msg-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .chat-msg.user .msg-avatar { background: var(--pa-user-bubble); color: white; margin-left: 10px; }
+        .chat-msg.bot .msg-avatar { background: #e0e7ff; color: var(--pa-primary); margin-right: 10px; }
+
+        .msg-bubble {
+            max-width: 75%;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+        .chat-msg.user .msg-bubble {
+            background: var(--pa-user-bubble);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-msg.bot .msg-bubble {
+            background: var(--pa-bot-bubble);
+            color: #1e293b;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* 脚本卡片 */
+        .script-card {
+            background: white;
+            border: 1px solid var(--pa-border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 6px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+        .script-card:hover {
+            border-color: var(--pa-primary);
+            box-shadow: 0 2px 8px rgba(79,70,229,0.1);
+        }
+        .script-card .script-name {
+            font-weight: 600;
+            color: var(--pa-primary);
+            font-size: 13px;
+        }
+        .script-card .script-desc {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        .script-card .btn-exec {
+            font-size: 12px;
+            padding: 3px 12px;
+            border-radius: 4px;
+        }
+
+        /* 参数收集卡片 */
+        .param-card {
+            background: white;
+            border: 2px solid var(--pa-primary);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 8px 0;
+        }
+        .param-card .param-header {
+            font-weight: 600;
+            color: var(--pa-primary);
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .param-card .param-prompt {
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .param-card .param-prompt strong {
+            color: var(--pa-primary);
+        }
+        .param-required {
+            color: #ef4444;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .param-optional {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        /* 参数选项按钮 */
+        .param-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 8px 0;
+        }
+        .param-option-btn {
+            font-size: 12px;
+            padding: 5px 12px;
+            border-radius: 16px;
+            border: 1px solid var(--pa-primary);
+            background: white;
+            color: var(--pa-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .param-option-btn:hover {
+            background: var(--pa-primary);
+            color: white;
+        }
+
+        /* 参数进度条 */
+        .param-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .param-progress-bar {
+            flex: 1;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .param-progress-fill {
+            height: 100%;
+            background: var(--pa-primary);
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        /* 已收集参数标签 */
+        .param-collected {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin: 6px 0;
+        }
+        .param-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* 参数操作按钮 */
+        .param-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .param-actions .btn-skip {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--pa-border);
+            background: white;
+            color: #64748b;
+        }
+        .param-actions .btn-skip:hover {
+            background: #f1f5f9;
+        }
+        .param-actions .btn-cancel-param {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1px solid #fecaca;
+            background: white;
+            color: #ef4444;
+        }
+        .param-actions .btn-cancel-param:hover {
+            background: #fef2f2;
+        }
+
+        /* 输出区域 */
+        .output-box {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 8px 0;
+        }
+
+        /* 底部输入 */
+        .input-bar {
+            background: white;
+            border-top: 1px solid var(--pa-border);
+            padding: 12px 20px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .input-bar .input-group {
+            border: 2px solid var(--pa-border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .input-bar .input-group:focus-within {
+            border-color: var(--pa-primary);
+        }
+        .input-bar .form-control {
+            border: none;
+            padding: 10px 16px;
+            font-size: 14px;
+        }
+        .input-bar .form-control:focus {
+            box-shadow: none;
+        }
+        .input-bar .btn-send {
+            background: var(--pa-primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        .input-bar .btn-send:hover {
+            background: var(--pa-primary-light);
+        }
+        .input-bar .btn-send:disabled {
+            opacity: 0.5;
+        }
+
+        /* 快捷按钮 */
+        .quick-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .quick-btn {
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 16px;
+            border: 1px solid var(--pa-border);
+            background: white;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quick-btn:hover {
+            border-color: var(--pa-primary);
+            color: var(--pa-primary);
+            background: #eef2ff;
+        }
+
+        /* 加载动画 */
+        .typing-indicator {
+            display: inline-flex;
+            gap: 4px;
+            padding: 4px 0;
+        }
+        .typing-indicator span {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #94a3b8;
+            animation: typing 1.4s infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+
+        /* API 结果 */
+        .api-result {
+            background: #f8fafc;
+            border: 1px solid var(--pa-border);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .api-result pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* 提示气泡 */
+        .hint-text {
+            color: #64748b;
+            font-size: 12px;
+            font-style: italic;
+            margin-top: 4px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .msg-bubble { max-width: 85%; }
+            .chat-container { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<div class="top-bar">
+    <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-robot" style="font-size:22px"></i>
+        <h5>PA Shell Chat</h5>
+        <span class="badge bg-light text-dark" style="font-size:11px" id="statusBadge">就绪</span>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <span style="font-size:12px;opacity:0.8">环境</span>
+        <select class="env-select" id="envSelect">
+            <option value="pro" selected>生产 (pro)</option>
+            <option value="test">测试 (test)</option>
+            <option value="uat">UAT</option>
+            <option value="local">本地 (local)</option>
+        </select>
+    </div>
+</div>
+
+<!-- 聊天区域 -->
+<div class="chat-container" id="chatContainer">
+    <!-- 消息会动态插入 -->
+</div>
+
+<!-- 底部输入 -->
+<div class="input-bar">
+    <div class="quick-actions" id="quickActions">
+        <button class="quick-btn" onclick="sendMessage('list')">📋 所有脚本</button>
+        <button class="quick-btn" onclick="sendMessage('搜索 暂停')">⏸ 暂停</button>
+        <button class="quick-btn" onclick="sendMessage('搜索 预算')">💰 预算</button>
+        <button class="quick-btn" onclick="sendMessage('搜索 关键词')">🔑 关键词</button>
+        <button class="quick-btn" onclick="sendMessage('搜索 同步')">🔄 同步</button>
+        <button class="quick-btn" onclick="sendMessage('搜索 导出')">📤 导出</button>
+        <button class="quick-btn" onclick="sendMessage('help')">❓ 帮助</button>
+    </div>
+    <div class="input-group">
+        <input type="text" class="form-control" id="msgInput"
+               placeholder="输入指令或描述你想做什么... (如: 暂停 amazon_us 关键词)"
+               onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="btn btn-send" id="sendBtn" onclick="sendMsg()">
+            <i class="bi bi-send-fill"></i> 发送
+        </button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+<script>
+// ========== 全局状态 ==========
+var chatMessages = [];
+var isLoading = false;
+var isCollectingParams = false; // 是否正在收集参数
+
+// ========== Session ID ==========
+var sessionId = localStorage.getItem('pa_chat_session_id');
+if (!sessionId) {
+    sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('pa_chat_session_id', sessionId);
+}
+
+// ========== 初始化 ==========
+window.onload = function() {
+    addBotMessage(
+        '👋 你好！我是 PA 运维助手，可以帮你：\n\n' +
+        '• 🔍 **搜索脚本** — 输入「搜索 暂停」「搜索 预算」\n' +
+        '• ▶️ **执行脚本** — 输入「执行 sp.keyword.paused_keyword」\n' +
+        '• 💬 **自然语言** — 描述你想做什么，如「暂停 amazon_us 关键词」\n' +
+        '• 🌐 **调用API** — 输入「api GET s3015 pa_products/queryPage limit=10」\n\n' +
+        '✨ 执行脚本时，缺少的参数会逐步询问，你可以逐个填写！\n\n' +
+        '试试下方的快捷按钮开始吧！'
+    );
+    document.getElementById('msgInput').focus();
+};
+
+// ========== 消息操作 ==========
+function addBotMessage(text, extra) {
+    chatMessages.push({
+        role: 'bot',
+        text: text,
+        extra: extra || null,
+        time: new Date().toLocaleTimeString()
+    });
+    renderMessages();
+}
+
+function addUserMessage(text) {
+    chatMessages.push({
+        role: 'user',
+        text: text,
+        time: new Date().toLocaleTimeString()
+    });
+    renderMessages();
+}
+
+function addLoadingMessage() {
+    chatMessages.push({
+        role: 'bot',
+        text: '__loading__',
+        time: new Date().toLocaleTimeString()
+    });
+    renderMessages();
+}
+
+function removeLoadingMessage() {
+    chatMessages = chatMessages.filter(function(m) { return m.text !== '__loading__'; });
+    renderMessages();
+}
+
+function renderMessages() {
+    var container = document.getElementById('chatContainer');
+    var html = '';
+    for (var i = 0; i < chatMessages.length; i++) {
+        var msg = chatMessages[i];
+        if (msg.role === 'user') {
+            html += '<div class="chat-msg user">';
+            html += '<div class="msg-bubble">' + escapeHtml(msg.text) + '</div>';
+            html += '<div class="msg-avatar"><i class="bi bi-person-fill"></i></div>';
+            html += '</div>';
+        } else {
+            html += '<div class="chat-msg bot">';
+            html += '<div class="msg-avatar"><i class="bi bi-robot"></i></div>';
+            html += '<div class="msg-bubble">';
+            if (msg.text === '__loading__') {
+                html += '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+            } else {
+                html += formatBotMessage(msg.text, msg.extra);
+            }
+            html += '</div></div>';
+        }
+    }
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
+}
+
+function formatBotMessage(text, extra) {
+    // 简单的 Markdown 格式化
+    var formatted = escapeHtml(text);
+    // **bold**
+    formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // 换行
+    formatted = formatted.replace(/\n/g, '<br>');
+
+    // 附加内容
+    if (extra) {
+        if (extra.type === 'script_list' || extra.type === 'search_result' || extra.type === 'match_result') {
+            formatted += renderScriptCards(extra);
+        }
+        if (extra.type === 'ask_param') {
+            formatted += renderParamCard(extra);
+        }
+        if (extra.type === 'script_result') {
+            formatted += renderOutputBox(extra.output, extra.elapsed);
+        }
+        if (extra.type === 'api_result') {
+            formatted += renderApiResult(extra.result);
+        }
+        if (extra.type === 'cancelled') {
+            isCollectingParams = false;
+        }
+    }
+    return formatted;
+}
+
+function renderScriptCards(data) {
+    var scripts = data.scripts || data.matched || [];
+    if (!scripts || scripts.length === 0) return '';
+
+    var html = '<div style="margin-top:8px">';
+    for (var i = 0; i < scripts.length; i++) {
+        var s = scripts[i];
+        var name = s.name;
+        var desc = s.description || '';
+        html += '<div class="script-card">';
+        html += '<div>';
+        html += '<div class="script-name">' + escapeHtml(name) + '</div>';
+        if (desc) html += '<div class="script-desc">' + escapeHtml(desc) + '</div>';
+        html += '</div>';
+        html += '<button class="btn btn-sm btn-outline-primary btn-exec" onclick="sendMessage(\'执行 ' + name + '\')">执行</button>';
+        html += '</div>';
+    }
+    html += '</div>';
+    return html;
+}
+
+function renderParamCard(data) {
+    isCollectingParams = true;
+    var paramDef = data.paramDef || {};
+    var collected = data.collected || {};
+    var missing = data.missing || [];
+    var progress = data.progress || {};
+    var script = data.script || '';
+    var method = data.method || 'default';
+    var paramName = data.param || '';
+
+    var html = '<div class="param-card">';
+
+    // 进度条
+    if (progress.total) {
+        var pct = Math.round((progress.collected / progress.total) * 100);
+        html += '<div class="param-progress">';
+        html += '<span>参数 ' + progress.collected + '/' + progress.total + '</span>';
+        html += '<div class="param-progress-bar"><div class="param-progress-fill" style="width:' + pct + '%"></div></div>';
+        html += '</div>';
+    }
+
+    // 参数类型和选项
+    if (paramDef.type === 'select' && paramDef.options) {
+        html += '<div class="param-options">';
+        for (var val in paramDef.options) {
+            if (paramDef.options.hasOwnProperty(val)) {
+                var label = paramDef.options[val];
+                html += '<button class="param-option-btn" onclick="sendParamValue(\'' + escapeHtml(val) + '\')">';
+                html += escapeHtml(val) + ' — ' + escapeHtml(label);
+                html += '</button>';
+            }
+        }
+        html += '</div>';
+    }
+
+    // Boolean 类型选项
+    if (paramDef.type === 'boolean') {
+        html += '<div class="param-options">';
+        html += '<button class="param-option-btn" onclick="sendParamValue(\'true\')">✅ 是 (true)</button>';
+        html += '<button class="param-option-btn" onclick="sendParamValue(\'false\')">❌ 否 (false)</button>';
+        html += '</div>';
+    }
+
+    // 已收集的参数
+    var collectedKeys = Object.keys(collected);
+    if (collectedKeys.length > 0) {
+        html += '<div class="param-collected">';
+        for (var i = 0; i < collectedKeys.length; i++) {
+            var k = collectedKeys[i];
+            html += '<span class="param-tag">✅ ' + escapeHtml(k) + ' = ' + escapeHtml(String(collected[k])) + '</span>';
+        }
+        html += '</div>';
+    }
+
+    // 操作按钮
+    html += '<div class="param-actions">';
+    if (!paramDef.required) {
+        html += '<button class="btn-skip" onclick="sendMessage(\'跳过\')">⏭ 跳过(使用默认值)</button>';
+    }
+    html += '<button class="btn-cancel-param" onclick="sendMessage(\'取消\')">✕ 取消</button>';
+    html += '</div>';
+
+    html += '</div>';
+    return html;
+}
+
+function renderOutputBox(output, elapsed) {
+    if (!output) return '';
+    var html = '<div class="output-box">';
+    if (elapsed) html += '<span style="color:#94a3b8">耗时: ' + elapsed + 's</span>\n';
+    html += escapeHtml(output);
+    html += '</div>';
+    return html;
+}
+
+function renderApiResult(result) {
+    if (!result) return '';
+    var json = JSON.stringify(result, null, 2);
+    return '<div class="api-result"><pre>' + escapeHtml(json) + '</pre></div>';
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ========== 参数快捷发送 ==========
+function sendParamValue(value) {
+    document.getElementById('msgInput').value = value;
+    sendMsg();
+}
+
+// ========== 发送消息 ==========
+function sendMsg() {
+    var input = document.getElementById('msgInput');
+    var text = input.value.trim();
+    if (!text || isLoading) return;
+    input.value = '';
+    sendMessage(text);
+}
+
+function sendMessage(text) {
+    if (isLoading) return;
+    addUserMessage(text);
+    isLoading = true;
+    isCollectingParams = false;
+    document.getElementById('sendBtn').disabled = true;
+    document.getElementById('statusBadge').textContent = '处理中...';
+    addLoadingMessage();
+
+    var env = document.getElementById('envSelect').value;
+
+    // 判断是否是 API 代理指令
+    var apiMatch = text.match(/^api\s+(GET|POST|PUT|DELETE)\s+(\S+)(?:\s+(\S+))?(?:\s+(.+))?$/i);
+    if (apiMatch) {
+        callProxyApi(apiMatch, env);
+        return;
+    }
+
+    // 调用聊天 API
+    axios.post('/api/chat', {
+        message: text,
+        env: env,
+        sessionId: sessionId
+    }, {
+        timeout: 120000
+    }).then(function(res) {
+        removeLoadingMessage();
+        var data = res.data;
+        isCollectingParams = (data.type === 'ask_param');
+        addBotMessage(data.reply || '操作完成', data);
+    }).catch(function(err) {
+        removeLoadingMessage();
+        var errMsg = '请求失败';
+        if (err.response) {
+            errMsg = '服务器错误: ' + (err.response.status || '未知');
+            if (err.response.data && err.response.data.error) {
+                errMsg += '\n' + err.response.data.error;
+            }
+        } else if (err.message) {
+            errMsg = err.message;
+        }
+        addBotMessage('❌ ' + errMsg);
+    }).finally(function() {
+        isLoading = false;
+        document.getElementById('sendBtn').disabled = false;
+        document.getElementById('statusBadge').textContent = isCollectingParams ? '填写参数...' : '就绪';
+        // 更新 placeholder
+        var input = document.getElementById('msgInput');
+        input.placeholder = isCollectingParams ? '请输入参数值，或点击上方选项...' : '输入指令或描述你想做什么...';
+        input.focus();
+    });
+}
+
+function callProxyApi(match, env) {
+    var method = match[1];
+    var service = match[2];
+    var path = match[3] || '';
+    var paramsStr = match[4] || '';
+    var params = {};
+    if (paramsStr) {
+        try { params = JSON.parse(paramsStr); }
+        catch(e) {
+            var pairs = paramsStr.split('&');
+            for (var i = 0; i < pairs.length; i++) {
+                var kv = pairs[i].split('=');
+                if (kv.length === 2) params[kv[0]] = kv[1];
+            }
+        }
+    }
+
+    var isGateway = (service === 'gateway');
+
+    axios.post('/api/proxy', {
+        env: env,
+        service: service,
+        method: method,
+        path: path,
+        params: params,
+        isGateway: isGateway
+    }, {
+        timeout: 60000
+    }).then(function(res) {
+        removeLoadingMessage();
+        var data = res.data;
+        if (data.success) {
+            addBotMessage(
+                '✅ API 调用完成\n' +
+                method + ' ' + service + ' ' + path + '\n' +
+                'HTTP Code: ' + data.httpCode,
+                { type: 'api_result', result: data.data }
+            );
+        } else {
+            addBotMessage('❌ API 调用失败: ' + (data.error || '未知错误'));
+        }
+    }).catch(function(err) {
+        removeLoadingMessage();
+        addBotMessage('❌ 代理请求失败: ' + (err.message || '未知错误'));
+    }).finally(function() {
+        isLoading = false;
+        document.getElementById('sendBtn').disabled = false;
+        document.getElementById('statusBadge').textContent = '就绪';
+    });
+}
+
+// ========== 脚本列表缓存 ==========
+var scriptListCache = null
+</script>
+</body>
+</html>

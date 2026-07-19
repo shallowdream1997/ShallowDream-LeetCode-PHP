@@ -1,10 +1,25 @@
 {
+    "name": "ux168/pa-shell",
+    "description": "PA Shell Scripts - Amazon SP Advertising Operations",
     "require": {
-        "psr/log": "1.1.4",
-        "monolog/monolog": "1.27.1",
-        "logger-one/logger-one": "^1.0",
-      "ext-redis": "*",
-      "ext-json": "*",
-        "phpoffice/phpspreadsheet": "1.29.2"
+        "php": ">=7.4",
+        "ext-redis": "*",
+        "ext-json": "*",
+        "phpoffice/phpspreadsheet": "^1.29"
+    },
+    "autoload": {
+        "classmap": [
+            "php/core/",
+            "php/utils/",
+            "php/service/",
+            "php/shell/",
+            "php/constant/"
+        ],
+        "files": [
+            "php/bootstrap.php"
+        ]
+    },
+    "config": {
+        "platform-check": false
     }
 }
