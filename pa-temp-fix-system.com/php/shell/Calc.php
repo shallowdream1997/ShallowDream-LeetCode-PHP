@@ -77,6 +77,6 @@ class Calc
 }
 
 $calc = new Calc();
-//$calc->calcSalary(168.5,31.5,12);
-$calc->test("DPMO260205001-陈雅-吕治政");
+$calc->calcSalary(168.5,31.5,12);
+//$calc->test("DPMO260205001-陈雅-吕治政");
 //$calc->calcProgress();

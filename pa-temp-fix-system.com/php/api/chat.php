@@ -87,7 +87,26 @@ function parseAndExecute($message, $env, $sessionId)
 {
     $message = trim($message);
 
-    // 0. 检查是否有进行中的参数收集会话
+    // 0. 检查 AI 模式是否启用
+    $aiMode = getAiMode($sessionId);
+    if ($aiMode === 'on') {
+        // AI 模式下的特殊指令：清空对话、关闭AI
+        if (in_array(strtolower($message), ['清空对话', 'clear chat', '新对话', 'new chat'])) {
+            require_once dirname(__FILE__) . '/ai_agent.php';
+            aiClearConversation($sessionId);
+            return ['type' => 'cancelled', 'reply' => '已清空 AI 对话历史。'];
+        }
+        if (in_array(strtolower($message), ['关闭ai', 'close ai', '关ai'])) {
+            setAiMode($sessionId, 'off');
+            return ['type' => 'cancelled', 'reply' => '已关闭 AI 模式，切换到关键词匹配模式。'];
+        }
+
+        // AI 模式：所有消息交给 AI Agent 处理
+        require_once dirname(__FILE__) . '/ai_agent.php';
+        return handleAiMessage($message, $env, $sessionId);
+    }
+
+    // 1. 检查是否有进行中的参数收集会话
     $session = loadChatSession($sessionId);
     if ($session && !empty($session['missing'])) {
         // 内置指令优先（list/help/search 不受参数收集影响）
@@ -1027,4 +1046,28 @@ function matchKeywordMap($scriptName, $keyword)
     }
 
     return false;
+}
+
+// ========== AI 模式管理 ==========
+
+function getAiMode($sessionId)
+{
+    try {
+        $redis = new RedisService();
+        $allConfig = require dirname(__FILE__) . '/ai_config.php';
+        $mode = $redis->get($allConfig['mode_redis_prefix'] . $sessionId);
+        return $mode ?: 'off';
+    } catch (Exception $e) {
+        return 'off';
+    }
+}
+
+function setAiMode($sessionId, $mode)
+{
+    try {
+        $redis = new RedisService();
+        $allConfig = require dirname(__FILE__) . '/ai_config.php';
+        $redis->set($allConfig['mode_redis_prefix'] . $sessionId, $mode, 86400);
+    } catch (Exception $e) {
+    }
 }

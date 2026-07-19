@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PA Shell Chat - 运维助手</title>
+    <title>PA Agent Chat - AI 运维助手</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -381,6 +381,162 @@
             .msg-bubble { max-width: 85%; }
             .chat-container { padding: 12px; }
         }
+
+        /* ===== AI 相关样式 ===== */
+        .ai-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ai-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .ai-toggle input[type="checkbox"] {
+            width: 36px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .ai-model-select {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 12px;
+        }
+        .ai-model-select option { color: #333; }
+        .ai-config-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .ai-config-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* AI 消息标识 */
+        .ai-badge {
+            display: inline-block;
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .chat-msg.bot .msg-bubble.ai-msg {
+            border-left: 3px solid #6366f1;
+        }
+
+        /* 工具调用卡片 */
+        .tool-call-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 3px solid #f59e0b;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+        .tool-call-card .tool-header {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 4px;
+        }
+        .tool-call-card .tool-args {
+            color: #64748b;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        .tool-call-card .tool-result {
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px dashed #e2e8f0;
+            font-size: 12px;
+        }
+
+        /* 文件上传 */
+        .upload-area {
+            display: flex;
+            align-items: center;
+        }
+        .upload-btn {
+            font-size: 18px;
+            padding: 6px 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #64748b;
+            border-radius: 6px;
+        }
+        .upload-btn:hover {
+            background: #f1f5f9;
+            color: var(--pa-primary);
+        }
+
+        /* 文件卡片 */
+        .file-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .file-card {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 16px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            font-size: 12px;
+            color: #065f46;
+        }
+        .file-card .file-remove {
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1;
+        }
+        .file-card .file-remove:hover { color: #ef4444; }
+
+        /* AI 配置弹窗 */
+        .ai-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ai-modal {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            width: 420px;
+            max-width: 90vw;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .ai-modal h5 { margin: 0 0 16px 0; }
+        .ai-modal label { font-size: 13px; font-weight: 600; color: #475569; }
+        .ai-modal .form-control { font-size: 13px; }
+        .ai-modal .text-muted { font-size: 11px; }
+
+        /* 拖拽上传高亮 */
+        .chat-container.drag-over {
+            border: 3px dashed var(--pa-primary);
+            background: #eef2ff;
+        }
     </style>
 </head>
 <body>
@@ -389,10 +545,24 @@
 <div class="top-bar">
     <div class="d-flex align-items-center gap-2">
         <i class="bi bi-robot" style="font-size:22px"></i>
-        <h5>PA Shell Chat</h5>
+        <h5>PA Agent Chat</h5>
         <span class="badge bg-light text-dark" style="font-size:11px" id="statusBadge">就绪</span>
     </div>
     <div class="d-flex align-items-center gap-3">
+        <!-- AI 模式开关 -->
+        <div class="ai-controls">
+            <label class="ai-toggle">
+                <input type="checkbox" id="aiModeToggle" onchange="toggleAiMode(this.checked)">
+                <span>🤖 AI</span>
+            </label>
+            <select class="ai-model-select" id="aiModelSelect" style="display:none" onchange="switchAiModel(this.value)">
+                <option value="deepseek">DeepSeek</option>
+                <option value="gpt4o">GPT-4o</option>
+                <option value="gpt4o_mini">GPT-4o Mini</option>
+                <option value="claude">Claude</option>
+            </select>
+            <button class="ai-config-btn" id="aiConfigBtn" style="display:none" onclick="showAiConfigModal()">⚙️ 设置</button>
+        </div>
         <span style="font-size:12px;opacity:0.8">环境</span>
         <select class="env-select" id="envSelect">
             <option value="pro" selected>生产 (pro)</option>
@@ -410,6 +580,8 @@
 
 <!-- 底部输入 -->
 <div class="input-bar">
+    <!-- 已上传文件显示 -->
+    <div class="file-cards" id="fileCards"></div>
     <div class="quick-actions" id="quickActions">
         <button class="quick-btn" onclick="sendMessage('list')">📋 所有脚本</button>
         <button class="quick-btn" onclick="sendMessage('搜索 暂停')">⏸ 暂停</button>
@@ -420,6 +592,10 @@
         <button class="quick-btn" onclick="sendMessage('help')">❓ 帮助</button>
     </div>
     <div class="input-group">
+        <div class="upload-area">
+            <button class="upload-btn" id="uploadBtn" onclick="document.getElementById('fileInput').click()" title="上传 Excel/CSV 文件">📎</button>
+            <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleFileUpload(this)" multiple>
+        </div>
         <input type="text" class="form-control" id="msgInput"
                placeholder="输入指令或描述你想做什么... (如: 暂停 amazon_us 关键词)"
                onkeydown="if(event.key==='Enter')sendMsg()">
@@ -429,13 +605,40 @@
     </div>
 </div>
 
+<!-- AI 配置弹窗 -->
+<div class="ai-modal-overlay" id="aiConfigModal" style="display:none" onclick="if(event.target===this)hideAiConfigModal()">
+    <div class="ai-modal">
+        <h5>🤖 AI 配置</h5>
+        <div class="mb-3">
+            <label>当前模型</label>
+            <select class="form-control form-select" id="modalModelSelect">
+                <option value="deepseek">DeepSeek Chat</option>
+                <option value="gpt4o">GPT-4o</option>
+                <option value="gpt4o_mini">GPT-4o Mini</option>
+                <option value="claude">Claude Sonnet</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>API Key</label>
+            <input type="password" class="form-control" id="apiKeyInput" placeholder="sk-...">
+            <small class="text-muted d-block mt-1">🔒 Key 仅存储在本地 Redis，不会上传到任何服务器</small>
+        </div>
+        <div class="d-flex justify-content-end gap-2">
+            <button class="btn btn-sm btn-outline-secondary" onclick="hideAiConfigModal()">取消</button>
+            <button class="btn btn-sm btn-primary" onclick="saveAiConfig()">保存</button>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
 <script>
 // ========== 全局状态 ==========
 var chatMessages = [];
 var isLoading = false;
-var isCollectingParams = false; // 是否正在收集参数
+var isCollectingParams = false;
+var aiMode = false;
+var uploadedFiles = []; // {id, name, rows, columns}
 
 // ========== Session ID ==========
 var sessionId = localStorage.getItem('pa_chat_session_id');
@@ -451,12 +654,192 @@ window.onload = function() {
         '• 🔍 **搜索脚本** — 输入「搜索 暂停」「搜索 预算」\n' +
         '• ▶️ **执行脚本** — 输入「执行 sp.keyword.paused_keyword」\n' +
         '• 💬 **自然语言** — 描述你想做什么，如「暂停 amazon_us 关键词」\n' +
-        '• 🌐 **调用API** — 输入「api GET s3015 pa_products/queryPage limit=10」\n\n' +
-        '✨ 执行脚本时，缺少的参数会逐步询问，你可以逐个填写！\n\n' +
+        '• 🤖 **AI 模式** — 开启右上角 AI 开关，智能理解+分析结果\n' +
+        '• 📎 **上传文件** — 点击📎或拖拽 Excel 到聊天区\n\n' +
         '试试下方的快捷按钮开始吧！'
     );
     document.getElementById('msgInput').focus();
+    loadAiConfig();
+
+    // 拖拽上传
+    var container = document.getElementById('chatContainer');
+    container.addEventListener('dragover', function(e) { e.preventDefault(); container.classList.add('drag-over'); });
+    container.addEventListener('dragleave', function(e) { e.preventDefault(); container.classList.remove('drag-over'); });
+    container.addEventListener('drop', function(e) {
+        e.preventDefault();
+        container.classList.remove('drag-over');
+        if (e.dataTransfer.files.length > 0) {
+            handleFileDrop(e.dataTransfer.files);
+        }
+    });
 };
+
+// ========== AI 配置管理 ==========
+function loadAiConfig() {
+    axios.get('/api/ai_config?sessionId=' + sessionId, {
+        headers: {'X-Session-Id': sessionId}
+    }).then(function(res) {
+        var data = res.data;
+        if (data.mode === 'on') {
+            aiMode = true;
+            document.getElementById('aiModeToggle').checked = true;
+            toggleAiControls(true);
+        }
+        if (data.current_model) {
+            document.getElementById('aiModelSelect').value = data.current_model;
+            document.getElementById('modalModelSelect').value = data.current_model;
+        }
+    }).catch(function() {});
+}
+
+function toggleAiMode(on) {
+    aiMode = on;
+    toggleAiControls(on);
+    var mode = on ? 'on' : 'off';
+    axios.post('/api/ai_config', {
+        mode: mode,
+        model: document.getElementById('aiModelSelect').value
+    }, {
+        headers: {'X-Session-Id': sessionId}
+    }).catch(function() {});
+    if (on) {
+        addBotMessage('🤖 AI 模式已开启！我现在可以用 AI 智能理解你的意图、执行脚本、分析结果、校验数据。\n\n你可以：\n• 用自然语言描述需求\n• 上传 Excel 文件让我分析\n• 让我解读脚本执行结果\n\n输入「关闭AI」可以切换回关键词匹配模式。');
+    }
+}
+
+function toggleAiControls(show) {
+    document.getElementById('aiModelSelect').style.display = show ? '' : 'none';
+    document.getElementById('aiConfigBtn').style.display = show ? '' : 'none';
+}
+
+function switchAiModel(model) {
+    document.getElementById('modalModelSelect').value = model;
+    axios.post('/api/ai_config', {
+        model: model,
+        mode: aiMode ? 'on' : 'off'
+    }, {
+        headers: {'X-Session-Id': sessionId}
+    }).catch(function() {});
+}
+
+function showAiConfigModal() {
+    document.getElementById('aiConfigModal').style.display = '';
+    document.getElementById('modalModelSelect').value = document.getElementById('aiModelSelect').value;
+    document.getElementById('apiKeyInput').value = '';
+    document.getElementById('apiKeyInput').focus();
+}
+
+function hideAiConfigModal() {
+    document.getElementById('aiConfigModal').style.display = 'none';
+}
+
+function saveAiConfig() {
+    var model = document.getElementById('modalModelSelect').value;
+    var apiKey = document.getElementById('apiKeyInput').value.trim();
+    axios.post('/api/ai_config', {
+        api_key: apiKey,
+        model: model,
+        mode: aiMode ? 'on' : 'off'
+    }, {
+        headers: {'X-Session-Id': sessionId}
+    }).then(function() {
+        document.getElementById('aiModelSelect').value = model;
+        hideAiConfigModal();
+        addBotMessage('✅ AI 配置已保存！模型: ' + model + (apiKey ? '，API Key 已设置' : ''));
+    }).catch(function(err) {
+        alert('保存失败: ' + (err.message || '未知错误'));
+    });
+}
+
+// ========== 文件上传 ==========
+function handleFileUpload(input) {
+    if (input.files && input.files.length > 0) {
+        uploadFiles(input.files);
+    }
+    input.value = ''; // 重置，允许再次选择相同文件
+}
+
+function handleFileDrop(files) {
+    uploadFiles(files);
+}
+
+function uploadFiles(files) {
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var ext = file.name.split('.').pop().toLowerCase();
+        if (['xlsx', 'xls', 'csv'].indexOf(ext) === -1) {
+            addBotMessage('⚠️ 不支持 ' + ext + ' 格式，仅支持 xlsx/xls/csv');
+            continue;
+        }
+        doUploadFile(file);
+    }
+}
+
+function doUploadFile(file) {
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('sessionId', sessionId);
+
+    addBotMessage('📤 正在上传 ' + file.name + '...');
+
+    axios.post('/api/upload', formData, {
+        timeout: 60000,
+        headers: {'Content-Type': 'multipart/form-data'}
+    }).then(function(res) {
+        var data = res.data;
+        if (data.success) {
+            var f = data.file;
+            uploadedFiles.push(f);
+            renderFileCards();
+            var msg = '📊 已上传文件「' + f.name + '」';
+            msg += '\n• ' + f.columns.length + ' 列 × ' + f.rows + ' 行';
+            if (f.columns.length > 0) {
+                msg += '\n• 列: ' + f.columns.join(', ');
+            }
+            if (data.preview && data.preview.length > 0) {
+                msg += '\n\n数据预览（前2行）：';
+                for (var j = 0; j < Math.min(2, data.preview.length); j++) {
+                    var row = data.preview[j];
+                    var vals = [];
+                    for (var k in row) {
+                        if (row.hasOwnProperty(k)) vals.push(k + '=' + row[k]);
+                    }
+                    msg += '\n  ' + vals.join(' | ');
+                }
+            }
+            msg += '\n\n文件ID: ' + f.id + '（AI 可通过此 ID 读取文件内容）';
+            addBotMessage(msg);
+        } else {
+            addBotMessage('❌ 上传失败: ' + (data.error || '未知错误'));
+        }
+    }).catch(function(err) {
+        addBotMessage('❌ 上传失败: ' + (err.message || '未知错误'));
+    });
+}
+
+function renderFileCards() {
+    var container = document.getElementById('fileCards');
+    if (uploadedFiles.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    var html = '';
+    for (var i = 0; i < uploadedFiles.length; i++) {
+        var f = uploadedFiles[i];
+        html += '<div class="file-card">';
+        html += '<span>📊</span>';
+        html += '<span>' + escapeHtml(f.name) + '</span>';
+        html += '<span style="color:#94a3b8">' + f.columns.length + '列×' + f.rows + '行</span>';
+        html += '<span class="file-remove" onclick="removeFile(' + i + ')">✕</span>';
+        html += '</div>';
+    }
+    container.innerHTML = html;
+}
+
+function removeFile(idx) {
+    uploadedFiles.splice(idx, 1);
+    renderFileCards();
+}
 
 // ========== 消息操作 ==========
 function addBotMessage(text, extra) {
@@ -503,9 +886,10 @@ function renderMessages() {
             html += '<div class="msg-avatar"><i class="bi bi-person-fill"></i></div>';
             html += '</div>';
         } else {
+            var isAi = msg.extra && (msg.extra.type === 'ai_reply' || msg.extra.type === 'ai_error');
             html += '<div class="chat-msg bot">';
             html += '<div class="msg-avatar"><i class="bi bi-robot"></i></div>';
-            html += '<div class="msg-bubble">';
+            html += '<div class="msg-bubble' + (isAi ? ' ai-msg' : '') + '">';
             if (msg.text === '__loading__') {
                 html += '<div class="typing-indicator"><span></span><span></span><span></span></div>';
             } else {
@@ -519,15 +903,29 @@ function renderMessages() {
 }
 
 function formatBotMessage(text, extra) {
-    // 简单的 Markdown 格式化
     var formatted = escapeHtml(text);
     // **bold**
     formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     // 换行
     formatted = formatted.replace(/\n/g, '<br>');
 
-    // 附加内容
     if (extra) {
+        // AI 消息添加标识
+        if (extra.type === 'ai_reply') {
+            formatted = '<span class="ai-badge">AI</span>' + formatted;
+        }
+        if (extra.type === 'ai_error') {
+            formatted = '<span class="ai-badge" style="background:linear-gradient(135deg,#ef4444,#f97316)">AI</span>' + formatted;
+        }
+
+        // 工具调用展示
+        if (extra.tool_calls && extra.tool_calls.length > 0) {
+            for (var t = 0; t < extra.tool_calls.length; t++) {
+                var tc = extra.tool_calls[t];
+                formatted += renderToolCallCard(tc);
+            }
+        }
+
         if (extra.type === 'script_list' || extra.type === 'search_result' || extra.type === 'match_result') {
             formatted += renderScriptCards(extra);
         }
@@ -545,6 +943,54 @@ function formatBotMessage(text, extra) {
         }
     }
     return formatted;
+}
+
+function renderToolCallCard(tc) {
+    var name = tc.name || '';
+    var args = tc.args || {};
+    var status = tc.status || '';
+    var html = '<div class="tool-call-card">';
+
+    var icons = {
+        'run_script': '🔧 执行脚本',
+        'list_scripts': '📋 查询脚本列表',
+        'read_file': '📊 读取文件',
+        'list_uploaded_files': '📎 查看上传文件',
+        'read_script_output': '📤 读取输出文件'
+    };
+    html += '<div class="tool-header">' + (icons[name] || '🔧 ' + name) + '</div>';
+
+    // 参数展示
+    var argParts = [];
+    for (var k in args) {
+        if (args.hasOwnProperty(k)) {
+            var v = args[k];
+            if (typeof v === 'object') v = JSON.stringify(v);
+            argParts.push(k + '=' + v);
+        }
+    }
+    if (argParts.length > 0) {
+        html += '<div class="tool-args">' + escapeHtml(argParts.join(', ')) + '</div>';
+    }
+
+    // 结果摘要
+    if (tc.result && status === 'completed') {
+        var result = tc.result;
+        if (result.elapsed) {
+            html += '<div class="tool-result">⏱ 耗时 ' + result.elapsed + 's';
+            if (result.type === 'script_result') html += ' | ✅ 执行成功';
+            html += '</div>';
+        } else if (result.total !== undefined) {
+            html += '<div class="tool-result">📊 共 ' + result.total + ' 条</div>';
+        } else if (result.error) {
+            html += '<div class="tool-result" style="color:#ef4444">❌ ' + escapeHtml(result.error) + '</div>';
+        } else if (result.files) {
+            html += '<div class="tool-result">📎 ' + result.files.length + ' 个文件</div>';
+        }
+    }
+
+    html += '</div>';
+    return html;
 }
 
 function renderScriptCards(data) {
@@ -572,11 +1018,7 @@ function renderParamCard(data) {
     isCollectingParams = true;
     var paramDef = data.paramDef || {};
     var collected = data.collected || {};
-    var missing = data.missing || [];
     var progress = data.progress || {};
-    var script = data.script || '';
-    var method = data.method || 'default';
-    var paramName = data.param || '';
 
     var html = '<div class="param-card">';
 
@@ -589,21 +1031,18 @@ function renderParamCard(data) {
         html += '</div>';
     }
 
-    // 参数类型和选项
     if (paramDef.type === 'select' && paramDef.options) {
         html += '<div class="param-options">';
         for (var val in paramDef.options) {
             if (paramDef.options.hasOwnProperty(val)) {
-                var label = paramDef.options[val];
                 html += '<button class="param-option-btn" onclick="sendParamValue(\'' + escapeHtml(val) + '\')">';
-                html += escapeHtml(val) + ' — ' + escapeHtml(label);
+                html += escapeHtml(val) + ' — ' + escapeHtml(paramDef.options[val]);
                 html += '</button>';
             }
         }
         html += '</div>';
     }
 
-    // Boolean 类型选项
     if (paramDef.type === 'boolean') {
         html += '<div class="param-options">';
         html += '<button class="param-option-btn" onclick="sendParamValue(\'true\')">✅ 是 (true)</button>';
@@ -611,7 +1050,6 @@ function renderParamCard(data) {
         html += '</div>';
     }
 
-    // 已收集的参数
     var collectedKeys = Object.keys(collected);
     if (collectedKeys.length > 0) {
         html += '<div class="param-collected">';
@@ -622,14 +1060,12 @@ function renderParamCard(data) {
         html += '</div>';
     }
 
-    // 操作按钮
     html += '<div class="param-actions">';
     if (!paramDef.required) {
         html += '<button class="btn-skip" onclick="sendMessage(\'跳过\')">⏭ 跳过(使用默认值)</button>';
     }
     html += '<button class="btn-cancel-param" onclick="sendMessage(\'取消\')">✕ 取消</button>';
     html += '</div>';
-
     html += '</div>';
     return html;
 }
@@ -677,25 +1113,25 @@ function sendMessage(text) {
     isLoading = true;
     isCollectingParams = false;
     document.getElementById('sendBtn').disabled = true;
-    document.getElementById('statusBadge').textContent = '处理中...';
+    document.getElementById('statusBadge').textContent = aiMode ? 'AI 思考中...' : '处理中...';
     addLoadingMessage();
 
     var env = document.getElementById('envSelect').value;
 
-    // 判断是否是 API 代理指令
+    // API 代理指令
     var apiMatch = text.match(/^api\s+(GET|POST|PUT|DELETE)\s+(\S+)(?:\s+(\S+))?(?:\s+(.+))?$/i);
     if (apiMatch) {
         callProxyApi(apiMatch, env);
         return;
     }
 
-    // 调用聊天 API
+    // 聊天 API（AI 和 关键词模式共用）
     axios.post('/api/chat', {
         message: text,
         env: env,
         sessionId: sessionId
     }, {
-        timeout: 120000
+        timeout: 180000 // AI 模式需要更长超时
     }).then(function(res) {
         removeLoadingMessage();
         var data = res.data;
@@ -704,7 +1140,9 @@ function sendMessage(text) {
     }).catch(function(err) {
         removeLoadingMessage();
         var errMsg = '请求失败';
-        if (err.response) {
+        if (err.code === 'ECONNABORTED') {
+            errMsg = '请求超时（AI 模型可能响应较慢，请稍后再试）';
+        } else if (err.response) {
             errMsg = '服务器错误: ' + (err.response.status || '未知');
             if (err.response.data && err.response.data.error) {
                 errMsg += '\n' + err.response.data.error;
@@ -716,10 +1154,22 @@ function sendMessage(text) {
     }).finally(function() {
         isLoading = false;
         document.getElementById('sendBtn').disabled = false;
-        document.getElementById('statusBadge').textContent = isCollectingParams ? '填写参数...' : '就绪';
-        // 更新 placeholder
+        var badge = document.getElementById('statusBadge');
+        if (isCollectingParams) {
+            badge.textContent = '填写参数...';
+        } else if (aiMode) {
+            badge.textContent = 'AI 就绪';
+        } else {
+            badge.textContent = '就绪';
+        }
         var input = document.getElementById('msgInput');
-        input.placeholder = isCollectingParams ? '请输入参数值，或点击上方选项...' : '输入指令或描述你想做什么...';
+        if (isCollectingParams) {
+            input.placeholder = '请输入参数值，或点击上方选项...';
+        } else if (aiMode) {
+            input.placeholder = '描述你想做什么，AI 帮你执行...';
+        } else {
+            input.placeholder = '输入指令或描述你想做什么...';
+        }
         input.focus();
     });
 }
@@ -774,9 +1224,6 @@ function callProxyApi(match, env) {
         document.getElementById('statusBadge').textContent = '就绪';
     });
 }
-
-// ========== 脚本列表缓存 ==========
-var scriptListCache = null
 </script>
 </body>
 </html>

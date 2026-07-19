@@ -47,6 +47,18 @@ switch ($uri) {
         require __DIR__ . '/proxy.php';
         break;
 
+    case '/api/upload':
+        require __DIR__ . '/upload.php';
+        break;
+
+    case '/api/file_preview':
+        require __DIR__ . '/file_preview.php';
+        break;
+
+    case '/api/ai_config':
+        require __DIR__ . '/ai_config_api.php';
+        break;
+
     case '/':
         // 根路径重定向到聊天页面
         header('Location: /template/chat.html');
