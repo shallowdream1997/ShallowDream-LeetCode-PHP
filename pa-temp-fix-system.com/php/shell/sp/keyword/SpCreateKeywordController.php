@@ -22,7 +22,7 @@ class SpCreateKeywordController
 
     /**
      * 读取Excel创建keyword广告，已存在则跳过并补写Mongo
-     * Excel格式: channel | seller_id | ad_group_id | search_term-可直接复制 | 匹配方式 | BID
+     * Excel格式: channel | seller_id | campaign_id | ad_group_id | keywordtext | 增投类型 | 匹配方式 | BID
      * 用法: php SpCreateKeywordController.php file="M6增投keyword.xlsx" channel=amazon_us
      *       php SpCreateKeywordController.php file="M6增投keyword.xlsx"  (处理全部channel)
      * @param string $file Excel文件名(在./excel/目录下)
@@ -37,14 +37,16 @@ class SpCreateKeywordController
 
         // 读取Excel，按 seller_id + ad_group_id 分组
         $groupedData = [];
+        $invalidItems = []; // 匹配方式为空的行，当作投放失败
         $totalCount = 0;
         try {
-            $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$groupedData, &$totalCount, $channel) {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$groupedData, &$invalidItems, &$totalCount, $channel) {
                 $itemChannel = trim($item['channel'] ?? '');
                 $sellerId = trim($item['seller_id'] ?? '');
+                $campaignId = trim(sprintf('%.0f', (float)($item['campaign_id'] ?? 0)), "'");
                 $adGroupId = trim(sprintf('%.0f', (float)($item['ad_group_id'] ?? 0)), "'");
-                $keywordText = trim($item['search_term-可直接复制'] ?? '');
-                $matchType = strtolower(trim($item['匹配方式'] ?? 'broad'));
+                $keywordText = trim($item['keywordtext'] ?? '');
+                $matchType = strtolower(trim($item['匹配方式'] ?? ''));
                 $bid = trim($item['BID'] ?? '');
 
                 if ($sellerId === "" || $adGroupId === "" || $adGroupId === "0" || $keywordText === "") {
@@ -54,10 +56,24 @@ class SpCreateKeywordController
                     return;
                 }
 
+                // 匹配方式为空，当作投放失败
+                if ($matchType === "") {
+                    $invalidItems[] = [
+                        "seller_id" => $sellerId,
+                        "ad_group_id" => $adGroupId,
+                        "keyword_text" => $keywordText,
+                        "match_type" => "",
+                        "bid" => $bid,
+                        "error" => "匹配方式为空",
+                    ];
+                    return;
+                }
+
                 $groupKey = "{$sellerId}_{$adGroupId}";
                 $groupedData[$groupKey][] = [
                     'channel' => $itemChannel,
                     'sellerId' => $sellerId,
+                    'campaignId' => $campaignId,
                     'adGroupId' => $adGroupId,
                     'keywordText' => $keywordText,
                     'matchType' => $matchType,
@@ -76,15 +92,21 @@ class SpCreateKeywordController
             return;
         }
 
-        $exportList = [];
+        $exportList = $invalidItems; // 匹配方式为空的行直接归入失败列表
         $createdCount = 0;
         $skippedCount = 0;
 
         foreach ($groupedData as $groupKey => $items) {
             $sellerId = $items[0]['sellerId'];
             $adGroupId = $items[0]['adGroupId'];
+            $excelCampaignId = $items[0]['campaignId'] ?? '';
 
-            // 获取ad group信息（campaignId、defaultBid）：先查Mongo，查不到查Amazon API
+            // 获取ad group信息（campaignId、defaultBid）：优先使用Excel中的campaign_id，否则查Mongo/Amazon API
+            $adGroupInfo = null;
+            $campaignId = '';
+            $defaultBid = null;
+
+            // 先查Mongo获取adGroupInfo（需要defaultBid等信息）
             $adGroupInfo = $spApi->getMongoAdGroupInfo($sellerId, '', '', $adGroupId);
             if (!$adGroupInfo || !isset($adGroupInfo['campaignId'])) {
                 $this->log("{$sellerId} adGroupId:{$adGroupId} Mongo未找到，尝试Amazon API查询");
@@ -97,7 +119,16 @@ class SpCreateKeywordController
                     $this->log("{$sellerId} adGroupId:{$adGroupId} Amazon API查到 campaignId:{$amazonAdGroup['campaignId']}");
                 }
             }
-            if (!$adGroupInfo || !isset($adGroupInfo['campaignId'])) {
+
+            // 优先使用Excel中的campaign_id
+            if ($excelCampaignId !== "" && $excelCampaignId !== "0") {
+                $campaignId = $excelCampaignId;
+                $this->log("{$sellerId} adGroupId:{$adGroupId} 使用Excel campaignId:{$campaignId}");
+            } elseif ($adGroupInfo && isset($adGroupInfo['campaignId'])) {
+                $campaignId = $adGroupInfo['campaignId'];
+            }
+
+            if ($campaignId === "") {
                 $this->log("❌ {$sellerId} adGroupId:{$adGroupId} 未找到ad group信息，跳过");
                 foreach ($items as $item) {
                     $exportList[] = [
@@ -110,7 +141,6 @@ class SpCreateKeywordController
                 }
                 continue;
             }
-            $campaignId = $adGroupInfo['campaignId'];
             $defaultBid = $adGroupInfo['defaultBid'] ?? null;
 
             // 查询Amazon已有的keyword

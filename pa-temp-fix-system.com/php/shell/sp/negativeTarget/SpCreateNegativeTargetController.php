@@ -22,7 +22,7 @@ class SpCreateNegativeTargetController
 
     /**
      * 读取Excel创建negativeTarget广告，已存在则跳过并补写Mongo
-     * Excel格式: channel | seller_id | ad_group_id | search_term-可直接复制 | 否定类型
+     * Excel格式: channel | seller_id | campaign_id | ad_group_id | keywordtext
      * 用法: php SpCreateNegativeTargetController.php file="M6精准否定asin.xlsx" channel=amazon_us
      *       php SpCreateNegativeTargetController.php file="M6精准否定asin.xlsx"  (处理全部channel)
      * @param string $file Excel文件名(在./excel/目录下)
@@ -42,8 +42,9 @@ class SpCreateNegativeTargetController
             $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$groupedData, &$totalCount, $channel) {
                 $itemChannel = trim($item['channel'] ?? '');
                 $sellerId = trim($item['seller_id'] ?? '');
+                $campaignId = trim(sprintf('%.0f', (float)($item['campaign_id'] ?? 0)), "'");
                 $adGroupId = trim(sprintf('%.0f', (float)($item['ad_group_id'] ?? 0)), "'");
-                $asin = trim($item['search_term-可直接复制'] ?? '');
+                $asin = trim($item['keywordtext'] ?? '');
 
                 if ($sellerId === "" || $adGroupId === "" || $adGroupId === "0" || $asin === "") {
                     return;
@@ -56,6 +57,7 @@ class SpCreateNegativeTargetController
                 $groupedData[$groupKey][] = [
                     'channel' => $itemChannel,
                     'sellerId' => $sellerId,
+                    'campaignId' => $campaignId,
                     'adGroupId' => $adGroupId,
                     'asin' => $asin,
                 ];
@@ -79,8 +81,13 @@ class SpCreateNegativeTargetController
         foreach ($groupedData as $groupKey => $items) {
             $sellerId = $items[0]['sellerId'];
             $adGroupId = $items[0]['adGroupId'];
+            $excelCampaignId = $items[0]['campaignId'] ?? '';
 
-            // 获取ad group信息（campaignId）：先查Mongo，查不到查Amazon API
+            // 获取ad group信息（campaignId）：优先使用Excel中的campaign_id，否则查Mongo/Amazon API
+            $adGroupInfo = null;
+            $campaignId = '';
+
+            // 先查Mongo获取adGroupInfo
             $adGroupInfo = $spApi->getMongoAdGroupInfo($sellerId, '', '', $adGroupId);
             if (!$adGroupInfo || !isset($adGroupInfo['campaignId'])) {
                 $this->log("{$sellerId} adGroupId:{$adGroupId} Mongo未找到，尝试Amazon API查询");
@@ -93,7 +100,16 @@ class SpCreateNegativeTargetController
                     $this->log("{$sellerId} adGroupId:{$adGroupId} Amazon API查到 campaignId:{$amazonAdGroup['campaignId']}");
                 }
             }
-            if (!$adGroupInfo || !isset($adGroupInfo['campaignId'])) {
+
+            // 优先使用Excel中的campaign_id
+            if ($excelCampaignId !== "" && $excelCampaignId !== "0") {
+                $campaignId = $excelCampaignId;
+                $this->log("{$sellerId} adGroupId:{$adGroupId} 使用Excel campaignId:{$campaignId}");
+            } elseif ($adGroupInfo && isset($adGroupInfo['campaignId'])) {
+                $campaignId = $adGroupInfo['campaignId'];
+            }
+
+            if ($campaignId === "") {
                 $this->log("❌ {$sellerId} adGroupId:{$adGroupId} 未找到ad group信息，跳过");
                 foreach ($items as $item) {
                     $exportList[] = [
@@ -105,7 +121,6 @@ class SpCreateNegativeTargetController
                 }
                 continue;
             }
-            $campaignId = $adGroupInfo['campaignId'];
 
             // 查询Amazon已有的negativeTarget
             $existingList = $spApi->listNegativeTarget($sellerId, [$campaignId], [$adGroupId]);
