@@ -228,17 +228,245 @@ class SpCreateKeywordController
 
         $this->log("createKeywords channel:{$channelLabel} 处理完毕");
     }
+
+    /**
+     * 校验Excel中的keyword投放数据是否已在Amazon上成功投放
+     * Excel格式: channel | seller_id | campaign_id | ad_group_id | keywordtext | 增投类型 | 匹配方式 | BID
+     * 用法: php SpCreateKeywordController.php method=verify file="M6增投keyword.xlsx" channel=amazon_us
+     *       php SpCreateKeywordController.php method=verify file="M6增投keyword.xlsx"  (校验全部channel)
+     * @param string $file Excel文件名(在./excel/目录下)
+     * @param string $channel 可选，按channel过滤数据，不传则校验全部
+     */
+    public function verifyKeywords($file = "", $channel = "")
+    {
+        $channelLabel = empty($channel) ? '全部' : $channel;
+        $this->log("verifyKeywords 开始校验 file:{$file} channel:{$channelLabel}");
+        $excelUtils = new ExcelUtils();
+        $spApi = new SpApi();
+
+        // 读取Excel，按 seller_id + ad_group_id 分组
+        $groupedData = [];
+        $invalidItems = [];
+        $totalCount = 0;
+        try {
+            $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$groupedData, &$invalidItems, &$totalCount, $channel) {
+                $itemChannel = trim($item['channel'] ?? '');
+                $sellerId = trim($item['seller_id'] ?? '');
+                $campaignId = trim(sprintf('%.0f', (float)($item['campaign_id'] ?? 0)), "'");
+                $adGroupId = trim(sprintf('%.0f', (float)($item['ad_group_id'] ?? 0)), "'");
+                $keywordText = trim($item['keywordtext'] ?? '');
+                $matchType = strtolower(trim($item['匹配方式'] ?? ''));
+                $bid = trim($item['BID'] ?? '');
+
+                if ($sellerId === "" || $adGroupId === "" || $adGroupId === "0" || $keywordText === "") {
+                    return;
+                }
+                if (!empty($channel) && $itemChannel !== $channel) {
+                    return;
+                }
+
+                // 匹配方式为空，当作校验失败
+                if ($matchType === "") {
+                    $invalidItems[] = [
+                        "seller_id" => $sellerId,
+                        "ad_group_id" => $adGroupId,
+                        "keyword_text" => $keywordText,
+                        "match_type" => "",
+                        "actual_state" => "",
+                        "expected_state" => "enabled",
+                        "actual_bid" => "",
+                        "expected_bid" => $bid,
+                        "error" => "匹配方式为空",
+                    ];
+                    return;
+                }
+
+                $groupKey = "{$sellerId}_{$adGroupId}";
+                $groupedData[$groupKey][] = [
+                    'channel' => $itemChannel,
+                    'sellerId' => $sellerId,
+                    'campaignId' => $campaignId,
+                    'adGroupId' => $adGroupId,
+                    'keywordText' => $keywordText,
+                    'matchType' => $matchType,
+                    'bid' => $bid,
+                ];
+                $totalCount++;
+            });
+        } catch (Exception $e) {
+            die($e->getLine() . " : " . $e->getMessage());
+        }
+
+        $this->log("channel:{$channelLabel} 共 " . count($groupedData) . " 个ad group, {$totalCount} 条数据");
+
+        if (count($groupedData) <= 0 && count($invalidItems) <= 0) {
+            $this->log("verifyKeywords channel:{$channelLabel} 无数据");
+            return;
+        }
+
+        $exportList = $invalidItems;
+        $verifiedCount = count($invalidItems);
+        $matchCount = 0;
+        $notFoundCount = 0;
+        $stateMismatchCount = 0;
+        $bidMismatchCount = 0;
+
+        foreach ($groupedData as $groupKey => $items) {
+            $sellerId = $items[0]['sellerId'];
+            $adGroupId = $items[0]['adGroupId'];
+            $excelCampaignId = $items[0]['campaignId'] ?? '';
+
+            // 获取campaignId
+            $adGroupInfo = null;
+            $campaignId = '';
+
+            $adGroupInfo = $spApi->getMongoAdGroupInfo($sellerId, '', '', $adGroupId);
+            if (!$adGroupInfo || !isset($adGroupInfo['campaignId'])) {
+                $amazonAdGroup = $spApi->getAmazonAdGroupInfoById($sellerId, $adGroupId);
+                if (!empty($amazonAdGroup) && isset($amazonAdGroup['campaignId'])) {
+                    $adGroupInfo = [
+                        'campaignId' => $amazonAdGroup['campaignId'],
+                        'defaultBid' => $amazonAdGroup['defaultBid'] ?? null,
+                    ];
+                }
+            }
+
+            if ($excelCampaignId !== "" && $excelCampaignId !== "0") {
+                $campaignId = $excelCampaignId;
+            } elseif ($adGroupInfo && isset($adGroupInfo['campaignId'])) {
+                $campaignId = $adGroupInfo['campaignId'];
+            }
+
+            if ($campaignId === "") {
+                $this->log("❌ {$sellerId} adGroupId:{$adGroupId} 未找到ad group信息");
+                foreach ($items as $item) {
+                    $verifiedCount++;
+                    $exportList[] = [
+                        "seller_id" => $sellerId,
+                        "ad_group_id" => $adGroupId,
+                        "keyword_text" => $item['keywordText'],
+                        "match_type" => $item['matchType'],
+                        "actual_state" => "",
+                        "expected_state" => "enabled",
+                        "actual_bid" => "",
+                        "expected_bid" => $item['bid'],
+                        "error" => "ad group not found",
+                    ];
+                }
+                continue;
+            }
+
+            // 查询Amazon已有的keyword
+            $existingKeywords = $spApi->listKeyword($sellerId, $campaignId, $adGroupId);
+            $this->log("{$sellerId} adGroupId:{$adGroupId} Amazon已有keyword " . count($existingKeywords) . "个");
+
+            // 逐条校验
+            foreach ($items as $item) {
+                $verifiedCount++;
+                $key = "{$item['matchType']}_{$item['keywordText']}";
+                $expectedBid = $item['bid'] !== "" ? (float)$item['bid'] : null;
+
+                if (!isset($existingKeywords[$key])) {
+                    // 未投放
+                    $notFoundCount++;
+                    $this->log("❌ {$sellerId} keyword未投放: {$key}");
+                    $exportList[] = [
+                        "seller_id" => $sellerId,
+                        "ad_group_id" => $adGroupId,
+                        "keyword_text" => $item['keywordText'],
+                        "match_type" => $item['matchType'],
+                        "actual_state" => "not_found",
+                        "expected_state" => "enabled",
+                        "actual_bid" => "",
+                        "expected_bid" => $item['bid'],
+                        "error" => "keyword未投放",
+                    ];
+                    continue;
+                }
+
+                // 已投放，校验state和bid
+                $existingInfo = $existingKeywords[$key];
+                $actualState = $existingInfo['state'] ?? '';
+                $actualBid = isset($existingInfo['bid']) ? (float)$existingInfo['bid'] : null;
+
+                $stateMatch = ($actualState === "enabled");
+                $bidMatch = ($expectedBid === null) || (abs($actualBid - $expectedBid) < 0.001);
+
+                if ($stateMatch && $bidMatch) {
+                    $matchCount++;
+                    $this->log("✅ {$sellerId} keyword已投放且一致: {$key} state:{$actualState} bid:{$actualBid}");
+                } else {
+                    if (!$stateMatch) {
+                        $stateMismatchCount++;
+                        $this->log("⚠️ {$sellerId} keyword状态异常: {$key} 期望enabled, 实际{$actualState}");
+                    }
+                    if (!$bidMatch) {
+                        $bidMismatchCount++;
+                        $this->log("⚠️ {$sellerId} keyword bid不一致: {$key} 期望{$expectedBid}, 实际{$actualBid}");
+                    }
+                    $exportList[] = [
+                        "seller_id" => $sellerId,
+                        "ad_group_id" => $adGroupId,
+                        "keyword_text" => $item['keywordText'],
+                        "match_type" => $item['matchType'],
+                        "actual_state" => $actualState,
+                        "expected_state" => "enabled",
+                        "actual_bid" => $actualBid,
+                        "expected_bid" => $expectedBid ?? "",
+                        "error" => (!$stateMatch ? "状态异常" : "") . (!$bidMatch ? " bid不一致" : ""),
+                    ];
+                }
+            }
+        }
+
+        // 输出校验汇总
+        $this->log("========== 校验汇总 ==========");
+        $this->log("总校验数: {$verifiedCount}");
+        $this->log("✅ 已投放且一致: {$matchCount}");
+        $this->log("❌ 未投放: {$notFoundCount}");
+        $this->log("⚠️ 状态异常(非enabled): {$stateMismatchCount}");
+        $this->log("⚠️ bid不一致: {$bidMismatchCount}");
+
+        // 导出异常数据
+        if (count($exportList) > 0) {
+            $excelUtils = new ExcelUtils("sp/keyword/");
+            $filePath = $excelUtils->downloadXlsx([
+                "seller_id",
+                "ad_group_id",
+                "keyword_text",
+                "match_type",
+                "actual_state",
+                "expected_state",
+                "actual_bid",
+                "expected_bid",
+                "error",
+            ], $exportList, "校验异常_keyword_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            $this->log("异常数据已导出: {$filePath}");
+        } else {
+            $this->log("所有keyword投放校验通过，无异常数据");
+        }
+
+        $this->log("verifyKeywords channel:{$channelLabel} 校验完毕");
+    }
 }
 
 $parameters = DataUtils::ExplainArgv(@$argv, array());
 $params = (count(@$argv) > 1) ? $parameters : $_REQUEST;
 $file = "";
 $channel = "";
+$method = "";
 if (isset($params['file']) && trim($params['file']) != '') {
     $file = $params['file'];
 }
 if (isset($params['channel']) && trim($params['channel']) != '') {
     $channel = $params['channel'];
 }
+if (isset($params['method']) && trim($params['method']) != '') {
+    $method = $params['method'];
+}
 $con = new SpCreateKeywordController();
-$con->createKeywords($file, $channel);
+if ($method == 'verify') {
+    $con->verifyKeywords($file, $channel);
+} else {
+    $con->createKeywords($file, $channel);
+}
