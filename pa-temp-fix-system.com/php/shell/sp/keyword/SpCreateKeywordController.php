@@ -95,6 +95,7 @@ class SpCreateKeywordController
         $exportList = $invalidItems; // 匹配方式为空的行直接归入失败列表
         $createdCount = 0;
         $skippedCount = 0;
+        $updatedCount = 0;
 
         foreach ($groupedData as $groupKey => $items) {
             $sellerId = $items[0]['sellerId'];
@@ -143,20 +144,30 @@ class SpCreateKeywordController
             }
             $defaultBid = $adGroupInfo['defaultBid'] ?? null;
 
-            // 查询Amazon已有的keyword
-            $existingKeywords = $spApi->listKeyword($sellerId, $campaignId, $adGroupId);
+            // 查询Amazon已有的keyword（所有状态）
+            $existingKeywords = $spApi->listKeyword($sellerId, $campaignId, $adGroupId, "", "", "");
             $this->log("{$sellerId} adGroupId:{$adGroupId} 已有keyword " . count($existingKeywords) . "个");
 
-            // 检查哪些需要新建
+            // 检查哪些需要新建，哪些需要更新状态
             $createPayloads = [];
+            $updatePayloads = []; // 需要更新状态为enabled的keyword
             foreach ($items as $item) {
                 $key = "{$item['matchType']}_{$item['keywordText']}";
                 if (isset($existingKeywords[$key])) {
-                    // 已存在，跳过；如果Mongo中没有则补写
-                    $skippedCount++;
-                    $this->log("⏭️ {$sellerId} keyword已存在: {$key}");
                     $existingInfo = $existingKeywords[$key];
-                    // 补写Mongo（如果有需要的话可以在这里处理）
+                    $existingState = $existingInfo['state'] ?? '';
+                    if ($existingState !== 'enabled') {
+                        // 已存在但非enabled，更新状态为enabled
+                        $updatePayloads[] = [
+                            "keywordId" => (int)$existingInfo['keywordId'],
+                            "state" => "enabled",
+                        ];
+                        $this->log("🔄 {$sellerId} keyword已存在但非enabled({$existingState})，将更新: {$key} keywordId:{$existingInfo['keywordId']}");
+                    } else {
+                        // 已存在且enabled，跳过
+                        $skippedCount++;
+                        $this->log("⏭️ {$sellerId} keyword已存在且enabled: {$key}");
+                    }
                     continue;
                 }
 
@@ -169,6 +180,28 @@ class SpCreateKeywordController
                     "state" => "enabled",
                     "bid" => $bid,
                 ];
+            }
+
+            // 批量更新keyword状态为enabled
+            if (count($updatePayloads) > 0) {
+                foreach (array_chunk($updatePayloads, 1000) as $chunk) {
+                    $this->log("{$sellerId} adGroupId:{$adGroupId} 更新keyword状态为enabled: " . count($chunk) . "个");
+                    $result = $spApi->updateKeyword($sellerId, $chunk);
+                    $updatedCount += count($result['success'] ?? []);
+                    foreach ($result['success'] ?? [] as $keywordId) {
+                        $this->log("✅ {$sellerId} 更新keyword状态成功: keywordId:{$keywordId}");
+                    }
+                    foreach ($result['error'] ?? [] as $keywordId) {
+                        $this->log("❌ {$sellerId} 更新keyword状态失败: keywordId:{$keywordId}");
+                        $exportList[] = [
+                            "seller_id" => $sellerId,
+                            "ad_group_id" => $adGroupId,
+                            "keyword_text" => "",
+                            "match_type" => "",
+                            "error" => "更新状态失败 keywordId:{$keywordId}",
+                        ];
+                    }
+                }
             }
 
             // 批量创建keyword
@@ -209,7 +242,8 @@ class SpCreateKeywordController
         $this->log("========== 处理汇总 ==========");
         $this->log("总数据数: {$totalCount}");
         $this->log("✅ 创建成功: {$createdCount}");
-        $this->log("⏭️ 已存在跳过: {$skippedCount}");
+        $this->log("🔄 更新状态为enabled: {$updatedCount}");
+        $this->log("⏭️ 已存在且enabled跳过: {$skippedCount}");
         $this->log("❌ 失败: " . count($exportList));
 
         // 导出失败数据
@@ -356,8 +390,8 @@ class SpCreateKeywordController
                 continue;
             }
 
-            // 查询Amazon已有的keyword
-            $existingKeywords = $spApi->listKeyword($sellerId, $campaignId, $adGroupId);
+            // 查询Amazon已有的keyword（所有状态）
+            $existingKeywords = $spApi->listKeyword($sellerId, $campaignId, $adGroupId, "", "", "");
             $this->log("{$sellerId} adGroupId:{$adGroupId} Amazon已有keyword " . count($existingKeywords) . "个");
 
             // 逐条校验

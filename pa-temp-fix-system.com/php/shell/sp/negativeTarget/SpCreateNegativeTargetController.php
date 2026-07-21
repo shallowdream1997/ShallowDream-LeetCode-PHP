@@ -77,6 +77,7 @@ class SpCreateNegativeTargetController
         $exportList = [];
         $createdCount = 0;
         $skippedCount = 0;
+        $updatedCount = 0;
 
         foreach ($groupedData as $groupKey => $items) {
             $sellerId = $items[0]['sellerId'];
@@ -122,7 +123,7 @@ class SpCreateNegativeTargetController
                 continue;
             }
 
-            // 查询Amazon已有的negativeTarget
+            // 查询Amazon已有的negativeTarget（所有状态）
             $existingList = $spApi->listNegativeTarget($sellerId, [$campaignId], [$adGroupId]);
             $existingAsins = [];
             foreach ($existingList as $info) {
@@ -132,14 +133,26 @@ class SpCreateNegativeTargetController
             }
             $this->log("{$sellerId} adGroupId:{$adGroupId} 已有negativeTarget " . count($existingAsins) . "个");
 
-            // 检查哪些需要新建
+            // 检查哪些需要新建，哪些需要更新状态
             $createPayloads = [];
+            $updatePayloads = []; // 需要更新状态为enabled的negativeTarget
             $asinItemMap = [];
             foreach ($items as $item) {
                 $asin = $item['asin'];
                 if (isset($existingAsins[$asin])) {
-                    $skippedCount++;
-                    $this->log("⏭️ {$sellerId} negativeTarget已存在: {$asin}");
+                    $existingState = $existingAsins[$asin]['state'] ?? '';
+                    if ($existingState !== 'enabled') {
+                        // 已存在但非enabled，更新状态为enabled
+                        $updatePayloads[] = [
+                            "targetId" => (int)$existingAsins[$asin]['targetId'],
+                            "state" => "enabled",
+                        ];
+                        $this->log("🔄 {$sellerId} negativeTarget已存在但非enabled({$existingState})，将更新: {$asin} targetId:{$existingAsins[$asin]['targetId']}");
+                    } else {
+                        // 已存在且enabled，跳过
+                        $skippedCount++;
+                        $this->log("⏭️ {$sellerId} negativeTarget已存在且enabled: {$asin}");
+                    }
                     continue;
                 }
                 $expressionGroup = [
@@ -155,6 +168,27 @@ class SpCreateNegativeTargetController
                     "resolvedExpression" => [$expressionGroup],
                 ];
                 $asinItemMap[$asin] = $item;
+            }
+
+            // 批量更新negativeTarget状态为enabled
+            if (count($updatePayloads) > 0) {
+                foreach (array_chunk($updatePayloads, 1000) as $chunk) {
+                    $this->log("{$sellerId} adGroupId:{$adGroupId} 更新negativeTarget状态为enabled: " . count($chunk) . "个");
+                    $result = $spApi->updateNegativeTarget($sellerId, $chunk);
+                    $updatedCount += count($result['success'] ?? []);
+                    foreach ($result['success'] ?? [] as $targetId) {
+                        $this->log("✅ {$sellerId} 更新negativeTarget状态成功: targetId:{$targetId}");
+                    }
+                    foreach ($result['error'] ?? [] as $targetId) {
+                        $this->log("❌ {$sellerId} 更新negativeTarget状态失败: targetId:{$targetId}");
+                        $exportList[] = [
+                            "seller_id" => $sellerId,
+                            "ad_group_id" => $adGroupId,
+                            "asin" => "",
+                            "error" => "更新状态失败 targetId:{$targetId}",
+                        ];
+                    }
+                }
             }
 
             // 批量创建negativeTarget
@@ -190,7 +224,8 @@ class SpCreateNegativeTargetController
         $this->log("========== 处理汇总 ==========");
         $this->log("总数据数: {$totalCount}");
         $this->log("✅ 创建成功: {$createdCount}");
-        $this->log("⏭️ 已存在跳过: {$skippedCount}");
+        $this->log("🔄 更新状态为enabled: {$updatedCount}");
+        $this->log("⏭️ 已存在且enabled跳过: {$skippedCount}");
         $this->log("❌ 失败: " . count($exportList));
 
         if (count($exportList) > 0) {

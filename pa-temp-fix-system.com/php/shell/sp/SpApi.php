@@ -391,7 +391,7 @@ class SpApi
         }
     }
 
-    public function listTargetAsin($sellerId,$campaignId,$adGroupId,$targetIdList = "", $asinFilter = "")
+    public function listTargetAsin($sellerId,$campaignId,$adGroupId,$targetIdList = "", $asinFilter = "", $stateFilter = "")
     {
         $condition = ["campaignIdFilter" => $campaignId, "adGroupIdFilter" => $adGroupId];
         if($targetIdList != ""){
@@ -400,13 +400,16 @@ class SpApi
         if ($asinFilter !== "") {
             $condition["asinFilter"] = $asinFilter;
         }
+        if ($stateFilter !== "") {
+            $condition["stateFilter"] = $stateFilter;
+        }
 
         $resp = DataUtils::getResultData($this->curlService->phphk()->get("amazon/ad/productTargeting/getTargets/{$sellerId}", $condition));
         $targetAsinMap = [];
         if ($resp && isset($resp['data']) && count($resp['data']) > 0){
             foreach ($resp['data'] as $spInfo){
                 $asin = $spInfo['expression'][0]['value'];
-                $targetAsinMap[$asin] = ["targetId" => $spInfo['targetId'],"bid" => $spInfo['bid']];
+                $targetAsinMap[$asin] = ["targetId" => $spInfo['targetId'],"bid" => $spInfo['bid'],"state" => $spInfo['state']];
             }
         }
         return $targetAsinMap;
@@ -1180,13 +1183,15 @@ class SpApi
         return DataUtils::getResultData($this->curlService->s3023()->post("amazon_sp_negative_targets/", $createMongo));
     }
 
-    public function listKeyword($sellerId,$campaignId,$adGroupId,$matchTypeFilter = "",$keywordTextFilter ="")
+    public function listKeyword($sellerId,$campaignId,$adGroupId,$matchTypeFilter = "",$keywordTextFilter ="",$stateFilter = "enabled")
     {
         $condition = [
             "campaignIdFilter" => $campaignId,
             "adGroupIdFilter" => $adGroupId,
-            "stateFilter" => "enabled"
         ];
+        if (!empty($stateFilter)) {
+            $condition["stateFilter"] = $stateFilter;
+        }
         if(!empty($matchTypeFilter)){
             $condition["matchTypeFilter"] = $matchTypeFilter;
         }
@@ -1198,7 +1203,7 @@ class SpApi
         if ($resp && isset($resp['data']) && count($resp['data']) > 0){
             foreach ($resp['data'] as $spInfo){
                 $key = "{$spInfo['matchType']}_{$spInfo['keywordText']}";
-                $keywordMap[$key] = ["keywordId" => $spInfo['keywordId'],"bid" => $spInfo['bid']];
+                $keywordMap[$key] = ["keywordId" => $spInfo['keywordId'],"bid" => $spInfo['bid'],"state" => $spInfo['state']];
             }
         }
         return $keywordMap;

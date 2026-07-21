@@ -672,7 +672,12 @@ class ExcelUtils
                 $columnLetters = rtrim($cellReference, '0123456789');
                 $columnIndex = $this->_columnLettersToIndex($columnLetters);
                 $cellType = (string) $reader->getAttribute('t');
-                $cells[$columnIndex] = $this->_readXlsxCellValue($reader, $cellType, $sharedStrings);
+                // 自闭合<c/>元素没有子节点，直接设为空字符串，避免_readXlsxCellValue的while循环越过行边界
+                if ($reader->isEmptyElement) {
+                    $cells[$columnIndex] = '';
+                } else {
+                    $cells[$columnIndex] = $this->_readXlsxCellValue($reader, $cellType, $sharedStrings);
+                }
                 continue;
             }
 

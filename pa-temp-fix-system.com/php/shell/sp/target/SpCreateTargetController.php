@@ -79,6 +79,7 @@ class SpCreateTargetController
         $exportList = [];
         $createdCount = 0;
         $skippedCount = 0;
+        $updatedCount = 0;
 
         foreach ($groupedData as $groupKey => $items) {
             $sellerId = $items[0]['sellerId'];
@@ -127,17 +128,30 @@ class SpCreateTargetController
             }
             $defaultBid = $adGroupInfo['defaultBid'] ?? null;
 
-            // 查询Amazon已有的target
-            $existingTargets = $spApi->listTargetAsin($sellerId, $campaignId, $adGroupId);
+            // 查询Amazon已有的target（所有状态）
+            $existingTargets = $spApi->listTargetAsin($sellerId, $campaignId, $adGroupId, "", "", "");
             $this->log("{$sellerId} adGroupId:{$adGroupId} 已有target " . count($existingTargets) . "个");
 
-            // 检查哪些需要新建
+            // 检查哪些需要新建，哪些需要更新状态
             $createPayloads = [];
+            $updatePayloads = []; // 需要更新状态为enabled的target
             foreach ($items as $item) {
                 $asin = $item['asin'];
                 if (isset($existingTargets[$asin])) {
-                    $skippedCount++;
-                    $this->log("⏭️ {$sellerId} target已存在: {$asin}");
+                    $existingInfo = $existingTargets[$asin];
+                    $existingState = $existingInfo['state'] ?? '';
+                    if ($existingState !== 'enabled') {
+                        // 已存在但非enabled，更新状态为enabled
+                        $updatePayloads[] = [
+                            "targetId" => (int)$existingInfo['targetId'],
+                            "state" => "enabled",
+                        ];
+                        $this->log("🔄 {$sellerId} target已存在但非enabled({$existingState})，将更新: {$asin} targetId:{$existingInfo['targetId']}");
+                    } else {
+                        // 已存在且enabled，跳过
+                        $skippedCount++;
+                        $this->log("⏭️ {$sellerId} target已存在且enabled: {$asin}");
+                    }
                     continue;
                 }
 
@@ -155,6 +169,28 @@ class SpCreateTargetController
                     "expression" => [$expressionGroup],
                     "resolvedExpression" => [$expressionGroup],
                 ];
+            }
+
+            // 批量更新target状态为enabled
+            if (count($updatePayloads) > 0) {
+                foreach (array_chunk($updatePayloads, 1000) as $chunk) {
+                    $this->log("{$sellerId} adGroupId:{$adGroupId} 更新target状态为enabled: " . count($chunk) . "个");
+                    $result = $spApi->updateTarget($sellerId, $chunk);
+                    $updatedCount += count($result['success'] ?? []);
+                    foreach ($result['success'] ?? [] as $targetId) {
+                        $this->log("✅ {$sellerId} 更新target状态成功: targetId:{$targetId}");
+                    }
+                    foreach ($result['error'] ?? [] as $targetId) {
+                        $this->log("❌ {$sellerId} 更新target状态失败: targetId:{$targetId}");
+                        $exportList[] = [
+                            "seller_id" => $sellerId,
+                            "ad_group_id" => $adGroupId,
+                            "asin" => "",
+                            "bid" => "",
+                            "error" => "更新状态失败 targetId:{$targetId}",
+                        ];
+                    }
+                }
             }
 
             // 批量创建target
@@ -196,7 +232,8 @@ class SpCreateTargetController
         $this->log("========== 处理汇总 ==========");
         $this->log("总数据数: {$totalCount}");
         $this->log("✅ 创建成功: {$createdCount}");
-        $this->log("⏭️ 已存在跳过: {$skippedCount}");
+        $this->log("🔄 更新状态为enabled: {$updatedCount}");
+        $this->log("⏭️ 已存在且enabled跳过: {$skippedCount}");
         $this->log("❌ 失败: " . count($exportList));
 
         if (count($exportList) > 0) {
@@ -321,8 +358,8 @@ class SpCreateTargetController
                 continue;
             }
 
-            // 查询Amazon已有的target
-            $existingTargets = $spApi->listTargetAsin($sellerId, $campaignId, $adGroupId);
+            // 查询Amazon已有的target（所有状态）
+            $existingTargets = $spApi->listTargetAsin($sellerId, $campaignId, $adGroupId, "", "", "");
             $this->log("{$sellerId} adGroupId:{$adGroupId} Amazon已有target " . count($existingTargets) . "个");
 
             // 逐条校验

@@ -53,8 +53,8 @@ class SpCreateNegativeKeywordController
                     return;
                 }
 
-                // M6精准否定keyword无否定类型列，全部为exact精准否定
-                $matchType = 'exact';
+                // M6精准否定keyword无否定类型列，全部为negativeExact精准否定
+                $matchType = 'negativeExact';
 
                 $groupKey = "{$sellerId}_{$adGroupId}";
                 $groupedData[$groupKey][] = [
@@ -81,6 +81,7 @@ class SpCreateNegativeKeywordController
         $exportList = [];
         $createdCount = 0;
         $skippedCount = 0;
+        $updatedCount = 0;
 
         foreach ($groupedData as $groupKey => $items) {
             $sellerId = $items[0]['sellerId'];
@@ -127,8 +128,8 @@ class SpCreateNegativeKeywordController
                 continue;
             }
 
-            // 查询Amazon已有的negativeKeyword
-            $existingList = $spApi->listNegativeKeyword($sellerId, [$campaignId], [$adGroupId], "enabled");
+            // 查询Amazon已有的negativeKeyword（所有状态）
+            $existingList = $spApi->listNegativeKeyword($sellerId, [$campaignId], [$adGroupId], "");
             $existingMap = [];
             foreach ($existingList as $info) {
                 $key = "{$info['matchType']}_{$info['keywordText']}";
@@ -136,13 +137,25 @@ class SpCreateNegativeKeywordController
             }
             $this->log("{$sellerId} adGroupId:{$adGroupId} 已有negativeKeyword " . count($existingMap) . "个");
 
-            // 检查哪些需要新建
+            // 检查哪些需要新建，哪些需要更新状态
             $createPayloads = [];
+            $updatePayloads = []; // 需要更新状态为enabled的negativeKeyword
             foreach ($items as $item) {
                 $key = "{$item['matchType']}_{$item['keywordText']}";
                 if (isset($existingMap[$key])) {
-                    $skippedCount++;
-                    $this->log("⏭️ {$sellerId} negativeKeyword已存在: {$key}");
+                    $existingState = $existingMap[$key]['state'] ?? '';
+                    if ($existingState !== 'enabled') {
+                        // 已存在但非enabled，更新状态为enabled
+                        $updatePayloads[] = [
+                            "keywordId" => (int)$existingMap[$key]['keywordId'],
+                            "state" => "enabled",
+                        ];
+                        $this->log("🔄 {$sellerId} negativeKeyword已存在但非enabled({$existingState})，将更新: {$key} keywordId:{$existingMap[$key]['keywordId']}");
+                    } else {
+                        // 已存在且enabled，跳过
+                        $skippedCount++;
+                        $this->log("⏭️ {$sellerId} negativeKeyword已存在且enabled: {$key}");
+                    }
                     continue;
                 }
 
@@ -153,6 +166,28 @@ class SpCreateNegativeKeywordController
                     "matchType" => $item['matchType'],
                     "state" => "enabled",
                 ];
+            }
+
+            // 批量更新negativeKeyword状态为enabled
+            if (count($updatePayloads) > 0) {
+                foreach (array_chunk($updatePayloads, 1000) as $chunk) {
+                    $this->log("{$sellerId} adGroupId:{$adGroupId} 更新negativeKeyword状态为enabled: " . count($chunk) . "个");
+                    $result = $spApi->updateNegativeKeyword($sellerId, $chunk);
+                    $updatedCount += count($result['success'] ?? []);
+                    foreach ($result['success'] ?? [] as $keywordId) {
+                        $this->log("✅ {$sellerId} 更新negativeKeyword状态成功: keywordId:{$keywordId}");
+                    }
+                    foreach ($result['error'] ?? [] as $keywordId) {
+                        $this->log("❌ {$sellerId} 更新negativeKeyword状态失败: keywordId:{$keywordId}");
+                        $exportList[] = [
+                            "seller_id" => $sellerId,
+                            "ad_group_id" => $adGroupId,
+                            "keyword_text" => "",
+                            "match_type" => "",
+                            "error" => "更新状态失败 keywordId:{$keywordId}",
+                        ];
+                    }
+                }
             }
 
             // 批量创建negativeKeyword
@@ -187,7 +222,8 @@ class SpCreateNegativeKeywordController
         $this->log("========== 处理汇总 ==========");
         $this->log("总数据数: {$totalCount}");
         $this->log("✅ 创建成功: {$createdCount}");
-        $this->log("⏭️ 已存在跳过: {$skippedCount}");
+        $this->log("🔄 更新状态为enabled: {$updatedCount}");
+        $this->log("⏭️ 已存在且enabled跳过: {$skippedCount}");
         $this->log("❌ 失败: " . count($exportList));
 
         if (count($exportList) > 0) {
@@ -239,7 +275,7 @@ class SpCreateNegativeKeywordController
                 }
 
                 // M6精准否定keyword无否定类型列，全部为exact精准否定
-                $matchType = 'exact';
+                $matchType = 'negativeExact';
 
                 $groupKey = "{$sellerId}_{$adGroupId}";
                 $groupedData[$groupKey][] = [
