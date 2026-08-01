@@ -20,214 +20,6 @@ class SpPausedProductController
         $this->log->log2($string);
     }
 
-    public function dingTalk(){
-        $proCurlService = new CurlService();
-        $ali = $proCurlService->test()->phpali();
-
-        $datetime = date("Y-m-d H:i:s",time());
-        $postData = array(
-            'userType' => 'userName',
-            'userIdList' => "zhouangang",
-            'title' => "【product广告写入暂停完毕】提醒",
-            'msg' => [
-                [
-                    "key" => "",
-                    "value" => "{$datetime} product广告写入暂停完毕"
-                ]
-            ]
-        );
-        $ali->post("dingding/sendOaNotice",$postData);
-        return $this;
-    }
-
-    public function pausedProducts($channel = "",$page = 0){
-        $this->log("开始处理:{$channel}_$page");
-        $excelUtils = new ExcelUtils();
-        $curlService = (new CurlService())->pro();
-        $redisService = new RedisService();
-        $spApi = new SpApi();
-        $sellerIdAdId = [];
-        try {
-            $excelUtils->eachXlsxRow(__DIR__."/excel/广告关停清单{$channel}_{$page}.xlsx", function ($item) use (&$sellerIdAdId) {
-                if (!empty($item['adid'])) {
-                    $sellerIdAdId[$item['sellerid']][] = $item['adid'];
-                }
-            });
-        } catch (Exception $e) {
-            die($e->getLine() . " : " . $e->getMessage());
-        }
-        if (count($sellerIdAdId) > 0) {
-            $exportList = [];
-            foreach ($sellerIdAdId as $sellerId => $adIds){
-                $sellerAdList = $redisService->hGetAll("spProduct_{$sellerId}");
-                $this->log("{$sellerId} 数量: " . count($sellerAdList) . "个");
-
-                $lastIds = [];
-                $idWithAdId = [];
-                foreach ($adIds as $adId){
-                    if (!isset($sellerAdList[$adId]) || !$sellerAdList[$adId]){
-                        $lastIds[] = $adId;
-                    }
-                    $idWithAdId[] = [
-                        "adId" => $adId,
-                        "state" => "paused"
-                    ];
-                }
-
-
-                foreach (array_chunk($lastIds,200) as $chunk){
-                    $list = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_products/queryPage", [
-                        "channel" => $sellerId,
-                        "adId_in" => implode(',', $chunk),
-                        "limit" => 200
-                    ]));
-                    if (count($list) > 0){
-                        foreach ($list as &$info){
-                            $seller = $spApi->specialSellerIdReverseConver($info['channel']);
-                            $redisService->hSet("spProduct_{$seller}",$info['adId'],$info['_id']);
-                            $sellerAdList[$info['adId']] = $info['_id'];
-                        }
-                    }
-                }
-
-
-                if (count($idWithAdId) > 0){
-                    foreach (array_chunk($idWithAdId,200) as $chunk){
-                        $this->log(json_encode($chunk, JSON_UNESCAPED_UNICODE));
-                        $pausedAdIdResult = $spApi->pausedProduct($sellerId,$chunk);
-                        if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0){
-                            //成功的adId；
-                            $this->log("{$sellerId} 关停成功: " . count($pausedAdIdResult['success']) . "个");
-                            foreach ($pausedAdIdResult['success'] as $adId){
-                                if (isset($sellerAdList[$adId]) && $sellerAdList[$adId]){
-                                    $_id = $sellerAdList[$adId];
-                                    $spApi->mongoUpdateProduct($_id, $adId, "paused");
-                                }
-                            }
-                        }
-                        if (isset($pausedAdIdResult['error']) && count($pausedAdIdResult['error']) > 0){
-                            //失败的adId
-                            $this->log("{$sellerId} 关停失败: " . count($pausedAdIdResult['error']) . "个");
-                            foreach ($pausedAdIdResult['error'] as $adId){
-                                $exportList[] = [
-                                    "sellerId" => $sellerId,
-                                    "adId" => "'" . $adId,
-                                ];
-                            }
-                        }
-
-
-                    }
-                }
-            }
-
-            if (count($exportList) > 0){
-                $excelUtils = new ExcelUtils("sp/product/");
-                $filePath = $excelUtils->downloadXlsx([
-                    "seller_id",
-                    "adid",
-                ], $exportList, "关停失败的adId_" . date("YmdHis") . ".xlsx");
-            }
-
-        }
-
-    }
-
-
-    public function findNoArchivedPausedProducts($channel = "",$page = 0){
-        $this->log("开始处理:{$channel}_$page");
-        $excelUtils = new ExcelUtils();
-        $curlService = (new CurlService())->pro();
-        $redisService = new RedisService();
-        $spApi = new SpApi();
-        $sellerIdAdId = [];
-        try {
-            $excelUtils->eachXlsxRow(__DIR__."/excel/广告关停清单{$channel}_{$page}.xlsx", function ($item) use (&$sellerIdAdId) {
-                if (!empty($item['adid'])) {
-                    $sellerIdAdId[$item['sellerid']][] = $item['adid'];
-                }
-            });
-        } catch (Exception $e) {
-            die($e->getLine() . " : " . $e->getMessage());
-        }
-        if (count($sellerIdAdId) > 0) {
-            $exportList = [];
-            foreach ($sellerIdAdId as $sellerId => $adIds){
-                $sellerAdList = $redisService->hGetAll("spProduct_{$sellerId}");
-                $this->log("{$sellerId} 数量: " . count($sellerAdList) . "个");
-
-                $lastIds = [];
-                $idWithAdId = [];
-                foreach ($adIds as $adId){
-                    if (!isset($sellerAdList[$adId]) || !$sellerAdList[$adId]){
-                        $lastIds[] = $adId;
-                    }
-                    $idWithAdId[] = [
-                        "adId" => $adId,
-                        "state" => "paused"
-                    ];
-                }
-
-
-                foreach (array_chunk($lastIds,200) as $chunk){
-                    $list = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_products/queryPage", [
-                        "channel" => $sellerId,
-                        "adId_in" => implode(',', $chunk),
-                        "limit" => 200
-                    ]));
-                    if (count($list) > 0){
-                        foreach ($list as &$info){
-                            $seller = $spApi->specialSellerIdReverseConver($info['channel']);
-                            $redisService->hSet("spProduct_{$seller}",$info['adId'],$info['_id']);
-                            $sellerAdList[$info['adId']] = $info['_id'];
-                        }
-                    }
-                }
-
-
-                if (count($idWithAdId) > 0){
-                    foreach (array_chunk($idWithAdId,200) as $chunk){
-                        $this->log(json_encode($chunk, JSON_UNESCAPED_UNICODE));
-                        $pausedAdIdResult = $spApi->pausedProduct($sellerId,$chunk);
-                        if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0){
-                            //成功的adId；
-                            $this->log("{$sellerId} 关停成功: " . count($pausedAdIdResult['success']) . "个");
-                            foreach ($pausedAdIdResult['success'] as $adId){
-                                if (isset($sellerAdList[$adId]) && $sellerAdList[$adId]){
-                                    $_id = $sellerAdList[$adId];
-                                    $spApi->mongoUpdateProduct($_id, $adId, "paused");
-                                }
-                            }
-                        }
-                        if (isset($pausedAdIdResult['error']) && count($pausedAdIdResult['error']) > 0){
-                            //失败的adId
-                            $this->log("{$sellerId} 关停失败: " . count($pausedAdIdResult['error']) . "个");
-                            foreach ($pausedAdIdResult['error'] as $adId){
-                                $exportList[] = [
-                                    "sellerId" => $sellerId,
-                                    "adId" => "'" . $adId,
-                                ];
-                            }
-                        }
-
-
-                    }
-                }
-            }
-
-            if (count($exportList) > 0){
-                $excelUtils = new ExcelUtils("sp/product/");
-                $filePath = $excelUtils->downloadXlsx([
-                    "seller_id",
-                    "adid",
-                ], $exportList, "关停失败的adId_" . date("YmdHis") . ".xlsx");
-            }
-
-        }
-
-    }
-
-
 
     /**
      * 校验product广告状态是否正确修改为paused
@@ -284,7 +76,7 @@ class SpPausedProductController
                                 $this->log("❌ {$sellerId} adId:{$adId} 状态异常: 期望paused, 实际{$actualState}");
                                 $exportList[] = [
                                     "seller_id" => $sellerId,
-                                    "ad_id" => "'" . $adId,
+                                    "ad_id" => (string)$adId,
                                     "actual_state" => $actualState,
                                     "expected_state" => "paused",
                                 ];
@@ -294,7 +86,7 @@ class SpPausedProductController
                             $this->log("⚠️ {$sellerId} adId:{$adId} Amazon API未返回该adId数据");
                             $exportList[] = [
                                 "seller_id" => $sellerId,
-                                "ad_id" => "'" . $adId,
+                                "ad_id" => (string)$adId,
                                 "actual_state" => "not_found",
                                 "expected_state" => "paused",
                             ];
@@ -318,7 +110,7 @@ class SpPausedProductController
                     "ad_id",
                     "actual_state",
                     "expected_state",
-                ], $exportList, "校验异常_product_" . ($channel ?: 'all') . "_" . date("YmdHis") . ".xlsx");
+                ], $exportList, "校验异常_product_" . ($channel ?: 'all') . "_" . date("YmdHis") . ".xlsx", [0, 1]);
                 $this->log("异常数据已导出: {$filePath}");
             } else {
                 $this->log("所有product广告状态校验通过，无异常数据");
@@ -339,11 +131,7 @@ class SpPausedProductController
      * @param string $channel 必填，按channel过滤数据，可选值: amazon_us, amazon_uk, amazon_ca等
      */
     public function pausedProductV2s($file = "",$channel = ""){
-        if (empty($channel)) {
-            $this->log("channel参数必填，可选值: amazon_us, amazon_uk, amazon_ca");
-            die("channel参数必填，可选值: amazon_us, amazon_uk, amazon_ca\n");
-        }
-        $this->log("pausedProductV2s 开始处理 file:{$file} channel:{$channel}");
+        $this->log("pausedProductV2s 开始处理 file:{$file} channel:" . ($channel ?: '全部'));
         $excelUtils = new ExcelUtils();
         $curlService = (new CurlService())->pro();
         $redisService = new RedisService();
@@ -352,7 +140,7 @@ class SpPausedProductController
         $totalAdIdCount = 0;
         try {
             $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$sellerIdAdId, &$totalAdIdCount, $channel) {
-                if (!empty($item['ad_id']) && isset($item['channel']) && $item['channel'] == $channel) {
+                if (!empty($item['ad_id']) && (empty($channel) || (isset($item['channel']) && $item['channel'] == $channel))) {
                     $sellerIdAdId[$item['seller_id']][] = $item['ad_id'];
                     $totalAdIdCount++;
                 }
@@ -361,7 +149,7 @@ class SpPausedProductController
             die($e->getLine() . " : " . $e->getMessage());
         }
 
-        $this->log("channel:{$channel} 共 " . count($sellerIdAdId) . " 个seller, {$totalAdIdCount} 个adId");
+        $this->log("channel:" . ($channel ?: '全部') . " 共 " . count($sellerIdAdId) . " 个seller, {$totalAdIdCount} 个adId");
 
         if (count($sellerIdAdId) > 0) {
             $exportList = [];
@@ -417,8 +205,8 @@ class SpPausedProductController
                             $this->log("{$sellerId} 关停失败: " . count($pausedAdIdResult['error']) . "个");
                             foreach ($pausedAdIdResult['error'] as $adId){
                                 $exportList[] = [
-                                    "sellerId" => $sellerId,
-                                    "adId" => "'" . $adId,
+                                    "seller_id" => $sellerId,
+                                    "adid" => (string)$adId,
                                 ];
                             }
                         }
@@ -433,12 +221,12 @@ class SpPausedProductController
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "adid",
-                ], $exportList, "关停失败的adId_{$channel}_" . date("YmdHis") . ".xlsx");
+                ], $exportList, "关停失败的adId_" . ($channel ?: 'all') . "_" . date("YmdHis") . ".xlsx", [0, 1]);
             }
 
-            $this->log("pausedProductV2s channel:{$channel} 处理完毕");
+            $this->log("pausedProductV2s channel:" . ($channel ?: '全部') . " 处理完毕");
         } else {
-            $this->log("pausedProductV2s channel:{$channel} 无数据");
+            $this->log("pausedProductV2s channel:" . ($channel ?: '全部') . " 无数据");
         }
     }
 
@@ -464,10 +252,8 @@ if (isset($params['method']) && trim($params['method']) != '') {
     $method = $params['method'];
 }
 $con = new SpPausedProductController();
-if ($method == 'v2') {
-    $con->pausedProductV2s($file, $channel);
-} elseif ($method == 'verify') {
+if ($method == 'verify') {
     $con->verifyPausedProducts($file, $channel);
 } else {
-    $con->pausedProducts($channel, $page);
+    $con->pausedProductV2s($file, $channel);
 }

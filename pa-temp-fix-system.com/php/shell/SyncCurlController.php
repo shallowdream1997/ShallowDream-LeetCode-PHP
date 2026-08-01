@@ -1007,8 +1007,8 @@ class SyncCurlController
         $env = "pro";
 
         $data = [
-            "prePurchaseBillNo" => "DPMO251231003",
-            "ceBillNo" => "CE202601050017",
+            "prePurchaseBillNo" => "DPMO260720001",
+            "ceBillNo" => "CE202607240023",
             "operatorName" => "system(PA-CE回写)"
         ];
         $curlService1 = new CurlService();
@@ -6458,40 +6458,23 @@ class SyncCurlController
     public function deleteCeSku()
     {
 
-//        $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
-//
-//        foreach ([
-//            "CE202605070032",
-//            "CE202605070033",
-//            "CE202605070027",
-//            "CE202605070045",
-//            "CE202605070049",
-//
-//            "CE202605070036",
-//            "CE202605070037",
-//            "CE202605070039",
-//            "CE202605070042",
-//            "CE202605070043",
-//            "CE202605070047",
-//            "CE202605070028",
-//            "CE202605070030",
-//            "CE202605070046",
-//            "CE202605070050",
-//            "CE202605070040",
-//            "CE202605070044"
-//                 ] as $ceBillNo){
-//
-//            $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/scms/ce_bill_no/v1/deleteCeDetailByCeBillNo", [
-//                "ceBillNo" => $ceBillNo,
-//                "operatorName" => "system(zhouangang)",
-//                "reason"=>"删除重复CE单"
-//            ]));
-//            $map  =[];
-//            if ($getKeyResp){
-//                $this->log(json_encode($getKeyResp));
-//            }
-//        }
-//        die(11) ;
+        $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+
+        foreach ([
+            "CE202607180012",
+                 ] as $ceBillNo){
+
+            $getKeyResp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/scms/ce_bill_no/v1/deleteCeDetailByCeBillNo", [
+                "ceBillNo" => $ceBillNo,
+                "operatorName" => "system(zhouangang)",
+                "reason"=>"移除CE单"
+            ]));
+            $map  =[];
+            if ($getKeyResp){
+                $this->log(json_encode($getKeyResp));
+            }
+        }
+        die(11) ;
         $skuList = [
             "a26050700ux0452",
             "a26050700ux0453",
@@ -7324,7 +7307,7 @@ class SyncCurlController
 
 $curlController = new SyncCurlController();
 
-$curlController->initSguInfo();
+//$curlController->initSguInfo();
 //$curlController->deleteTestSku();
 //$curlController->checkPaProduct();
 //$curlController->updateSkuSellerConfig();
@@ -7403,7 +7386,7 @@ $curlController->initSguInfo();
 //$curlController->updateFcuProductLine();
 //$curlController->getPaSkuMaterial();
 //$curlController->syncAllVerticalMonthlTargets();
-//$curlController->ceWrite();
+$curlController->ceWrite();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
 //$curlController->writeProductBaseFba();
