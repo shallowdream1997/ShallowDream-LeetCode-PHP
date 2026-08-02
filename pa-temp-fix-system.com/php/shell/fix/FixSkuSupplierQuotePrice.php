@@ -450,7 +450,7 @@ class FixSkuSupplierQuotePrice
 }
 
 // ========== 脚本入口 ==========
-
+if (PHP_SAPI === 'cli' && realpath($argv[0] ?? '') === __FILE__) {
 $env = isset($argv[1]) ? $argv[1] : 'pro';
 $ceBillNos = isset($argv[2]) ? $argv[2] : '';
 $dryRunStr = isset($argv[3]) ? $argv[3] : 'true';
@@ -474,8 +474,6 @@ if (empty($ceBillNos)) {
     exit(1);
 }
 
-// ===== 以下为 CLI 直接执行脚本时的入口(被 autoload/require 或 web 访问时不会执行) =====
-if (PHP_SAPI === 'cli' && realpath($argv[0] ?? '') === __FILE__) {
 $ceBillNoList = array_map('trim', explode(',', $ceBillNos));
 $dryRun = $dryRunStr !== 'false';
 $filterSkuIds = !empty($filterSkuIdsStr) ? array_map('trim', explode(',', $filterSkuIdsStr)) : array();

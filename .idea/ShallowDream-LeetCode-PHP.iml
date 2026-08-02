@@ -3,8 +3,6 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/pa-temp-fix-system.com/extends/PHPExcel-1.8/Classes" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/newPaFix/app" isTestSource="false" packagePrefix="App\" />
-      <sourceFolder url="file://$MODULE_DIR$/newPaFix/extends/PHPExcel-1.8/Classes" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/pa-temp-fix-system.com/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/pa-temp-fix-system.com/vendor/logger-one/logger-one" />
       <excludeFolder url="file://$MODULE_DIR$/pa-temp-fix-system.com/vendor/monolog/monolog" />
