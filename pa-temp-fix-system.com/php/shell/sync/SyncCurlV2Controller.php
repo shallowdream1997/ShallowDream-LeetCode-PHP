@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(__FILE__) . "/../../../php/requiredfile/requiredfile.php");
-require_once(dirname(__FILE__) . "/../../ProductSkuController.php");
+require_once(dirname(__FILE__) . "/../ProductSkuController.php");
 
 /**
  * 优化后的 SyncCurl 控制器
