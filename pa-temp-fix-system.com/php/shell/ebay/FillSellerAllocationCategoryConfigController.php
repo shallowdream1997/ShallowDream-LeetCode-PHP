@@ -1,8 +1,5 @@
 <?php
-require_once(dirname(__FILE__) . "/../../php/requiredfile/requiredfile.php");
-require_once(dirname(__FILE__) . "/../../php/class/Logger.php");
-require_once(dirname(__FILE__) . "/../../php/utils/DataUtils.php");
-require_once(dirname(__FILE__) . "/../../php/curl/CurlService.php");
+require_once(dirname(__FILE__) . "/../../../php/requiredfile/requiredfile.php");
 
 class FillSellerAllocationCategoryConfigController
 {
@@ -188,6 +185,8 @@ class FillSellerAllocationCategoryConfigController
     }
 }
 
+// ===== 以下为 CLI 直接执行脚本时的入口(被 autoload/require 或 web 访问时不会执行) =====
+if (PHP_SAPI === 'cli' && realpath($argv[0] ?? '') === __FILE__) {
 $parameters = DataUtils::ExplainArgv(@$argv, array());
 $params = (count(@$argv) > 1) ? $parameters : $_REQUEST;
 $env = trim((string)($params['env'] ?? 'pro'));
@@ -196,3 +195,4 @@ $outputFile = trim((string)($params['output'] ?? dirname(__FILE__) . "/../export
 
 $controller = new FillSellerAllocationCategoryConfigController($env);
 $controller->handle($inputFile, $outputFile);
+}

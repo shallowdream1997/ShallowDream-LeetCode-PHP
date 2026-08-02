@@ -1,9 +1,5 @@
 <?php
-require_once(dirname(__FILE__) . "/../../php/requiredfile/requiredfile.php");
-require_once(dirname(__FILE__) . "/../../php/class/Logger.php");
-require_once(dirname(__FILE__) . "/../../php/utils/DataUtils.php");
-require_once(dirname(__FILE__) . "/../../php/curl/CurlService.php");
-require_once(dirname(__FILE__) . "/../../php/utils/RequestUtils.php");
+require_once(dirname(__FILE__) . "/../../../php/requiredfile/requiredfile.php");
 
 class SpPausedAdGroupController
 {
@@ -1547,11 +1543,14 @@ class SpPausedAdGroupController
     }
 }
 
+// ===== 以下为 CLI 直接执行脚本时的入口(被 autoload/require 或 web 访问时不会执行) =====
+if (PHP_SAPI === 'cli' && realpath($argv[0] ?? '') === __FILE__) {
 $con = new SpPausedAdGroupController();
 //$con->pausedAdGroup();
 //$con->supplementAdGroupWithAsinAds();
 //$con->closeAdGroupWithOpenNewAsinAds();
 $con->closeAdGroupWithOpenNewKeywordAds();
+}
 
 
 //$con->listFixSpData();

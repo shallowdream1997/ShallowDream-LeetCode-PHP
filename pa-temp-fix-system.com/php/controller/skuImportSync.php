@@ -2,7 +2,7 @@
 require dirname(__FILE__) . '/../../vendor/autoload.php';
 require_once dirname(__FILE__) . '/../requiredfile/requiredChorm.php';
 require_once dirname(__FILE__) . '/../utils/ExcelUtils.php';
-require_once dirname(__FILE__) . '/../shell/SyncProductSku.php';
+require_once dirname(__FILE__) . '/../shell/sync/SyncProductSku.php';
 require_once dirname(__FILE__) . '/../class/Logger.php';
 
 /**
