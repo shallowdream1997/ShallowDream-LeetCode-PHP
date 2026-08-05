@@ -242,15 +242,16 @@ class SpUpdateKeywordBidController
 
             $keywordUpdateList = [];
             $keywordSkipCount = 0;
+            $keywordNotFoundIds = []; // keyword查不到的id，需要顺延到target查询
             foreach ($idBidMap as $id => $bid) {
                 $newBid = (float) $bid;
                 if (!isset($currentKeywordBidMap[$id])) {
-                    // archived或未查到，跳过
+                    // keyword查不到，顺延到target查询
+                    $keywordNotFoundIds[] = $id;
                     continue;
                 }
-                if (abs($currentKeywordBidMap[$id] - $newBid) < 0.001) {
+                if (bccomp($currentKeywordBidMap[$id], $newBid, 2) === 0) {
                     $keywordSkipCount++;
-                    $this->log("⏭️ {$sellerId} id:{$id} (keyword) bid相同({$newBid})，跳过");
                     continue;
                 }
                 $keywordUpdateList[] = [
@@ -261,8 +262,11 @@ class SpUpdateKeywordBidController
             if ($keywordArchivedCount > 0) {
                 $this->log("{$sellerId} 跳过archived的keyword: {$keywordArchivedCount}个");
             }
+            if (count($keywordNotFoundIds) > 0) {
+                $this->log("{$sellerId} keyword未查到的id: " . count($keywordNotFoundIds) . "个，将顺延到target查询");
+            }
             if ($keywordSkipCount > 0) {
-                $this->log("{$sellerId} 跳过bid相同的keyword: {$keywordSkipCount}个");
+                $this->log("{$sellerId} bid已一致的keyword: {$keywordSkipCount}个，跳过");
             }
 
             $keywordSuccessIds = [];
@@ -311,10 +315,10 @@ class SpUpdateKeywordBidController
                 }
             }
 
-            // ===== 第二步：keyword调整bid失败的id，查询target当前bid和state，跳过archived和bid相同的，再尝试作为target调整bid =====
-            $keywordFailedIds = array_values(array_unique($keywordFailedIds));
+            // ===== 第二步：keyword调整bid失败的id + keyword查不到的id，查询target当前bid和state，跳过archived和bid相同的，再尝试作为target调整bid =====
+            $keywordFailedIds = array_values(array_unique(array_merge($keywordFailedIds, $keywordNotFoundIds)));
             if (count($keywordFailedIds) > 0) {
-                $this->log("{$sellerId} 有 " . count($keywordFailedIds) . " 个id keyword调整失败，尝试作为target调整bid");
+                $this->log("{$sellerId} 有 " . count($keywordFailedIds) . " 个id (keyword失败" . count(array_unique(array_diff($keywordFailedIds, $keywordNotFoundIds))) . "个 + keyword未查到" . count($keywordNotFoundIds) . "个)，尝试作为target调整bid");
 
                 // 查询target当前bid和state
                 $currentTargetBidMap = [];
@@ -336,15 +340,16 @@ class SpUpdateKeywordBidController
 
                 $targetUpdateList = [];
                 $targetSkipCount = 0;
+                $targetNotFoundIds = []; // target也查不到的id
                 foreach ($keywordFailedIds as $id) {
                     $newBid = (float) $idBidMap[$id];
                     if (!isset($currentTargetBidMap[$id])) {
-                        // archived或未查到，跳过
+                        // target也查不到，记录下来
+                        $targetNotFoundIds[] = $id;
                         continue;
                     }
-                    if (abs($currentTargetBidMap[$id] - $newBid) < 0.001) {
+                    if (bccomp($currentTargetBidMap[$id], $newBid, 2) === 0) {
                         $targetSkipCount++;
-                        $this->log("⏭️ {$sellerId} id:{$id} (target) bid相同({$newBid})，跳过");
                         continue;
                     }
                     $targetUpdateList[] = [
@@ -355,8 +360,11 @@ class SpUpdateKeywordBidController
                 if ($targetArchivedCount > 0) {
                     $this->log("{$sellerId} 跳过archived的target: {$targetArchivedCount}个");
                 }
+                if (count($targetNotFoundIds) > 0) {
+                    $this->log("{$sellerId} keyword和target都查不到的id: " . count($targetNotFoundIds) . "个");
+                }
                 if ($targetSkipCount > 0) {
-                    $this->log("{$sellerId} 跳过bid相同的target: {$targetSkipCount}个");
+                    $this->log("{$sellerId} bid已一致的target: {$targetSkipCount}个，跳过");
                 }
 
                 $targetSuccessIds = [];
@@ -405,15 +413,15 @@ class SpUpdateKeywordBidController
                     }
                 }
 
-                // ===== 第三步：keyword和target都调整失败的id =====
-                $targetFailedIds = array_values(array_unique($targetFailedIds));
+                // ===== 第三步：keyword和target都调整失败的id（不含not_found，状态异常不统计） =====
                 if (count($targetFailedIds) > 0) {
-                    $this->log("{$sellerId} 有 " . count($targetFailedIds) . " 个id keyword和target调整bid都失败");
+                    $this->log("{$sellerId} 有 " . count($targetFailedIds) . " 个id更新bid失败");
+                    $sellerChannel = $spApi->sellerConfig($sellerId);
                     foreach ($targetFailedIds as $id) {
                         $exportList[] = [
-                            "sellerId" => $sellerId,
-                            "id" => $id,
-                            "type" => "failed",
+                            "channel" => $sellerChannel ?: $channelLabel,
+                            "seller_id" => $sellerId,
+                            "keyword_id" => (string)$id,
                             "bid" => $idBidMap[$id],
                         ];
                     }
@@ -424,9 +432,9 @@ class SpUpdateKeywordBidController
         if (count($exportList) > 0) {
             $excelUtils = new ExcelUtils("sp/keyword/");
             $excelUtils->downloadXlsx([
+                "channel",
                 "seller_id",
-                "id",
-                "type",
+                "keyword_id",
                 "bid",
             ], $exportList, "调整bid失败_{$channelLabel}_" . date("YmdHis") . ".xlsx");
         }
@@ -467,7 +475,8 @@ class SpUpdateKeywordBidController
         try {
             $excelUtils->eachXlsxRow($filePath, function ($item) use (&$sellerIdBidMap, &$totalIdCount) {
                 $sellerId = trim($item['seller_id'] ?? '');
-                $id = trim(sprintf('%.0f', (float)($item['id'] ?? 0)), "'");
+                // 兼容两种格式：新格式用keyword_id，旧格式用id
+                $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? ($item['id'] ?? 0))), "'");
                 $bid = trim((string)($item['bid'] ?? ''));
                 if ($sellerId !== "" && $id !== "" && $id !== "0" && $bid !== "") {
                     $sellerIdBidMap[$sellerId][$id] = $bid;
@@ -514,14 +523,16 @@ class SpUpdateKeywordBidController
 
             $keywordUpdateList = [];
             $keywordSkipCount = 0;
+            $keywordNotFoundIds = []; // keyword查不到的id，需要顺延到target查询
             foreach ($idBidMap as $id => $bid) {
                 $newBid = (float) $bid;
                 if (!isset($currentKeywordBidMap[$id])) {
+                    // keyword查不到，顺延到target查询
+                    $keywordNotFoundIds[] = $id;
                     continue;
                 }
-                if (abs($currentKeywordBidMap[$id] - $newBid) < 0.001) {
+                if (bccomp($currentKeywordBidMap[$id], $newBid, 2) === 0) {
                     $keywordSkipCount++;
-                    $this->log("⏭️ {$sellerId} id:{$id} (keyword) bid已一致({$newBid})，跳过");
                     continue;
                 }
                 $keywordUpdateList[] = [
@@ -532,8 +543,11 @@ class SpUpdateKeywordBidController
             if ($keywordArchivedCount > 0) {
                 $this->log("{$sellerId} 跳过archived的keyword: {$keywordArchivedCount}个");
             }
+            if (count($keywordNotFoundIds) > 0) {
+                $this->log("{$sellerId} keyword未查到的id: " . count($keywordNotFoundIds) . "个，将顺延到target查询");
+            }
             if ($keywordSkipCount > 0) {
-                $this->log("{$sellerId} 跳过bid已一致的keyword: {$keywordSkipCount}个");
+                $this->log("{$sellerId} bid已一致的keyword: {$keywordSkipCount}个，跳过");
             }
 
             $keywordSuccessIds = [];
@@ -582,10 +596,10 @@ class SpUpdateKeywordBidController
                 }
             }
 
-            // ===== 第二步：keyword仍然失败的，查询target当前bid，跳过bid相同的，尝试作为target =====
-            $keywordFailedIds = array_values(array_unique($keywordFailedIds));
+            // ===== 第二步：keyword仍然失败的 + keyword查不到的，查询target当前bid，跳过bid相同的，尝试作为target =====
+            $keywordFailedIds = array_values(array_unique(array_merge($keywordFailedIds, $keywordNotFoundIds)));
             if (count($keywordFailedIds) > 0) {
-                $this->log("{$sellerId} 有 " . count($keywordFailedIds) . " 个id keyword重试仍失败，尝试作为target调整bid");
+                $this->log("{$sellerId} 有 " . count($keywordFailedIds) . " 个id (keyword重试失败" . count(array_unique(array_diff($keywordFailedIds, $keywordNotFoundIds))) . "个 + keyword未查到" . count($keywordNotFoundIds) . "个)，尝试作为target调整bid");
 
                 $currentTargetBidMap = [];
                 $targetArchivedCount = 0;
@@ -606,9 +620,12 @@ class SpUpdateKeywordBidController
 
                 $targetUpdateList = [];
                 $targetSkipCount = 0;
+                $targetNotFoundIds = []; // target也查不到的id
                 foreach ($keywordFailedIds as $id) {
                     $newBid = (float) $idBidMap[$id];
                     if (!isset($currentTargetBidMap[$id])) {
+                        // target也查不到，记录下来
+                        $targetNotFoundIds[] = $id;
                         continue;
                     }
                     if (abs($currentTargetBidMap[$id] - $newBid) < 0.001) {
@@ -623,6 +640,9 @@ class SpUpdateKeywordBidController
                 }
                 if ($targetArchivedCount > 0) {
                     $this->log("{$sellerId} 跳过archived的target: {$targetArchivedCount}个");
+                }
+                if (count($targetNotFoundIds) > 0) {
+                    $this->log("{$sellerId} keyword和target都查不到的id: " . count($targetNotFoundIds) . "个");
                 }
                 if ($targetSkipCount > 0) {
                     $this->log("{$sellerId} 跳过bid已一致的target: {$targetSkipCount}个");
@@ -674,15 +694,15 @@ class SpUpdateKeywordBidController
                     }
                 }
 
-                // ===== 仍然失败的 =====
-                $targetFailedIds = array_values(array_unique($targetFailedIds));
+                // ===== 仍然失败的（不含not_found，状态异常不统计） =====
                 if (count($targetFailedIds) > 0) {
-                    $this->log("{$sellerId} 有 " . count($targetFailedIds) . " 个id keyword和target重试都失败");
+                    $this->log("{$sellerId} 有 " . count($targetFailedIds) . " 个id重试仍失败");
+                    $sellerChannel = $spApi->sellerConfig($sellerId);
                     foreach ($targetFailedIds as $id) {
                         $exportList[] = [
+                            "channel" => $sellerChannel ?: "",
                             "seller_id" => $sellerId,
-                            "id" => (string)$id,
-                            "type" => "failed",
+                            "keyword_id" => (string)$id,
                             "bid" => $idBidMap[$id],
                         ];
                     }
@@ -693,11 +713,11 @@ class SpUpdateKeywordBidController
         if (count($exportList) > 0) {
             $excelUtils = new ExcelUtils("sp/keyword/");
             $filePath = $excelUtils->downloadXlsx([
+                "channel",
                 "seller_id",
-                "id",
-                "type",
+                "keyword_id",
                 "bid",
-            ], $exportList, "重试bid仍失败_" . date("YmdHis") . ".xlsx", [1]);
+            ], $exportList, "重试bid仍失败_" . date("YmdHis") . ".xlsx");
             $this->log("仍失败数据已导出: {$filePath}");
         } else {
             $this->log("所有bid重试成功，无失败数据");
@@ -709,6 +729,7 @@ class SpUpdateKeywordBidController
     /**
      * 校验keyword/target广告的bid是否正确调整（不传channel则校验全部）
      * 先尝试作为keyword校验，查不到的再尝试作为target校验
+     * archived状态的数据不统计，只统计bid不一致的数据并导出
      * 用法: php SpUpdateKeywordBidController.php method=verify file="降bid清单.xlsx" channel=amazon_us
      *       php SpUpdateKeywordBidController.php method=verify file="降bid清单.xlsx"  (校验全部channel)
      * @param string $file Excel文件名(在./excel/目录下)
@@ -738,161 +759,142 @@ class SpUpdateKeywordBidController
 
         $this->log("channel:{$channelLabel} 共 " . count($sellerIdBidMap) . " 个seller, {$totalIdCount} 个id");
 
-        if (count($sellerIdBidMap) > 0) {
-            $exportList = [];
-            $verifiedCount = 0;
-            $matchCount = 0;
-            $stateMismatchCount = 0;
-            $bidMismatchCount = 0;
-            $notFoundCount = 0;
+        if (count($sellerIdBidMap) <= 0) {
+            $this->log("verifyKeywordBidStates channel:{$channelLabel} 无数据");
+            return;
+        }
 
-            foreach ($sellerIdBidMap as $sellerId => $idBidMap) {
-                $allIds = array_keys($idBidMap);
-                $this->log("{$sellerId} 开始校验 " . count($allIds) . " 个id");
+        $exportList = [];
+        $verifiedCount = 0;
+        $bidMatchCount = 0;
+        $bidMismatchCount = 0;
+        $archivedCount = 0;
+        $notFoundCount = 0;
 
-                // ===== 第一步：作为keyword查询 =====
-                $keywordVerifiedIds = [];
-                foreach (array_chunk($allIds, 100) as $chunk) {
-                    $keywordIdsStr = implode(",", $chunk);
-                    $this->log("查询Amazon API(keyword): {$sellerId} ids: {$keywordIdsStr}");
+        foreach ($sellerIdBidMap as $sellerId => $idBidMap) {
+            $allIds = array_keys($idBidMap);
+            $this->log("{$sellerId} 开始校验 " . count($allIds) . " 个id");
+            $sellerChannel = $spApi->sellerConfig($sellerId);
 
-                    $keywordListInfo = $spApi->listKeywordV2($sellerId, $keywordIdsStr);
+            // ===== 第一步：作为keyword查询 =====
+            $keywordVerifiedIds = [];
+            $keywordArchivedIds = [];
+            foreach (array_chunk($allIds, 100) as $chunk) {
+                $keywordIdsStr = implode(",", $chunk);
+                $keywordListInfo = $spApi->listKeywordV2($sellerId, $keywordIdsStr);
 
-                    foreach ($chunk as $id) {
-                        if (isset($keywordListInfo[$id])) {
-                            $verifiedCount++;
-                            $keywordVerifiedIds[] = $id;
-                            $expectedBid = (float) $idBidMap[$id];
-                            $actualState = $keywordListInfo[$id]['state'];
-                            $actualBid = (float) $keywordListInfo[$id]['bid'];
-
-                            $stateMatch = ($actualState == "enabled");
-                            $bidMatch = (abs($actualBid - $expectedBid) < 0.001);
-
-                            if ($stateMatch && $bidMatch) {
-                                $matchCount++;
-                                $this->log("✅ {$sellerId} id:{$id} (keyword) 状态:{$actualState} bid:{$actualBid} 一致");
-                            } else {
-                                if (!$stateMatch) {
-                                    $stateMismatchCount++;
-                                    $this->log("❌ {$sellerId} id:{$id} (keyword) 状态异常: 期望enabled, 实际{$actualState}");
-                                }
-                                if (!$bidMatch) {
-                                    $bidMismatchCount++;
-                                    $this->log("❌ {$sellerId} id:{$id} (keyword) bid异常: 期望{$expectedBid}, 实际{$actualBid}");
-                                }
-                                $exportList[] = [
-                                    "seller_id" => $sellerId,
-                                    "id" => $id,
-                                    "type" => "keyword",
-                                    "actual_state" => $actualState,
-                                    "expected_state" => "enabled",
-                                    "actual_bid" => $actualBid,
-                                    "expected_bid" => $expectedBid,
-                                ];
-                            }
+                foreach ($chunk as $id) {
+                    if (isset($keywordListInfo[$id])) {
+                        $actualState = $keywordListInfo[$id]['state'];
+                        // archived状态不统计
+                        if ($actualState === 'archived') {
+                            $keywordArchivedIds[] = $id;
+                            continue;
                         }
-                    }
-                }
+                        $verifiedCount++;
+                        $keywordVerifiedIds[] = $id;
+                        $expectedBid = $idBidMap[$id];
+                        $actualBid = $keywordListInfo[$id]['bid'];
 
-                // ===== 第二步：对未匹配keyword的id，作为target查询 =====
-                $targetCandidateIds = array_values(array_diff($allIds, $keywordVerifiedIds));
-                if (count($targetCandidateIds) > 0) {
-                    $this->log("{$sellerId} 有 " . count($targetCandidateIds) . " 个id未匹配keyword，尝试作为target校验");
-                    $targetVerifiedIds = [];
-                    foreach (array_chunk($targetCandidateIds, 100) as $chunk) {
-                        $targetIdsStr = implode(",", $chunk);
-                        $this->log("查询Amazon API(target): {$sellerId} ids: {$targetIdsStr}");
-
-                        $targetListInfo = $spApi->listTargetV2($sellerId, $targetIdsStr);
-
-                        foreach ($chunk as $id) {
-                            if (isset($targetListInfo[$id])) {
-                                $verifiedCount++;
-                                $targetVerifiedIds[] = $id;
-                                $expectedBid = (float) $idBidMap[$id];
-                                $actualState = $targetListInfo[$id]['state'];
-                                $actualBid = (float) $targetListInfo[$id]['bid'];
-
-                                $stateMatch = ($actualState == "enabled");
-                                $bidMatch = (abs($actualBid - $expectedBid) < 0.001);
-
-                                if ($stateMatch && $bidMatch) {
-                                    $matchCount++;
-                                    $this->log("✅ {$sellerId} id:{$id} (target) 状态:{$actualState} bid:{$actualBid} 一致");
-                                } else {
-                                    if (!$stateMatch) {
-                                        $stateMismatchCount++;
-                                        $this->log("❌ {$sellerId} id:{$id} (target) 状态异常: 期望enabled, 实际{$actualState}");
-                                    }
-                                    if (!$bidMatch) {
-                                        $bidMismatchCount++;
-                                        $this->log("❌ {$sellerId} id:{$id} (target) bid异常: 期望{$expectedBid}, 实际{$actualBid}");
-                                    }
-                                    $exportList[] = [
-                                        "seller_id" => $sellerId,
-                                        "id" => $id,
-                                        "type" => "target",
-                                        "actual_state" => $actualState,
-                                        "expected_state" => "enabled",
-                                        "actual_bid" => $actualBid,
-                                        "expected_bid" => $expectedBid,
-                                    ];
-                                }
-                            }
-                        }
-                    }
-
-                    // ===== 第三步：keyword和target都查不到的id =====
-                    $notFoundIds = array_values(array_diff($targetCandidateIds, $targetVerifiedIds));
-                    if (count($notFoundIds) > 0) {
-                        foreach ($notFoundIds as $id) {
-                            $verifiedCount++;
-                            $notFoundCount++;
-                            $this->log("⚠️ {$sellerId} id:{$id} 既不是keyword也不是target");
+                        if (bccomp((string)$expectedBid, (string)$actualBid, 2) === 0) {
+                            $bidMatchCount++;
+                        } else {
+                            $bidMismatchCount++;
+                            $this->log("❌ {$sellerId} id:{$id} (keyword) bid不一致: 期望{$expectedBid}, 实际{$actualBid}");
                             $exportList[] = [
+                                "channel" => $sellerChannel ?: $channelLabel,
                                 "seller_id" => $sellerId,
-                                "id" => $id,
-                                "type" => "not_found",
-                                "actual_state" => "not_found",
-                                "expected_state" => "enabled",
-                                "actual_bid" => "",
-                                "expected_bid" => (float) $idBidMap[$id],
+                                "keyword_id" => (string)$id,
+                                "bid" => (string)$expectedBid,
+                                "actual_bid" => (string)$actualBid,
                             ];
                         }
                     }
                 }
             }
-
-            // 输出校验汇总
-            $this->log("========== 校验汇总 ==========");
-            $this->log("总校验数: {$verifiedCount}");
-            $this->log("✅ 状态和bid一致: {$matchCount}");
-            $this->log("❌ 状态异常(非enabled): {$stateMismatchCount}");
-            $this->log("❌ bid不一致: {$bidMismatchCount}");
-            $this->log("⚠️ 未找到(not_found): {$notFoundCount}");
-
-            // 导出异常数据到Excel
-            if (count($exportList) > 0) {
-                $excelUtils = new ExcelUtils("sp/keyword/");
-                $filePath = $excelUtils->downloadXlsx([
-                    "seller_id",
-                    "id",
-                    "type",
-                    "actual_state",
-                    "expected_state",
-                    "actual_bid",
-                    "expected_bid",
-                ], $exportList, "校验异常_bid_{$channelLabel}_" . date("YmdHis") . ".xlsx");
-                $this->log("异常数据已导出: {$filePath}");
-            } else {
-                $this->log("所有广告bid状态校验通过，无异常数据");
+            if (count($keywordArchivedIds) > 0) {
+                $archivedCount += count($keywordArchivedIds);
+                $this->log("{$sellerId} 跳过archived(keyword): " . count($keywordArchivedIds) . "个");
             }
 
-            $this->log("verifyKeywordBidStates channel:{$channelLabel} 校验完毕");
-        } else {
-            $this->log("verifyKeywordBidStates channel:{$channelLabel} 无数据");
+            // ===== 第二步：对未匹配keyword的id（排除archived），作为target查询 =====
+            $targetCandidateIds = array_values(array_diff($allIds, $keywordVerifiedIds, $keywordArchivedIds));
+            if (count($targetCandidateIds) > 0) {
+                $this->log("{$sellerId} 有 " . count($targetCandidateIds) . " 个id未匹配keyword，尝试作为target校验");
+                $targetVerifiedIds = [];
+                $targetArchivedIds = [];
+                foreach (array_chunk($targetCandidateIds, 100) as $chunk) {
+                    $targetIdsStr = implode(",", $chunk);
+                    $targetListInfo = $spApi->listTargetV2($sellerId, $targetIdsStr);
+
+                    foreach ($chunk as $id) {
+                        if (isset($targetListInfo[$id])) {
+                            $actualState = $targetListInfo[$id]['state'];
+                            // archived状态不统计
+                            if ($actualState === 'archived') {
+                                $targetArchivedIds[] = $id;
+                                continue;
+                            }
+                            $verifiedCount++;
+                            $targetVerifiedIds[] = $id;
+                            $expectedBid = $idBidMap[$id];
+                            $actualBid = $targetListInfo[$id]['bid'];
+
+                            if (bccomp((string)$expectedBid, (string)$actualBid, 2) === 0) {
+                                $bidMatchCount++;
+                            } else {
+                                $bidMismatchCount++;
+                                $this->log("❌ {$sellerId} id:{$id} (target) bid不一致: 期望{$expectedBid}, 实际{$actualBid}");
+                                $exportList[] = [
+                                    "channel" => $sellerChannel ?: $channelLabel,
+                                    "seller_id" => $sellerId,
+                                    "keyword_id" => (string)$id,
+                                    "bid" => (string)$expectedBid,
+                                    "actual_bid" => (string)$actualBid,
+                                ];
+                            }
+                        }
+                    }
+                }
+                if (count($targetArchivedIds) > 0) {
+                    $archivedCount += count($targetArchivedIds);
+                    $this->log("{$sellerId} 跳过archived(target): " . count($targetArchivedIds) . "个");
+                }
+
+                // ===== 第三步：keyword和target都查不到的id（排除archived） =====
+                $notFoundIds = array_values(array_diff($targetCandidateIds, $targetVerifiedIds, $targetArchivedIds));
+                if (count($notFoundIds) > 0) {
+                    $notFoundCount += count($notFoundIds);
+                    $this->log("{$sellerId} keyword和target都查不到的id: " . count($notFoundIds) . "个");
+                }
+            }
         }
+
+        // 输出校验汇总
+        $this->log("========== 校验汇总 ==========");
+        $this->log("总数据: {$totalIdCount}");
+        $this->log("⏭️ archived跳过: {$archivedCount}");
+        $this->log("⚠️ 未找到: {$notFoundCount}");
+        $this->log("已校验: {$verifiedCount}");
+        $this->log("✅ bid一致: {$bidMatchCount}");
+        $this->log("❌ bid不一致: {$bidMismatchCount}");
+
+        // 导出bid不一致的数据到Excel
+        if (count($exportList) > 0) {
+            $excelUtils = new ExcelUtils("sp/keyword/");
+            $filePath = $excelUtils->downloadXlsx([
+                "channel",
+                "seller_id",
+                "keyword_id",
+                "bid",
+                "actual_bid",
+            ], $exportList, "校验bid不一致_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            $this->log("bid不一致数据已导出: {$filePath}");
+        } else {
+            $this->log("所有bid校验一致，无不一致数据");
+        }
+
+        $this->log("verifyKeywordBidStates channel:{$channelLabel} 校验完毕");
     }
 }
 
