@@ -767,6 +767,100 @@ class CurlService
     }
 
     /**
+     * curl并发请求接口（curl_multi）
+     * 用于批量mongo更新等场景，将多次串行HTTP调用改为并发执行，大幅减少总耗时
+     * 行为与curlRequestMethod完全一致（调用同样的单条接口），只是并发执行
+     * @param array $jobs 请求任务数组，每个元素: ['port'=>'s3023','module'=>'amazon_sp_xxx/xxx','params'=>[...],'method'=>'POST']
+     * @param int $timeout 单个请求超时秒数
+     * @return array 与$jobs下标一一对应的结果数组，每个元素格式同curlRequestMethod返回值 ['httpCode'=>..,'header'=>..,'result'=>..]
+     */
+    public function multiExec(array $jobs, $timeout = 30): array
+    {
+        if (empty($jobs)) {
+            return [];
+        }
+        // 确保各port的base URL已初始化
+        $this->setBaseComponentByEnv();
+
+        $mh = curl_multi_init();
+        $handles = [];
+        $jobCount = count($jobs);
+
+        foreach ($jobs as $i => $job) {
+            $port = $job['port'];
+            $module = $job['module'];
+            $params = isset($job['params']) ? $job['params'] : array();
+            $method = strtoupper(isset($job['method']) ? $job['method'] : 'GET');
+
+            if (stripos($module, "/") !== 0 && !empty($module)) {
+                $module = "/" . $module;
+            }
+            $url = $this->$port . '/api' . $module;
+
+            $connection = curl_init();
+            curl_setopt($connection, CURLOPT_URL, $url);
+            curl_setopt($connection, CURLOPT_HTTPHEADER, $this->header);
+            curl_setopt($connection, CURLOPT_HEADER, true);
+            curl_setopt($connection, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($connection, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($connection, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($connection, CURLOPT_TIMEOUT, $timeout);
+            curl_setopt($connection, CURLOPT_REFERER, 'https://poms-ssl.ux168.cn/');
+            curl_setopt($connection, CURLOPT_USERAGENT, 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36');
+
+            if ($method !== "GET") {
+                curl_setopt($connection, CURLOPT_CUSTOMREQUEST, $method);
+                curl_setopt($connection, CURLOPT_POSTFIELDS, json_encode($params, JSON_UNESCAPED_UNICODE));
+            }
+
+            curl_multi_add_handle($mh, $connection);
+            $handles[$i] = $connection;
+        }
+
+        $this->log->log("⚡ multiExec：并发执行 {$jobCount} 个请求");
+
+        // 并发执行，直到全部完成
+        do {
+            $status = curl_multi_exec($mh, $running);
+            if ($running > 0) {
+                curl_multi_select($mh, 1);
+            }
+        } while ($running > 0 && $status === CURLM_OK);
+
+        // 收集结果，下标与$jobs一一对应
+        $results = array();
+        foreach ($handles as $i => $connection) {
+            $result = curl_multi_getcontent($connection);
+            $httpCode = intval(curl_getinfo($connection, CURLINFO_HTTP_CODE));
+            $headerSize = curl_getinfo($connection, CURLINFO_HEADER_SIZE);
+            $headerResponse = $headerSize > 0 ? substr($result, 0, $headerSize) : "";
+            $body = ($headerSize > 0 && strlen($result) > $headerSize) ? json_decode(substr($result, $headerSize), true) : null;
+
+            $results[$i] = array(
+                "httpCode" => $httpCode,
+                "header" => $headerResponse,
+                "result" => $body,
+            );
+            curl_multi_remove_handle($mh, $connection);
+            curl_close($connection);
+        }
+        curl_multi_close($mh);
+
+        $successCount = 0;
+        $failCount = 0;
+        foreach ($results as $r) {
+            if ($r['httpCode'] >= 200 && $r['httpCode'] < 300) {
+                $successCount++;
+            } else {
+                $failCount++;
+            }
+        }
+        $this->log->log("⚡ multiExec：完成 {$jobCount} 个请求，成功{$successCount}，失败{$failCount}");
+
+        return $results;
+    }
+
+    /**
      * curl请求接口
      * @param $port 端口
      * @param $module 模块

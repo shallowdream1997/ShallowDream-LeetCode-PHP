@@ -560,6 +560,7 @@ class SpCreateNegativeKeywordController
                         "actual_state" => "",
                         "expected_state" => "enabled",
                         "error" => "ad group not found",
+                        "message" => "API创建失败",
                     ];
                 }
                 continue;
@@ -614,17 +615,27 @@ class SpCreateNegativeKeywordController
             // 批量更新negativeKeyword状态为enabled
             $updateSuccessIds = [];
             $updateFailedIds = [];
+            $updateErrorMsg = [];
             if (count($updatePayloads) > 0) {
                 foreach (array_chunk($updatePayloads, 1000) as $chunk) {
                     $this->log("{$sellerId} adGroupId:{$adGroupId} 重试更新negativeKeyword状态为enabled: " . count($chunk) . "个");
                     $result = $spApi->updateNegativeKeyword($sellerId, $chunk);
+                    $updateErrorMsg = array_merge($updateErrorMsg, $result['errorMsg'] ?? []);
+                    $batchUpdateList = [];
                     foreach ($result['success'] ?? [] as $keywordId) {
                         $updateSuccessIds[] = $keywordId;
                         $retrySuccessCount++;
                         $this->log("✅ {$sellerId} 重试更新negativeKeyword状态成功: keywordId:{$keywordId}");
                         if (isset($sellerKeywordList[$keywordId]) && $sellerKeywordList[$keywordId]) {
-                            $spApi->mongoUpdateNegativeKeyword($sellerKeywordList[$keywordId], $keywordId, "enabled");
+                            $batchUpdateList[] = [
+                                '_id' => $sellerKeywordList[$keywordId],
+                                'keywordId' => $keywordId,
+                                'state' => 'enabled'
+                            ];
                         }
+                    }
+                    if (!empty($batchUpdateList)) {
+                        $spApi->batchMongoUpdateNegativeKeyword($batchUpdateList);
                     }
                     foreach ($result['error'] ?? [] as $keywordId) {
                         $updateFailedIds[] = $keywordId;
@@ -644,11 +655,19 @@ class SpCreateNegativeKeywordController
                             "limit" => 200
                         ]));
                         if (count($list) > 0) {
+                            $batchUpdateList = [];
                             foreach ($list as $info) {
                                 $seller = $spApi->specialSellerIdReverseConver($info['channel']);
                                 $redisService->hSet("spNegativeKeyword_{$seller}", $info['keywordId'], $info['_id']);
                                 $sellerKeywordList[$info['keywordId']] = $info['_id'];
-                                $spApi->mongoUpdateNegativeKeyword($info['_id'], $info['keywordId'], "enabled");
+                                $batchUpdateList[] = [
+                                    '_id' => $info['_id'],
+                                    'keywordId' => $info['keywordId'],
+                                    'state' => 'enabled'
+                                ];
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateNegativeKeyword($batchUpdateList);
                             }
                         }
                     }
@@ -668,6 +687,7 @@ class SpCreateNegativeKeywordController
                     "actual_state" => $item['actualState'] ?? "",
                     "expected_state" => "enabled",
                     "error" => "更新状态失败",
+                    "message" => $updateErrorMsg[$keywordId] ?? "API创建失败",
                 ];
             }
 
@@ -699,6 +719,7 @@ class SpCreateNegativeKeywordController
                             "actual_state" => "not_found",
                             "expected_state" => "enabled",
                             "error" => json_encode($errorItem['response'], JSON_UNESCAPED_UNICODE),
+                            "message" => $errorItem['response']['description'] ?? "API创建失败",
                         ];
                     }
                 }
@@ -725,6 +746,7 @@ class SpCreateNegativeKeywordController
                 "actual_state",
                 "expected_state",
                 "error",
+                "message",
             ], $retryFailedList, "重新创建仍失败_negativeKeyword_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2, 3]);
             $this->log("重新创建仍失败数据已导出: {$retryFilePath}");
         }

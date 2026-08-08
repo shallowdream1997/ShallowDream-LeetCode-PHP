@@ -620,6 +620,7 @@ class SpCreateKeywordController
                         "actual_bid" => "",
                         "expected_bid" => $item['bid'],
                         "error" => "ad group not found",
+                        "message" => "API创建失败",
                     ];
                 }
                 continue;
@@ -673,17 +674,27 @@ class SpCreateKeywordController
             // 批量更新keyword状态为enabled
             $updateSuccessIds = [];
             $updateFailedIds = [];
+            $updateErrorMsg = [];
             if (count($updatePayloads) > 0) {
                 foreach (array_chunk($updatePayloads, 1000) as $chunk) {
                     $this->log("{$sellerId} adGroupId:{$adGroupId} 重试更新keyword状态为enabled: " . count($chunk) . "个");
                     $result = $spApi->updateKeyword($sellerId, $chunk);
+                    $updateErrorMsg = array_merge($updateErrorMsg, $result['errorMsg'] ?? []);
+                    $batchUpdateList = [];
                     foreach ($result['success'] ?? [] as $keywordId) {
                         $updateSuccessIds[] = $keywordId;
                         $retrySuccessCount++;
                         $this->log("✅ {$sellerId} 重试更新keyword状态成功: keywordId:{$keywordId}");
                         if (isset($sellerKeywordList[$keywordId]) && $sellerKeywordList[$keywordId]) {
-                            $spApi->mongoUpdateKeyword($sellerKeywordList[$keywordId], $keywordId, "enabled");
+                            $batchUpdateList[] = [
+                                '_id' => $sellerKeywordList[$keywordId],
+                                'keywordId' => $keywordId,
+                                'state' => 'enabled'
+                            ];
                         }
+                    }
+                    if (!empty($batchUpdateList)) {
+                        $spApi->batchMongoUpdateKeyword($batchUpdateList);
                     }
                     foreach ($result['error'] ?? [] as $keywordId) {
                         $updateFailedIds[] = $keywordId;
@@ -703,11 +714,19 @@ class SpCreateKeywordController
                             "limit" => 200
                         ]));
                         if (count($list) > 0) {
+                            $batchUpdateList = [];
                             foreach ($list as $info) {
                                 $seller = $spApi->specialSellerIdReverseConver($info['channel']);
                                 $redisService->hSet("spKeyword_{$seller}", $info['keywordId'], $info['_id']);
                                 $sellerKeywordList[$info['keywordId']] = $info['_id'];
-                                $spApi->mongoUpdateKeyword($info['_id'], $info['keywordId'], "enabled");
+                                $batchUpdateList[] = [
+                                    '_id' => $info['_id'],
+                                    'keywordId' => $info['keywordId'],
+                                    'state' => 'enabled'
+                                ];
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateKeyword($batchUpdateList);
                             }
                         }
                     }
@@ -729,6 +748,7 @@ class SpCreateKeywordController
                     "actual_bid" => "",
                     "expected_bid" => $item['bid'] ?? "",
                     "error" => "更新状态失败",
+                    "message" => $updateErrorMsg[$keywordId] ?? "API创建失败",
                 ];
             }
 
@@ -763,6 +783,7 @@ class SpCreateKeywordController
                             "actual_bid" => "",
                             "expected_bid" => $payload['bid'] ?? "",
                             "error" => json_encode($errorItem['response'], JSON_UNESCAPED_UNICODE),
+                            "message" => $errorItem['response']['description'] ?? "API创建失败",
                         ];
                     }
                 }
@@ -791,6 +812,7 @@ class SpCreateKeywordController
                 "actual_bid",
                 "expected_bid",
                 "error",
+                "message",
             ], $retryFailedList, "重新创建仍失败_keyword_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2, 3]);
             $this->log("重新创建仍失败数据已导出: {$retryFilePath}");
         }

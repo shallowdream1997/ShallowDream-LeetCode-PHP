@@ -165,6 +165,53 @@ class SpApi
 
     }
 
+    /**
+     * 批量更新 campaign 的 mongo 信息（curl_multi 并发，保持与单条接口 updateCampaigns 行为一致）
+     * @param array $updateList 每项含 _id、campaignId、updateParams（完整 updateParams 由调用方构造）
+     * @return array {success: campaignId[], fail: [campaignId => errMsg]}
+     */
+    public function batchMongoUpdateCampaignInfo($updateList)
+    {
+        $result = ['success' => [], 'fail' => []];
+        if (empty($updateList)) {
+            return $result;
+        }
+
+        $jobs = [];
+        $idMap = []; // job下标 -> campaignId，用于结果映射
+        foreach ($updateList as $item) {
+            $jobs[] = [
+                "port" => "s3023",
+                "module" => "amazon_sp_campaigns/updateCampaigns",
+                "params" => [
+                    "id" => $item['_id'],
+                    "from" => $this->messages,
+                    "isPassNotification" => "false",
+                    "updateParams" => $item['updateParams']
+                ],
+                "method" => "POST"
+            ];
+            $idMap[] = $item['campaignId'];
+        }
+
+        // 分批并发，每批30个请求
+        $this->curlService->s3023();
+        foreach (array_chunk($jobs, 30, true) as $chunk) {
+            $responses = $this->curlService->multiExec($chunk);
+            foreach ($responses as $idx => $resp) {
+                $campaignId = $idMap[$idx];
+                if ($resp['httpCode'] >= 200 && $resp['httpCode'] < 300) {
+                    $result['success'][] = $campaignId;
+                } else {
+                    $errMsg = isset($resp['result']['message']) ? $resp['result']['message'] : "http {$resp['httpCode']}";
+                    $result['fail'][$campaignId] = $errMsg;
+                    $this->log("batchMongoUpdateCampaignInfo：失败 campaignId:{$campaignId} - {$errMsg}");
+                }
+            }
+        }
+        $this->log("batchMongoUpdateCampaignInfo：共" . count($updateList) . "条，成功" . count($result['success']) . "条，失败" . count($result['fail']) . "条");
+        return $result;
+    }
 
     public function listCampaign($sellerId,$campaignName)
     {
@@ -300,6 +347,8 @@ class SpApi
             }
         }
 
+        $campaignResult['errorMsg'] = $this->buildFailMessageMap($returnMessage, $updateArr, "campaignId");
+
         return $campaignResult;
     }
     //===================================== campaign end ===================================================///
@@ -387,6 +436,66 @@ class SpApi
         }
     }
 
+    /**
+     * 批量更新target的mongo状态（curl_multi并发，行为与单条mongoUpdateTarget一致）
+     * 将N次串行HTTP调用改为30路并发，大幅减少总耗时
+     * @param array $updateList [['_id'=>..,'targetId'=>..,'state'=>'','bid'=>null], ...]
+     * @return array ['success'=>[targetId], 'fail'=>['targetId'=>message]] 成功和失败的targetId
+     */
+    public function batchMongoUpdateTarget($updateList)
+    {
+        $result = ['success' => [], 'fail' => []];
+        if (empty($updateList)) {
+            return $result;
+        }
+
+        $jobs = [];
+        $idMap = []; // job下标 -> targetId，用于结果映射
+        foreach ($updateList as $item) {
+            $updateParams = [
+                "targetId" => $item['targetId'],
+                "state" => $item['state'],
+                "modifiedBy" => $this->messages,
+                "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z",
+                "status" => "2",
+                "messages" => $this->messages
+            ];
+            if (isset($item['bid']) && $item['bid'] !== null) {
+                $updateParams['bid'] = $item['bid'];
+            }
+            $jobs[] = [
+                "port" => "s3023",
+                "module" => "amazon_sp_targets/updateBiddableTargets",
+                "params" => [
+                    "id" => $item['_id'],
+                    "isPassNotification" => "false",
+                    "from" => $this->messages,
+                    "updateParams" => $updateParams
+                ],
+                "method" => "POST"
+            ];
+            $idMap[] = $item['targetId'];
+        }
+
+        // 分批并发，每批30个请求
+        $this->curlService->s3023();
+        foreach (array_chunk($jobs, 30, true) as $chunk) {
+            $responses = $this->curlService->multiExec($chunk);
+            foreach ($responses as $idx => $resp) {
+                $targetId = $idMap[$idx];
+                if ($resp['httpCode'] >= 200 && $resp['httpCode'] < 300) {
+                    $result['success'][] = $targetId;
+                } else {
+                    $errMsg = isset($resp['result']['message']) ? $resp['result']['message'] : "http {$resp['httpCode']}";
+                    $result['fail'][$targetId] = $errMsg;
+                    $this->log("batchMongoUpdateTarget：失败 targetId:{$targetId} - {$errMsg}");
+                }
+            }
+        }
+        $this->log("batchMongoUpdateTarget：共" . count($updateList) . "条，成功" . count($result['success']) . "条，失败" . count($result['fail']) . "条");
+        return $result;
+    }
+
     public function listTargetAsin($sellerId,$campaignId,$adGroupId,$targetIdList = "", $asinFilter = "", $stateFilter = "")
     {
         $condition = ["campaignIdFilter" => $campaignId, "adGroupIdFilter" => $adGroupId];
@@ -454,6 +563,8 @@ class SpApi
                 $targetResult['error'][] = $item['targetId'];
             }
         }
+
+        $targetResult['errorMsg'] = $this->buildFailMessageMap($returnMessage, $updateArr, "targetId");
 
         return $targetResult;
     }
@@ -937,6 +1048,60 @@ class SpApi
         }
     }
 
+    /**
+     * 批量更新product的mongo状态（curl_multi并发，行为与单条mongoUpdateProduct一致）
+     * 将N次串行HTTP调用改为30路并发，大幅减少总耗时
+     * @param array $updateList [['_id'=>..,'adId'=>..,'state'=>'paused'], ...]
+     * @return array ['success'=>[adId], 'fail'=>['adId'=>message]] 成功和失败的adId
+     */
+    public function batchMongoUpdateProduct($updateList)
+    {
+        $result = ['success' => [], 'fail' => []];
+        if (empty($updateList)) {
+            return $result;
+        }
+
+        $jobs = [];
+        $idMap = []; // job下标 -> adId，用于结果映射
+        foreach ($updateList as $item) {
+            $jobs[] = [
+                "port" => "s3023",
+                "module" => "amazon_sp_products/updateProductAds",
+                "params" => [
+                    "id" => $item['_id'],
+                    "isPassNotification" => "false",
+                    "from" => $this->messages,
+                    "updateParams" => [
+                        "adId" => $item['adId'],
+                        "state" => $item['state'],
+                        "modifiedBy" => $this->messages,
+                        "status" => "2"
+                    ]
+                ],
+                "method" => "POST"
+            ];
+            $idMap[] = $item['adId'];
+        }
+
+        // 分批并发，每批30个请求
+        $this->curlService->s3023();
+        foreach (array_chunk($jobs, 30, true) as $chunk) {
+            $responses = $this->curlService->multiExec($chunk);
+            foreach ($responses as $idx => $resp) {
+                $adId = $idMap[$idx];
+                if ($resp['httpCode'] >= 200 && $resp['httpCode'] < 300) {
+                    $result['success'][] = $adId;
+                } else {
+                    $errMsg = isset($resp['result']['message']) ? $resp['result']['message'] : "http {$resp['httpCode']}";
+                    $result['fail'][$adId] = $errMsg;
+                    $this->log("batchMongoUpdateProduct：失败 adId:{$adId} - {$errMsg}");
+                }
+            }
+        }
+        $this->log("batchMongoUpdateProduct：共" . count($updateList) . "条，成功" . count($result['success']) . "条，失败" . count($result['fail']) . "条");
+        return $result;
+    }
+
     public function listProduct($sellerId,$campaignId,$adGroupId,$sku)
     {
         $condition = [
@@ -1012,6 +1177,8 @@ class SpApi
                 $pausedAdIdResult['error'][] = $item['adId'];
             }
         }
+
+        $pausedAdIdResult['errorMsg'] = $this->buildFailMessageMap($returnMessage, $pausedArr, "adId");
 
         return $pausedAdIdResult;
     }
@@ -1137,6 +1304,68 @@ class SpApi
         }else{
             $this->log("updateBiddableKeywords：失败：{$resp['result']['keyword']['channel']} - {$resp['result']['keyword']['keywordText']} - {$resp['result']['keyword']['matchType']}");
         }
+    }
+
+    /**
+     * 批量更新keyword的mongo状态（curl_multi并发，行为与单条mongoUpdateKeyword一致）
+     * 将N次串行HTTP调用改为30路并发，大幅减少总耗时
+     * @param array $updateList [['_id'=>..,'keywordId'=>..,'state'=>'','bid'=>null], ...]
+     * @return array ['success'=>[keywordId], 'fail'=>['keywordId'=>message]] 成功和失败的keywordId
+     */
+    public function batchMongoUpdateKeyword($updateList)
+    {
+        $result = ['success' => [], 'fail' => []];
+        if (empty($updateList)) {
+            return $result;
+        }
+
+        $jobs = [];
+        $idMap = []; // job下标 -> keywordId，用于结果映射
+        foreach ($updateList as $item) {
+            $updateParams = [
+                "keywordId" => $item['keywordId'],
+                "modifiedBy" => $this->messages,
+                "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z",
+                "status" => "2",
+                "messages" => $this->messages
+            ];
+            if (isset($item['state']) && $item['state'] !== "") {
+                $updateParams['state'] = $item['state'];
+            }
+            if (isset($item['bid']) && $item['bid'] !== null) {
+                $updateParams['bid'] = $item['bid'];
+            }
+            $jobs[] = [
+                "port" => "s3023",
+                "module" => "amazon_sp_keywords/updateBiddableKeywords",
+                "params" => [
+                    "id" => $item['_id'],
+                    "from" => $this->messages,
+                    "isPassNotification" => "false",
+                    "updateParams" => $updateParams
+                ],
+                "method" => "POST"
+            ];
+            $idMap[] = $item['keywordId'];
+        }
+
+        // 分批并发，每批30个请求
+        $this->curlService->s3023();
+        foreach (array_chunk($jobs, 30, true) as $chunk) {
+            $responses = $this->curlService->multiExec($chunk);
+            foreach ($responses as $idx => $resp) {
+                $keywordId = $idMap[$idx];
+                if ($resp['httpCode'] >= 200 && $resp['httpCode'] < 300) {
+                    $result['success'][] = $keywordId;
+                } else {
+                    $errMsg = isset($resp['result']['message']) ? $resp['result']['message'] : "http {$resp['httpCode']}";
+                    $result['fail'][$keywordId] = $errMsg;
+                    $this->log("batchMongoUpdateKeyword：失败 keywordId:{$keywordId} - {$errMsg}");
+                }
+            }
+        }
+        $this->log("batchMongoUpdateKeyword：共" . count($updateList) . "条，成功" . count($result['success']) . "条，失败" . count($result['fail']) . "条");
+        return $result;
     }
 
     public function mongoCreateNegativeKeyword($sellerId, $campaignId, $adGroupId, $keywordText, $matchType, $keywordId)
@@ -1307,6 +1536,8 @@ class SpApi
             }
         }
 
+        $keywordResult['errorMsg'] = $this->buildFailMessageMap($returnMessage, $updateArr, "keywordId");
+
         return $keywordResult;
     }
 
@@ -1387,6 +1618,8 @@ class SpApi
             }
         }
 
+        $pausedAdIdResult['errorMsg'] = $this->buildFailMessageMap($returnMessage, $pausedArr, "keywordId");
+
         return $pausedAdIdResult;
     }
 
@@ -1410,6 +1643,61 @@ class SpApi
         }else{
             $this->log("updateNegativeKeyword：失败：{$resp['result']['keyword']['channel']} - {$resp['result']['keyword']['keywordText']}");
         }
+    }
+
+    /**
+     * 批量更新 negativeKeyword 的 mongo 状态（curl_multi 并发，保持与单条接口 updateNegativeKeywords 行为一致）
+     * @param array $updateList 每项含 _id、keywordId、state
+     * @return array {success: keywordId[], fail: [keywordId => errMsg]}
+     */
+    public function batchMongoUpdateNegativeKeyword($updateList)
+    {
+        $result = ['success' => [], 'fail' => []];
+        if (empty($updateList)) {
+            return $result;
+        }
+
+        $jobs = [];
+        $idMap = []; // job下标 -> keywordId，用于结果映射
+        foreach ($updateList as $item) {
+            $jobs[] = [
+                "port" => "s3023",
+                "module" => "amazon_sp_negativeKeywords/updateNegativeKeywords",
+                "params" => [
+                    "id" => $item['_id'],
+                    "from" => $this->messages,
+                    "isPassNotification" => "false",
+                    "updateParams" => [
+                        "keywordId" => $item['keywordId'],
+                        "state" => $item['state'],
+                        "modifiedBy" => $this->messages,
+                        "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z",
+                        "status" => "2",
+                        "messages" => $this->messages
+                    ]
+                ],
+                "method" => "POST"
+            ];
+            $idMap[] = $item['keywordId'];
+        }
+
+        // 分批并发，每批30个请求
+        $this->curlService->s3023();
+        foreach (array_chunk($jobs, 30, true) as $chunk) {
+            $responses = $this->curlService->multiExec($chunk);
+            foreach ($responses as $idx => $resp) {
+                $keywordId = $idMap[$idx];
+                if ($resp['httpCode'] >= 200 && $resp['httpCode'] < 300) {
+                    $result['success'][] = $keywordId;
+                } else {
+                    $errMsg = isset($resp['result']['message']) ? $resp['result']['message'] : "http {$resp['httpCode']}";
+                    $result['fail'][$keywordId] = $errMsg;
+                    $this->log("batchMongoUpdateNegativeKeyword：失败 keywordId:{$keywordId} - {$errMsg}");
+                }
+            }
+        }
+        $this->log("batchMongoUpdateNegativeKeyword：共" . count($updateList) . "条，成功" . count($result['success']) . "条，失败" . count($result['fail']) . "条");
+        return $result;
     }
 
 
@@ -1436,6 +1724,8 @@ class SpApi
             }
         }
 
+        $pausedAdIdResult['errorMsg'] = $this->buildFailMessageMap($returnMessage, $pausedArr, "targetId");
+
         return $pausedAdIdResult;
     }
 
@@ -1459,6 +1749,61 @@ class SpApi
         }else{
             $this->log("mongoUpdateNegativeTarget：失败：{$resp['result']['target']['channel']} - {$resp['result']['target']['targetName']}");
         }
+    }
+
+    /**
+     * 批量更新 negativeTarget 的 mongo 状态（curl_multi 并发，保持与单条接口 updateBiddableNegativeTargets 行为一致）
+     * @param array $updateList 每项含 _id、targetId、state
+     * @return array {success: targetId[], fail: [targetId => errMsg]}
+     */
+    public function batchMongoUpdateNegativeTarget($updateList)
+    {
+        $result = ['success' => [], 'fail' => []];
+        if (empty($updateList)) {
+            return $result;
+        }
+
+        $jobs = [];
+        $idMap = []; // job下标 -> targetId，用于结果映射
+        foreach ($updateList as $item) {
+            $jobs[] = [
+                "port" => "s3023",
+                "module" => "amazon_sp_negative_targets/updateBiddableNegativeTargets",
+                "params" => [
+                    "id" => $item['_id'],
+                    "from" => $this->messages,
+                    "isPassNotification" => "false",
+                    "updateParams" => [
+                        "targetId" => $item['targetId'],
+                        "state" => $item['state'],
+                        "modifiedBy" => $this->messages,
+                        "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z",
+                        "status" => "2",
+                        "remark" => $this->messages
+                    ]
+                ],
+                "method" => "POST"
+            ];
+            $idMap[] = $item['targetId'];
+        }
+
+        // 分批并发，每批30个请求
+        $this->curlService->s3023();
+        foreach (array_chunk($jobs, 30, true) as $chunk) {
+            $responses = $this->curlService->multiExec($chunk);
+            foreach ($responses as $idx => $resp) {
+                $targetId = $idMap[$idx];
+                if ($resp['httpCode'] >= 200 && $resp['httpCode'] < 300) {
+                    $result['success'][] = $targetId;
+                } else {
+                    $errMsg = isset($resp['result']['message']) ? $resp['result']['message'] : "http {$resp['httpCode']}";
+                    $result['fail'][$targetId] = $errMsg;
+                    $this->log("batchMongoUpdateNegativeTarget：失败 targetId:{$targetId} - {$errMsg}");
+                }
+            }
+        }
+        $this->log("batchMongoUpdateNegativeTarget：共" . count($updateList) . "条，成功" . count($result['success']) . "条，失败" . count($result['fail']) . "条");
+        return $result;
     }
 
     public function listNegativeTarget($sellerId,$campaignId,$adGroupId,$targetIdList = "",$state = "", $asinFilter = "")
@@ -1733,6 +2078,62 @@ class SpApi
         }
 
         return $result;
+    }
+
+    /**
+     * 构建 Amazon update 接口失败原因映射（id => message）
+     * 兼容两种返回形态：
+     *  - 整体失败（status=fail）：data 平铺全失败项 [{code,description},...]，顶层有 message
+     *  - 部分成功：data = [成功项{id,code:SUCCESS}..., [失败项嵌套数组]]
+     * 失败项无 id（后端 _genFailResAmazonAdApiV3 仅返回 {code,description}），但 data 按入参 id 顺序排列，
+     * 故按"入参失败项顺序"与"data 失败项顺序"一一对应。
+     * @param array $returnMessage DataUtils::getResultData 的返回（含 data/message）
+     * @param array $inputArr 入参数组（update 方法的 $updateArr/$pausedArr）
+     * @param string $idField id 字段名（如 keywordId/targetId/campaignId/adId）
+     * @return array [id => message]
+     */
+    private function buildFailMessageMap($returnMessage, $inputArr, $idField)
+    {
+        $errorMsg = [];
+        $topMessage = $returnMessage['message'] ?? 'API操作失败';
+
+        $data = $returnMessage['data'] ?? [];
+        $successIds = [];
+        $failItems = [];
+        if (is_array($data)) {
+            foreach ($data as $item) {
+                // 成功项：含 id 且 code=SUCCESS
+                if (isset($item[$idField]) && isset($item['code']) && $item['code'] == 'SUCCESS') {
+                    $successIds[$item[$idField]] = true;
+                } // 部分成功形态末尾的嵌套失败数组（数字索引，元素为 {code,description}）
+                elseif (is_array($item) && isset($item[0]) && is_array($item[0])) {
+                    foreach ($item as $failItem) {
+                        $failItems[] = $failItem;
+                    }
+                } // 整体失败形态的平铺失败项 {code,description}
+                elseif (is_array($item)) {
+                    $failItems[] = $item;
+                }
+            }
+        }
+
+        // 按入参顺序挑出失败 id（不在成功集合里的）
+        $failIds = [];
+        foreach ($inputArr as $item) {
+            if (isset($item[$idField]) && !isset($successIds[$item[$idField]])) {
+                $failIds[] = $item[$idField];
+            }
+        }
+
+        // 失败 id 按顺序对应失败项的 description（兜底：顶层 message -> API操作失败）
+        $failCount = count($failItems);
+        foreach ($failIds as $idx => $id) {
+            $errorMsg[$id] = ($idx < $failCount)
+                ? ($failItems[$idx]['description'] ?? $topMessage)
+                : $topMessage;
+        }
+
+        return $errorMsg;
     }
 
     //===================================== 批量查询方法 start ===================================================

@@ -103,12 +103,20 @@ class SpPausedKeywordController
                     $pausedKeywordResult = $spApi->updateKeyword($sellerId, $chunk);
                     if (isset($pausedKeywordResult['success']) && count($pausedKeywordResult['success']) > 0) {
                         $this->log("{$sellerId} 关停成功: " . count($pausedKeywordResult['success']) . "个");
+                        $batchUpdateList = [];
                         foreach ($pausedKeywordResult['success'] as $keywordId) {
                             if (isset($sellerKeywordList[$keywordId]) && $sellerKeywordList[$keywordId]) {
-                                $spApi->mongoUpdateKeyword($sellerKeywordList[$keywordId], $keywordId, "paused");
+                                $batchUpdateList[] = [
+                                    '_id' => $sellerKeywordList[$keywordId],
+                                    'keywordId' => $keywordId,
+                                    'state' => 'paused'
+                                ];
                             } else {
                                 $this->log("mongo不存在keyword但Amazon已处理成功: {$sellerId} - {$keywordId}");
                             }
+                        }
+                        if (!empty($batchUpdateList)) {
+                            $spApi->batchMongoUpdateKeyword($batchUpdateList);
                         }
                     }
                     if (isset($pausedKeywordResult['error']) && count($pausedKeywordResult['error']) > 0) {
@@ -117,6 +125,7 @@ class SpPausedKeywordController
                             $exportList[] = [
                                 "seller_id" => $sellerId,
                                 "keyword_id" => (string)$keywordId,
+                                "message" => $pausedKeywordResult['errorMsg'][$keywordId] ?? "API操作失败",
                             ];
                         }
                     }
@@ -129,6 +138,7 @@ class SpPausedKeywordController
             $excelUtils->downloadXlsx([
                 "seller_id",
                 "keyword_id",
+                "message",
             ], $exportList, "关停失败的keywordId_" . date("YmdHis") . ".xlsx", [1]);
         }
     }
@@ -192,22 +202,32 @@ class SpPausedKeywordController
 
             $keywordSuccessIds = [];
             $keywordFailedIds = [];
+            $keywordErrorMsg = [];
             if (count($keywordUpdateList) > 0) {
                 foreach (array_chunk($keywordUpdateList, 200) as $chunk) {
                     $this->log("{$sellerId} 关停keyword: " . count($chunk) . "个");
                     $pausedKeywordResult = $spApi->updateKeyword($sellerId, $chunk);
                     if (isset($pausedKeywordResult['success']) && count($pausedKeywordResult['success']) > 0) {
                         $this->log("{$sellerId} keyword关停成功: " . count($pausedKeywordResult['success']) . "个");
+                        $batchUpdateList = [];
                         foreach ($pausedKeywordResult['success'] as $keywordId) {
                             $keywordSuccessIds[] = $keywordId;
                             // 更新mongo（有缓存就更新，没有也无所谓，Amazon已关停成功）
                             if (isset($sellerKeywordList[$keywordId]) && $sellerKeywordList[$keywordId]) {
-                                $spApi->mongoUpdateKeyword($sellerKeywordList[$keywordId], $keywordId, "paused");
+                                $batchUpdateList[] = [
+                                    '_id' => $sellerKeywordList[$keywordId],
+                                    'keywordId' => $keywordId,
+                                    'state' => 'paused'
+                                ];
                             }
+                        }
+                        if (!empty($batchUpdateList)) {
+                            $spApi->batchMongoUpdateKeyword($batchUpdateList);
                         }
                     }
                     if (isset($pausedKeywordResult['error']) && count($pausedKeywordResult['error']) > 0) {
                         $keywordFailedIds = array_merge($keywordFailedIds, $pausedKeywordResult['error']);
+                        $keywordErrorMsg = array_merge($keywordErrorMsg, $pausedKeywordResult['errorMsg'] ?? []);
                     }
                 }
             }
@@ -223,11 +243,19 @@ class SpPausedKeywordController
                             "limit" => 200
                         ]));
                         if (count($list) > 0) {
+                            $batchUpdateList = [];
                             foreach ($list as $info) {
                                 $seller = $spApi->specialSellerIdReverseConver($info['channel']);
                                 $redisService->hSet("spKeyword_{$seller}", $info['keywordId'], $info['_id']);
                                 $sellerKeywordList[$info['keywordId']] = $info['_id'];
-                                $spApi->mongoUpdateKeyword($info['_id'], $info['keywordId'], "paused");
+                                $batchUpdateList[] = [
+                                    '_id' => $info['_id'],
+                                    'keywordId' => $info['keywordId'],
+                                    'state' => 'paused'
+                                ];
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateKeyword($batchUpdateList);
                             }
                         }
                     }
@@ -249,21 +277,31 @@ class SpPausedKeywordController
 
                 $targetSuccessIds = [];
                 $targetFailedIds = [];
+                $targetErrorMsg = [];
                 if (count($targetUpdateList) > 0) {
                     foreach (array_chunk($targetUpdateList, 200) as $chunk) {
                         $this->log("{$sellerId} 关停target: " . count($chunk) . "个");
                         $pausedTargetResult = $spApi->updateTarget($sellerId, $chunk);
                         if (isset($pausedTargetResult['success']) && count($pausedTargetResult['success']) > 0) {
                             $this->log("{$sellerId} target关停成功: " . count($pausedTargetResult['success']) . "个");
+                            $batchUpdateList = [];
                             foreach ($pausedTargetResult['success'] as $targetId) {
                                 $targetSuccessIds[] = $targetId;
                                 if (isset($sellerTargetList[$targetId]) && $sellerTargetList[$targetId]) {
-                                    $spApi->mongoUpdateTarget($sellerTargetList[$targetId], $targetId, "paused");
+                                    $batchUpdateList[] = [
+                                        '_id' => $sellerTargetList[$targetId],
+                                        'targetId' => $targetId,
+                                        'state' => 'paused'
+                                    ];
                                 }
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateTarget($batchUpdateList);
                             }
                         }
                         if (isset($pausedTargetResult['error']) && count($pausedTargetResult['error']) > 0) {
                             $targetFailedIds = array_merge($targetFailedIds, $pausedTargetResult['error']);
+                            $targetErrorMsg = array_merge($targetErrorMsg, $pausedTargetResult['errorMsg'] ?? []);
                         }
                     }
                 }
@@ -279,11 +317,19 @@ class SpPausedKeywordController
                                 "limit" => 200
                             ]));
                             if (count($list) > 0) {
+                                $batchUpdateList = [];
                                 foreach ($list as $info) {
                                     $seller = $spApi->specialSellerIdReverseConver($info['channel']);
                                     $redisService->hSet("spTarget_{$seller}", $info['targetId'], $info['_id']);
                                     $sellerTargetList[$info['targetId']] = $info['_id'];
-                                    $spApi->mongoUpdateTarget($info['_id'], $info['targetId'], "paused");
+                                    $batchUpdateList[] = [
+                                        '_id' => $info['_id'],
+                                        'targetId' => $info['targetId'],
+                                        'state' => 'paused'
+                                    ];
+                                }
+                                if (!empty($batchUpdateList)) {
+                                    $spApi->batchMongoUpdateTarget($batchUpdateList);
                                 }
                             }
                         }
@@ -300,6 +346,7 @@ class SpPausedKeywordController
                             "channel" => $sellerChannel ?: $channelLabel,
                             "seller_id" => $sellerId,
                             "keyword_id" => (string)$id,
+                            "message" => $targetErrorMsg[$id] ?? $keywordErrorMsg[$id] ?? "API操作失败",
                         ];
                     }
                 }
@@ -312,6 +359,7 @@ class SpPausedKeywordController
                 "channel",
                 "seller_id",
                 "keyword_id",
+                "message",
             ], $exportList, "关停失败_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
         }
 
@@ -540,22 +588,32 @@ class SpPausedKeywordController
 
             $keywordSuccessIds = [];
             $keywordFailedIds = [];
+            $keywordErrorMsg = [];
             if (count($keywordUpdateList) > 0) {
                 foreach (array_chunk($keywordUpdateList, 200) as $chunk) {
                     $this->log("{$sellerId} 重新关停keyword: " . count($chunk) . "个");
                     $pausedKeywordResult = $spApi->updateKeyword($sellerId, $chunk);
                     if (isset($pausedKeywordResult['success']) && count($pausedKeywordResult['success']) > 0) {
                         $this->log("{$sellerId} keyword重新关停成功: " . count($pausedKeywordResult['success']) . "个");
+                        $batchUpdateList = [];
                         foreach ($pausedKeywordResult['success'] as $keywordId) {
                             $keywordSuccessIds[] = $keywordId;
                             $retrySuccessCount++;
                             if (isset($sellerKeywordList[$keywordId]) && $sellerKeywordList[$keywordId]) {
-                                $spApi->mongoUpdateKeyword($sellerKeywordList[$keywordId], $keywordId, "paused");
+                                $batchUpdateList[] = [
+                                    '_id' => $sellerKeywordList[$keywordId],
+                                    'keywordId' => $keywordId,
+                                    'state' => 'paused'
+                                ];
                             }
+                        }
+                        if (!empty($batchUpdateList)) {
+                            $spApi->batchMongoUpdateKeyword($batchUpdateList);
                         }
                     }
                     if (isset($pausedKeywordResult['error']) && count($pausedKeywordResult['error']) > 0) {
                         $keywordFailedIds = array_merge($keywordFailedIds, $pausedKeywordResult['error']);
+                        $keywordErrorMsg = array_merge($keywordErrorMsg, $pausedKeywordResult['errorMsg'] ?? []);
                     }
                 }
             }
@@ -571,11 +629,19 @@ class SpPausedKeywordController
                             "limit" => 200
                         ]));
                         if (count($list) > 0) {
+                            $batchUpdateList = [];
                             foreach ($list as $info) {
                                 $seller = $spApi->specialSellerIdReverseConver($info['channel']);
                                 $redisService->hSet("spKeyword_{$seller}", $info['keywordId'], $info['_id']);
                                 $sellerKeywordList[$info['keywordId']] = $info['_id'];
-                                $spApi->mongoUpdateKeyword($info['_id'], $info['keywordId'], "paused");
+                                $batchUpdateList[] = [
+                                    '_id' => $info['_id'],
+                                    'keywordId' => $info['keywordId'],
+                                    'state' => 'paused'
+                                ];
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateKeyword($batchUpdateList);
                             }
                         }
                     }
@@ -597,22 +663,32 @@ class SpPausedKeywordController
 
                 $targetSuccessIds = [];
                 $targetFailedIds = [];
+                $targetErrorMsg = [];
                 if (count($targetUpdateList) > 0) {
                     foreach (array_chunk($targetUpdateList, 200) as $chunk) {
                         $this->log("{$sellerId} 重新关停target: " . count($chunk) . "个");
                         $pausedTargetResult = $spApi->updateTarget($sellerId, $chunk);
                         if (isset($pausedTargetResult['success']) && count($pausedTargetResult['success']) > 0) {
                             $this->log("{$sellerId} target重新关停成功: " . count($pausedTargetResult['success']) . "个");
+                            $batchUpdateList = [];
                             foreach ($pausedTargetResult['success'] as $targetId) {
                                 $targetSuccessIds[] = $targetId;
                                 $retrySuccessCount++;
                                 if (isset($sellerTargetList[$targetId]) && $sellerTargetList[$targetId]) {
-                                    $spApi->mongoUpdateTarget($sellerTargetList[$targetId], $targetId, "paused");
+                                    $batchUpdateList[] = [
+                                        '_id' => $sellerTargetList[$targetId],
+                                        'targetId' => $targetId,
+                                        'state' => 'paused'
+                                    ];
                                 }
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateTarget($batchUpdateList);
                             }
                         }
                         if (isset($pausedTargetResult['error']) && count($pausedTargetResult['error']) > 0) {
                             $targetFailedIds = array_merge($targetFailedIds, $pausedTargetResult['error']);
+                            $targetErrorMsg = array_merge($targetErrorMsg, $pausedTargetResult['errorMsg'] ?? []);
                         }
                     }
                 }
@@ -628,11 +704,19 @@ class SpPausedKeywordController
                                 "limit" => 200
                             ]));
                             if (count($list) > 0) {
+                                $batchUpdateList = [];
                                 foreach ($list as $info) {
                                     $seller = $spApi->specialSellerIdReverseConver($info['channel']);
                                     $redisService->hSet("spTarget_{$seller}", $info['targetId'], $info['_id']);
                                     $sellerTargetList[$info['targetId']] = $info['_id'];
-                                    $spApi->mongoUpdateTarget($info['_id'], $info['targetId'], "paused");
+                                    $batchUpdateList[] = [
+                                        '_id' => $info['_id'],
+                                        'targetId' => $info['targetId'],
+                                        'state' => 'paused'
+                                    ];
+                                }
+                                if (!empty($batchUpdateList)) {
+                                    $spApi->batchMongoUpdateTarget($batchUpdateList);
                                 }
                             }
                         }
@@ -649,6 +733,7 @@ class SpPausedKeywordController
                             "channel" => $itemChannel,
                             "seller_id" => $sellerId,
                             "keyword_id" => (string)$id,
+                            "message" => $targetErrorMsg[$id] ?? $keywordErrorMsg[$id] ?? "API关停失败",
                         ];
                     }
                 }
@@ -668,6 +753,7 @@ class SpPausedKeywordController
                 "channel",
                 "seller_id",
                 "keyword_id",
+                "message",
             ], $retryFailedList, "重新关停仍失败_keyword_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
             $this->log("重新关停仍失败数据已导出: {$retryFilePath}");
         }

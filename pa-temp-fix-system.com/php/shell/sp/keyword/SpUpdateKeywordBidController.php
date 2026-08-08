@@ -139,12 +139,20 @@ class SpUpdateKeywordBidController
                     $updateKeywordResult = $spApi->updateKeyword($sellerId, $chunk);
                     if (isset($updateKeywordResult['success']) && count($updateKeywordResult['success']) > 0) {
                         $this->log("{$sellerId} 调整bid成功: " . count($updateKeywordResult['success']) . "个");
+                        $batchUpdateList = [];
                         foreach ($chunk as $item) {
                             if (in_array($item['keywordId'], $updateKeywordResult['success']) && isset($sellerKeywordList[$item['keywordId']]) && $sellerKeywordList[$item['keywordId']]) {
-                                $spApi->mongoUpdateKeyword($sellerKeywordList[$item['keywordId']], $item['keywordId'], "", $item['bid']);
+                                $batchUpdateList[] = [
+                                    '_id' => $sellerKeywordList[$item['keywordId']],
+                                    'keywordId' => $item['keywordId'],
+                                    'bid' => $item['bid']
+                                ];
                             } elseif (in_array($item['keywordId'], $updateKeywordResult['success'])) {
                                 $this->log("mongo不存在keyword但Amazon已处理成功: {$sellerId} - {$item['keywordId']}");
                             }
+                        }
+                        if (!empty($batchUpdateList)) {
+                            $spApi->batchMongoUpdateKeyword($batchUpdateList);
                         }
                     }
                     if (isset($updateKeywordResult['error']) && count($updateKeywordResult['error']) > 0) {
@@ -155,6 +163,7 @@ class SpUpdateKeywordBidController
                                     "seller_id" => $sellerId,
                                     "keyword_id" => (string)$item['keywordId'],
                                     "bid" => $item['bid'],
+                                    "message" => $updateKeywordResult['errorMsg'][$item['keywordId']] ?? "API操作失败",
                                 ];
                             }
                         }
@@ -169,6 +178,7 @@ class SpUpdateKeywordBidController
                 "seller_id",
                 "keyword_id",
                 "bid",
+                "message",
             ], $exportList, "调整keywordBid失败_" . date("YmdHis") . ".xlsx", [1]);
         }
     }
@@ -271,23 +281,33 @@ class SpUpdateKeywordBidController
 
             $keywordSuccessIds = [];
             $keywordFailedIds = [];
+            $keywordErrorMsg = [];
             if (count($keywordUpdateList) > 0) {
                 foreach (array_chunk($keywordUpdateList, 200) as $chunk) {
                     $this->log("{$sellerId} 调整keyword bid: " . count($chunk) . "个");
                     $updateKeywordResult = $spApi->updateKeyword($sellerId, $chunk);
                     if (isset($updateKeywordResult['success']) && count($updateKeywordResult['success']) > 0) {
                         $this->log("{$sellerId} keyword调整bid成功: " . count($updateKeywordResult['success']) . "个");
+                        $batchUpdateList = [];
                         foreach ($chunk as $item) {
                             if (in_array($item['keywordId'], $updateKeywordResult['success'])) {
                                 $keywordSuccessIds[] = $item['keywordId'];
                                 if (isset($sellerKeywordList[$item['keywordId']]) && $sellerKeywordList[$item['keywordId']]) {
-                                    $spApi->mongoUpdateKeyword($sellerKeywordList[$item['keywordId']], $item['keywordId'], "", $item['bid']);
+                                    $batchUpdateList[] = [
+                                        '_id' => $sellerKeywordList[$item['keywordId']],
+                                        'keywordId' => $item['keywordId'],
+                                        'bid' => $item['bid']
+                                    ];
                                 }
                             }
+                        }
+                        if (!empty($batchUpdateList)) {
+                            $spApi->batchMongoUpdateKeyword($batchUpdateList);
                         }
                     }
                     if (isset($updateKeywordResult['error']) && count($updateKeywordResult['error']) > 0) {
                         $keywordFailedIds = array_merge($keywordFailedIds, $updateKeywordResult['error']);
+                        $keywordErrorMsg = array_merge($keywordErrorMsg, $updateKeywordResult['errorMsg'] ?? []);
                     }
                 }
             }
@@ -303,12 +323,20 @@ class SpUpdateKeywordBidController
                             "limit" => 200
                         ]));
                         if (count($list) > 0) {
+                            $batchUpdateList = [];
                             foreach ($list as $info) {
                                 $seller = $spApi->specialSellerIdReverseConver($info['channel']);
                                 $redisService->hSet("spKeyword_{$seller}", $info['keywordId'], $info['_id']);
                                 $sellerKeywordList[$info['keywordId']] = $info['_id'];
                                 $bid = $idBidMap[$info['keywordId']];
-                                $spApi->mongoUpdateKeyword($info['_id'], $info['keywordId'], "", (float)$bid);
+                                $batchUpdateList[] = [
+                                    '_id' => $info['_id'],
+                                    'keywordId' => $info['keywordId'],
+                                    'bid' => (float)$bid
+                                ];
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateKeyword($batchUpdateList);
                             }
                         }
                     }
@@ -369,23 +397,33 @@ class SpUpdateKeywordBidController
 
                 $targetSuccessIds = [];
                 $targetFailedIds = [];
+                $targetErrorMsg = [];
                 if (count($targetUpdateList) > 0) {
                     foreach (array_chunk($targetUpdateList, 200) as $chunk) {
                         $this->log("{$sellerId} 调整target bid: " . count($chunk) . "个");
                         $updateTargetResult = $spApi->updateTarget($sellerId, $chunk);
                         if (isset($updateTargetResult['success']) && count($updateTargetResult['success']) > 0) {
                             $this->log("{$sellerId} target调整bid成功: " . count($updateTargetResult['success']) . "个");
+                            $batchUpdateList = [];
                             foreach ($chunk as $item) {
                                 if (in_array($item['targetId'], $updateTargetResult['success'])) {
                                     $targetSuccessIds[] = $item['targetId'];
                                     if (isset($sellerTargetList[$item['targetId']]) && $sellerTargetList[$item['targetId']]) {
-                                        $spApi->mongoUpdateTarget($sellerTargetList[$item['targetId']], $item['targetId'], "", $item['bid']);
+                                        $batchUpdateList[] = [
+                                            '_id' => $sellerTargetList[$item['targetId']],
+                                            'targetId' => $item['targetId'],
+                                            'bid' => $item['bid']
+                                        ];
                                     }
                                 }
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateTarget($batchUpdateList);
                             }
                         }
                         if (isset($updateTargetResult['error']) && count($updateTargetResult['error']) > 0) {
                             $targetFailedIds = array_merge($targetFailedIds, $updateTargetResult['error']);
+                            $targetErrorMsg = array_merge($targetErrorMsg, $updateTargetResult['errorMsg'] ?? []);
                         }
                     }
                 }
@@ -401,12 +439,20 @@ class SpUpdateKeywordBidController
                                 "limit" => 200
                             ]));
                             if (count($list) > 0) {
+                                $batchUpdateList = [];
                                 foreach ($list as $info) {
                                     $seller = $spApi->specialSellerIdReverseConver($info['channel']);
                                     $redisService->hSet("spTarget_{$seller}", $info['targetId'], $info['_id']);
                                     $sellerTargetList[$info['targetId']] = $info['_id'];
                                     $bid = $idBidMap[$info['targetId']];
-                                    $spApi->mongoUpdateTarget($info['_id'], $info['targetId'], "", (float)$bid);
+                                    $batchUpdateList[] = [
+                                        '_id' => $info['_id'],
+                                        'targetId' => $info['targetId'],
+                                        'bid' => (float)$bid
+                                    ];
+                                }
+                                if (!empty($batchUpdateList)) {
+                                    $spApi->batchMongoUpdateTarget($batchUpdateList);
                                 }
                             }
                         }
@@ -423,6 +469,7 @@ class SpUpdateKeywordBidController
                             "seller_id" => $sellerId,
                             "keyword_id" => (string)$id,
                             "bid" => $idBidMap[$id],
+                            "message" => $targetErrorMsg[$id] ?? $keywordErrorMsg[$id] ?? "API操作失败",
                         ];
                     }
                 }
@@ -436,6 +483,7 @@ class SpUpdateKeywordBidController
                 "seller_id",
                 "keyword_id",
                 "bid",
+                "message",
             ], $exportList, "调整bid失败_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
         }
 
@@ -545,23 +593,33 @@ class SpUpdateKeywordBidController
 
             $keywordSuccessIds = [];
             $keywordFailedIds = [];
+            $keywordErrorMsg = [];
             if (count($keywordUpdateList) > 0) {
                 foreach (array_chunk($keywordUpdateList, 200) as $chunk) {
                     $this->log("{$sellerId} 重试调整keyword bid: " . count($chunk) . "个");
                     $updateKeywordResult = $spApi->updateKeyword($sellerId, $chunk);
                     if (isset($updateKeywordResult['success']) && count($updateKeywordResult['success']) > 0) {
                         $this->log("{$sellerId} keyword重试成功: " . count($updateKeywordResult['success']) . "个");
+                        $batchUpdateList = [];
                         foreach ($chunk as $item) {
                             if (in_array($item['keywordId'], $updateKeywordResult['success'])) {
                                 $keywordSuccessIds[] = $item['keywordId'];
                                 if (isset($sellerKeywordList[$item['keywordId']]) && $sellerKeywordList[$item['keywordId']]) {
-                                    $spApi->mongoUpdateKeyword($sellerKeywordList[$item['keywordId']], $item['keywordId'], "", $item['bid']);
+                                    $batchUpdateList[] = [
+                                        '_id' => $sellerKeywordList[$item['keywordId']],
+                                        'keywordId' => $item['keywordId'],
+                                        'bid' => $item['bid']
+                                    ];
                                 }
                             }
+                        }
+                        if (!empty($batchUpdateList)) {
+                            $spApi->batchMongoUpdateKeyword($batchUpdateList);
                         }
                     }
                     if (isset($updateKeywordResult['error']) && count($updateKeywordResult['error']) > 0) {
                         $keywordFailedIds = array_merge($keywordFailedIds, $updateKeywordResult['error']);
+                        $keywordErrorMsg = array_merge($keywordErrorMsg, $updateKeywordResult['errorMsg'] ?? []);
                     }
                 }
             }
@@ -577,12 +635,20 @@ class SpUpdateKeywordBidController
                             "limit" => 200
                         ]));
                         if (count($list) > 0) {
+                            $batchUpdateList = [];
                             foreach ($list as $info) {
                                 $seller = $spApi->specialSellerIdReverseConver($info['channel']);
                                 $redisService->hSet("spKeyword_{$seller}", $info['keywordId'], $info['_id']);
                                 $sellerKeywordList[$info['keywordId']] = $info['_id'];
                                 $bid = $idBidMap[$info['keywordId']];
-                                $spApi->mongoUpdateKeyword($info['_id'], $info['keywordId'], "", (float)$bid);
+                                $batchUpdateList[] = [
+                                    '_id' => $info['_id'],
+                                    'keywordId' => $info['keywordId'],
+                                    'bid' => (float)$bid
+                                ];
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateKeyword($batchUpdateList);
                             }
                         }
                     }
@@ -643,23 +709,33 @@ class SpUpdateKeywordBidController
 
                 $targetSuccessIds = [];
                 $targetFailedIds = [];
+                $targetErrorMsg = [];
                 if (count($targetUpdateList) > 0) {
                     foreach (array_chunk($targetUpdateList, 200) as $chunk) {
                         $this->log("{$sellerId} 重试调整target bid: " . count($chunk) . "个");
                         $updateTargetResult = $spApi->updateTarget($sellerId, $chunk);
                         if (isset($updateTargetResult['success']) && count($updateTargetResult['success']) > 0) {
                             $this->log("{$sellerId} target重试成功: " . count($updateTargetResult['success']) . "个");
+                            $batchUpdateList = [];
                             foreach ($chunk as $item) {
                                 if (in_array($item['targetId'], $updateTargetResult['success'])) {
                                     $targetSuccessIds[] = $item['targetId'];
                                     if (isset($sellerTargetList[$item['targetId']]) && $sellerTargetList[$item['targetId']]) {
-                                        $spApi->mongoUpdateTarget($sellerTargetList[$item['targetId']], $item['targetId'], "", $item['bid']);
+                                        $batchUpdateList[] = [
+                                            '_id' => $sellerTargetList[$item['targetId']],
+                                            'targetId' => $item['targetId'],
+                                            'bid' => $item['bid']
+                                        ];
                                     }
                                 }
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateTarget($batchUpdateList);
                             }
                         }
                         if (isset($updateTargetResult['error']) && count($updateTargetResult['error']) > 0) {
                             $targetFailedIds = array_merge($targetFailedIds, $updateTargetResult['error']);
+                            $targetErrorMsg = array_merge($targetErrorMsg, $updateTargetResult['errorMsg'] ?? []);
                         }
                     }
                 }
@@ -675,12 +751,20 @@ class SpUpdateKeywordBidController
                                 "limit" => 200
                             ]));
                             if (count($list) > 0) {
+                                $batchUpdateList = [];
                                 foreach ($list as $info) {
                                     $seller = $spApi->specialSellerIdReverseConver($info['channel']);
                                     $redisService->hSet("spTarget_{$seller}", $info['targetId'], $info['_id']);
                                     $sellerTargetList[$info['targetId']] = $info['_id'];
                                     $bid = $idBidMap[$info['targetId']];
-                                    $spApi->mongoUpdateTarget($info['_id'], $info['targetId'], "", (float)$bid);
+                                    $batchUpdateList[] = [
+                                        '_id' => $info['_id'],
+                                        'targetId' => $info['targetId'],
+                                        'bid' => (float)$bid
+                                    ];
+                                }
+                                if (!empty($batchUpdateList)) {
+                                    $spApi->batchMongoUpdateTarget($batchUpdateList);
                                 }
                             }
                         }
@@ -698,6 +782,7 @@ class SpUpdateKeywordBidController
                             "seller_id" => $sellerId,
                             "keyword_id" => (string)$id,
                             "bid" => $idBidMap[$id],
+                            "message" => $targetErrorMsg[$id] ?? $keywordErrorMsg[$id] ?? "API调整bid失败",
                         ];
                     }
                 }
@@ -711,6 +796,7 @@ class SpUpdateKeywordBidController
                 "seller_id",
                 "keyword_id",
                 "bid",
+                "message",
             ], $exportList, "重试bid仍失败_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
             $this->log("仍失败数据已导出: {$filePath}");
         } else {

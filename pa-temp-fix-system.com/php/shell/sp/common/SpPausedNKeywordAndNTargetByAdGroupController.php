@@ -231,11 +231,18 @@ class SpPausedNKeywordAndNTargetByAdGroupController
                                 if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0){
                                     //成功的adId；
                                     $this->log("{$sellerId} 关停成功: " . count($pausedAdIdResult['success']) . "个");
+                                    $batchUpdateList = [];
                                     foreach ($pausedAdIdResult['success'] as $keywordId){
                                         if (isset($sellerAdList[$keywordId]) && $sellerAdList[$keywordId]){
-                                            $_id = $sellerAdList[$keywordId];
-                                            $spApi->mongoUpdateNegativeKeyword($_id, $keywordId, "paused");
+                                            $batchUpdateList[] = [
+                                                '_id' => $sellerAdList[$keywordId],
+                                                'keywordId' => $keywordId,
+                                                'state' => 'paused'
+                                            ];
                                         }
+                                    }
+                                    if (!empty($batchUpdateList)) {
+                                        $spApi->batchMongoUpdateNegativeKeyword($batchUpdateList);
                                     }
                                 }
                                 if (isset($pausedAdIdResult['error']) && count($pausedAdIdResult['error']) > 0){
@@ -245,6 +252,7 @@ class SpPausedNKeywordAndNTargetByAdGroupController
                                         $exportList[] = [
                                             "seller_id" => $sellerId,
                                             "keyword_id" => (string)$keywordId,
+                                            "message" => $pausedAdIdResult['errorMsg'][$keywordId] ?? "API操作失败",
                                         ];
                                     }
                                 }
@@ -269,6 +277,7 @@ class SpPausedNKeywordAndNTargetByAdGroupController
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
                     "keyword_id",
+                    "message",
                 ], $exportList, "关停失败的keywordId_" . date("YmdHis") . ".xlsx", [1]);
             }
         }

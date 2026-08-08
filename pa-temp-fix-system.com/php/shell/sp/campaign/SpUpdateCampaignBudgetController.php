@@ -243,22 +243,30 @@ class SpUpdateCampaignBudgetController
                 $updateResult = $this->spApi->updateCampaignBudget($sellerId, $amazonPayload);
 
                 if (isset($updateResult['success']) && count($updateResult['success']) > 0) {
+                    $batchUpdateList = [];
                     foreach ($chunk as $item) {
                         if (!in_array($item['campaignId'], $updateResult['success'])) {
                             continue;
                         }
                         $mongoInfo = $mongoCampaignMap[$item['campaignId']] ?? [];
                         if (isset($mongoInfo['_id']) && trim((string)$mongoInfo['_id']) !== "") {
-                            $this->spApi->mongoUpdateCampaignInfoV2($mongoInfo['_id'], [
-                                "dailyBudget" => $item['dailyBudget'],
-                                "modifiedBy" => "system(zhouangang)",
-                                "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z",
-                                "status" => "2",
-                                "messages" => "system(zhouangang)"
-                            ]);
+                            $batchUpdateList[] = [
+                                '_id' => $mongoInfo['_id'],
+                                'campaignId' => $item['campaignId'],
+                                'updateParams' => [
+                                    "dailyBudget" => $item['dailyBudget'],
+                                    "modifiedBy" => "system(zhouangang)",
+                                    "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z",
+                                    "status" => "2",
+                                    "messages" => "system(zhouangang)"
+                                ]
+                            ];
                         } else {
                             $this->log("mongo不存在campaign但Amazon已处理成功: {$sellerId} - {$item['campaignId']}");
                         }
+                    }
+                    if (!empty($batchUpdateList)) {
+                        $this->spApi->batchMongoUpdateCampaignInfo($batchUpdateList);
                     }
                 }
 
@@ -269,7 +277,7 @@ class SpUpdateCampaignBudgetController
                                 "seller_id" => $sellerId,
                                 "campaign_id" => (string)$item['campaignId'],
                                 "daily_budget" => $item['dailyBudget'],
-                                "message" => "Amazon更新失败",
+                                "message" => $updateResult['errorMsg'][$item['campaignId']] ?? "API操作失败",
                             ];
                         }
                     }
@@ -529,6 +537,7 @@ class SpUpdateCampaignBudgetController
 
                 if (isset($updateResult['success']) && count($updateResult['success']) > 0) {
                     $this->log("{$sellerId} 重新更新成功: " . count($updateResult['success']) . "个");
+                    $batchUpdateList = [];
                     foreach ($chunk as $payload) {
                         if (!in_array($payload['campaignId'], $updateResult['success'])) {
                             continue;
@@ -536,16 +545,23 @@ class SpUpdateCampaignBudgetController
                         $retrySuccessCount++;
                         $mongoInfo = $mongoCampaignMap[$payload['campaignId']] ?? [];
                         if (isset($mongoInfo['_id']) && trim((string)$mongoInfo['_id']) !== "") {
-                            $spApi->mongoUpdateCampaignInfoV2($mongoInfo['_id'], [
-                                "dailyBudget" => $payload['dailyBudget'],
-                                "modifiedBy" => "system(zhouangang)",
-                                "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z",
-                                "status" => "2",
-                                "messages" => "system(zhouangang)"
-                            ]);
+                            $batchUpdateList[] = [
+                                '_id' => $mongoInfo['_id'],
+                                'campaignId' => $payload['campaignId'],
+                                'updateParams' => [
+                                    "dailyBudget" => $payload['dailyBudget'],
+                                    "modifiedBy" => "system(zhouangang)",
+                                    "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z",
+                                    "status" => "2",
+                                    "messages" => "system(zhouangang)"
+                                ]
+                            ];
                         } else {
                             $this->log("mongo不存在campaign但Amazon已处理成功: {$sellerId} - {$payload['campaignId']}");
                         }
+                    }
+                    if (!empty($batchUpdateList)) {
+                        $spApi->batchMongoUpdateCampaignInfo($batchUpdateList);
                     }
                 }
 
@@ -566,6 +582,7 @@ class SpUpdateCampaignBudgetController
                             "campaign_id" => (string)$campaignId,
                             "actual_budget" => "",
                             "expected_budget" => $budget,
+                            "message" => $updateResult['errorMsg'][$campaignId] ?? "API更新预算失败",
                         ];
                     }
                 }
@@ -587,6 +604,7 @@ class SpUpdateCampaignBudgetController
                 "campaign_id",
                 "actual_budget",
                 "expected_budget",
+                "message",
             ], $retryFailedList, "重新操作仍失败_campaign_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
             $this->log("重新操作仍失败数据已导出: {$retryFilePath}");
         }

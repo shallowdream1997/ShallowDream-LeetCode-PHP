@@ -101,12 +101,20 @@ class SpPausedTargetController
                     $pausedTargetResult = $spApi->updateTarget($sellerId, $chunk);
                     if (isset($pausedTargetResult['success']) && count($pausedTargetResult['success']) > 0) {
                         $this->log("{$sellerId} 关停成功: " . count($pausedTargetResult['success']) . "个");
+                        $batchUpdateList = [];
                         foreach ($pausedTargetResult['success'] as $targetId) {
                             if (isset($sellerTargetList[$targetId]) && $sellerTargetList[$targetId]) {
-                                $spApi->mongoUpdateTarget($sellerTargetList[$targetId], $targetId, "paused");
+                                $batchUpdateList[] = [
+                                    '_id' => $sellerTargetList[$targetId],
+                                    'targetId' => $targetId,
+                                    'state' => 'paused'
+                                ];
                             } else {
                                 $this->log("mongo不存在target但Amazon已处理成功: {$sellerId} - {$targetId}");
                             }
+                        }
+                        if (!empty($batchUpdateList)) {
+                            $spApi->batchMongoUpdateTarget($batchUpdateList);
                         }
                     }
                     if (isset($pausedTargetResult['error']) && count($pausedTargetResult['error']) > 0) {
@@ -115,6 +123,7 @@ class SpPausedTargetController
                             $exportList[] = [
                                 "seller_id" => $sellerId,
                                 "target_id" => (string)$targetId,
+                                "message" => $pausedTargetResult['errorMsg'][$targetId] ?? "API操作失败",
                             ];
                         }
                     }
@@ -127,6 +136,7 @@ class SpPausedTargetController
             $excelUtils->downloadXlsx([
                 "seller_id",
                 "target_id",
+                "message",
             ], $exportList, "关停失败的targetId_" . date("YmdHis") . ".xlsx", [1]);
         }
 

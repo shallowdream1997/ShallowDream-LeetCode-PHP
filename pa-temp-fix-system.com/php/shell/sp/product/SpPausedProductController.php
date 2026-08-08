@@ -218,12 +218,19 @@ class SpPausedProductController
                 $pausedAdIdResult = $spApi->pausedProduct($sellerId, $chunk);
                 if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0) {
                     $this->log("{$sellerId} 重新关停成功: " . count($pausedAdIdResult['success']) . "个");
+                    $batchUpdateList = [];
                     foreach ($pausedAdIdResult['success'] as $adId) {
                         $retrySuccessCount++;
                         if (isset($sellerAdList[$adId]) && $sellerAdList[$adId]) {
-                            $_id = $sellerAdList[$adId];
-                            $spApi->mongoUpdateProduct($_id, $adId, "paused");
+                            $batchUpdateList[] = [
+                                '_id' => $sellerAdList[$adId],
+                                'adId' => $adId,
+                                'state' => 'paused'
+                            ];
                         }
+                    }
+                    if (!empty($batchUpdateList)) {
+                        $spApi->batchMongoUpdateProduct($batchUpdateList);
                     }
                 }
                 if (isset($pausedAdIdResult['error']) && count($pausedAdIdResult['error']) > 0) {
@@ -234,6 +241,7 @@ class SpPausedProductController
                             "channel" => $itemChannel,
                             "seller_id" => $sellerId,
                             "ad_id" => (string)$adId,
+                            "message" => $pausedAdIdResult['errorMsg'][$adId] ?? "API关停失败",
                         ];
                     }
                 }
@@ -253,6 +261,7 @@ class SpPausedProductController
                 "channel",
                 "seller_id",
                 "ad_id",
+                "message",
             ], $retryFailedList, "重新关停仍失败_product_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
             $this->log("重新关停仍失败数据已导出: {$retryFilePath}");
         }
@@ -337,13 +346,20 @@ class SpPausedProductController
                         $this->log(json_encode($chunk, JSON_UNESCAPED_UNICODE));
                         $pausedAdIdResult = $spApi->pausedProduct($sellerId,$chunk);
                         if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0){
-                            //成功的adId；
+                            //成功的adId；批量更新mongo（30路并发，替代逐条串行调用）
                             $this->log("{$sellerId} 关停成功: " . count($pausedAdIdResult['success']) . "个");
+                            $batchUpdateList = [];
                             foreach ($pausedAdIdResult['success'] as $adId){
                                 if (isset($sellerAdList[$adId]) && $sellerAdList[$adId]){
-                                    $_id = $sellerAdList[$adId];
-                                    $spApi->mongoUpdateProduct($_id, $adId, "paused");
+                                    $batchUpdateList[] = [
+                                        '_id' => $sellerAdList[$adId],
+                                        'adId' => $adId,
+                                        'state' => 'paused'
+                                    ];
                                 }
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateProduct($batchUpdateList);
                             }
                         }
                         if (isset($pausedAdIdResult['error']) && count($pausedAdIdResult['error']) > 0){
@@ -355,6 +371,7 @@ class SpPausedProductController
                                     "channel" => $itemChannel,
                                     "seller_id" => $sellerId,
                                     "ad_id" => (string)$adId,
+                                    "message" => $pausedAdIdResult['errorMsg'][$adId] ?? "API操作失败",
                                 ];
                             }
                         }
@@ -370,6 +387,7 @@ class SpPausedProductController
                     "channel",
                     "seller_id",
                     "ad_id",
+                    "message",
                 ], $exportList, "关停失败_product_" . ($channel ?: 'all') . "_" . date("YmdHis") . ".xlsx", [2]);
             }
 

@@ -123,11 +123,18 @@ class SpEnabledNegativeKeywordController
                         if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0){
                             //成功的adId；
                             $this->log("{$sellerId} 开启成功: " . count($pausedAdIdResult['success']) . "个");
+                            $batchUpdateList = [];
                             foreach ($pausedAdIdResult['success'] as $keywordId){
                                 if (isset($sellerAdList[$keywordId]) && $sellerAdList[$keywordId]){
-                                    $_id = $sellerAdList[$keywordId];
-                                    $spApi->mongoUpdateNegativeKeyword($_id, $keywordId, "enabled");
+                                    $batchUpdateList[] = [
+                                        '_id' => $sellerAdList[$keywordId],
+                                        'keywordId' => $keywordId,
+                                        'state' => 'enabled'
+                                    ];
                                 }
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateNegativeKeyword($batchUpdateList);
                             }
                         }
                         if (isset($pausedAdIdResult['error']) && count($pausedAdIdResult['error']) > 0){
@@ -139,6 +146,7 @@ class SpEnabledNegativeKeywordController
                                     "channel" => $itemChannel,
                                     "seller_id" => $sellerId,
                                     "keyword_id" => (string)$keywordId,
+                                    "message" => $pausedAdIdResult['errorMsg'][$keywordId] ?? "API操作失败",
                                 ];
                             }
                         }
@@ -154,6 +162,7 @@ class SpEnabledNegativeKeywordController
                     "channel",
                     "seller_id",
                     "keyword_id",
+                    "message",
                 ], $exportList, "开启失败_negativeKeyword_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
                 $this->log("开启失败数据已导出: {$filePath}");
             }
@@ -359,12 +368,19 @@ class SpEnabledNegativeKeywordController
                 $updateResult = $spApi->updateNegativeKeyword($sellerId, $chunk);
                 if (isset($updateResult['success']) && count($updateResult['success']) > 0) {
                     $this->log("{$sellerId} 重新开启成功: " . count($updateResult['success']) . "个");
+                    $batchUpdateList = [];
                     foreach ($updateResult['success'] as $keywordId) {
                         $retrySuccessCount++;
                         if (isset($sellerAdList[$keywordId]) && $sellerAdList[$keywordId]) {
-                            $_id = $sellerAdList[$keywordId];
-                            $spApi->mongoUpdateNegativeKeyword($_id, $keywordId, "enabled");
+                            $batchUpdateList[] = [
+                                '_id' => $sellerAdList[$keywordId],
+                                'keywordId' => $keywordId,
+                                'state' => 'enabled'
+                            ];
                         }
+                    }
+                    if (!empty($batchUpdateList)) {
+                        $spApi->batchMongoUpdateNegativeKeyword($batchUpdateList);
                     }
                 }
                 if (isset($updateResult['error']) && count($updateResult['error']) > 0) {
@@ -375,6 +391,7 @@ class SpEnabledNegativeKeywordController
                             "channel" => $itemChannel,
                             "seller_id" => $sellerId,
                             "keyword_id" => (string)$keywordId,
+                            "message" => $updateResult['errorMsg'][$keywordId] ?? "API启用失败",
                         ];
                     }
                 }
@@ -394,6 +411,7 @@ class SpEnabledNegativeKeywordController
                 "channel",
                 "seller_id",
                 "keyword_id",
+                "message",
             ], $retryFailedList, "重新操作仍失败_negativeKeyword_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
             $this->log("重新操作仍失败数据已导出: {$retryFilePath}");
         }

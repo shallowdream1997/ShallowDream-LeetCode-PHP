@@ -122,11 +122,18 @@ class SpEnabledNegativeTargetController
                         if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0){
                             //成功的targetId
                             $this->log("{$sellerId} 开启成功: " . count($pausedAdIdResult['success']) . "个");
+                            $batchUpdateList = [];
                             foreach ($pausedAdIdResult['success'] as $targetId){
                                 if (isset($sellerAdList[$targetId]) && $sellerAdList[$targetId]){
-                                    $_id = $sellerAdList[$targetId];
-                                    $spApi->mongoUpdateNegativeTarget($_id, $targetId, "enabled");
+                                    $batchUpdateList[] = [
+                                        '_id' => $sellerAdList[$targetId],
+                                        'targetId' => $targetId,
+                                        'state' => 'enabled'
+                                    ];
                                 }
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateNegativeTarget($batchUpdateList);
                             }
                         }
                         if (isset($pausedAdIdResult['error']) && count($pausedAdIdResult['error']) > 0){
@@ -138,6 +145,7 @@ class SpEnabledNegativeTargetController
                                     "channel" => $itemChannel,
                                     "seller_id" => $sellerId,
                                     "target_id" => (string)$targetId,
+                                    "message" => $pausedAdIdResult['errorMsg'][$targetId] ?? "API操作失败",
                                 ];
                             }
                         }
@@ -153,6 +161,7 @@ class SpEnabledNegativeTargetController
                     "channel",
                     "seller_id",
                     "target_id",
+                    "message",
                 ], $exportList, "开启失败_negative_target_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
                 $this->log("开启失败数据已导出: {$filePath}");
             } else {
@@ -374,12 +383,19 @@ class SpEnabledNegativeTargetController
                 $pausedAdIdResult = $spApi->updateNegativeTarget($sellerId, $chunk);
                 if (isset($pausedAdIdResult['success']) && count($pausedAdIdResult['success']) > 0) {
                     $this->log("{$sellerId} 重新开启成功: " . count($pausedAdIdResult['success']) . "个");
+                    $batchUpdateList = [];
                     foreach ($pausedAdIdResult['success'] as $targetId) {
                         $retrySuccessCount++;
                         if (isset($sellerAdList[$targetId]) && $sellerAdList[$targetId]) {
-                            $_id = $sellerAdList[$targetId];
-                            $spApi->mongoUpdateNegativeTarget($_id, $targetId, "enabled");
+                            $batchUpdateList[] = [
+                                '_id' => $sellerAdList[$targetId],
+                                'targetId' => $targetId,
+                                'state' => 'enabled'
+                            ];
                         }
+                    }
+                    if (!empty($batchUpdateList)) {
+                        $spApi->batchMongoUpdateNegativeTarget($batchUpdateList);
                     }
                 }
                 if (isset($pausedAdIdResult['error']) && count($pausedAdIdResult['error']) > 0) {
@@ -390,6 +406,7 @@ class SpEnabledNegativeTargetController
                             "channel" => $itemChannel,
                             "seller_id" => $sellerId,
                             "target_id" => (string)$targetId,
+                            "message" => $pausedAdIdResult['errorMsg'][$targetId] ?? "API启用失败",
                         ];
                     }
                 }
@@ -409,6 +426,7 @@ class SpEnabledNegativeTargetController
                 "channel",
                 "seller_id",
                 "target_id",
+                "message",
             ], $retryFailedList, "重新启用仍失败_negative_target_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
             $this->log("重新启用仍失败数据已导出: {$retryFilePath}");
         }

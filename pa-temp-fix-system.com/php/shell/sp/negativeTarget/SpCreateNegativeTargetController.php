@@ -547,6 +547,7 @@ class SpCreateNegativeTargetController
                         "actual_state" => "",
                         "expected_state" => "enabled",
                         "error" => "ad group not found",
+                        "message" => "API创建失败",
                     ];
                 }
                 continue;
@@ -607,17 +608,27 @@ class SpCreateNegativeTargetController
             // 批量更新negativeTarget状态为enabled
             $updateSuccessIds = [];
             $updateFailedIds = [];
+            $updateErrorMsg = [];
             if (count($updatePayloads) > 0) {
                 foreach (array_chunk($updatePayloads, 1000) as $chunk) {
                     $this->log("{$sellerId} adGroupId:{$adGroupId} 重试更新negativeTarget状态为enabled: " . count($chunk) . "个");
                     $result = $spApi->updateNegativeTarget($sellerId, $chunk);
+                    $updateErrorMsg = array_merge($updateErrorMsg, $result['errorMsg'] ?? []);
+                    $batchUpdateList = [];
                     foreach ($result['success'] ?? [] as $targetId) {
                         $updateSuccessIds[] = $targetId;
                         $retrySuccessCount++;
                         $this->log("✅ {$sellerId} 重试更新negativeTarget状态成功: targetId:{$targetId}");
                         if (isset($sellerTargetList[$targetId]) && $sellerTargetList[$targetId]) {
-                            $spApi->mongoUpdateNegativeTarget($sellerTargetList[$targetId], $targetId, "enabled");
+                            $batchUpdateList[] = [
+                                '_id' => $sellerTargetList[$targetId],
+                                'targetId' => $targetId,
+                                'state' => 'enabled'
+                            ];
                         }
+                    }
+                    if (!empty($batchUpdateList)) {
+                        $spApi->batchMongoUpdateNegativeTarget($batchUpdateList);
                     }
                     foreach ($result['error'] ?? [] as $targetId) {
                         $updateFailedIds[] = $targetId;
@@ -637,11 +648,19 @@ class SpCreateNegativeTargetController
                             "limit" => 200
                         ]));
                         if (count($list) > 0) {
+                            $batchUpdateList = [];
                             foreach ($list as $info) {
                                 $seller = $spApi->specialSellerIdReverseConver($info['channel']);
                                 $redisService->hSet("spNegativeTarget_{$seller}", $info['targetId'], $info['_id']);
                                 $sellerTargetList[$info['targetId']] = $info['_id'];
-                                $spApi->mongoUpdateNegativeTarget($info['_id'], $info['targetId'], "enabled");
+                                $batchUpdateList[] = [
+                                    '_id' => $info['_id'],
+                                    'targetId' => $info['targetId'],
+                                    'state' => 'enabled'
+                                ];
+                            }
+                            if (!empty($batchUpdateList)) {
+                                $spApi->batchMongoUpdateNegativeTarget($batchUpdateList);
                             }
                         }
                     }
@@ -660,6 +679,7 @@ class SpCreateNegativeTargetController
                     "actual_state" => $item['actualState'] ?? "",
                     "expected_state" => "enabled",
                     "error" => "更新状态失败",
+                    "message" => $updateErrorMsg[$targetId] ?? "API创建失败",
                 ];
             }
 
@@ -692,6 +712,7 @@ class SpCreateNegativeTargetController
                             "actual_state" => "not_found",
                             "expected_state" => "enabled",
                             "error" => json_encode($errorItem['response'], JSON_UNESCAPED_UNICODE),
+                            "message" => $errorItem['response']['description'] ?? "API创建失败",
                         ];
                     }
                 }
@@ -717,6 +738,7 @@ class SpCreateNegativeTargetController
                 "actual_state",
                 "expected_state",
                 "error",
+                "message",
             ], $retryFailedList, "重新创建仍失败_negativeTarget_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2, 3]);
             $this->log("重新创建仍失败数据已导出: {$retryFilePath}");
         }

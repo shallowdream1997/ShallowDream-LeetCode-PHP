@@ -103,12 +103,21 @@ class SpUpdateTargetBidController
                     $updateTargetResult = $spApi->updateTarget($sellerId, $chunk);
                     if (isset($updateTargetResult['success']) && count($updateTargetResult['success']) > 0) {
                         $this->log("{$sellerId} 调整bid成功: " . count($updateTargetResult['success']) . "个");
+                        $batchUpdateList = [];
                         foreach ($chunk as $item) {
                             if (in_array($item['targetId'], $updateTargetResult['success']) && isset($sellerTargetList[$item['targetId']]) && $sellerTargetList[$item['targetId']]) {
-                                $spApi->mongoUpdateTarget($sellerTargetList[$item['targetId']], $item['targetId'], $item['state'], $item['bid']);
+                                $batchUpdateList[] = [
+                                    '_id' => $sellerTargetList[$item['targetId']],
+                                    'targetId' => $item['targetId'],
+                                    'state' => $item['state'],
+                                    'bid' => $item['bid']
+                                ];
                             } elseif (in_array($item['targetId'], $updateTargetResult['success'])) {
                                 $this->log("mongo不存在target但Amazon已处理成功: {$sellerId} - {$item['targetId']}");
                             }
+                        }
+                        if (!empty($batchUpdateList)) {
+                            $spApi->batchMongoUpdateTarget($batchUpdateList);
                         }
                     }
                     if (isset($updateTargetResult['error']) && count($updateTargetResult['error']) > 0) {
@@ -119,6 +128,7 @@ class SpUpdateTargetBidController
                                     "seller_id" => $sellerId,
                                     "target_id" => (string)$item['targetId'],
                                     "bid" => $item['bid'],
+                                    "message" => $updateTargetResult['errorMsg'][$item['targetId']] ?? "API操作失败",
                                 ];
                             }
                         }
@@ -133,6 +143,7 @@ class SpUpdateTargetBidController
                 "seller_id",
                 "target_id",
                 "bid",
+                "message",
             ], $exportList, "调整targetBid失败_" . date("YmdHis") . ".xlsx", [1]);
         }
 
