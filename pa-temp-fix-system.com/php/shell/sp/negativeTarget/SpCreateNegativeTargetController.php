@@ -235,7 +235,7 @@ class SpCreateNegativeTargetController
                 "ad_group_id",
                 "asin",
                 "error",
-            ], $exportList, "创建negativeTarget失败_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "创建negativeTarget失败_{$channelLabel}_" . date("YmdHis") . ".xlsx", [1]);
             $this->log("失败数据已导出: {$filePath}");
         }
 
@@ -411,7 +411,7 @@ class SpCreateNegativeTargetController
                 "actual_state",
                 "expected_state",
                 "error",
-            ], $exportList, "校验异常_negativeTarget_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "校验异常_negativeTarget_{$channelLabel}_" . date("YmdHis") . ".xlsx", [1]);
             $this->log("异常数据已导出: {$filePath}");
         } else {
             $this->log("所有negativeTarget投放校验通过，无异常数据");

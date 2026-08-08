@@ -52,8 +52,8 @@ class SpPausedTargetController
         try {
             $excelUtils->eachXlsxRow(__DIR__."/excel/target_Id关停清单_{$channel}_{$page}.xlsx", function ($item) use (&$sellerTargetIds) {
                 $sellerId = trim($item['seller_id'] ?? '');
-                $targetId = trim((string)($item['target_id'] ?? ''), "'");
-                if ($sellerId !== "" && $targetId !== "") {
+                $targetId = trim(sprintf('%.0f', (float)($item['target_id'] ?? 0)), "'");
+                if ($sellerId !== "" && $targetId !== "" && $targetId !== "0") {
                     $sellerTargetIds[$sellerId][] = $targetId;
                 }
             });
@@ -113,8 +113,8 @@ class SpPausedTargetController
                         $this->log("{$sellerId} 关停失败: " . count($pausedTargetResult['error']) . "个");
                         foreach ($pausedTargetResult['error'] as $targetId) {
                             $exportList[] = [
-                                "sellerId" => $sellerId,
-                                "targetId" => "'" . $targetId,
+                                "seller_id" => $sellerId,
+                                "target_id" => (string)$targetId,
                             ];
                         }
                     }
@@ -126,8 +126,8 @@ class SpPausedTargetController
             $excelUtils = new ExcelUtils("sp/target/");
             $excelUtils->downloadXlsx([
                 "seller_id",
-                "targetId",
-            ], $exportList, "关停失败的targetId_" . date("YmdHis") . ".xlsx");
+                "target_id",
+            ], $exportList, "关停失败的targetId_" . date("YmdHis") . ".xlsx", [1]);
         }
 
         $this->dingTalk();

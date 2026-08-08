@@ -121,7 +121,7 @@ class SpEnabledNKeywordAndTargetByAdGroupController
                 "match_type",
                 "bid",
                 "reason",
-            ], $exportList, "补充投放失败_{$adType}_{$channel}_{$page}_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "补充投放失败_{$adType}_{$channel}_{$page}_" . date("YmdHis") . ".xlsx", [3, 4]);
         }
 
         $summary = count($exportList) > 0 ? ("完成，失败 " . count($exportList) . " 条") : "完成，全部处理成功";
@@ -600,8 +600,8 @@ class SpEnabledNKeywordAndTargetByAdGroupController
             "type" => $row['type'],
             "channel" => $row['channel'],
             "seller_id" => $row['seller_id'],
-            "ad_group_id" => "'" . $row['ad_group_id'],
-            "campaign_id" => $campaignId ? ("'" . $campaignId) : "",
+            "ad_group_id" => (string)$row['ad_group_id'],
+            "campaign_id" => $campaignId ? (string)$campaignId : "",
             "name" => $row['name'],
             "match_type" => $row['match_type'],
             "bid" => $row['bid'],

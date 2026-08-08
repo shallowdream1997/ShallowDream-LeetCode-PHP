@@ -244,7 +244,7 @@ class SpCreateTargetController
                 "asin",
                 "bid",
                 "error",
-            ], $exportList, "创建target失败_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "创建target失败_{$channelLabel}_" . date("YmdHis") . ".xlsx", [1]);
             $this->log("失败数据已导出: {$filePath}");
         }
 
@@ -391,7 +391,7 @@ class SpCreateTargetController
                 $actualBid = isset($existingInfo['bid']) ? (float)$existingInfo['bid'] : null;
 
                 $stateMatch = ($actualState === "enabled");
-                $bidMatch = ($expectedBid === null) || (abs($actualBid - $expectedBid) < 0.001);
+                $bidMatch = ($expectedBid === null) || (bccomp((string)$actualBid, (string)$expectedBid, 2) === 0);
 
                 if ($stateMatch && $bidMatch) {
                     $matchCount++;
@@ -439,7 +439,7 @@ class SpCreateTargetController
                 "actual_bid",
                 "expected_bid",
                 "error",
-            ], $exportList, "校验异常_target_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "校验异常_target_{$channelLabel}_" . date("YmdHis") . ".xlsx", [1]);
             $this->log("异常数据已导出: {$filePath}");
         } else {
             $this->log("所有target投放校验通过，无异常数据");

@@ -256,7 +256,7 @@ class SpCreateKeywordController
                 "match_type",
                 "bid",
                 "error",
-            ], $exportList, "创建keyword失败_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "创建keyword失败_{$channelLabel}_" . date("YmdHis") . ".xlsx", [1]);
             $this->log("失败数据已导出: {$filePath}");
         }
 
@@ -424,7 +424,7 @@ class SpCreateKeywordController
                 $actualBid = isset($existingInfo['bid']) ? (float)$existingInfo['bid'] : null;
 
                 $stateMatch = ($actualState === "enabled");
-                $bidMatch = ($expectedBid === null) || (abs($actualBid - $expectedBid) < 0.001);
+                $bidMatch = ($expectedBid === null) || (bccomp((string)$actualBid, (string)$expectedBid, 2) === 0);
 
                 if ($stateMatch && $bidMatch) {
                     $matchCount++;
@@ -474,7 +474,7 @@ class SpCreateKeywordController
                 "actual_bid",
                 "expected_bid",
                 "error",
-            ], $exportList, "校验异常_keyword_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "校验异常_keyword_{$channelLabel}_" . date("YmdHis") . ".xlsx", [1]);
             $this->log("异常数据已导出: {$filePath}");
         } else {
             $this->log("所有keyword投放校验通过，无异常数据");

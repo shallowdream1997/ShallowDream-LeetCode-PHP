@@ -175,7 +175,7 @@ class SpUpdateCampaignBudgetController
                 $this->log("缺少sellerId，无法更新Amazon campaign预算：{$campaignId}");
                 $exportList[] = [
                     "seller_id" => "",
-                    "campaign_id" => "'" . $campaignId,
+                    "campaign_id" => (string)$campaignId,
                     "daily_budget" => $task['dailyBudget'],
                     "message" => "缺少sellerId，且mongo未查到channel",
                 ];
@@ -267,7 +267,7 @@ class SpUpdateCampaignBudgetController
                         if (in_array($item['campaignId'], $updateResult['error'])) {
                             $exportList[] = [
                                 "seller_id" => $sellerId,
-                                "campaign_id" => "'" . $item['campaignId'],
+                                "campaign_id" => (string)$item['campaignId'],
                                 "daily_budget" => $item['dailyBudget'],
                                 "message" => "Amazon更新失败",
                             ];
@@ -284,7 +284,7 @@ class SpUpdateCampaignBudgetController
                 "campaign_id",
                 "daily_budget",
                 "message",
-            ], $exportList, "调整campaign预算失败_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "调整campaign预算失败_" . date("YmdHis") . ".xlsx", [1]);
         }
     }
 }

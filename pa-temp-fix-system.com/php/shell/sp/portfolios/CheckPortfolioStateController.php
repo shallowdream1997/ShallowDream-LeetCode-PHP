@@ -42,7 +42,7 @@ class CheckPortfolioStateController
         foreach ($contentList as $item) {
             $channel = trim($item['channel']);
             $sellerId = trim($item['sellerId']);
-            $portfolioId = trim($item['portfolioId']);
+            $portfolioId = trim(sprintf('%.0f', (float)($item['portfolioId'] ?? 0)), "'");
             $key = "{$channel}|{$sellerId}";
             if (!isset($groupMap[$key])) {
                 $groupMap[$key] = [
@@ -60,7 +60,7 @@ class CheckPortfolioStateController
         $originRecords = [];
         foreach ($contentList as $item) {
             $originRecords[] = [
-                'portfolioId' => trim($item['portfolioId']),
+                'portfolioId' => trim(sprintf('%.0f', (float)($item['portfolioId'] ?? 0)), "'"),
                 'channel' => trim($item['channel']),
                 'sellerId' => trim($item['sellerId']),
             ];
@@ -187,7 +187,7 @@ class CheckPortfolioStateController
         foreach ($contentList as $item) {
             $channel = trim($item['channel']);
             $sellerId = trim($item['sellerId']);
-            $portfolioId = trim($item['portfolioId']);
+            $portfolioId = trim(sprintf('%.0f', (float)($item['portfolioId'] ?? 0)), "'");
             $key = "{$channel}|{$sellerId}";
             if (!isset($groupMap[$key])) {
                 $groupMap[$key] = [
@@ -237,7 +237,7 @@ class CheckPortfolioStateController
         // 筛选出 policy != NO_CAP 的，并按 channel+sellerId 分组准备更新
         $needFixGroupMap = []; // key => ['channel','sellerId','portfolios'=>[...]]
         foreach ($contentList as $item) {
-            $portfolioId = trim($item['portfolioId']);
+            $portfolioId = trim(sprintf('%.0f', (float)($item['portfolioId'] ?? 0)), "'");
             $channel = trim($item['channel']);
             $sellerId = trim($item['sellerId']);
 

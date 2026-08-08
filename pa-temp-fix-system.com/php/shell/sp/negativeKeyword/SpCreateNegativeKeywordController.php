@@ -234,7 +234,7 @@ class SpCreateNegativeKeywordController
                 "keyword_text",
                 "match_type",
                 "error",
-            ], $exportList, "创建negativeKeyword失败_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "创建negativeKeyword失败_{$channelLabel}_" . date("YmdHis") . ".xlsx", [1]);
             $this->log("失败数据已导出: {$filePath}");
         }
 
@@ -417,7 +417,7 @@ class SpCreateNegativeKeywordController
                 "actual_state",
                 "expected_state",
                 "error",
-            ], $exportList, "校验异常_negativeKeyword_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "校验异常_negativeKeyword_{$channelLabel}_" . date("YmdHis") . ".xlsx", [1]);
             $this->log("异常数据已导出: {$filePath}");
         } else {
             $this->log("所有negativeKeyword投放校验通过，无异常数据");

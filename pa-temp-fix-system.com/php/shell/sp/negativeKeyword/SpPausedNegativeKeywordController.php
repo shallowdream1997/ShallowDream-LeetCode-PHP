@@ -111,8 +111,8 @@ class SpPausedNegativeKeywordController
                             $this->log("{$sellerId} 关停失败: " . count($pausedAdIdResult['error']) . "个");
                             foreach ($pausedAdIdResult['error'] as $keywordId){
                                 $exportList[] = [
-                                    "sellerId" => $sellerId,
-                                    "keywordId" => "'" . $keywordId,
+                                    "seller_id" => $sellerId,
+                                    "keyword_id" => (string)$keywordId,
                                 ];
                             }
                         }
@@ -126,8 +126,8 @@ class SpPausedNegativeKeywordController
                 $excelUtils = new ExcelUtils("sp/negativeKeyword/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
-                    "keywordId",
-                ], $exportList, "关停失败的keywordId_" . date("YmdHis") . ".xlsx");
+                    "keyword_id",
+                ], $exportList, "关停失败的keywordId_" . date("YmdHis") . ".xlsx", [1]);
             }
 
         }

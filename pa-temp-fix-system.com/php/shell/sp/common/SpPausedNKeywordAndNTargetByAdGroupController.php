@@ -110,10 +110,10 @@ class SpPausedNKeywordAndNTargetByAdGroupController
                         if ($negativeKeyword['adGroupId'] == $adGroup['adgroupid'] && $negativeKeyword['keywordText'] == $adGroup['query']){
                             $d = [
                                 "seller_id" => $sellerId,
-                                "campaignId" => "'{$negativeKeyword['campaignId']}",
-                                "adGroupId" => "'{$negativeKeyword['adGroupId']}",
+                                "campaignId" => (string)$negativeKeyword['campaignId'],
+                                "adGroupId" => (string)$negativeKeyword['adGroupId'],
                                 "matchType" => "{$negativeKeyword['matchType']}",
-                                "spId" => "'{$negativeKeyword['keywordId']}",
+                                "spId" => (string)$negativeKeyword['keywordId'],
                                 "text" => "{$negativeKeyword['keywordText']}",
                                 "state" => "{$negativeKeyword['state']}",
                                 "sp_type" => "negativeKeyword",
@@ -128,10 +128,10 @@ class SpPausedNKeywordAndNTargetByAdGroupController
                                 if ($expression['value'] == $adGroup['query']){
                                     $d = [
                                         "seller_id" => $sellerId,
-                                        "campaignId" => "'{$negativeTarget['campaignId']}",
-                                        "adGroupId" => "'{$negativeTarget['adGroupId']}",
+                                        "campaignId" => (string)$negativeTarget['campaignId'],
+                                        "adGroupId" => (string)$negativeTarget['adGroupId'],
                                         "matchType" => "{$expression['type']}",
-                                        "spId" => "{$negativeTarget['targetId']}",
+                                        "spId" => (string)$negativeTarget['targetId'],
                                         "text" => "{$expression['value']}",
                                         "state" => "{$negativeTarget['state']}",
                                         "sp_type" => "negativeTarget",
@@ -160,7 +160,7 @@ class SpPausedNKeywordAndNTargetByAdGroupController
                     "text",
                     "state",
                     "sp_type",
-                ], $exportList, "待关停否定词和否定target_" . date("YmdHis") . ".xlsx");
+                ], $exportList, "待关停否定词和否定target_" . date("YmdHis") . ".xlsx", [1, 2, 4]);
             }
 
         }
@@ -243,8 +243,8 @@ class SpPausedNKeywordAndNTargetByAdGroupController
                                     $this->log("{$sellerId} 关停失败: " . count($pausedAdIdResult['error']) . "个");
                                     foreach ($pausedAdIdResult['error'] as $keywordId){
                                         $exportList[] = [
-                                            "sellerId" => $sellerId,
-                                            "keywordId" => "'" . $keywordId,
+                                            "seller_id" => $sellerId,
+                                            "keyword_id" => (string)$keywordId,
                                         ];
                                     }
                                 }
@@ -268,8 +268,8 @@ class SpPausedNKeywordAndNTargetByAdGroupController
                 $excelUtils = new ExcelUtils("sp/common/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
-                    "keywordId",
-                ], $exportList, "关停失败的keywordId_" . date("YmdHis") . ".xlsx");
+                    "keyword_id",
+                ], $exportList, "关停失败的keywordId_" . date("YmdHis") . ".xlsx", [1]);
             }
         }
 

@@ -236,7 +236,7 @@ class SpArchivedErrorAdGroupController
 
                             $exportList[] = [
                                 "sellerId" => $sellerId,
-                                "adGroupId" => "'" . $i['adGroupId'],
+                                "adGroupId" => (string)$i['adGroupId'],
                                 "msg" => $i['msg'],
                             ];
 
@@ -253,7 +253,7 @@ class SpArchivedErrorAdGroupController
                         "sellerId",
                         "adGroupId",
                         "msg",
-                    ], $exportList, "归档adGroupId结果_" . date("YmdHis") . ".xlsx");
+                    ], $exportList, "归档adGroupId结果_" . date("YmdHis") . ".xlsx", [1]);
                 }
 
 
@@ -361,7 +361,7 @@ class SpArchivedErrorAdGroupController
                         foreach ($last as $i){
                             $exportList[] = [
                                 "sellerId" => $sellerId,
-                                "keywordId" => "'" . $i['keywordId'],
+                                "keywordId" => (string)$i['keywordId'],
                                 "msg" => $i['msg'],
                             ];
                         }
@@ -376,7 +376,7 @@ class SpArchivedErrorAdGroupController
                         "sellerId",
                         "keywordId",
                         "msg",
-                    ], $exportList, "归档keywordId结果{$channel}_" . date("YmdHis") . ".xlsx");
+                    ], $exportList, "归档keywordId结果{$channel}_" . date("YmdHis") . ".xlsx", [1]);
                 }
 
 
@@ -390,7 +390,7 @@ class SpArchivedErrorAdGroupController
                     "keywordText",
                     "matchType",
                     "createdBy",
-                ], $enabledKeywords, "好像是人工投放的keyword合集{$channel}_" . date("YmdHis") . ".xlsx");
+                ], $enabledKeywords, "好像是人工投放的keyword合集{$channel}_" . date("YmdHis") . ".xlsx", [1]);
             }
 
             (new RequestUtils("test"))->dingTalk("归档keyword{$channel}结束");
@@ -751,7 +751,7 @@ class SpArchivedErrorAdGroupController
                         "type",
                         "spId",
                         "msg"
-                    ], $exportList, "归档结果_{$channel}_" . date("YmdHis") . ".xlsx");
+                    ], $exportList, "归档结果_{$channel}_" . date("YmdHis") . ".xlsx", [2]);
 
                 }
 
@@ -1037,7 +1037,7 @@ class SpArchivedErrorAdGroupController
                         "type",
                         "spId",
                         "msg"
-                    ], $exportList, "归档结果_{$channel}_" . date("YmdHis") . ".xlsx");
+                    ], $exportList, "归档结果_{$channel}_" . date("YmdHis") . ".xlsx", [2]);
 
                 }
 
@@ -1071,7 +1071,7 @@ class SpArchivedErrorAdGroupController
                             $exportList[] = [
                                 "sellerId" => $sellerId,
                                 "type" => $type,
-                                "spId" => "'" . $i['adGroupId'],
+                                "spId" => (string)$i['adGroupId'],
                                 "msg" => $i['msg'],
                             ];
 
@@ -1091,7 +1091,7 @@ class SpArchivedErrorAdGroupController
                             $exportList[] = [
                                 "sellerId" => $sellerId,
                                 "type" => $type,
-                                "spId" => "'" . $i['keywordId'],
+                                "spId" => (string)$i['keywordId'],
                                 "msg" => $i['msg'],
                             ];
                         }
@@ -1111,7 +1111,7 @@ class SpArchivedErrorAdGroupController
                             $exportList[] = [
                                 "sellerId" => $sellerId,
                                 "type" => $type,
-                                "spId" => "'" . $i['keywordId'],
+                                "spId" => (string)$i['keywordId'],
                                 "msg" => $i['msg'],
                             ];
                         }
@@ -1130,7 +1130,7 @@ class SpArchivedErrorAdGroupController
                             $exportList[] = [
                                 "sellerId" => $sellerId,
                                 "type" => $type,
-                                "spId" => "'" . $i['targetId'],
+                                "spId" => (string)$i['targetId'],
                                 "msg" => $i['msg'],
                             ];
                         }

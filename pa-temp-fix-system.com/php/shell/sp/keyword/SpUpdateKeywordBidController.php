@@ -99,7 +99,7 @@ class SpUpdateKeywordBidController
                     // archived或未查到，跳过
                     continue;
                 }
-                if (abs($currentBidMap[$keywordId] - $newBid) < 0.001) {
+                if (bccomp($currentBidMap[$keywordId], $newBid, 2) === 0) {
                     $skipCount++;
                     $this->log("⏭️ {$sellerId} keywordId:{$keywordId} bid相同({$newBid})，跳过");
                     continue;
@@ -152,8 +152,8 @@ class SpUpdateKeywordBidController
                         foreach ($chunk as $item) {
                             if (in_array($item['keywordId'], $updateKeywordResult['error'])) {
                                 $exportList[] = [
-                                    "sellerId" => $sellerId,
-                                    "keywordId" => $item['keywordId'],
+                                    "seller_id" => $sellerId,
+                                    "keyword_id" => (string)$item['keywordId'],
                                     "bid" => $item['bid'],
                                 ];
                             }
@@ -167,9 +167,9 @@ class SpUpdateKeywordBidController
             $excelUtils = new ExcelUtils("sp/keyword/");
             $excelUtils->downloadXlsx([
                 "seller_id",
-                "keywordId",
+                "keyword_id",
                 "bid",
-            ], $exportList, "调整keywordBid失败_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "调整keywordBid失败_" . date("YmdHis") . ".xlsx", [1]);
         }
     }
 
@@ -436,7 +436,7 @@ class SpUpdateKeywordBidController
                 "seller_id",
                 "keyword_id",
                 "bid",
-            ], $exportList, "调整bid失败_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "调整bid失败_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
         }
 
         $this->log("updateKeywordBidV2s channel:{$channelLabel} 处理完毕");
@@ -444,47 +444,40 @@ class SpUpdateKeywordBidController
     }
 
     /**
-     * 重试更新bid失败的数据
-     * 读取之前导出的"调整bid失败"Excel文件，继续尝试更新
-     * Excel格式: seller_id | id | type | bid
-     * 用法: php SpUpdateKeywordBidController.php method=retry file="调整bid失败_全部_20260801120000.xlsx"
-     *       文件先从excel/目录查找，找不到再从export/目录查找
-     * @param string $file Excel文件名(先查./excel/，再查./export/)
+     * 重试更新bid失败的数据（也可由verify内部自动调用）
+     * 输入数据格式: [{"channel"=>"xxx", "seller_id"=>"xxx", "keyword_id"=>"xxx", "bid"=>"xxx"}, ...]
+     * 先作为keyword重试，失败的再作为target重试，成功则更新mongo，仍然失败的导出Excel
+     *
+     * 用法(由verify内部调用，也可单独使用):
+     *   php SpUpdateKeywordBidController.php method=retry file="调整bid失败_xxx.xlsx" channel=amazon_us
+     *       文件先从export/目录查找（verify导出的文件在此），找不到再从excel/目录查找
+     *
+     * @param array $failedList 失败数据列表，每项包含 channel/seller_id/keyword_id/bid
+     * @param string $channelLabel channel标签，用于日志和导出文件名
      */
-    public function retryUpdateKeywordBid($file = "")
+    public function retryUpdateKeywordBid($failedList = [], $channelLabel = '全部')
     {
-        $this->log("retryUpdateKeywordBid 开始重试 file:{$file}");
+        $this->log("retryUpdateKeywordBid 开始重试 " . count($failedList) . " 条数据");
 
-        // 文件路径：先查excel/，再查export/
-        $filePath = __DIR__ . "/excel/{$file}";
-        if (!file_exists($filePath)) {
-            $filePath = __DIR__ . "/export/{$file}";
-        }
-        if (!file_exists($filePath)) {
-            $this->log("❌ 文件不存在: excel/{$file} 或 export/{$file}");
-            return;
-        }
-        $this->log("读取文件: {$filePath}");
-
-        $excelUtils = new ExcelUtils();
         $curlService = (new CurlService())->pro();
         $redisService = new RedisService();
         $spApi = new SpApi();
+
+        // 按seller_id分组: $sellerIdBidMap[$sellerId][$id] = $bid，并记录每条的channel
         $sellerIdBidMap = [];
+        $adIdChannelMap = [];
         $totalIdCount = 0;
-        try {
-            $excelUtils->eachXlsxRow($filePath, function ($item) use (&$sellerIdBidMap, &$totalIdCount) {
-                $sellerId = trim($item['seller_id'] ?? '');
-                // 兼容两种格式：新格式用keyword_id，旧格式用id
-                $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? ($item['id'] ?? 0))), "'");
-                $bid = trim((string)($item['bid'] ?? ''));
-                if ($sellerId !== "" && $id !== "" && $id !== "0" && $bid !== "") {
-                    $sellerIdBidMap[$sellerId][$id] = $bid;
-                    $totalIdCount++;
-                }
-            });
-        } catch (Exception $e) {
-            die($e->getLine() . " : " . $e->getMessage());
+        foreach ($failedList as $item) {
+            $sellerId = trim($item['seller_id'] ?? '');
+            // 兼容两种格式：新格式用keyword_id，旧格式用id
+            $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? ($item['id'] ?? 0))), "'");
+            $bid = trim((string)($item['bid'] ?? ''));
+            if ($sellerId === "" || $id === "" || $id === "0" || $bid === "") {
+                continue;
+            }
+            $sellerIdBidMap[$sellerId][$id] = $bid;
+            $adIdChannelMap[$sellerId . '_' . $id] = trim($item['channel'] ?? '');
+            $totalIdCount++;
         }
 
         $this->log("共 " . count($sellerIdBidMap) . " 个seller, {$totalIdCount} 个id待重试");
@@ -628,7 +621,7 @@ class SpUpdateKeywordBidController
                         $targetNotFoundIds[] = $id;
                         continue;
                     }
-                    if (abs($currentTargetBidMap[$id] - $newBid) < 0.001) {
+                    if (bccomp($currentTargetBidMap[$id], $newBid, 2) === 0) {
                         $targetSkipCount++;
                         $this->log("⏭️ {$sellerId} id:{$id} (target) bid已一致({$newBid})，跳过");
                         continue;
@@ -699,8 +692,9 @@ class SpUpdateKeywordBidController
                     $this->log("{$sellerId} 有 " . count($targetFailedIds) . " 个id重试仍失败");
                     $sellerChannel = $spApi->sellerConfig($sellerId);
                     foreach ($targetFailedIds as $id) {
+                        $itemChannel = $adIdChannelMap[$sellerId . '_' . $id] ?: ($sellerChannel ?: $channelLabel);
                         $exportList[] = [
-                            "channel" => $sellerChannel ?: "",
+                            "channel" => $itemChannel,
                             "seller_id" => $sellerId,
                             "keyword_id" => (string)$id,
                             "bid" => $idBidMap[$id],
@@ -717,7 +711,7 @@ class SpUpdateKeywordBidController
                 "seller_id",
                 "keyword_id",
                 "bid",
-            ], $exportList, "重试bid仍失败_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "重试bid仍失败_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
             $this->log("仍失败数据已导出: {$filePath}");
         } else {
             $this->log("所有bid重试成功，无失败数据");
@@ -888,10 +882,15 @@ class SpUpdateKeywordBidController
                 "keyword_id",
                 "bid",
                 "actual_bid",
-            ], $exportList, "校验bid不一致_{$channelLabel}_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "校验bid不一致_{$channelLabel}_" . date("YmdHis") . ".xlsx", [2]);
             $this->log("bid不一致数据已导出: {$filePath}");
         } else {
             $this->log("所有bid校验一致，无不一致数据");
+        }
+
+        // 对bid不一致的数据重新调整bid
+        if (count($exportList) > 0) {
+            $this->retryUpdateKeywordBid($exportList, $channelLabel);
         }
 
         $this->log("verifyKeywordBidStates channel:{$channelLabel} 校验完毕");
@@ -922,7 +921,45 @@ if ($method == 'v2') {
 } elseif ($method == 'verify') {
     $con->verifyKeywordBidStates($file, $channel);
 } elseif ($method == 'retry') {
-    $con->retryUpdateKeywordBid($file);
+    // 从导出的失败Excel读取数据，重新执行bid调整
+    $channelLabel = empty($channel) ? '全部' : $channel;
+    $excelUtils = new ExcelUtils();
+    $failedList = [];
+    try {
+        // 优先查export目录（verify导出的文件在此），其次查excel目录，最后当绝对路径
+        $filePath = __DIR__ . "/export/{$file}";
+        if (!file_exists($filePath)) {
+            $filePath = __DIR__ . "/excel/{$file}";
+        }
+        if (!file_exists($filePath) && file_exists($file)) {
+            $filePath = $file;
+        }
+        if (!file_exists($filePath)) {
+            die("❌ 文件不存在: export/{$file} 或 excel/{$file} 或 {$file}");
+        }
+        $excelUtils->eachXlsxRow($filePath, function ($item) use (&$failedList, $channel) {
+            $sellerId = trim($item['seller_id'] ?? '');
+            // 兼容两种格式：新格式用keyword_id，旧格式用id
+            $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? ($item['id'] ?? 0))), "'");
+            $bid = trim((string)($item['bid'] ?? ''));
+            $ch = trim($item['channel'] ?? '');
+            if ($sellerId === "" || $id === "" || $id === "0" || $bid === "") {
+                return;
+            }
+            if (!empty($channel) && $ch !== $channel) {
+                return;
+            }
+            $failedList[] = [
+                "channel" => $ch,
+                "seller_id" => $sellerId,
+                "keyword_id" => $id,
+                "bid" => $bid,
+            ];
+        });
+    } catch (Exception $e) {
+        die($e->getLine() . " : " . $e->getMessage());
+    }
+    $con->retryUpdateKeywordBid($failedList, $channelLabel);
 } else {
     $con->updateKeywordBid($channel, $page);
 }

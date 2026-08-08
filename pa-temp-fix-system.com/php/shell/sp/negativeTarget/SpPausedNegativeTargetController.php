@@ -111,8 +111,8 @@ class SpPausedNegativeTargetController
                             $this->log("{$sellerId} 关停失败: " . count($pausedAdIdResult['error']) . "个");
                             foreach ($pausedAdIdResult['error'] as $targetId){
                                 $exportList[] = [
-                                    "sellerId" => $sellerId,
-                                    "targetId" => "'" . $targetId,
+                                    "seller_id" => $sellerId,
+                                    "target_id" => (string)$targetId,
                                 ];
                             }
                         }
@@ -126,8 +126,8 @@ class SpPausedNegativeTargetController
                 $excelUtils = new ExcelUtils("sp/negativeTarget/");
                 $filePath = $excelUtils->downloadXlsx([
                     "seller_id",
-                    "targetId",
-                ], $exportList, "关停失败的targetId_" . date("YmdHis") . ".xlsx");
+                    "target_id",
+                ], $exportList, "关停失败的targetId_" . date("YmdHis") . ".xlsx", [1]);
             }
 
         }

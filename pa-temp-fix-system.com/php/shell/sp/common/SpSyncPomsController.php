@@ -407,7 +407,7 @@ JSON;
                     "state",
                     "keywordMatchType",
                     "keywordBid"
-                ], $exportList, "仅投放了hot_fitment的keyword_" . date("YmdHis") . ".xlsx");
+                ], $exportList, "仅投放了hot_fitment的keyword_" . date("YmdHis") . ".xlsx", [1, 3]);
             }
             if ($exportList1) {
                 $this->log->log2("开始导出");
@@ -418,7 +418,7 @@ JSON;
                     "type",
                     "spId",
                     "msg"
-                ], $exportList1, "归档结果keyword_" . date("YmdHis") . ".xlsx");
+                ], $exportList1, "归档结果keyword_" . date("YmdHis") . ".xlsx", [2]);
 
             }
         }
@@ -439,7 +439,7 @@ JSON;
                             $exportList[] = [
                                 "sellerId" => $sellerId,
                                 "type" => $type,
-                                "spId" => "'" . $i['adGroupId'],
+                                "spId" => (string)$i['adGroupId'],
                                 "msg" => $i['msg'],
                             ];
 
@@ -459,7 +459,7 @@ JSON;
                             $exportList[] = [
                                 "sellerId" => $sellerId,
                                 "type" => $type,
-                                "spId" => "'" . $i['keywordId'],
+                                "spId" => (string)$i['keywordId'],
                                 "msg" => $i['msg'],
                             ];
                         }
@@ -479,7 +479,7 @@ JSON;
                             $exportList[] = [
                                 "sellerId" => $sellerId,
                                 "type" => $type,
-                                "spId" => "'" . $i['keywordId'],
+                                "spId" => (string)$i['keywordId'],
                                 "msg" => $i['msg'],
                             ];
                         }
@@ -498,7 +498,7 @@ JSON;
                             $exportList[] = [
                                 "sellerId" => $sellerId,
                                 "type" => $type,
-                                "spId" => "'" . $i['targetId'],
+                                "spId" => (string)$i['targetId'],
                                 "msg" => $i['msg'],
                             ];
                         }

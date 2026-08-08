@@ -52,9 +52,9 @@ class SpUpdateTargetBidController
         try {
             $excelUtils->eachXlsxRow(__DIR__."/excel/target_id调整bid清单_{$channel}_{$page}.xlsx", function ($item) use (&$sellerTargetBidMap) {
                 $sellerId = trim($item['seller_id'] ?? '');
-                $targetId = trim((string)($item['target_id'] ?? ''), "'");
+                $targetId = trim(sprintf('%.0f', (float)($item['target_id'] ?? 0)), "'");
                 $bid = trim((string)($item['bid'] ?? ''));
-                if ($sellerId !== "" && $targetId !== "" && $bid !== "") {
+                if ($sellerId !== "" && $targetId !== "" && $targetId !== "0" && $bid !== "") {
                     $sellerTargetBidMap[$sellerId][$targetId] = $bid;
                 }
             });
@@ -116,8 +116,8 @@ class SpUpdateTargetBidController
                         foreach ($chunk as $item) {
                             if (in_array($item['targetId'], $updateTargetResult['error'])) {
                                 $exportList[] = [
-                                    "sellerId" => $sellerId,
-                                    "targetId" => "'" . $item['targetId'],
+                                    "seller_id" => $sellerId,
+                                    "target_id" => (string)$item['targetId'],
                                     "bid" => $item['bid'],
                                 ];
                             }
@@ -131,9 +131,9 @@ class SpUpdateTargetBidController
             $excelUtils = new ExcelUtils("sp/target/");
             $excelUtils->downloadXlsx([
                 "seller_id",
-                "targetId",
+                "target_id",
                 "bid",
-            ], $exportList, "调整targetBid失败_" . date("YmdHis") . ".xlsx");
+            ], $exportList, "调整targetBid失败_" . date("YmdHis") . ".xlsx", [1]);
         }
 
         $this->dingTalk();
