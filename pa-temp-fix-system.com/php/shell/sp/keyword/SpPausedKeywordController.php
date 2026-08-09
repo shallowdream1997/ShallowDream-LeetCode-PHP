@@ -227,7 +227,7 @@ class SpPausedKeywordController
                     }
                     if (isset($pausedKeywordResult['error']) && count($pausedKeywordResult['error']) > 0) {
                         $keywordFailedIds = array_merge($keywordFailedIds, $pausedKeywordResult['error']);
-                        $keywordErrorMsg = array_merge($keywordErrorMsg, $pausedKeywordResult['errorMsg'] ?? []);
+                        $keywordErrorMsg = $keywordErrorMsg + ($pausedKeywordResult['errorMsg'] ?? []);
                     }
                 }
             }
@@ -301,7 +301,7 @@ class SpPausedKeywordController
                         }
                         if (isset($pausedTargetResult['error']) && count($pausedTargetResult['error']) > 0) {
                             $targetFailedIds = array_merge($targetFailedIds, $pausedTargetResult['error']);
-                            $targetErrorMsg = array_merge($targetErrorMsg, $pausedTargetResult['errorMsg'] ?? []);
+                            $targetErrorMsg = $targetErrorMsg + ($pausedTargetResult['errorMsg'] ?? []);
                         }
                     }
                 }
@@ -613,7 +613,7 @@ class SpPausedKeywordController
                     }
                     if (isset($pausedKeywordResult['error']) && count($pausedKeywordResult['error']) > 0) {
                         $keywordFailedIds = array_merge($keywordFailedIds, $pausedKeywordResult['error']);
-                        $keywordErrorMsg = array_merge($keywordErrorMsg, $pausedKeywordResult['errorMsg'] ?? []);
+                        $keywordErrorMsg = $keywordErrorMsg + ($pausedKeywordResult['errorMsg'] ?? []);
                     }
                 }
             }
@@ -688,7 +688,7 @@ class SpPausedKeywordController
                         }
                         if (isset($pausedTargetResult['error']) && count($pausedTargetResult['error']) > 0) {
                             $targetFailedIds = array_merge($targetFailedIds, $pausedTargetResult['error']);
-                            $targetErrorMsg = array_merge($targetErrorMsg, $pausedTargetResult['errorMsg'] ?? []);
+                            $targetErrorMsg = $targetErrorMsg + ($pausedTargetResult['errorMsg'] ?? []);
                         }
                     }
                 }

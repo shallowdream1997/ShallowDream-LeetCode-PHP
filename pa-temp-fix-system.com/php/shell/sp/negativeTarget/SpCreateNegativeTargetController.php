@@ -613,7 +613,7 @@ class SpCreateNegativeTargetController
                 foreach (array_chunk($updatePayloads, 1000) as $chunk) {
                     $this->log("{$sellerId} adGroupId:{$adGroupId} 重试更新negativeTarget状态为enabled: " . count($chunk) . "个");
                     $result = $spApi->updateNegativeTarget($sellerId, $chunk);
-                    $updateErrorMsg = array_merge($updateErrorMsg, $result['errorMsg'] ?? []);
+                    $updateErrorMsg = $updateErrorMsg + ($result['errorMsg'] ?? []);
                     $batchUpdateList = [];
                     foreach ($result['success'] ?? [] as $targetId) {
                         $updateSuccessIds[] = $targetId;
