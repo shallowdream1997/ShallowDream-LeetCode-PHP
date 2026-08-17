@@ -16,6 +16,9 @@ class ExcelUtils
     private const XLSX_MAIN_NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
     private const XLSX_REL_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
     private const XLSX_PACKAGE_REL_NS = 'http://schemas.openxmlformats.org/package/2006/relationships';
+    private const XLSX_CONTENT_TYPES_NS = 'http://schemas.openxmlformats.org/package/2006/content-types';
+    // 行数达到该阈值时改用流式 xlsx writer（ZipArchive+XMLWriter 逐行写，内存 O(1)），避免 PHPExcel 全内存模式 OOM
+    private const XLSX_STREAM_THRESHOLD = 10000;
 
     public function __construct($downPath = "")
     {
@@ -98,10 +101,14 @@ class ExcelUtils
      */
     public function downloadXlsx($customHeaders,$list,$fileName = "", $textColumns = [])
     {
-        $this->ensurePHPExcelLoaded();
         if (empty($fileName)){
             $fileName  = "默认导出文件_".date("YmdHis").".xlsx";
         }
+        // 大数据量走流式 xlsx writer（ZipArchive+XMLWriter 逐行写，内存 O(1)），避免 PHPExcel 全内存模式 OOM
+        if (count($list) >= self::XLSX_STREAM_THRESHOLD) {
+            return $this->_streamWriteXlsx($customHeaders, $list, $fileName, $textColumns);
+        }
+        $this->ensurePHPExcelLoaded();
         // 创建一个新的 PHPExcel 对象
         $objPHPExcel = new PHPExcel();
 
@@ -750,6 +757,215 @@ class ExcelUtils
         @chmod($this->downPath, 0777);
     }
 
+    /**
+     * 流式写入 xlsx（大数据量专用，内存 O(1)）
+     * ZipArchive 打包静态骨架 + XMLWriter openURI 直写临时 sheet1.xml 后 addFile 入包；
+     * 字符串单元格用 inlineStr（不建 sharedStrings.xml），读侧 eachXlsxRow 可正确读回
+     */
+    private function _streamWriteXlsx(array $customHeaders, array $list, $fileName, array $textColumns)
+    {
+        $filePath = $this->downPath . $fileName;
+        $dir = dirname($filePath);
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0777, true);
+        }
 
+        $tmpSheet = tempnam(sys_get_temp_dir(), 'xlsx_sheet_');
+        if ($tmpSheet === false) {
+            throw new Exception('无法创建xlsx临时文件');
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($filePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            @unlink($tmpSheet);
+            throw new Exception("无法创建Excel文件: {$filePath}");
+        }
+
+        try {
+            $zip->addFromString('[Content_Types].xml', $this->_xlsxContentTypes());
+            $zip->addFromString('_rels/.rels', $this->_xlsxRootRels());
+            $zip->addFromString('xl/workbook.xml', $this->_xlsxWorkbook());
+            $zip->addFromString('xl/_rels/workbook.xml.rels', $this->_xlsxWorkbookRels());
+
+            $writer = new XMLWriter();
+            if (!$writer->openURI($tmpSheet)) {
+                throw new Exception('XMLWriter无法写入临时文件');
+            }
+            $writer->setIndent(false);
+            $writer->startDocument('1.0', 'UTF-8', 'yes');
+            $writer->startElementNs(null, 'worksheet', self::XLSX_MAIN_NS);
+            $writer->startElement('sheetData');
+
+            $this->_writeXlsxRow($writer, 1, $customHeaders, []);
+            $rowIndex = 2;
+            foreach ($list as $row) {
+                if ($rowIndex - 1 > 1048575) {
+                    throw new Exception('数据行数超过Excel单sheet上限(1048576)');
+                }
+                $this->_writeXlsxRow($writer, $rowIndex, $row, $textColumns);
+                $rowIndex++;
+            }
+
+            $writer->endElement(); // sheetData
+            $writer->endElement(); // worksheet
+            $writer->endDocument();
+            $writer->flush();
+            unset($writer);
+
+            if ($zip->addFile($tmpSheet, 'xl/worksheets/sheet1.xml') !== true) {
+                throw new Exception('sheet写入zip失败');
+            }
+            $zip->close();
+            return $filePath;
+        } catch (Exception $e) {
+            @$zip->close();
+            throw $e;
+        } finally {
+            if (file_exists($tmpSheet)) {
+                @unlink($tmpSheet);
+            }
+        }
+    }
+
+    /**
+     * 写入一行（表头/数据行），每个单元格带 r 属性（读侧 _readXlsxRowCells 硬依赖）
+     */
+    private function _writeXlsxRow(XMLWriter $writer, $rowNumber, array $rowValues, array $textColumns)
+    {
+        $writer->startElement('row');
+        $writer->writeAttribute('r', (string)$rowNumber);
+        $colIndex = 0;
+        foreach ($rowValues as $cellValue) {
+            $ref = $this->_columnIndexToLetters($colIndex) . $rowNumber;
+            $this->_writeXlsxCell($writer, $ref, $cellValue, in_array($colIndex, $textColumns, true));
+            $colIndex++;
+        }
+        $writer->endElement();
+    }
+
+    /**
+     * 写入单个单元格，类型策略对齐 PHPExcel 原行为：
+     * - textColumns 列强制 inlineStr（防长id科学计数法）
+     * - 纯数字串(int/float/数字string)写数字单元格，其余(含科学计数串、文本)写 inlineStr
+     */
+    private function _writeXlsxCell(XMLWriter $writer, $ref, $cellValue, $isText)
+    {
+        // 空值 -> 自闭合空单元格 <c r="A2"/>（读侧 isEmptyElement 返回 ''）
+        if ($cellValue === null || $cellValue === '') {
+            $writer->startElement('c');
+            $writer->writeAttribute('r', $ref);
+            $writer->endElement();
+            return;
+        }
+
+        $writer->startElement('c');
+        $writer->writeAttribute('r', $ref);
+
+        if (is_bool($cellValue)) {
+            $writer->writeAttribute('t', 'b');
+            $writer->writeElement('v', $cellValue ? '1' : '0');
+        } else {
+            $rawStr = (string)$cellValue;
+            $isNumeric = !$isText && preg_match('/^-?\d+(\.\d+)?$/', $rawStr);
+            if ($isNumeric) {
+                // 写原串不转float，保精度
+                $writer->writeElement('v', $rawStr);
+            } else {
+                // inlineStr，XMLWriter 自动转义 & < > " '
+                $writer->writeAttribute('t', 'inlineStr');
+                $writer->startElement('is');
+                $writer->writeElement('t', $this->_sanitizeXmlText($rawStr));
+                $writer->endElement(); // is
+            }
+        }
+
+        $writer->endElement(); // c
+    }
+
+    /**
+     * 列索引(0-based)转字母引用（_columnLettersToIndex 的逆，如 0->A, 27->AB）
+     */
+    private function _columnIndexToLetters($index)
+    {
+        $letters = '';
+        $n = $index + 1;
+        while ($n > 0) {
+            $n--;
+            $letters = chr(65 + ($n % 26)) . $letters;
+            $n = intdiv($n, 26);
+        }
+        return $letters;
+    }
+
+    /**
+     * 清洗非法 XML 字符（XML 1.0 仅允许 \t \n \r 与 \x20-\x{D7FF} 等）
+     * XMLWriter 自动转义 & < > " '，这里只剥离非法控制字符与非法 UTF-8
+     */
+    private function _sanitizeXmlText($value)
+    {
+        $value = (string)$value;
+        $clean = preg_replace('/[^\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]/u', '', $value);
+        if ($clean === null) {
+            // 入参非合法 UTF-8（preg /u 返回 null），先丢弃非法字节再剥离控制字符
+            $clean = @iconv('UTF-8', 'UTF-8//IGNORE', $value);
+            if ($clean === false) {
+                $clean = '';
+            }
+            $clean = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $clean);
+            if ($clean === null) {
+                $clean = '';
+            }
+        }
+        return $clean;
+    }
+
+    /**
+     * [Content_Types].xml 骨架
+     */
+    private function _xlsxContentTypes()
+    {
+        return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . "\n"
+            . '<Types xmlns="' . self::XLSX_CONTENT_TYPES_NS . '">'
+            . '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+            . '<Default Extension="xml" ContentType="application/xml"/>'
+            . '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+            . '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+            . '</Types>';
+    }
+
+    /**
+     * _rels/.rels 骨架（根关系：指向 workbook）
+     */
+    private function _xlsxRootRels()
+    {
+        return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . "\n"
+            . '<Relationships xmlns="' . self::XLSX_PACKAGE_REL_NS . '">'
+            . '<Relationship Id="rId1" Type="' . self::XLSX_REL_NS . '/officeDocument" Target="xl/workbook.xml"/>'
+            . '</Relationships>';
+    }
+
+    /**
+     * xl/workbook.xml 骨架（sheet 名 Sheet1，必须带 r:id，读侧 _getXlsxSheetPaths 硬依赖）
+     */
+    private function _xlsxWorkbook()
+    {
+        return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . "\n"
+            . '<workbook xmlns="' . self::XLSX_MAIN_NS . '" xmlns:r="' . self::XLSX_REL_NS . '">'
+            . '<sheets>'
+            . '<sheet name="Sheet1" sheetId="1" r:id="rId1"/>'
+            . '</sheets>'
+            . '</workbook>';
+    }
+
+    /**
+     * xl/_rels/workbook.xml.rels 骨架（rId1 指向 worksheet，相对路径，读侧自动拼 xl/ 前缀）
+     */
+    private function _xlsxWorkbookRels()
+    {
+        return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . "\n"
+            . '<Relationships xmlns="' . self::XLSX_PACKAGE_REL_NS . '">'
+            . '<Relationship Id="rId1" Type="' . self::XLSX_REL_NS . '/worksheet" Target="worksheets/sheet1.xml"/>'
+            . '</Relationships>';
+    }
 
 }

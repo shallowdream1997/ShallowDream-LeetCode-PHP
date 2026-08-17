@@ -454,7 +454,7 @@ class SpApi
         foreach ($updateList as $item) {
             $updateParams = [
                 "targetId" => $item['targetId'],
-                "state" => $item['state'],
+                "state" => $item['state'] ?? null,
                 "modifiedBy" => $this->messages,
                 "modifiedOn" => date("Y-m-d H:i:s", time()) . "Z",
                 "status" => "2",

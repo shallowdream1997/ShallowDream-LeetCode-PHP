@@ -876,7 +876,7 @@ class SpUpdateKeywordBidController
                         $expectedBid = $idBidMap[$id];
                         $actualBid = $keywordListInfo[$id]['bid'];
 
-                        if (bccomp((string)$expectedBid, (string)$actualBid, 2) === 0) {
+                        if (bccomp((string)round((float)$expectedBid, 2), (string)round((float)$actualBid, 2), 2) === 0) {
                             $bidMatchCount++;
                         } else {
                             $bidMismatchCount++;
@@ -920,7 +920,7 @@ class SpUpdateKeywordBidController
                             $expectedBid = $idBidMap[$id];
                             $actualBid = $targetListInfo[$id]['bid'];
 
-                            if (bccomp((string)$expectedBid, (string)$actualBid, 2) === 0) {
+                            if (bccomp((string)round((float)$expectedBid, 2), (string)round((float)$actualBid, 2), 2) === 0) {
                                 $bidMatchCount++;
                             } else {
                                 $bidMismatchCount++;
