@@ -20,6 +20,15 @@ class SpUpdateKeywordBidController
         $this->log->log2($string);
     }
 
+    /**
+     * 兼容不同Excel模板中的bid列名：优先使用bid，未填写时使用keyword_bid。
+     */
+    private function getBidFromRow($item)
+    {
+        $bid = trim((string)($item['bid'] ?? ''));
+        return $bid !== '' ? $bid : trim((string)($item['keyword_bid'] ?? ''));
+    }
+
     public function dingTalk()
     {
         $proCurlService = new CurlService();
@@ -186,7 +195,7 @@ class SpUpdateKeywordBidController
     /**
      * 读取混合channel的Excel文件，按channel参数过滤后调整keyword/target bid（不传channel则处理全部）
      * 先尝试作为keyword调整bid，Amazon API返回失败的再尝试作为target调整bid
-     * Excel格式: channel | seller_id | keyword_id | bid
+     * Excel格式: channel | seller_id | keyword_id | bid（兼容keyword_bid列）
      * 用法: php SpUpdateKeywordBidController.php method=v2 file="降bid清单.xlsx" channel=amazon_us
      *       php SpUpdateKeywordBidController.php method=v2 file="降bid清单.xlsx"  (处理全部channel)
      * @param string $file Excel文件名(在./excel/目录下)
@@ -206,7 +215,7 @@ class SpUpdateKeywordBidController
             $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$sellerIdBidMap, &$totalIdCount, $channel) {
                 $sellerId = trim($item['seller_id'] ?? '');
                 $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? 0)), "'");
-                $bid = trim((string)($item['bid'] ?? ''));
+                $bid = $this->getBidFromRow($item);
                 if ($sellerId !== "" && $id !== "" && $id !== "0" && $bid !== "" && (empty($channel) || (isset($item['channel']) && $item['channel'] == $channel))) {
                     $sellerIdBidMap[$sellerId][$id] = $bid;
                     $totalIdCount++;
@@ -488,6 +497,8 @@ class SpUpdateKeywordBidController
         }
 
         $this->log("updateKeywordBidV2s channel:{$channelLabel} 处理完毕");
+        // 全量校验实际bid；verify会自动重试不一致的数据。
+        $this->verifyKeywordBidStates($file, $channel);
         $this->dingTalk();
     }
 
@@ -500,7 +511,7 @@ class SpUpdateKeywordBidController
      *   php SpUpdateKeywordBidController.php method=retry file="调整bid失败_xxx.xlsx" channel=amazon_us
      *       文件先从export/目录查找（verify导出的文件在此），找不到再从excel/目录查找
      *
-     * @param array $failedList 失败数据列表，每项包含 channel/seller_id/keyword_id/bid
+     * @param array $failedList 失败数据列表，每项包含 channel/seller_id/keyword_id/bid（兼容keyword_bid）
      * @param string $channelLabel channel标签，用于日志和导出文件名
      */
     public function retryUpdateKeywordBid($failedList = [], $channelLabel = '全部')
@@ -519,7 +530,7 @@ class SpUpdateKeywordBidController
             $sellerId = trim($item['seller_id'] ?? '');
             // 兼容两种格式：新格式用keyword_id，旧格式用id
             $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? ($item['id'] ?? 0))), "'");
-            $bid = trim((string)($item['bid'] ?? ''));
+            $bid = $this->getBidFromRow($item);
             if ($sellerId === "" || $id === "" || $id === "0" || $bid === "") {
                 continue;
             }
@@ -814,8 +825,9 @@ class SpUpdateKeywordBidController
      *       php SpUpdateKeywordBidController.php method=verify file="降bid清单.xlsx"  (校验全部channel)
      * @param string $file Excel文件名(在./excel/目录下)
      * @param string $channel 可选，按channel过滤数据，不传则校验全部
+     * @param bool $autoRetry 是否对不一致数据重试；重试后会自动执行一次不重试的最终校验
      */
-    public function verifyKeywordBidStates($file = "", $channel = "")
+    public function verifyKeywordBidStates($file = "", $channel = "", $autoRetry = true)
     {
         $channelLabel = empty($channel) ? '全部' : $channel;
         $this->log("verifyKeywordBidStates 开始校验 file:{$file} channel:{$channelLabel}");
@@ -827,7 +839,7 @@ class SpUpdateKeywordBidController
             $excelUtils->eachXlsxRow(__DIR__."/excel/{$file}", function ($item) use (&$sellerIdBidMap, &$totalIdCount, $channel) {
                 $sellerId = trim($item['seller_id'] ?? '');
                 $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? 0)), "'");
-                $bid = trim((string)($item['bid'] ?? ''));
+                $bid = $this->getBidFromRow($item);
                 if ($sellerId !== "" && $id !== "" && $id !== "0" && $bid !== "" && (empty($channel) || (isset($item['channel']) && $item['channel'] == $channel))) {
                     $sellerIdBidMap[$sellerId][$id] = $bid;
                     $totalIdCount++;
@@ -974,9 +986,11 @@ class SpUpdateKeywordBidController
             $this->log("所有bid校验一致，无不一致数据");
         }
 
-        // 对bid不一致的数据重新调整bid
-        if (count($exportList) > 0) {
+        // 对bid不一致的数据重新调整bid，并在重试后做一次最终校验。
+        if ($autoRetry && count($exportList) > 0) {
             $this->retryUpdateKeywordBid($exportList, $channelLabel);
+            $this->log("retryUpdateKeywordBid 完成，开始最终bid校验");
+            $this->verifyKeywordBidStates($file, $channel, false);
         }
 
         $this->log("verifyKeywordBidStates channel:{$channelLabel} 校验完毕");
@@ -1028,6 +1042,9 @@ if ($method == 'v2') {
             // 兼容两种格式：新格式用keyword_id，旧格式用id
             $id = trim(sprintf('%.0f', (float)($item['keyword_id'] ?? ($item['id'] ?? 0))), "'");
             $bid = trim((string)($item['bid'] ?? ''));
+            if ($bid === '') {
+                $bid = trim((string)($item['keyword_bid'] ?? ''));
+            }
             $ch = trim($item['channel'] ?? '');
             if ($sellerId === "" || $id === "" || $id === "0" || $bid === "") {
                 return;
