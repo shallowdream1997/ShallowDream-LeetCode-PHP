@@ -7,9 +7,10 @@ date_default_timezone_set('Asia/Shanghai');
 /**
  * AI打标数量 定时统计 + 钉钉通知
  *
- * 调用 sre-sql.ux168.cn 统计两个数量：
+ * 调用 sre-sql.ux168.cn 统计三个数据：
  *   1. 已完成数量：distinct sku_id 数量（有 AI 打标记录的 SKU 总数）
  *   2. 图位维度总数量：打标记录总数（一个 sku 的一张图的一个图位算一条）
+ *   3. 每人完成数量排名：按 update_by 统计各自 distinct sku_id 数量并排名
  * 每次统计记录到 Redis（上次数量 + 时间），计算已完成数量的较上次增量，
  * 通过钉钉 OA 通知 zhouangang：图位总数 / 已完成数量 / 较上次增量 / 通知时间。
  *
@@ -28,10 +29,10 @@ class SpAiTagCountController
     private const SRE_SQL_URL = 'https://sre-sql.ux168.cn/query/';
 
     /** sre-sql 登录态 Cookie（过期后从浏览器 DevTools 重新复制整段 Cookie 更新） */
-    private const SRE_SQL_COOKIE = '_ga=GA1.2.919965065.1781167423; _hjSessionUser_1119089=eyJpZCI6IjAyMWNhNjg0LTkzMjQtNTYzYi1iNDUzLWY0YmM1ODE4ZWJkYiIsImNyZWF0ZWQiOjE3ODEyMzY2MzY0NzAsImV4aXN0aW5nIjp0cnVlfQ==; _ga_4KSXYTZS67=GS2.2.s1781776268$o4$g1$t1781776303$j25$l0$h0; ph_phc_VFn4CkEGHRdlVyOOw8mfkoj1DKVoG6y1007EClvzAnS_posthog=%7B%22distinct_id%22%3A%22019f6dc9-b40b-7cbc-a7b5-7efc23fc88ea%22%2C%22%24sesid%22%3A%5B1786524886299%2C%22019ff52e-572f-7997-9127-1d8b672941db%22%2C1786524882735%5D%7D; uc_token_production=70f78cdb-bc07-4890-be3c-9cc8a70c0b42; csrftoken=Ik78ZOf792f4xD6SLsNDUew4CGh9pun4Ex0PQBhIDWRngiLXVDU8WsQpnl4L4WOZ; sessionid=r1wg4iwrj574xalrmwtyvsp5up263e7f';
+    private const SRE_SQL_COOKIE = '_ga=GA1.2.919965065.1781167423; _hjSessionUser_1119089=eyJpZCI6IjAyMWNhNjg0LTkzMjQtNTYzYi1iNDUzLWY0YmM1ODE4ZWJkYiIsImNyZWF0ZWQiOjE3ODEyMzY2MzY0NzAsImV4aXN0aW5nIjp0cnVlfQ==; _ga_4KSXYTZS67=GS2.2.s1781776268$o4$g1$t1781776303$j25$l0$h0; ph_phc_VFn4CkEGHRdlVyOOw8mfkoj1DKVoG6y1007EClvzAnS_posthog=%7B%22distinct_id%22%3A%22019f6dc9-b40b-7cbc-a7b5-7efc23fc88ea%22%2C%22%24sesid%22%3A%5B1787370745400%2C%2201a02797-dd15-738b-847f-1fe993869a4a%22%2C1787370659093%5D%7D; csrftoken=Ht3mNqdnYYzck9H1RoBZl8HtdfASkOHUBaMgMSiKLRL5Kl17QVKANt1lfq89IP4A; sessionid=c2g168zxbcqq159daxt9w0vb73yagsv0';
 
     /** sre-sql 请求头 X-CSRFToken（与 Cookie 中的 csrftoken 一致，过期后一并更新） */
-    private const SRE_SQL_CSRF = 'Ik78ZOf792f4xD6SLsNDUew4CGh9pun4Ex0PQBhIDWRngiLXVDU8WsQpnl4L4WOZ';
+    private const SRE_SQL_CSRF = 'Ht3mNqdnYYzck9H1RoBZl8HtdfASkOHUBaMgMSiKLRL5Kl17QVKANt1lfq89IP4A';
 
     /** Redis 记录 key：存 json {completed: 上次已完成数量, total: 上次图位总数, time: 上次统计时间戳} */
     private const REDIS_KEY = 'spAiTagCount';
@@ -41,6 +42,9 @@ class SpAiTagCountController
 
     /** 图位维度总数量 SQL：打标记录总数（一个 sku 的一张图的一个图位算一条） */
     private const TOTAL_COUNT_SQL = "select count(1) from common_sku_image_ai_tag order by create_time desc";
+
+    /** 每人完成数量排名 SQL：按 update_by 统计各自 distinct sku_id 数量并排名（RANK 并列同名次） */
+    private const RANK_SQL = "SELECT RANK() OVER (ORDER BY sku_cnt DESC) AS rank_no, update_by, sku_cnt FROM (SELECT update_by, COUNT(DISTINCT sku_id) AS sku_cnt FROM common_sku_image_ai_tag GROUP BY update_by) t ORDER BY sku_cnt DESC";
 
     public function __construct()
     {
@@ -59,10 +63,12 @@ class SpAiTagCountController
     {
         $this->log("========== AI打标数量统计开始 ==========");
 
-        // 1. 查询两个数量：已完成数量、图位维度总数量
+        // 1. 查询统计数据：已完成数量、图位维度总数量、每人完成数量排名
         $completedCount = $this->queryCount(self::COMPLETED_COUNT_SQL);
         $totalCount = $this->queryCount(self::TOTAL_COUNT_SQL);
         $this->log("已完成数量: {$completedCount}，图位维度总数量: {$totalCount}");
+        $rankText = $this->buildRankText($this->queryRows(self::RANK_SQL));
+        $this->log("每人完成数量排名:\n{$rankText}");
 
         // 2. 读取上次记录，计算已完成数量增量
         $redis = new RedisService();
@@ -90,7 +96,9 @@ class SpAiTagCountController
             . "已完成数量：{$completedCount}\n"
             . "较上次增加：{$increaseStr}\n"
             . "上次统计：{$lastTimeStr}\n"
-            . "通知时间：{$now}";
+            . "通知时间：{$now}"
+            . "\n\n—— 每人完成数量排名 ——\n"
+            . $rankText;
         $this->sendDingTalk($content);
         $this->log("钉钉通知已发送");
 
@@ -126,6 +134,70 @@ class SpAiTagCountController
             $this->failAndNotify("统计结果非数字: " . var_export($count, true));
         }
         return (int)$count;
+    }
+
+    /**
+     * 查询多行结果（data.rows 整体返回）
+     * @param string $sql 查询 SQL
+     * @return array 行数组
+     */
+    private function queryRows($sql)
+    {
+        $resp = $this->querySreSql($sql);
+
+        $res = json_decode($resp, true);
+        if (!is_array($res)) {
+            $this->failAndNotify("排名响应解析失败: " . substr($resp, 0, 300));
+        }
+
+        $data = $res['data'] ?? $res;
+        $rows = $data['rows'] ?? [];
+        if (!is_array($rows)) {
+            $this->failAndNotify("排名响应中无 rows 数据: " . substr($resp, 0, 300));
+        }
+        return $rows;
+    }
+
+    /**
+     * 组装每人完成数量排名文案：如 "1. zhangsan：1200"
+     * 兼容关联数组（rank_no/update_by/sku_cnt 键）与数字索引两种行结构
+     * @param array $rankRows 查询返回的行数组
+     * @return string
+     */
+    private function buildRankText($rankRows)
+    {
+        if (!is_array($rankRows) || count($rankRows) == 0) {
+            return "暂无打标记录";
+        }
+
+        $lines = [];
+        foreach ($rankRows as $i => $row) {
+            if (is_array($row)) {
+                if (isset($row['update_by'])) {
+                    // 关联数组形式：优先使用 SQL 返回的 rank_no（并列同名次）
+                    $no = isset($row['rank_no']) ? $row['rank_no'] : ($i + 1);
+                    $name = $row['update_by'];
+                    $cnt = isset($row['sku_cnt']) ? $row['sku_cnt'] : '-';
+                } else {
+                    // 数字索引形式：[rank_no, update_by, sku_cnt]
+                    $values = array_values($row);
+                    $no = $values[0] ?? ($i + 1);
+                    $name = $values[1] ?? '-';
+                    $cnt = $values[2] ?? '-';
+                }
+            } else {
+                $no = $i + 1;
+                $name = $row;
+                $cnt = '-';
+            }
+
+            $name = trim((string)$name);
+            if ($name === '') {
+                $name = "(未记录)";
+            }
+            $lines[] = "{$no}. {$name}：{$cnt}";
+        }
+        return implode("\n", $lines);
     }
 
     /**

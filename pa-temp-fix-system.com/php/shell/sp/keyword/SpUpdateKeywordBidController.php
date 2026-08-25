@@ -237,12 +237,13 @@ class SpUpdateKeywordBidController
             $allIds = array_keys($idBidMap);
             $this->log("{$sellerId} 共 " . count($allIds) . " 个id待处理");
 
-            // 预加载Redis缓存，用于后续更新mongo
-            $sellerKeywordList = $redisService->hGetAll("spKeyword_{$sellerId}");
-            $sellerTargetList = $redisService->hGetAll("spTarget_{$sellerId}");
+            // 仅加载本次涉及的Redis字段，避免大seller的完整Hash占满内存。
+            $sellerKeywordList = $redisService->hMGet("spKeyword_{$sellerId}", $allIds);
+            $sellerTargetList = $redisService->hMGet("spTarget_{$sellerId}", $allIds);
 
             // ===== 第一步：查询当前bid和state，跳过archived和bid相同的，剩余的先作为keyword尝试调整bid =====
             $currentKeywordBidMap = [];
+            $keywordArchivedIdMap = [];
             $keywordArchivedCount = 0;
             foreach (array_chunk($allIds, 100) as $chunk) {
                 $keywordIdsStr = implode(",", $chunk);
@@ -250,8 +251,8 @@ class SpUpdateKeywordBidController
                 if ($keywordListInfo) {
                     foreach ($keywordListInfo as $kid => $info) {
                         if (isset($info['state']) && $info['state'] == 'archived') {
+                            $keywordArchivedIdMap[(string)$kid] = true;
                             $keywordArchivedCount++;
-                            $this->log("⏭️ {$sellerId} id:{$kid} (keyword) 状态为archived，跳过");
                             continue;
                         }
                         $currentKeywordBidMap[$kid] = (float)$info['bid'];
@@ -262,11 +263,17 @@ class SpUpdateKeywordBidController
             $keywordUpdateList = [];
             $keywordSkipCount = 0;
             $keywordNotFoundIds = []; // keyword查不到的id，需要顺延到target查询
+            $keywordNotFoundIdMap = [];
             foreach ($idBidMap as $id => $bid) {
                 $newBid = (float) $bid;
+                if (isset($keywordArchivedIdMap[(string)$id])) {
+                    // 与verify一致：archived不统计为未找到，也不再尝试target。
+                    continue;
+                }
                 if (!isset($currentKeywordBidMap[$id])) {
                     // keyword查不到，顺延到target查询
                     $keywordNotFoundIds[] = $id;
+                    $keywordNotFoundIdMap[(string)$id] = true;
                     continue;
                 }
                 if (bccomp($currentKeywordBidMap[$id], $newBid, 2) === 0) {
@@ -278,6 +285,7 @@ class SpUpdateKeywordBidController
                     "bid" => $newBid,
                 ];
             }
+            $this->log("{$sellerId} keyword查询汇总: 可用" . count($currentKeywordBidMap) . "个, archived {$keywordArchivedCount}个, 未找到" . count($keywordNotFoundIds) . "个, bid一致 {$keywordSkipCount}个, 待调整" . count($keywordUpdateList) . "个");
             if ($keywordArchivedCount > 0) {
                 $this->log("{$sellerId} 跳过archived的keyword: {$keywordArchivedCount}个");
             }
@@ -288,7 +296,7 @@ class SpUpdateKeywordBidController
                 $this->log("{$sellerId} bid已一致的keyword: {$keywordSkipCount}个，跳过");
             }
 
-            $keywordSuccessIds = [];
+            $missingKeywordIdMap = [];
             $keywordFailedIds = [];
             $keywordErrorMsg = [];
             if (count($keywordUpdateList) > 0) {
@@ -300,13 +308,14 @@ class SpUpdateKeywordBidController
                         $batchUpdateList = [];
                         foreach ($chunk as $item) {
                             if (in_array($item['keywordId'], $updateKeywordResult['success'])) {
-                                $keywordSuccessIds[] = $item['keywordId'];
                                 if (isset($sellerKeywordList[$item['keywordId']]) && $sellerKeywordList[$item['keywordId']]) {
                                     $batchUpdateList[] = [
                                         '_id' => $sellerKeywordList[$item['keywordId']],
                                         'keywordId' => $item['keywordId'],
                                         'bid' => $item['bid']
                                     ];
+                                } else {
+                                    $missingKeywordIdMap[(string)$item['keywordId']] = true;
                                 }
                             }
                         }
@@ -322,8 +331,8 @@ class SpUpdateKeywordBidController
             }
 
             // 补查mongo中keyword的_id，补充更新
-            if (count($keywordSuccessIds) > 0) {
-                $missingKeywordIds = array_values(array_diff($keywordSuccessIds, array_keys($sellerKeywordList)));
+            if (count($missingKeywordIdMap) > 0) {
+                $missingKeywordIds = array_keys($missingKeywordIdMap);
                 if (count($missingKeywordIds) > 0) {
                     foreach (array_chunk($missingKeywordIds, 200) as $chunk) {
                         $list = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_keywords/queryPage", [
@@ -353,12 +362,16 @@ class SpUpdateKeywordBidController
             }
 
             // ===== 第二步：keyword调整bid失败的id + keyword查不到的id，查询target当前bid和state，跳过archived和bid相同的，再尝试作为target调整bid =====
-            $keywordFailedIds = array_values(array_unique(array_merge($keywordFailedIds, $keywordNotFoundIds)));
+            $keywordUpdateFailedCount = count($keywordFailedIds);
+            foreach ($keywordNotFoundIds as $id) {
+                $keywordFailedIds[] = $id;
+            }
             if (count($keywordFailedIds) > 0) {
-                $this->log("{$sellerId} 有 " . count($keywordFailedIds) . " 个id (keyword失败" . count(array_unique(array_diff($keywordFailedIds, $keywordNotFoundIds))) . "个 + keyword未查到" . count($keywordNotFoundIds) . "个)，尝试作为target调整bid");
+                $this->log("{$sellerId} 有 " . count($keywordFailedIds) . " 个id (keyword失败{$keywordUpdateFailedCount}个 + keyword未查到" . count($keywordNotFoundIds) . "个)，尝试作为target调整bid");
 
                 // 查询target当前bid和state
                 $currentTargetBidMap = [];
+                $targetArchivedIdMap = [];
                 $targetArchivedCount = 0;
                 foreach (array_chunk($keywordFailedIds, 100) as $chunk) {
                     $targetIdsStr = implode(",", $chunk);
@@ -366,8 +379,8 @@ class SpUpdateKeywordBidController
                     if ($targetListInfo) {
                         foreach ($targetListInfo as $tid => $info) {
                             if (isset($info['state']) && $info['state'] == 'archived') {
+                                $targetArchivedIdMap[(string)$tid] = true;
                                 $targetArchivedCount++;
-                                $this->log("⏭️ {$sellerId} id:{$tid} (target) 状态为archived，跳过");
                                 continue;
                             }
                             $currentTargetBidMap[$tid] = (float)$info['bid'];
@@ -377,12 +390,21 @@ class SpUpdateKeywordBidController
 
                 $targetUpdateList = [];
                 $targetSkipCount = 0;
-                $targetNotFoundIds = []; // target也查不到的id
+                $targetNotFoundIds = []; // keyword和target都查不到的id
+                $keywordUpdateFailedTargetNotFoundIds = [];
                 foreach ($keywordFailedIds as $id) {
                     $newBid = (float) $idBidMap[$id];
+                    if (isset($targetArchivedIdMap[(string)$id])) {
+                        // 与verify一致：archived不统计为未找到。
+                        continue;
+                    }
                     if (!isset($currentTargetBidMap[$id])) {
-                        // target也查不到，记录下来
-                        $targetNotFoundIds[] = $id;
+                        if (isset($keywordNotFoundIdMap[(string)$id])) {
+                            $targetNotFoundIds[] = $id;
+                        } else {
+                            // keyword已找到，但调整接口失败；target不存在并不代表该keyword未找到。
+                            $keywordUpdateFailedTargetNotFoundIds[] = $id;
+                        }
                         continue;
                     }
                     if (bccomp($currentTargetBidMap[$id], $newBid, 2) === 0) {
@@ -394,17 +416,21 @@ class SpUpdateKeywordBidController
                         "bid" => $newBid,
                     ];
                 }
+                $this->log("{$sellerId} target查询汇总: 可用" . count($currentTargetBidMap) . "个, archived {$targetArchivedCount}个, 确认未找到" . count($targetNotFoundIds) . "个, keyword失败且target未找到" . count($keywordUpdateFailedTargetNotFoundIds) . "个, bid一致 {$targetSkipCount}个, 待调整" . count($targetUpdateList) . "个");
                 if ($targetArchivedCount > 0) {
                     $this->log("{$sellerId} 跳过archived的target: {$targetArchivedCount}个");
                 }
                 if (count($targetNotFoundIds) > 0) {
                     $this->log("{$sellerId} keyword和target都查不到的id: " . count($targetNotFoundIds) . "个");
                 }
+                if (count($keywordUpdateFailedTargetNotFoundIds) > 0) {
+                    $this->log("{$sellerId} keyword调整失败且target未找到的id: " . count($keywordUpdateFailedTargetNotFoundIds) . "个");
+                }
                 if ($targetSkipCount > 0) {
                     $this->log("{$sellerId} bid已一致的target: {$targetSkipCount}个，跳过");
                 }
 
-                $targetSuccessIds = [];
+                $missingTargetIdMap = [];
                 $targetFailedIds = [];
                 $targetErrorMsg = [];
                 if (count($targetUpdateList) > 0) {
@@ -416,13 +442,14 @@ class SpUpdateKeywordBidController
                             $batchUpdateList = [];
                             foreach ($chunk as $item) {
                                 if (in_array($item['targetId'], $updateTargetResult['success'])) {
-                                    $targetSuccessIds[] = $item['targetId'];
                                     if (isset($sellerTargetList[$item['targetId']]) && $sellerTargetList[$item['targetId']]) {
                                         $batchUpdateList[] = [
                                             '_id' => $sellerTargetList[$item['targetId']],
                                             'targetId' => $item['targetId'],
                                             'bid' => $item['bid']
                                         ];
+                                    } else {
+                                        $missingTargetIdMap[(string)$item['targetId']] = true;
                                     }
                                 }
                             }
@@ -438,8 +465,8 @@ class SpUpdateKeywordBidController
                 }
 
                 // 补查mongo中target的_id，补充更新
-                if (count($targetSuccessIds) > 0) {
-                    $missingTargetIds = array_values(array_diff($targetSuccessIds, array_keys($sellerTargetList)));
+                if (count($missingTargetIdMap) > 0) {
+                    $missingTargetIds = array_keys($missingTargetIdMap);
                     if (count($missingTargetIds) > 0) {
                         foreach (array_chunk($missingTargetIds, 200) as $chunk) {
                             $list = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_targets/queryPage", [
@@ -469,6 +496,7 @@ class SpUpdateKeywordBidController
                 }
 
                 // ===== 第三步：keyword和target都调整失败的id（不含not_found，状态异常不统计） =====
+                $targetFailedIds = array_merge($targetFailedIds, $keywordUpdateFailedTargetNotFoundIds);
                 if (count($targetFailedIds) > 0) {
                     $this->log("{$sellerId} 有 " . count($targetFailedIds) . " 个id更新bid失败");
                     $sellerChannel = $spApi->sellerConfig($sellerId);
@@ -551,12 +579,13 @@ class SpUpdateKeywordBidController
             $allIds = array_keys($idBidMap);
             $this->log("{$sellerId} 共 " . count($allIds) . " 个id待重试");
 
-            // 预加载Redis缓存
-            $sellerKeywordList = $redisService->hGetAll("spKeyword_{$sellerId}");
-            $sellerTargetList = $redisService->hGetAll("spTarget_{$sellerId}");
+            // 仅加载本次涉及的Redis字段，避免大seller的完整Hash占满内存。
+            $sellerKeywordList = $redisService->hMGet("spKeyword_{$sellerId}", $allIds);
+            $sellerTargetList = $redisService->hMGet("spTarget_{$sellerId}", $allIds);
 
             // ===== 第一步：查询当前bid和state，跳过archived和bid相同的，先作为keyword尝试 =====
             $currentKeywordBidMap = [];
+            $keywordArchivedIdMap = [];
             $keywordArchivedCount = 0;
             foreach (array_chunk($allIds, 100) as $chunk) {
                 $keywordIdsStr = implode(",", $chunk);
@@ -564,8 +593,8 @@ class SpUpdateKeywordBidController
                 if ($keywordListInfo) {
                     foreach ($keywordListInfo as $kid => $info) {
                         if (isset($info['state']) && $info['state'] == 'archived') {
+                            $keywordArchivedIdMap[(string)$kid] = true;
                             $keywordArchivedCount++;
-                            $this->log("⏭️ {$sellerId} id:{$kid} (keyword) 状态为archived，跳过");
                             continue;
                         }
                         $currentKeywordBidMap[$kid] = (float)$info['bid'];
@@ -576,11 +605,17 @@ class SpUpdateKeywordBidController
             $keywordUpdateList = [];
             $keywordSkipCount = 0;
             $keywordNotFoundIds = []; // keyword查不到的id，需要顺延到target查询
+            $keywordNotFoundIdMap = [];
             foreach ($idBidMap as $id => $bid) {
                 $newBid = (float) $bid;
+                if (isset($keywordArchivedIdMap[(string)$id])) {
+                    // 与verify一致：archived不统计为未找到，也不再尝试target。
+                    continue;
+                }
                 if (!isset($currentKeywordBidMap[$id])) {
                     // keyword查不到，顺延到target查询
                     $keywordNotFoundIds[] = $id;
+                    $keywordNotFoundIdMap[(string)$id] = true;
                     continue;
                 }
                 if (bccomp($currentKeywordBidMap[$id], $newBid, 2) === 0) {
@@ -592,6 +627,7 @@ class SpUpdateKeywordBidController
                     "bid" => $newBid,
                 ];
             }
+            $this->log("{$sellerId} keyword重试查询汇总: 可用" . count($currentKeywordBidMap) . "个, archived {$keywordArchivedCount}个, 未找到" . count($keywordNotFoundIds) . "个, bid一致 {$keywordSkipCount}个, 待调整" . count($keywordUpdateList) . "个");
             if ($keywordArchivedCount > 0) {
                 $this->log("{$sellerId} 跳过archived的keyword: {$keywordArchivedCount}个");
             }
@@ -602,7 +638,7 @@ class SpUpdateKeywordBidController
                 $this->log("{$sellerId} bid已一致的keyword: {$keywordSkipCount}个，跳过");
             }
 
-            $keywordSuccessIds = [];
+            $missingKeywordIdMap = [];
             $keywordFailedIds = [];
             $keywordErrorMsg = [];
             if (count($keywordUpdateList) > 0) {
@@ -614,13 +650,14 @@ class SpUpdateKeywordBidController
                         $batchUpdateList = [];
                         foreach ($chunk as $item) {
                             if (in_array($item['keywordId'], $updateKeywordResult['success'])) {
-                                $keywordSuccessIds[] = $item['keywordId'];
                                 if (isset($sellerKeywordList[$item['keywordId']]) && $sellerKeywordList[$item['keywordId']]) {
                                     $batchUpdateList[] = [
                                         '_id' => $sellerKeywordList[$item['keywordId']],
                                         'keywordId' => $item['keywordId'],
                                         'bid' => $item['bid']
                                     ];
+                                } else {
+                                    $missingKeywordIdMap[(string)$item['keywordId']] = true;
                                 }
                             }
                         }
@@ -636,8 +673,8 @@ class SpUpdateKeywordBidController
             }
 
             // 补查mongo中keyword的_id
-            if (count($keywordSuccessIds) > 0) {
-                $missingKeywordIds = array_values(array_diff($keywordSuccessIds, array_keys($sellerKeywordList)));
+            if (count($missingKeywordIdMap) > 0) {
+                $missingKeywordIds = array_keys($missingKeywordIdMap);
                 if (count($missingKeywordIds) > 0) {
                     foreach (array_chunk($missingKeywordIds, 200) as $chunk) {
                         $list = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_keywords/queryPage", [
@@ -667,11 +704,15 @@ class SpUpdateKeywordBidController
             }
 
             // ===== 第二步：keyword仍然失败的 + keyword查不到的，查询target当前bid，跳过bid相同的，尝试作为target =====
-            $keywordFailedIds = array_values(array_unique(array_merge($keywordFailedIds, $keywordNotFoundIds)));
+            $keywordRetryFailedCount = count($keywordFailedIds);
+            foreach ($keywordNotFoundIds as $id) {
+                $keywordFailedIds[] = $id;
+            }
             if (count($keywordFailedIds) > 0) {
-                $this->log("{$sellerId} 有 " . count($keywordFailedIds) . " 个id (keyword重试失败" . count(array_unique(array_diff($keywordFailedIds, $keywordNotFoundIds))) . "个 + keyword未查到" . count($keywordNotFoundIds) . "个)，尝试作为target调整bid");
+                $this->log("{$sellerId} 有 " . count($keywordFailedIds) . " 个id (keyword重试失败{$keywordRetryFailedCount}个 + keyword未查到" . count($keywordNotFoundIds) . "个)，尝试作为target调整bid");
 
                 $currentTargetBidMap = [];
+                $targetArchivedIdMap = [];
                 $targetArchivedCount = 0;
                 foreach (array_chunk($keywordFailedIds, 100) as $chunk) {
                     $targetIdsStr = implode(",", $chunk);
@@ -679,8 +720,8 @@ class SpUpdateKeywordBidController
                     if ($targetListInfo) {
                         foreach ($targetListInfo as $tid => $info) {
                             if (isset($info['state']) && $info['state'] == 'archived') {
+                                $targetArchivedIdMap[(string)$tid] = true;
                                 $targetArchivedCount++;
-                                $this->log("⏭️ {$sellerId} id:{$tid} (target) 状态为archived，跳过");
                                 continue;
                             }
                             $currentTargetBidMap[$tid] = (float)$info['bid'];
@@ -690,17 +731,25 @@ class SpUpdateKeywordBidController
 
                 $targetUpdateList = [];
                 $targetSkipCount = 0;
-                $targetNotFoundIds = []; // target也查不到的id
+                $targetNotFoundIds = []; // keyword和target都查不到的id
+                $keywordUpdateFailedTargetNotFoundIds = [];
                 foreach ($keywordFailedIds as $id) {
                     $newBid = (float) $idBidMap[$id];
+                    if (isset($targetArchivedIdMap[(string)$id])) {
+                        // 与verify一致：archived不统计为未找到。
+                        continue;
+                    }
                     if (!isset($currentTargetBidMap[$id])) {
-                        // target也查不到，记录下来
-                        $targetNotFoundIds[] = $id;
+                        if (isset($keywordNotFoundIdMap[(string)$id])) {
+                            $targetNotFoundIds[] = $id;
+                        } else {
+                            // keyword已找到，但重试接口失败；target不存在并不代表该keyword未找到。
+                            $keywordUpdateFailedTargetNotFoundIds[] = $id;
+                        }
                         continue;
                     }
                     if (bccomp($currentTargetBidMap[$id], $newBid, 2) === 0) {
                         $targetSkipCount++;
-                        $this->log("⏭️ {$sellerId} id:{$id} (target) bid已一致({$newBid})，跳过");
                         continue;
                     }
                     $targetUpdateList[] = [
@@ -708,17 +757,21 @@ class SpUpdateKeywordBidController
                         "bid" => $newBid,
                     ];
                 }
+                $this->log("{$sellerId} target重试查询汇总: 可用" . count($currentTargetBidMap) . "个, archived {$targetArchivedCount}个, 确认未找到" . count($targetNotFoundIds) . "个, keyword重试失败且target未找到" . count($keywordUpdateFailedTargetNotFoundIds) . "个, bid一致 {$targetSkipCount}个, 待调整" . count($targetUpdateList) . "个");
                 if ($targetArchivedCount > 0) {
                     $this->log("{$sellerId} 跳过archived的target: {$targetArchivedCount}个");
                 }
                 if (count($targetNotFoundIds) > 0) {
                     $this->log("{$sellerId} keyword和target都查不到的id: " . count($targetNotFoundIds) . "个");
                 }
+                if (count($keywordUpdateFailedTargetNotFoundIds) > 0) {
+                    $this->log("{$sellerId} keyword重试失败且target未找到的id: " . count($keywordUpdateFailedTargetNotFoundIds) . "个");
+                }
                 if ($targetSkipCount > 0) {
                     $this->log("{$sellerId} 跳过bid已一致的target: {$targetSkipCount}个");
                 }
 
-                $targetSuccessIds = [];
+                $missingTargetIdMap = [];
                 $targetFailedIds = [];
                 $targetErrorMsg = [];
                 if (count($targetUpdateList) > 0) {
@@ -730,13 +783,14 @@ class SpUpdateKeywordBidController
                             $batchUpdateList = [];
                             foreach ($chunk as $item) {
                                 if (in_array($item['targetId'], $updateTargetResult['success'])) {
-                                    $targetSuccessIds[] = $item['targetId'];
                                     if (isset($sellerTargetList[$item['targetId']]) && $sellerTargetList[$item['targetId']]) {
                                         $batchUpdateList[] = [
                                             '_id' => $sellerTargetList[$item['targetId']],
                                             'targetId' => $item['targetId'],
                                             'bid' => $item['bid']
                                         ];
+                                    } else {
+                                        $missingTargetIdMap[(string)$item['targetId']] = true;
                                     }
                                 }
                             }
@@ -752,8 +806,8 @@ class SpUpdateKeywordBidController
                 }
 
                 // 补查mongo中target的_id
-                if (count($targetSuccessIds) > 0) {
-                    $missingTargetIds = array_values(array_diff($targetSuccessIds, array_keys($sellerTargetList)));
+                if (count($missingTargetIdMap) > 0) {
+                    $missingTargetIds = array_keys($missingTargetIdMap);
                     if (count($missingTargetIds) > 0) {
                         foreach (array_chunk($missingTargetIds, 200) as $chunk) {
                             $list = DataUtils::getPageList($curlService->s3023()->get("amazon_sp_targets/queryPage", [
@@ -783,6 +837,7 @@ class SpUpdateKeywordBidController
                 }
 
                 // ===== 仍然失败的（不含not_found，状态异常不统计） =====
+                $targetFailedIds = array_merge($targetFailedIds, $keywordUpdateFailedTargetNotFoundIds);
                 if (count($targetFailedIds) > 0) {
                     $this->log("{$sellerId} 有 " . count($targetFailedIds) . " 个id重试仍失败");
                     $sellerChannel = $spApi->sellerConfig($sellerId);

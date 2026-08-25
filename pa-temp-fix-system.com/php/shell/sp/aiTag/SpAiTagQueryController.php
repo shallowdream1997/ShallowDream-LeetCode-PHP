@@ -23,10 +23,10 @@ class SpAiTagQueryController
     private const SRE_SQL_URL = 'https://sre-sql.ux168.cn/query/';
 
     /** sre-sql 登录态 Cookie（过期后从浏览器 DevTools 重新复制整段 Cookie 更新） */
-    private const SRE_SQL_COOKIE = '_ga=GA1.2.919965065.1781167423; _hjSessionUser_1119089=eyJpZCI6IjAyMWNhNjg0LTkzMjQtNTYzYi1iNDUzLWY0YmM1ODE4ZWJkYiIsImNyZWF0ZWQiOjE3ODEyMzY2MzY0NzAsImV4aXN0aW5nIjp0cnVlfQ==; _ga_4KSXYTZS67=GS2.2.s1781776268$o4$g1$t1781776303$j25$l0$h0; ph_phc_VFn4CkEGHRdlVyOOw8mfkoj1DKVoG6y1007EClvzAnS_posthog=%7B%22distinct_id%22%3A%22019f6dc9-b40b-7cbc-a7b5-7efc23fc88ea%22%2C%22%24sesid%22%3A%5B1786524886299%2C%22019ff52e-572f-7997-9127-1d8b672941db%22%2C1786524882735%5D%7D; uc_token_production=70f78cdb-bc07-4890-be3c-9cc8a70c0b42; csrftoken=Ik78ZOf792f4xD6SLsNDUew4CGh9pun4Ex0PQBhIDWRngiLXVDU8WsQpnl4L4WOZ; sessionid=r1wg4iwrj574xalrmwtyvsp5up263e7f';
+    private const SRE_SQL_COOKIE = '_ga=GA1.2.919965065.1781167423; _hjSessionUser_1119089=eyJpZCI6IjAyMWNhNjg0LTkzMjQtNTYzYi1iNDUzLWY0YmM1ODE4ZWJkYiIsImNyZWF0ZWQiOjE3ODEyMzY2MzY0NzAsImV4aXN0aW5nIjp0cnVlfQ==; _ga_4KSXYTZS67=GS2.2.s1781776268$o4$g1$t1781776303$j25$l0$h0; ph_phc_VFn4CkEGHRdlVyOOw8mfkoj1DKVoG6y1007EClvzAnS_posthog=%7B%22distinct_id%22%3A%22019f6dc9-b40b-7cbc-a7b5-7efc23fc88ea%22%2C%22%24sesid%22%3A%5B1787370745400%2C%2201a02797-dd15-738b-847f-1fe993869a4a%22%2C1787370659093%5D%7D; csrftoken=Ht3mNqdnYYzck9H1RoBZl8HtdfASkOHUBaMgMSiKLRL5Kl17QVKANt1lfq89IP4A; sessionid=c2g168zxbcqq159daxt9w0vb73yagsv0';
 
     /** sre-sql 请求头 X-CSRFToken（与 Cookie 中的 csrftoken 一致，过期后一并更新） */
-    private const SRE_SQL_CSRF = 'Ik78ZOf792f4xD6SLsNDUew4CGh9pun4Ex0PQBhIDWRngiLXVDU8WsQpnl4L4WOZ';
+    private const SRE_SQL_CSRF = 'Ht3mNqdnYYzck9H1RoBZl8HtdfASkOHUBaMgMSiKLRL5Kl17QVKANt1lfq89IP4A';
 
     /** 导出表头（与查询 SQL 的 SELECT 列顺序一致） */
     private const EXPORT_HEADERS = [

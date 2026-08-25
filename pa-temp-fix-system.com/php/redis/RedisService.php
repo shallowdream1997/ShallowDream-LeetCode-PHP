@@ -50,6 +50,18 @@ class RedisService
         return $this->redis->hGetAll($key);
     }
 
+    /**
+     * 批量读取Hash中指定字段，避免hGetAll在大Hash下占用过多内存。
+     */
+    public function hMGet($key, array $hashKeys): array
+    {
+        if (empty($hashKeys)) {
+            return [];
+        }
+        $result = $this->redis->hMGet($key, $hashKeys);
+        return is_array($result) ? $result : [];
+    }
+
     public function get($key){
         return $this->redis->get($key);
     }
