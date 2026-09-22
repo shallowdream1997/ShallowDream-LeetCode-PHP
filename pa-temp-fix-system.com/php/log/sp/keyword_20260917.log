@@ -1,0 +1,1478 @@
+2026-09-17 11:20:19 - pausedKeywordV2s 开始处理 file:M8关停.xlsx channel:全部
+2026-09-17 11:20:19 - channel:全部 共 52 个seller, 1221 个id
+2026-09-17 11:20:19 - amazon_us_hope 共 22 个id待处理
+2026-09-17 11:20:19 - amazon_us_hope 关停keyword: 22个
+2026-09-17 11:20:20 - amazon_us_hope keyword关停成功: 2个
+2026-09-17 11:20:21 - amazon_us_hope 有 20 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:20:21 - amazon_us_hope 关停target: 20个
+2026-09-17 11:20:23 - amazon_us_hope target关停成功: 20个
+2026-09-17 11:20:23 - amazon_us_rrc 共 15 个id待处理
+2026-09-17 11:20:23 - amazon_us_rrc 关停keyword: 15个
+2026-09-17 11:20:25 - amazon_us_rrc keyword关停成功: 3个
+2026-09-17 11:20:25 - amazon_us_rrc 有 12 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:20:25 - amazon_us_rrc 关停target: 12个
+2026-09-17 11:20:33 - amazon_us_rrc target关停成功: 12个
+2026-09-17 11:20:33 - amazon 共 295 个id待处理
+2026-09-17 11:20:33 - amazon 关停keyword: 200个
+2026-09-17 11:20:34 - amazon keyword关停成功: 27个
+2026-09-17 11:20:35 - amazon 关停keyword: 95个
+2026-09-17 11:20:38 - amazon keyword关停成功: 12个
+2026-09-17 11:20:38 - amazon 有 256 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:20:38 - amazon 关停target: 200个
+2026-09-17 11:20:39 - amazon target关停成功: 200个
+2026-09-17 11:20:39 - amazon 关停target: 56个
+2026-09-17 11:20:40 - amazon target关停成功: 56个
+2026-09-17 11:20:41 - amazon_us_moto 共 65 个id待处理
+2026-09-17 11:20:41 - amazon_us_moto 关停keyword: 65个
+2026-09-17 11:20:42 - amazon_us_moto keyword关停成功: 10个
+2026-09-17 11:20:42 - amazon_us_moto 有 55 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:20:42 - amazon_us_moto 关停target: 55个
+2026-09-17 11:20:44 - amazon_us_moto target关停成功: 55个
+2026-09-17 11:20:44 - amazon_ca_moto 共 46 个id待处理
+2026-09-17 11:20:44 - amazon_ca_moto 关停keyword: 46个
+2026-09-17 11:20:45 - amazon_ca_moto keyword关停成功: 5个
+2026-09-17 11:20:45 - amazon_ca_moto 有 41 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:20:45 - amazon_ca_moto 关停target: 41个
+2026-09-17 11:20:55 - amazon_ca_moto target关停成功: 41个
+2026-09-17 11:20:55 - amazon_us_ac1 共 40 个id待处理
+2026-09-17 11:20:55 - amazon_us_ac1 关停keyword: 40个
+2026-09-17 11:20:56 - amazon_us_ac1 keyword关停成功: 12个
+2026-09-17 11:20:57 - amazon_us_ac1 有 28 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:20:57 - amazon_us_ac1 关停target: 28个
+2026-09-17 11:20:58 - amazon_us_ac1 target关停成功: 28个
+2026-09-17 11:20:58 - amazon_ca_tuto 共 18 个id待处理
+2026-09-17 11:20:58 - amazon_ca_tuto 关停keyword: 18个
+2026-09-17 11:21:00 - amazon_ca_tuto keyword关停成功: 2个
+2026-09-17 11:21:00 - amazon_ca_tuto 有 16 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:21:00 - amazon_ca_tuto 关停target: 16个
+2026-09-17 11:21:01 - amazon_ca_tuto target关停成功: 16个
+2026-09-17 11:21:01 - amazon_us_lift 共 7 个id待处理
+2026-09-17 11:21:01 - amazon_us_lift 关停keyword: 7个
+2026-09-17 11:21:01 - updateKeywordBidV2s 开始处理 file:M8降bid.xlsx channel:全部
+2026-09-17 11:21:01 - channel:全部 共 49 个seller, 1536 个id
+2026-09-17 11:21:01 - amazon_ca_sopro 共 45 个id待处理
+2026-09-17 11:21:02 - amazon_ca_sopro keyword查询汇总: 可用3个, archived 0个, 未找到42个, bid一致 0个, 待调整3个
+2026-09-17 11:21:02 - amazon_ca_sopro keyword未查到的id: 42个，将顺延到target查询
+2026-09-17 11:21:02 - amazon_ca_sopro 调整keyword bid: 3个
+2026-09-17 11:21:03 - amazon_ca_sopro keyword调整bid成功: 3个
+2026-09-17 11:21:03 - amazon_ca_sopro 有 42 个id (keyword失败0个 + keyword未查到42个)，尝试作为target调整bid
+2026-09-17 11:21:04 - amazon_ca_sopro target查询汇总: 可用42个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整42个
+2026-09-17 11:21:04 - amazon_ca_sopro 调整target bid: 42个
+2026-09-17 11:21:05 - amazon_ca_sopro target调整bid成功: 42个
+2026-09-17 11:21:05 - amazon_us_moto 共 92 个id待处理
+2026-09-17 11:21:06 - amazon_us_moto keyword查询汇总: 可用12个, archived 0个, 未找到80个, bid一致 0个, 待调整12个
+2026-09-17 11:21:06 - amazon_us_moto keyword未查到的id: 80个，将顺延到target查询
+2026-09-17 11:21:06 - amazon_us_moto 调整keyword bid: 12个
+2026-09-17 11:21:08 - amazon_us_moto keyword调整bid成功: 12个
+2026-09-17 11:21:08 - amazon_us_moto 有 80 个id (keyword失败0个 + keyword未查到80个)，尝试作为target调整bid
+2026-09-17 11:21:15 - amazon_us_lift keyword关停成功: 3个
+2026-09-17 11:21:15 - amazon_us_lift 有 4 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:21:15 - amazon_us_lift 关停target: 4个
+2026-09-17 11:21:16 - amazon_us_lift target关停成功: 4个
+2026-09-17 11:21:16 - amazon_ca_hope 共 18 个id待处理
+2026-09-17 11:21:16 - amazon_ca_hope 关停keyword: 18个
+2026-09-17 11:21:17 - amazon_ca_hope keyword关停成功: 2个
+2026-09-17 11:21:17 - amazon_ca_hope 有 16 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:21:17 - amazon_ca_hope 关停target: 16个
+2026-09-17 11:21:19 - amazon_ca_hope target关停成功: 16个
+2026-09-17 11:21:19 - amazon_us_luux 共 34 个id待处理
+2026-09-17 11:21:19 - amazon_us_luux 关停keyword: 34个
+2026-09-17 11:21:20 - amazon_us_luux keyword关停成功: 5个
+2026-09-17 11:21:20 - amazon_us_luux 有 29 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:21:20 - amazon_us_luux 关停target: 29个
+2026-09-17 11:21:21 - amazon_us_moto target查询汇总: 可用80个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整80个
+2026-09-17 11:21:21 - amazon_us_moto 调整target bid: 80个
+2026-09-17 11:21:21 - amazon_us_luux target关停成功: 29个
+2026-09-17 11:21:21 - amazon_us_sopro 共 50 个id待处理
+2026-09-17 11:21:21 - amazon_us_sopro 关停keyword: 50个
+2026-09-17 11:21:22 - amazon_us_sopro keyword关停成功: 10个
+2026-09-17 11:21:23 - amazon_us_sopro 有 40 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:21:23 - amazon_us_sopro 关停target: 40个
+2026-09-17 11:21:24 - amazon_us_sopro target关停成功: 40个
+2026-09-17 11:21:24 - amazon_uk_luux 共 3 个id待处理
+2026-09-17 11:21:24 - amazon_uk_luux 关停keyword: 3个
+2026-09-17 11:21:26 - amazon_uk_luux 有 3 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:21:26 - amazon_uk_luux 关停target: 3个
+2026-09-17 11:21:31 - amazon_uk_luux target关停成功: 3个
+2026-09-17 11:21:31 - amazon_us_tuto 共 29 个id待处理
+2026-09-17 11:21:31 - amazon_us_tuto 关停keyword: 29个
+2026-09-17 11:21:32 - amazon_us_tuto keyword关停成功: 8个
+2026-09-17 11:21:32 - amazon_us_tuto 有 21 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:21:32 - amazon_us_tuto 关停target: 21个
+2026-09-17 11:21:35 - amazon_us_moto target调整bid成功: 80个
+2026-09-17 11:21:35 - amazon_uk2 共 76 个id待处理
+2026-09-17 11:21:37 - amazon_uk2 keyword查询汇总: 可用11个, archived 0个, 未找到65个, bid一致 0个, 待调整11个
+2026-09-17 11:21:37 - amazon_uk2 keyword未查到的id: 65个，将顺延到target查询
+2026-09-17 11:21:37 - amazon_uk2 调整keyword bid: 11个
+2026-09-17 11:21:38 - amazon_uk2 keyword调整bid成功: 11个
+2026-09-17 11:21:39 - amazon_uk2 有 65 个id (keyword失败0个 + keyword未查到65个)，尝试作为target调整bid
+2026-09-17 11:21:39 - amazon_us_tuto target关停成功: 21个
+2026-09-17 11:21:39 - amazon_ca_tuc 共 23 个id待处理
+2026-09-17 11:21:39 - amazon_ca_tuc 关停keyword: 23个
+2026-09-17 11:21:40 - amazon_uk2 target查询汇总: 可用65个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 1个, 待调整64个
+2026-09-17 11:21:40 - amazon_uk2 bid已一致的target: 1个，跳过
+2026-09-17 11:21:40 - amazon_uk2 调整target bid: 64个
+2026-09-17 11:21:40 - amazon_ca_tuc keyword关停成功: 1个
+2026-09-17 11:21:40 - amazon_ca_tuc 有 22 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:21:40 - amazon_ca_tuc 关停target: 22个
+2026-09-17 11:21:42 - amazon_uk2 target调整bid成功: 64个
+2026-09-17 11:21:42 - amazon_ca_tuc target关停成功: 22个
+2026-09-17 11:21:42 - amazon_ca_rrc 共 9 个id待处理
+2026-09-17 11:21:42 - amazon_ca_rrc 关停keyword: 9个
+2026-09-17 11:21:42 - amazon 共 461 个id待处理
+2026-09-17 11:21:43 - amazon_ca_rrc 有 9 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:21:43 - amazon_ca_rrc 关停target: 9个
+2026-09-17 11:21:44 - amazon_ca_rrc target关停成功: 9个
+2026-09-17 11:21:44 - amazon_ca_piccocasa 共 103 个id待处理
+2026-09-17 11:21:44 - amazon_ca_piccocasa 关停keyword: 103个
+2026-09-17 11:21:46 - amazon_ca_piccocasa keyword关停成功: 5个
+2026-09-17 11:21:46 - amazon_ca_piccocasa 有 98 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:21:46 - amazon_ca_piccocasa 关停target: 98个
+2026-09-17 11:21:56 - amazon keyword查询汇总: 可用118个, archived 0个, 未找到343个, bid一致 1个, 待调整117个
+2026-09-17 11:21:56 - amazon keyword未查到的id: 343个，将顺延到target查询
+2026-09-17 11:21:56 - amazon bid已一致的keyword: 1个，跳过
+2026-09-17 11:21:56 - amazon 调整keyword bid: 117个
+2026-09-17 11:21:56 - amazon_ca_piccocasa target关停成功: 98个
+2026-09-17 11:21:56 - amazon_uk_moto 共 9 个id待处理
+2026-09-17 11:21:56 - amazon_uk_moto 关停keyword: 9个
+2026-09-17 11:21:58 - amazon_uk_moto 有 9 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:21:58 - amazon_uk_moto 关停target: 9个
+2026-09-17 11:21:58 - amazon keyword调整bid成功: 117个
+2026-09-17 11:21:58 - amazon 有 343 个id (keyword失败0个 + keyword未查到343个)，尝试作为target调整bid
+2026-09-17 11:21:59 - amazon_uk_moto target关停成功: 9个
+2026-09-17 11:21:59 - amazon_us_swi 共 19 个id待处理
+2026-09-17 11:21:59 - amazon_us_swi 关停keyword: 19个
+2026-09-17 11:22:00 - amazon_us_swi keyword关停成功: 6个
+2026-09-17 11:22:00 - amazon_us_swi 有 13 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:00 - amazon_us_swi 关停target: 13个
+2026-09-17 11:22:03 - amazon_us_swi target关停成功: 13个
+2026-09-17 11:22:03 - amazon_us_hero 共 34 个id待处理
+2026-09-17 11:22:03 - amazon_us_hero 关停keyword: 34个
+2026-09-17 11:22:04 - amazon_us_hero keyword关停成功: 6个
+2026-09-17 11:22:04 - amazon_us_hero 有 28 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:04 - amazon_us_hero 关停target: 28个
+2026-09-17 11:22:05 - amazon_us_hero target关停成功: 28个
+2026-09-17 11:22:05 - amazon_ca_ifn 共 27 个id待处理
+2026-09-17 11:22:05 - amazon_ca_ifn 关停keyword: 27个
+2026-09-17 11:22:06 - amazon_ca_ifn keyword关停成功: 4个
+2026-09-17 11:22:07 - amazon_ca_ifn 有 23 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:07 - amazon_ca_ifn 关停target: 23个
+2026-09-17 11:22:08 - amazon_ca_ifn target关停成功: 23个
+2026-09-17 11:22:08 - amazon_ca_hero 共 21 个id待处理
+2026-09-17 11:22:08 - amazon_ca_hero 关停keyword: 21个
+2026-09-17 11:22:09 - amazon_ca_hero keyword关停成功: 3个
+2026-09-17 11:22:09 - amazon_ca_hero 有 18 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:09 - amazon_ca_hero 关停target: 18个
+2026-09-17 11:22:11 - amazon_ca_hero target关停成功: 18个
+2026-09-17 11:22:11 - amazon_uk_hero 共 3 个id待处理
+2026-09-17 11:22:11 - amazon_uk_hero 关停keyword: 3个
+2026-09-17 11:22:15 - amazon_uk_hero keyword关停成功: 1个
+2026-09-17 11:22:15 - amazon_uk_hero 有 2 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:15 - amazon_uk_hero 关停target: 2个
+2026-09-17 11:22:16 - amazon_uk_hero target关停成功: 2个
+2026-09-17 11:22:16 - amazon_us_rock 共 6 个id待处理
+2026-09-17 11:22:16 - amazon_us_rock 关停keyword: 6个
+2026-09-17 11:22:18 - amazon_us_rock 有 6 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:18 - amazon_us_rock 关停target: 6个
+2026-09-17 11:22:19 - amazon_us_rock target关停成功: 6个
+2026-09-17 11:22:19 - amazon_ca_ac1 共 38 个id待处理
+2026-09-17 11:22:19 - amazon_ca_ac1 关停keyword: 38个
+2026-09-17 11:22:21 - amazon_ca_ac1 有 38 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:21 - amazon_ca_ac1 关停target: 38个
+2026-09-17 11:22:22 - amazon_ca_ac1 target关停成功: 38个
+2026-09-17 11:22:22 - amazon_us_tuc 共 34 个id待处理
+2026-09-17 11:22:22 - amazon_us_tuc 关停keyword: 34个
+2026-09-17 11:22:24 - amazon_us_tuc keyword关停成功: 3个
+2026-09-17 11:22:24 - amazon_us_tuc 有 31 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:24 - amazon_us_tuc 关停target: 31个
+2026-09-17 11:22:25 - amazon_us_tuc target关停成功: 31个
+2026-09-17 11:22:25 - amazon_ca_swi 共 4 个id待处理
+2026-09-17 11:22:25 - amazon_ca_swi 关停keyword: 4个
+2026-09-17 11:22:27 - amazon_ca_swi 有 4 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:27 - amazon_ca_swi 关停target: 4个
+2026-09-17 11:22:28 - amazon_ca_swi target关停成功: 4个
+2026-09-17 11:22:28 - amazon_ca_luux 共 21 个id待处理
+2026-09-17 11:22:28 - amazon_ca_luux 关停keyword: 21个
+2026-09-17 11:22:29 - amazon_ca_luux keyword关停成功: 4个
+2026-09-17 11:22:29 - amazon_ca_luux 有 17 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:29 - amazon_ca_luux 关停target: 17个
+2026-09-17 11:22:30 - amazon_ca_luux target关停成功: 17个
+2026-09-17 11:22:31 - amazon_ca_sopro 共 27 个id待处理
+2026-09-17 11:22:31 - amazon_ca_sopro 关停keyword: 27个
+2026-09-17 11:22:32 - amazon_ca_sopro keyword关停成功: 2个
+2026-09-17 11:22:32 - amazon_ca_sopro 有 25 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:32 - amazon_ca_sopro 关停target: 25个
+2026-09-17 11:22:33 - amazon_ca_sopro target关停成功: 25个
+2026-09-17 11:22:33 - amazon_ca_lift 共 2 个id待处理
+2026-09-17 11:22:33 - amazon_ca_lift 关停keyword: 2个
+2026-09-17 11:22:34 - amazon_ca_lift 有 2 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:34 - amazon_ca_lift 关停target: 2个
+2026-09-17 11:22:36 - amazon_ca_lift target关停成功: 2个
+2026-09-17 11:22:37 - amazon_us_ifn 共 33 个id待处理
+2026-09-17 11:22:37 - amazon_us_ifn 关停keyword: 33个
+2026-09-17 11:22:38 - amazon target查询汇总: 可用300个, archived 0个, 确认未找到43个, keyword失败且target未找到0个, bid一致 4个, 待调整296个
+2026-09-17 11:22:38 - amazon keyword和target都查不到的id: 43个
+2026-09-17 11:22:38 - amazon bid已一致的target: 4个，跳过
+2026-09-17 11:22:38 - amazon 调整target bid: 200个
+2026-09-17 11:22:38 - amazon_us_ifn keyword关停成功: 13个
+2026-09-17 11:22:39 - amazon_us_ifn 有 20 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:39 - amazon_us_ifn 关停target: 20个
+2026-09-17 11:22:43 - amazon target调整bid成功: 200个
+2026-09-17 11:22:43 - amazon 调整target bid: 96个
+2026-09-17 11:22:45 - amazon target调整bid成功: 96个
+2026-09-17 11:22:46 - amazon_us_ifn target关停成功: 20个
+2026-09-17 11:22:46 - amazon_us_luck 共 10 个id待处理
+2026-09-17 11:22:46 - amazon_us_luck 关停keyword: 10个
+2026-09-17 11:22:46 - amazon_us_ifn 共 40 个id待处理
+2026-09-17 11:22:47 - amazon_us_luck keyword关停成功: 4个
+2026-09-17 11:22:47 - amazon_us_luck 有 6 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:47 - amazon_us_luck 关停target: 6个
+2026-09-17 11:22:48 - amazon_us_ifn keyword查询汇总: 可用7个, archived 0个, 未找到33个, bid一致 0个, 待调整7个
+2026-09-17 11:22:48 - amazon_us_ifn keyword未查到的id: 33个，将顺延到target查询
+2026-09-17 11:22:48 - amazon_us_ifn 调整keyword bid: 7个
+2026-09-17 11:22:48 - amazon_us_luck target关停成功: 6个
+2026-09-17 11:22:48 - amazon_us_find 共 29 个id待处理
+2026-09-17 11:22:48 - amazon_us_find 关停keyword: 29个
+2026-09-17 11:22:50 - amazon_us_find keyword关停成功: 6个
+2026-09-17 11:22:50 - amazon_us_find 有 23 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:50 - amazon_us_find 关停target: 23个
+2026-09-17 11:22:50 - amazon_us_ifn keyword调整bid成功: 7个
+2026-09-17 11:22:51 - amazon_us_ifn 有 33 个id (keyword失败0个 + keyword未查到33个)，尝试作为target调整bid
+2026-09-17 11:22:51 - amazon_us_find target关停成功: 23个
+2026-09-17 11:22:51 - amazon_uk_tuto 共 10 个id待处理
+2026-09-17 11:22:51 - amazon_uk_tuto 关停keyword: 10个
+2026-09-17 11:22:53 - amazon_us_ifn target查询汇总: 可用33个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整33个
+2026-09-17 11:22:53 - amazon_us_ifn 调整target bid: 33个
+2026-09-17 11:22:53 - amazon_uk_tuto keyword关停成功: 1个
+2026-09-17 11:22:53 - amazon_uk_tuto 有 9 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:22:53 - amazon_uk_tuto 关停target: 9个
+2026-09-17 11:22:54 - amazon_us_ifn target调整bid成功: 33个
+2026-09-17 11:22:54 - amazon_us_hero 共 45 个id待处理
+2026-09-17 11:22:55 - amazon_us_hero keyword查询汇总: 可用8个, archived 0个, 未找到37个, bid一致 0个, 待调整8个
+2026-09-17 11:22:55 - amazon_us_hero keyword未查到的id: 37个，将顺延到target查询
+2026-09-17 11:22:55 - amazon_us_hero 调整keyword bid: 8个
+2026-09-17 11:22:56 - amazon_us_hero keyword调整bid成功: 8个
+2026-09-17 11:22:56 - amazon_us_hero 有 37 个id (keyword失败0个 + keyword未查到37个)，尝试作为target调整bid
+2026-09-17 11:22:57 - amazon_us_hero target查询汇总: 可用37个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整37个
+2026-09-17 11:22:57 - amazon_us_hero 调整target bid: 37个
+2026-09-17 11:22:59 - amazon_us_hero target调整bid成功: 37个
+2026-09-17 11:22:59 - amazon_us_luux 共 50 个id待处理
+2026-09-17 11:22:59 - amazon_uk_tuto target关停成功: 9个
+2026-09-17 11:22:59 - amazon_us_hood 共 8 个id待处理
+2026-09-17 11:22:59 - amazon_us_hood 关停keyword: 8个
+2026-09-17 11:23:00 - amazon_us_luux keyword查询汇总: 可用8个, archived 0个, 未找到42个, bid一致 0个, 待调整8个
+2026-09-17 11:23:00 - amazon_us_luux keyword未查到的id: 42个，将顺延到target查询
+2026-09-17 11:23:00 - amazon_us_luux 调整keyword bid: 8个
+2026-09-17 11:23:01 - amazon_us_luux keyword调整bid成功: 8个
+2026-09-17 11:23:01 - amazon_us_luux 有 42 个id (keyword失败0个 + keyword未查到42个)，尝试作为target调整bid
+2026-09-17 11:23:02 - amazon_us_luux target查询汇总: 可用42个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整42个
+2026-09-17 11:23:02 - amazon_us_luux 调整target bid: 42个
+2026-09-17 11:23:02 - amazon_us_hood keyword关停成功: 4个
+2026-09-17 11:23:03 - amazon_us_hood 有 4 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:03 - amazon_us_hood 关停target: 4个
+2026-09-17 11:23:03 - amazon_us_luux target调整bid成功: 42个
+2026-09-17 11:23:03 - amazon_uk_moto 共 18 个id待处理
+2026-09-17 11:23:04 - amazon_us_hood target关停成功: 4个
+2026-09-17 11:23:04 - amazon_uk_tuc 共 6 个id待处理
+2026-09-17 11:23:04 - amazon_uk_tuc 关停keyword: 6个
+2026-09-17 11:23:04 - amazon_uk_moto keyword查询汇总: 可用0个, archived 0个, 未找到18个, bid一致 0个, 待调整0个
+2026-09-17 11:23:04 - amazon_uk_moto keyword未查到的id: 18个，将顺延到target查询
+2026-09-17 11:23:04 - amazon_uk_moto 有 18 个id (keyword失败0个 + keyword未查到18个)，尝试作为target调整bid
+2026-09-17 11:23:05 - amazon_uk_tuc keyword关停成功: 1个
+2026-09-17 11:23:05 - amazon_uk_tuc 有 5 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:05 - amazon_uk_tuc 关停target: 5个
+2026-09-17 11:23:05 - amazon_uk_moto target查询汇总: 可用18个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整18个
+2026-09-17 11:23:05 - amazon_uk_moto 调整target bid: 18个
+2026-09-17 11:23:07 - amazon_uk_tuc target关停成功: 5个
+2026-09-17 11:23:07 - amazon_uk_moto target调整bid成功: 18个
+2026-09-17 11:23:07 - amazon_us_rrc 共 22 个id待处理
+2026-09-17 11:23:07 - amazon_ca_luck 共 3 个id待处理
+2026-09-17 11:23:07 - amazon_ca_luck 关停keyword: 3个
+2026-09-17 11:23:08 - amazon_us_rrc keyword查询汇总: 可用9个, archived 0个, 未找到13个, bid一致 0个, 待调整9个
+2026-09-17 11:23:08 - amazon_us_rrc keyword未查到的id: 13个，将顺延到target查询
+2026-09-17 11:23:08 - amazon_us_rrc 调整keyword bid: 9个
+2026-09-17 11:23:09 - amazon_ca_luck 有 3 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:09 - amazon_ca_luck 关停target: 3个
+2026-09-17 11:23:09 - amazon_us_rrc keyword调整bid成功: 9个
+2026-09-17 11:23:10 - amazon_us_rrc 有 13 个id (keyword失败0个 + keyword未查到13个)，尝试作为target调整bid
+2026-09-17 11:23:11 - amazon_ca_luck target关停成功: 3个
+2026-09-17 11:23:11 - amazon_uk_sopro 共 16 个id待处理
+2026-09-17 11:23:11 - amazon_uk_sopro 关停keyword: 16个
+2026-09-17 11:23:12 - amazon_us_rrc target查询汇总: 可用13个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整13个
+2026-09-17 11:23:12 - amazon_us_rrc 调整target bid: 13个
+2026-09-17 11:23:14 - amazon_us_rrc target调整bid成功: 13个
+2026-09-17 11:23:14 - amazon_us_rock 共 4 个id待处理
+2026-09-17 11:23:14 - amazon_us_rock keyword查询汇总: 可用0个, archived 0个, 未找到4个, bid一致 0个, 待调整0个
+2026-09-17 11:23:14 - amazon_us_rock keyword未查到的id: 4个，将顺延到target查询
+2026-09-17 11:23:14 - amazon_us_rock 有 4 个id (keyword失败0个 + keyword未查到4个)，尝试作为target调整bid
+2026-09-17 11:23:15 - amazon_us_rock target查询汇总: 可用4个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整4个
+2026-09-17 11:23:15 - amazon_us_rock 调整target bid: 4个
+2026-09-17 11:23:15 - amazon_uk_sopro keyword关停成功: 6个
+2026-09-17 11:23:16 - amazon_uk_sopro 有 10 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:16 - amazon_uk_sopro 关停target: 10个
+2026-09-17 11:23:17 - amazon_uk_sopro target关停成功: 10个
+2026-09-17 11:23:17 - amazon_ca_kilo 共 3 个id待处理
+2026-09-17 11:23:17 - amazon_ca_kilo 关停keyword: 3个
+2026-09-17 11:23:17 - amazon_us_rock target调整bid成功: 4个
+2026-09-17 11:23:17 - amazon_us_dri 共 3 个id待处理
+2026-09-17 11:23:18 - amazon_ca_kilo 有 3 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:18 - amazon_ca_kilo 关停target: 3个
+2026-09-17 11:23:18 - amazon_us_dri keyword查询汇总: 可用2个, archived 0个, 未找到1个, bid一致 0个, 待调整2个
+2026-09-17 11:23:18 - amazon_us_dri keyword未查到的id: 1个，将顺延到target查询
+2026-09-17 11:23:18 - amazon_us_dri 调整keyword bid: 2个
+2026-09-17 11:23:19 - amazon_us_dri keyword调整bid成功: 2个
+2026-09-17 11:23:19 - amazon_ca_kilo target关停成功: 3个
+2026-09-17 11:23:20 - amazon_uk2 共 19 个id待处理
+2026-09-17 11:23:20 - amazon_uk2 关停keyword: 19个
+2026-09-17 11:23:20 - amazon_us_dri 有 1 个id (keyword失败0个 + keyword未查到1个)，尝试作为target调整bid
+2026-09-17 11:23:20 - amazon_us_dri target查询汇总: 可用1个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整1个
+2026-09-17 11:23:20 - amazon_us_dri 调整target bid: 1个
+2026-09-17 11:23:21 - amazon_uk2 keyword关停成功: 4个
+2026-09-17 11:23:21 - amazon_uk2 有 15 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:21 - amazon_uk2 关停target: 15个
+2026-09-17 11:23:22 - amazon_us_dri target调整bid成功: 1个
+2026-09-17 11:23:22 - amazon_us_sopro 共 108 个id待处理
+2026-09-17 11:23:23 - amazon_uk2 target关停成功: 15个
+2026-09-17 11:23:23 - amazon_uk_ifn 共 6 个id待处理
+2026-09-17 11:23:23 - amazon_uk_ifn 关停keyword: 6个
+2026-09-17 11:23:25 - amazon_us_sopro keyword查询汇总: 可用32个, archived 0个, 未找到76个, bid一致 0个, 待调整32个
+2026-09-17 11:23:25 - amazon_us_sopro keyword未查到的id: 76个，将顺延到target查询
+2026-09-17 11:23:25 - amazon_us_sopro 调整keyword bid: 32个
+2026-09-17 11:23:25 - amazon_uk_ifn keyword关停成功: 1个
+2026-09-17 11:23:25 - amazon_uk_ifn 有 5 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:25 - amazon_uk_ifn 关停target: 5个
+2026-09-17 11:23:26 - amazon_uk_ifn target关停成功: 5个
+2026-09-17 11:23:27 - amazon_ca_hood 共 9 个id待处理
+2026-09-17 11:23:27 - amazon_ca_hood 关停keyword: 9个
+2026-09-17 11:23:27 - amazon_us_sopro keyword调整bid成功: 32个
+2026-09-17 11:23:27 - amazon_us_sopro 有 76 个id (keyword失败0个 + keyword未查到76个)，尝试作为target调整bid
+2026-09-17 11:23:27 - amazon_ca_hood 有 9 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:27 - amazon_ca_hood 关停target: 9个
+2026-09-17 11:23:28 - amazon_ca_hood target关停成功: 9个
+2026-09-17 11:23:29 - amazon_ca_find 共 22 个id待处理
+2026-09-17 11:23:29 - amazon_ca_find 关停keyword: 22个
+2026-09-17 11:23:29 - amazon_us_sopro target查询汇总: 可用76个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 2个, 待调整74个
+2026-09-17 11:23:29 - amazon_us_sopro bid已一致的target: 2个，跳过
+2026-09-17 11:23:29 - amazon_us_sopro 调整target bid: 74个
+2026-09-17 11:23:30 - amazon_us_sopro target调整bid成功: 74个
+2026-09-17 11:23:30 - amazon_ca_find 有 22 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:30 - amazon_ca_find 关停target: 22个
+2026-09-17 11:23:30 - amazon_ca_moto 共 16 个id待处理
+2026-09-17 11:23:31 - amazon_ca_moto keyword查询汇总: 可用2个, archived 0个, 未找到14个, bid一致 0个, 待调整2个
+2026-09-17 11:23:31 - amazon_ca_moto keyword未查到的id: 14个，将顺延到target查询
+2026-09-17 11:23:31 - amazon_ca_moto 调整keyword bid: 2个
+2026-09-17 11:23:32 - amazon_ca_find target关停成功: 22个
+2026-09-17 11:23:32 - amazon_ca_rock 共 2 个id待处理
+2026-09-17 11:23:32 - amazon_ca_rock 关停keyword: 2个
+2026-09-17 11:23:33 - amazon_ca_rock keyword关停成功: 1个
+2026-09-17 11:23:33 - amazon_ca_rock 有 1 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:33 - amazon_ca_rock 关停target: 1个
+2026-09-17 11:23:34 - amazon_ca_moto keyword调整bid成功: 2个
+2026-09-17 11:23:34 - amazon_ca_moto 有 14 个id (keyword失败0个 + keyword未查到14个)，尝试作为target调整bid
+2026-09-17 11:23:34 - amazon_ca_rock target关停成功: 1个
+2026-09-17 11:23:34 - amazon_us_mir 共 2 个id待处理
+2026-09-17 11:23:34 - amazon_us_mir 关停keyword: 2个
+2026-09-17 11:23:35 - amazon_ca_moto target查询汇总: 可用14个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整14个
+2026-09-17 11:23:35 - amazon_ca_moto 调整target bid: 14个
+2026-09-17 11:23:36 - amazon_us_mir 有 2 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:36 - amazon_us_mir 关停target: 2个
+2026-09-17 11:23:37 - amazon_us_mir target关停成功: 2个
+2026-09-17 11:23:37 - amazon_uk_hope 共 4 个id待处理
+2026-09-17 11:23:37 - amazon_uk_hope 关停keyword: 4个
+2026-09-17 11:23:37 - amazon_ca_moto target调整bid成功: 14个
+2026-09-17 11:23:37 - amazon_uk_sopro 共 52 个id待处理
+2026-09-17 11:23:38 - amazon_uk_hope 有 4 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:38 - amazon_uk_hope 关停target: 4个
+2026-09-17 11:23:39 - amazon_uk_sopro keyword查询汇总: 可用12个, archived 0个, 未找到40个, bid一致 0个, 待调整12个
+2026-09-17 11:23:39 - amazon_uk_sopro keyword未查到的id: 40个，将顺延到target查询
+2026-09-17 11:23:39 - amazon_uk_sopro 调整keyword bid: 12个
+2026-09-17 11:23:40 - amazon_uk_sopro keyword调整bid成功: 12个
+2026-09-17 11:23:40 - amazon_uk_sopro 有 40 个id (keyword失败0个 + keyword未查到40个)，尝试作为target调整bid
+2026-09-17 11:23:40 - amazon_uk_hope target关停成功: 4个
+2026-09-17 11:23:40 - amazon_ca_cover 共 2 个id待处理
+2026-09-17 11:23:40 - amazon_ca_cover 关停keyword: 2个
+2026-09-17 11:23:41 - amazon_uk_sopro target查询汇总: 可用40个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 1个, 待调整39个
+2026-09-17 11:23:41 - amazon_uk_sopro bid已一致的target: 1个，跳过
+2026-09-17 11:23:41 - amazon_uk_sopro 调整target bid: 39个
+2026-09-17 11:23:42 - amazon_uk_sopro target调整bid成功: 39个
+2026-09-17 11:23:42 - amazon_us_find 共 64 个id待处理
+2026-09-17 11:23:43 - amazon_ca_cover 有 2 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:43 - amazon_ca_cover 关停target: 2个
+2026-09-17 11:23:43 - amazon_us_find keyword查询汇总: 可用19个, archived 0个, 未找到45个, bid一致 0个, 待调整19个
+2026-09-17 11:23:43 - amazon_us_find keyword未查到的id: 45个，将顺延到target查询
+2026-09-17 11:23:43 - amazon_us_find 调整keyword bid: 19个
+2026-09-17 11:23:44 - amazon_ca_cover target关停成功: 2个
+2026-09-17 11:23:44 - amazon_uk_find 共 6 个id待处理
+2026-09-17 11:23:44 - amazon_uk_find 关停keyword: 6个
+2026-09-17 11:23:45 - amazon_us_find keyword调整bid成功: 19个
+2026-09-17 11:23:45 - amazon_uk_find 有 6 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:45 - amazon_uk_find 关停target: 6个
+2026-09-17 11:23:45 - amazon_us_find 有 45 个id (keyword失败0个 + keyword未查到45个)，尝试作为target调整bid
+2026-09-17 11:23:46 - amazon_uk_find target关停成功: 6个
+2026-09-17 11:23:46 - amazon_us_auto 共 2 个id待处理
+2026-09-17 11:23:46 - amazon_us_auto 关停keyword: 2个
+2026-09-17 11:23:47 - amazon_us_find target查询汇总: 可用45个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整45个
+2026-09-17 11:23:47 - amazon_us_find 调整target bid: 45个
+2026-09-17 11:23:47 - amazon_us_auto 有 2 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:47 - amazon_us_auto 关停target: 2个
+2026-09-17 11:23:48 - amazon_us_find target调整bid成功: 45个
+2026-09-17 11:23:48 - amazon_us_luck 共 16 个id待处理
+2026-09-17 11:23:48 - amazon_us_auto target关停成功: 2个
+2026-09-17 11:23:48 - amazon_us_bull 共 1 个id待处理
+2026-09-17 11:23:48 - amazon_us_bull 关停keyword: 1个
+2026-09-17 11:23:49 - amazon_us_bull 有 1 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:49 - amazon_us_bull 关停target: 1个
+2026-09-17 11:23:49 - amazon_us_luck keyword查询汇总: 可用5个, archived 0个, 未找到11个, bid一致 0个, 待调整5个
+2026-09-17 11:23:49 - amazon_us_luck keyword未查到的id: 11个，将顺延到target查询
+2026-09-17 11:23:49 - amazon_us_luck 调整keyword bid: 5个
+2026-09-17 11:23:50 - amazon_us_bull target关停成功: 1个
+2026-09-17 11:23:50 - amazon_us_cover 共 3 个id待处理
+2026-09-17 11:23:50 - amazon_us_cover 关停keyword: 3个
+2026-09-17 11:23:51 - amazon_us_luck keyword调整bid成功: 5个
+2026-09-17 11:23:51 - amazon_us_luck 有 11 个id (keyword失败0个 + keyword未查到11个)，尝试作为target调整bid
+2026-09-17 11:23:52 - amazon_us_luck target查询汇总: 可用11个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整11个
+2026-09-17 11:23:52 - amazon_us_luck 调整target bid: 11个
+2026-09-17 11:23:52 - amazon_us_cover keyword关停成功: 1个
+2026-09-17 11:23:52 - amazon_us_cover 有 2 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:52 - amazon_us_cover 关停target: 2个
+2026-09-17 11:23:53 - amazon_us_cover target关停成功: 2个
+2026-09-17 11:23:53 - amazon_us_yuru 共 2 个id待处理
+2026-09-17 11:23:53 - amazon_us_yuru 关停keyword: 2个
+2026-09-17 11:23:54 - amazon_us_luck target调整bid成功: 11个
+2026-09-17 11:23:54 - amazon_uk_tuc 共 12 个id待处理
+2026-09-17 11:23:54 - amazon_us_yuru 有 2 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:54 - amazon_us_yuru 关停target: 2个
+2026-09-17 11:23:55 - amazon_uk_tuc keyword查询汇总: 可用0个, archived 0个, 未找到12个, bid一致 0个, 待调整0个
+2026-09-17 11:23:55 - amazon_uk_tuc keyword未查到的id: 12个，将顺延到target查询
+2026-09-17 11:23:55 - amazon_uk_tuc 有 12 个id (keyword失败0个 + keyword未查到12个)，尝试作为target调整bid
+2026-09-17 11:23:56 - amazon_us_yuru target关停成功: 2个
+2026-09-17 11:23:56 - amazon_ca_mir 共 1 个id待处理
+2026-09-17 11:23:56 - amazon_ca_mir 关停keyword: 1个
+2026-09-17 11:23:57 - amazon_ca_mir 有 1 个id keyword关停失败，尝试作为target关停
+2026-09-17 11:23:57 - amazon_ca_mir 关停target: 1个
+2026-09-17 11:23:58 - amazon_ca_mir target关停成功: 1个
+2026-09-17 11:23:58 - pausedKeywordV2s channel:全部 处理完毕
+2026-09-17 11:23:58 - amazon_uk_tuc target查询汇总: 可用12个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整12个
+2026-09-17 11:23:58 - amazon_uk_tuc 调整target bid: 12个
+2026-09-17 11:23:59 - amazon_uk_tuc target调整bid成功: 12个
+2026-09-17 11:23:59 - amazon_uk_tuto 共 30 个id待处理
+2026-09-17 11:24:00 - amazon_uk_tuto keyword查询汇总: 可用1个, archived 0个, 未找到29个, bid一致 0个, 待调整1个
+2026-09-17 11:24:00 - amazon_uk_tuto keyword未查到的id: 29个，将顺延到target查询
+2026-09-17 11:24:00 - amazon_uk_tuto 调整keyword bid: 1个
+2026-09-17 11:24:02 - amazon_uk_tuto keyword调整bid成功: 1个
+2026-09-17 11:24:02 - amazon_uk_tuto 有 29 个id (keyword失败0个 + keyword未查到29个)，尝试作为target调整bid
+2026-09-17 11:24:03 - amazon_uk_tuto target查询汇总: 可用29个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整29个
+2026-09-17 11:24:03 - amazon_uk_tuto 调整target bid: 29个
+2026-09-17 11:24:04 - amazon_uk_tuto target调整bid成功: 29个
+2026-09-17 11:24:05 - amazon_ca_ac1 共 49 个id待处理
+2026-09-17 11:24:07 - amazon_ca_ac1 keyword查询汇总: 可用4个, archived 0个, 未找到45个, bid一致 0个, 待调整4个
+2026-09-17 11:24:07 - amazon_ca_ac1 keyword未查到的id: 45个，将顺延到target查询
+2026-09-17 11:24:07 - amazon_ca_ac1 调整keyword bid: 4个
+2026-09-17 11:24:08 - amazon_ca_ac1 keyword调整bid成功: 4个
+2026-09-17 11:24:08 - amazon_ca_ac1 有 45 个id (keyword失败0个 + keyword未查到45个)，尝试作为target调整bid
+2026-09-17 11:24:09 - amazon_ca_ac1 target查询汇总: 可用45个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 1个, 待调整44个
+2026-09-17 11:24:09 - amazon_ca_ac1 bid已一致的target: 1个，跳过
+2026-09-17 11:24:09 - amazon_ca_ac1 调整target bid: 44个
+2026-09-17 11:24:11 - amazon_ca_ac1 target调整bid成功: 44个
+2026-09-17 11:24:11 - amazon_ca_find 共 23 个id待处理
+2026-09-17 11:24:13 - amazon_ca_find keyword查询汇总: 可用1个, archived 0个, 未找到22个, bid一致 1个, 待调整0个
+2026-09-17 11:24:13 - amazon_ca_find keyword未查到的id: 22个，将顺延到target查询
+2026-09-17 11:24:13 - amazon_ca_find bid已一致的keyword: 1个，跳过
+2026-09-17 11:24:13 - amazon_ca_find 有 22 个id (keyword失败0个 + keyword未查到22个)，尝试作为target调整bid
+2026-09-17 11:24:15 - amazon_ca_find target查询汇总: 可用22个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 1个, 待调整21个
+2026-09-17 11:24:15 - amazon_ca_find bid已一致的target: 1个，跳过
+2026-09-17 11:24:15 - amazon_ca_find 调整target bid: 21个
+2026-09-17 11:24:19 - amazon_ca_find target调整bid成功: 21个
+2026-09-17 11:24:19 - amazon_us_hope 共 23 个id待处理
+2026-09-17 11:24:21 - amazon_us_hope keyword查询汇总: 可用4个, archived 0个, 未找到19个, bid一致 0个, 待调整4个
+2026-09-17 11:24:21 - amazon_us_hope keyword未查到的id: 19个，将顺延到target查询
+2026-09-17 11:24:21 - amazon_us_hope 调整keyword bid: 4个
+2026-09-17 11:24:22 - amazon_us_hope keyword调整bid成功: 4个
+2026-09-17 11:24:22 - amazon_us_hope 有 19 个id (keyword失败0个 + keyword未查到19个)，尝试作为target调整bid
+2026-09-17 11:24:23 - amazon_us_hope target查询汇总: 可用19个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 1个, 待调整18个
+2026-09-17 11:24:23 - amazon_us_hope bid已一致的target: 1个，跳过
+2026-09-17 11:24:23 - amazon_us_hope 调整target bid: 18个
+2026-09-17 11:24:25 - amazon_us_hope target调整bid成功: 18个
+2026-09-17 11:24:25 - amazon_ca_hope 共 7 个id待处理
+2026-09-17 11:24:27 - amazon_ca_hope keyword查询汇总: 可用5个, archived 0个, 未找到2个, bid一致 0个, 待调整5个
+2026-09-17 11:24:27 - amazon_ca_hope keyword未查到的id: 2个，将顺延到target查询
+2026-09-17 11:24:27 - amazon_ca_hope 调整keyword bid: 5个
+2026-09-17 11:24:28 - amazon_ca_hope keyword调整bid成功: 5个
+2026-09-17 11:24:29 - amazon_ca_hope 有 2 个id (keyword失败0个 + keyword未查到2个)，尝试作为target调整bid
+2026-09-17 11:24:30 - amazon_ca_hope target查询汇总: 可用2个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整2个
+2026-09-17 11:24:30 - amazon_ca_hope 调整target bid: 2个
+2026-09-17 11:24:31 - amazon_ca_hope target调整bid成功: 2个
+2026-09-17 11:24:31 - amazon_us_tuc 共 30 个id待处理
+2026-09-17 11:24:32 - amazon_us_tuc keyword查询汇总: 可用5个, archived 0个, 未找到25个, bid一致 1个, 待调整4个
+2026-09-17 11:24:32 - amazon_us_tuc keyword未查到的id: 25个，将顺延到target查询
+2026-09-17 11:24:32 - amazon_us_tuc bid已一致的keyword: 1个，跳过
+2026-09-17 11:24:32 - amazon_us_tuc 调整keyword bid: 4个
+2026-09-17 11:24:33 - amazon_us_tuc keyword调整bid成功: 4个
+2026-09-17 11:24:33 - amazon_us_tuc 有 25 个id (keyword失败0个 + keyword未查到25个)，尝试作为target调整bid
+2026-09-17 11:24:36 - amazon_us_tuc target查询汇总: 可用25个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整25个
+2026-09-17 11:24:36 - amazon_us_tuc 调整target bid: 25个
+2026-09-17 11:24:38 - amazon_us_tuc target调整bid成功: 25个
+2026-09-17 11:24:38 - amazon_us_swi 共 6 个id待处理
+2026-09-17 11:24:39 - amazon_us_swi keyword查询汇总: 可用2个, archived 0个, 未找到4个, bid一致 0个, 待调整2个
+2026-09-17 11:24:39 - amazon_us_swi keyword未查到的id: 4个，将顺延到target查询
+2026-09-17 11:24:39 - amazon_us_swi 调整keyword bid: 2个
+2026-09-17 11:24:41 - amazon_us_swi keyword调整bid成功: 2个
+2026-09-17 11:24:41 - amazon_us_swi 有 4 个id (keyword失败0个 + keyword未查到4个)，尝试作为target调整bid
+2026-09-17 11:24:44 - amazon_us_swi target查询汇总: 可用4个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整4个
+2026-09-17 11:24:44 - amazon_us_swi 调整target bid: 4个
+2026-09-17 11:24:47 - amazon_us_swi target调整bid成功: 4个
+2026-09-17 11:24:47 - amazon_ca_hero 共 7 个id待处理
+2026-09-17 11:24:48 - amazon_ca_hero keyword查询汇总: 可用0个, archived 0个, 未找到7个, bid一致 0个, 待调整0个
+2026-09-17 11:24:48 - amazon_ca_hero keyword未查到的id: 7个，将顺延到target查询
+2026-09-17 11:24:48 - amazon_ca_hero 有 7 个id (keyword失败0个 + keyword未查到7个)，尝试作为target调整bid
+2026-09-17 11:24:49 - amazon_ca_hero target查询汇总: 可用7个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整7个
+2026-09-17 11:24:49 - amazon_ca_hero 调整target bid: 7个
+2026-09-17 11:24:50 - amazon_ca_hero target调整bid成功: 7个
+2026-09-17 11:24:50 - amazon_ca_piccocasa 共 36 个id待处理
+2026-09-17 11:24:51 - amazon_ca_piccocasa keyword查询汇总: 可用4个, archived 0个, 未找到32个, bid一致 0个, 待调整4个
+2026-09-17 11:24:51 - amazon_ca_piccocasa keyword未查到的id: 32个，将顺延到target查询
+2026-09-17 11:24:51 - amazon_ca_piccocasa 调整keyword bid: 4个
+2026-09-17 11:24:54 - amazon_ca_piccocasa keyword调整bid成功: 4个
+2026-09-17 11:24:54 - amazon_ca_piccocasa 有 32 个id (keyword失败0个 + keyword未查到32个)，尝试作为target调整bid
+2026-09-17 11:24:55 - amazon_ca_piccocasa target查询汇总: 可用32个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整32个
+2026-09-17 11:24:55 - amazon_ca_piccocasa 调整target bid: 32个
+2026-09-17 11:24:58 - amazon_ca_piccocasa target调整bid成功: 32个
+2026-09-17 11:24:58 - amazon_ca_ifn 共 12 个id待处理
+2026-09-17 11:24:59 - amazon_ca_ifn keyword查询汇总: 可用0个, archived 0个, 未找到12个, bid一致 0个, 待调整0个
+2026-09-17 11:24:59 - amazon_ca_ifn keyword未查到的id: 12个，将顺延到target查询
+2026-09-17 11:24:59 - amazon_ca_ifn 有 12 个id (keyword失败0个 + keyword未查到12个)，尝试作为target调整bid
+2026-09-17 11:25:00 - amazon_ca_ifn target查询汇总: 可用12个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整12个
+2026-09-17 11:25:00 - amazon_ca_ifn 调整target bid: 12个
+2026-09-17 11:25:03 - amazon_ca_ifn target调整bid成功: 12个
+2026-09-17 11:25:03 - amazon_ca_tuc 共 10 个id待处理
+2026-09-17 11:25:04 - amazon_ca_tuc keyword查询汇总: 可用1个, archived 0个, 未找到9个, bid一致 0个, 待调整1个
+2026-09-17 11:25:04 - amazon_ca_tuc keyword未查到的id: 9个，将顺延到target查询
+2026-09-17 11:25:04 - amazon_ca_tuc 调整keyword bid: 1个
+2026-09-17 11:25:05 - amazon_ca_tuc keyword调整bid成功: 1个
+2026-09-17 11:25:05 - amazon_ca_tuc 有 9 个id (keyword失败0个 + keyword未查到9个)，尝试作为target调整bid
+2026-09-17 11:25:06 - amazon_ca_tuc target查询汇总: 可用9个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 1个, 待调整8个
+2026-09-17 11:25:06 - amazon_ca_tuc bid已一致的target: 1个，跳过
+2026-09-17 11:25:06 - amazon_ca_tuc 调整target bid: 8个
+2026-09-17 11:25:08 - amazon_ca_tuc target调整bid成功: 8个
+2026-09-17 11:25:08 - amazon_us_kilo 共 2 个id待处理
+2026-09-17 11:25:09 - amazon_us_kilo keyword查询汇总: 可用1个, archived 0个, 未找到1个, bid一致 0个, 待调整1个
+2026-09-17 11:25:09 - amazon_us_kilo keyword未查到的id: 1个，将顺延到target查询
+2026-09-17 11:25:09 - amazon_us_kilo 调整keyword bid: 1个
+2026-09-17 11:25:13 - amazon_us_kilo keyword调整bid成功: 1个
+2026-09-17 11:25:13 - amazon_us_kilo 有 1 个id (keyword失败0个 + keyword未查到1个)，尝试作为target调整bid
+2026-09-17 11:25:15 - amazon_us_kilo target查询汇总: 可用1个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整1个
+2026-09-17 11:25:15 - amazon_us_kilo 调整target bid: 1个
+2026-09-17 11:25:16 - amazon_us_kilo target调整bid成功: 1个
+2026-09-17 11:25:16 - amazon_us_tuto 共 43 个id待处理
+2026-09-17 11:25:17 - amazon_us_tuto keyword查询汇总: 可用10个, archived 0个, 未找到33个, bid一致 0个, 待调整10个
+2026-09-17 11:25:17 - amazon_us_tuto keyword未查到的id: 33个，将顺延到target查询
+2026-09-17 11:25:17 - amazon_us_tuto 调整keyword bid: 10个
+2026-09-17 11:25:18 - amazon_us_tuto keyword调整bid成功: 10个
+2026-09-17 11:25:18 - amazon_us_tuto 有 33 个id (keyword失败0个 + keyword未查到33个)，尝试作为target调整bid
+2026-09-17 11:25:20 - amazon_us_tuto target查询汇总: 可用33个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整33个
+2026-09-17 11:25:20 - amazon_us_tuto 调整target bid: 33个
+2026-09-17 11:25:21 - amazon_us_tuto target调整bid成功: 33个
+2026-09-17 11:25:21 - amazon_uk_hero 共 3 个id待处理
+2026-09-17 11:25:25 - amazon_uk_hero keyword查询汇总: 可用0个, archived 0个, 未找到3个, bid一致 0个, 待调整0个
+2026-09-17 11:25:25 - amazon_uk_hero keyword未查到的id: 3个，将顺延到target查询
+2026-09-17 11:25:25 - amazon_uk_hero 有 3 个id (keyword失败0个 + keyword未查到3个)，尝试作为target调整bid
+2026-09-17 11:25:29 - amazon_uk_hero target查询汇总: 可用3个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整3个
+2026-09-17 11:25:29 - amazon_uk_hero 调整target bid: 3个
+2026-09-17 11:25:31 - amazon_uk_hero target调整bid成功: 3个
+2026-09-17 11:25:31 - amazon_uk_ifn 共 15 个id待处理
+2026-09-17 11:25:32 - amazon_uk_ifn keyword查询汇总: 可用2个, archived 0个, 未找到13个, bid一致 1个, 待调整1个
+2026-09-17 11:25:32 - amazon_uk_ifn keyword未查到的id: 13个，将顺延到target查询
+2026-09-17 11:25:32 - amazon_uk_ifn bid已一致的keyword: 1个，跳过
+2026-09-17 11:25:32 - amazon_uk_ifn 调整keyword bid: 1个
+2026-09-17 11:25:33 - amazon_uk_ifn keyword调整bid成功: 1个
+2026-09-17 11:25:34 - amazon_uk_ifn 有 13 个id (keyword失败0个 + keyword未查到13个)，尝试作为target调整bid
+2026-09-17 11:25:34 - amazon_uk_ifn target查询汇总: 可用13个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整13个
+2026-09-17 11:25:34 - amazon_uk_ifn 调整target bid: 13个
+2026-09-17 11:25:36 - amazon_uk_ifn target调整bid成功: 13个
+2026-09-17 11:25:36 - amazon_us_ac1 共 29 个id待处理
+2026-09-17 11:25:37 - amazon_us_ac1 keyword查询汇总: 可用11个, archived 0个, 未找到18个, bid一致 0个, 待调整11个
+2026-09-17 11:25:37 - amazon_us_ac1 keyword未查到的id: 18个，将顺延到target查询
+2026-09-17 11:25:37 - amazon_us_ac1 调整keyword bid: 11个
+2026-09-17 11:25:39 - amazon_us_ac1 keyword调整bid成功: 11个
+2026-09-17 11:25:39 - amazon_us_ac1 有 18 个id (keyword失败0个 + keyword未查到18个)，尝试作为target调整bid
+2026-09-17 11:25:40 - amazon_us_ac1 target查询汇总: 可用18个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整18个
+2026-09-17 11:25:40 - amazon_us_ac1 调整target bid: 18个
+2026-09-17 11:25:41 - amazon_us_ac1 target调整bid成功: 18个
+2026-09-17 11:25:41 - amazon_ca_tuto 共 23 个id待处理
+2026-09-17 11:25:42 - amazon_ca_tuto keyword查询汇总: 可用5个, archived 0个, 未找到18个, bid一致 0个, 待调整5个
+2026-09-17 11:25:42 - amazon_ca_tuto keyword未查到的id: 18个，将顺延到target查询
+2026-09-17 11:25:42 - amazon_ca_tuto 调整keyword bid: 5个
+2026-09-17 11:25:44 - amazon_ca_tuto keyword调整bid成功: 5个
+2026-09-17 11:25:44 - amazon_ca_tuto 有 18 个id (keyword失败0个 + keyword未查到18个)，尝试作为target调整bid
+2026-09-17 11:25:47 - amazon_ca_tuto target查询汇总: 可用18个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整18个
+2026-09-17 11:25:47 - amazon_ca_tuto 调整target bid: 18个
+2026-09-17 11:25:48 - amazon_ca_tuto target调整bid成功: 18个
+2026-09-17 11:25:48 - amazon_ca_rrc 共 9 个id待处理
+2026-09-17 11:25:48 - amazon_ca_rrc keyword查询汇总: 可用2个, archived 0个, 未找到7个, bid一致 0个, 待调整2个
+2026-09-17 11:25:48 - amazon_ca_rrc keyword未查到的id: 7个，将顺延到target查询
+2026-09-17 11:25:48 - amazon_ca_rrc 调整keyword bid: 2个
+2026-09-17 11:25:50 - amazon_ca_rrc keyword调整bid成功: 2个
+2026-09-17 11:25:50 - amazon_ca_rrc 有 7 个id (keyword失败0个 + keyword未查到7个)，尝试作为target调整bid
+2026-09-17 11:25:51 - amazon_ca_rrc target查询汇总: 可用7个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整7个
+2026-09-17 11:25:51 - amazon_ca_rrc 调整target bid: 7个
+2026-09-17 11:25:58 - amazon_ca_rrc target调整bid成功: 7个
+2026-09-17 11:25:58 - amazon_us_hood 共 9 个id待处理
+2026-09-17 11:26:02 - amazon_us_hood keyword查询汇总: 可用1个, archived 0个, 未找到8个, bid一致 0个, 待调整1个
+2026-09-17 11:26:02 - amazon_us_hood keyword未查到的id: 8个，将顺延到target查询
+2026-09-17 11:26:02 - amazon_us_hood 调整keyword bid: 1个
+2026-09-17 11:26:03 - amazon_us_hood keyword调整bid成功: 1个
+2026-09-17 11:26:03 - amazon_us_hood 有 8 个id (keyword失败0个 + keyword未查到8个)，尝试作为target调整bid
+2026-09-17 11:26:04 - amazon_us_hood target查询汇总: 可用8个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整8个
+2026-09-17 11:26:04 - amazon_us_hood 调整target bid: 8个
+2026-09-17 11:26:07 - amazon_us_hood target调整bid成功: 8个
+2026-09-17 11:26:07 - amazon_us_lift 共 3 个id待处理
+2026-09-17 11:26:08 - amazon_us_lift keyword查询汇总: 可用0个, archived 0个, 未找到3个, bid一致 0个, 待调整0个
+2026-09-17 11:26:08 - amazon_us_lift keyword未查到的id: 3个，将顺延到target查询
+2026-09-17 11:26:08 - amazon_us_lift 有 3 个id (keyword失败0个 + keyword未查到3个)，尝试作为target调整bid
+2026-09-17 11:26:09 - amazon_us_lift target查询汇总: 可用3个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整3个
+2026-09-17 11:26:09 - amazon_us_lift 调整target bid: 3个
+2026-09-17 11:26:10 - amazon_us_lift target调整bid成功: 3个
+2026-09-17 11:26:11 - amazon_uk_find 共 6 个id待处理
+2026-09-17 11:26:11 - amazon_uk_find keyword查询汇总: 可用0个, archived 0个, 未找到6个, bid一致 0个, 待调整0个
+2026-09-17 11:26:11 - amazon_uk_find keyword未查到的id: 6个，将顺延到target查询
+2026-09-17 11:26:11 - amazon_uk_find 有 6 个id (keyword失败0个 + keyword未查到6个)，尝试作为target调整bid
+2026-09-17 11:26:12 - amazon_uk_find target查询汇总: 可用6个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整6个
+2026-09-17 11:26:12 - amazon_uk_find 调整target bid: 6个
+2026-09-17 11:26:14 - amazon_uk_find target调整bid成功: 6个
+2026-09-17 11:26:14 - amazon_uk_luux 共 10 个id待处理
+2026-09-17 11:26:15 - amazon_uk_luux keyword查询汇总: 可用3个, archived 0个, 未找到7个, bid一致 0个, 待调整3个
+2026-09-17 11:26:15 - amazon_uk_luux keyword未查到的id: 7个，将顺延到target查询
+2026-09-17 11:26:15 - amazon_uk_luux 调整keyword bid: 3个
+2026-09-17 11:26:17 - amazon_uk_luux keyword调整bid成功: 3个
+2026-09-17 11:26:18 - amazon_uk_luux 有 7 个id (keyword失败0个 + keyword未查到7个)，尝试作为target调整bid
+2026-09-17 11:26:19 - amazon_uk_luux target查询汇总: 可用7个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整7个
+2026-09-17 11:26:19 - amazon_uk_luux 调整target bid: 7个
+2026-09-17 11:26:19 - verifyKeywordStates 开始校验 file:M8关停.xlsx channel:全部
+2026-09-17 11:26:19 - channel:全部 共 52 个seller, 1221 个id
+2026-09-17 11:26:19 - amazon_us_hope 开始校验 22 个id
+2026-09-17 11:26:19 - 查询Amazon API(keyword): amazon_us_hope ids: 404013987044748,548529422610547,439350379564539,282555910808372,337408307102956,310173810292135,282238854689625,537113333131302,522385899726704,393541200215145,562178428213202,420546577492602,363329740840957,401353342350759,330109054754202,287894392934166,353709085974278,327028212440270,474705805153307,431217016210451,320673674868738,324160605594246
+2026-09-17 11:26:20 - amazon_us_hope 有 20 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:20 - 查询Amazon API(target): amazon_us_hope ids: 548529422610547,439350379564539,282555910808372,337408307102956,310173810292135,282238854689625,537113333131302,522385899726704,393541200215145,562178428213202,420546577492602,363329740840957,401353342350759,330109054754202,287894392934166,353709085974278,327028212440270,474705805153307,320673674868738,324160605594246
+2026-09-17 11:26:20 - amazon_uk_luux target调整bid成功: 7个
+2026-09-17 11:26:20 - amazon_us_cover 共 3 个id待处理
+2026-09-17 11:26:22 - amazon_us_rrc 开始校验 15 个id
+2026-09-17 11:26:22 - 查询Amazon API(keyword): amazon_us_rrc ids: 467606197927225,480007561154609,307407710633977,192262849796913,391239685673937,546252534229962,284297200481637,467878752227846,42776602616413,451777611408718,363567156949810,450892434396962,433435062593170,354104435027352,500063983134616
+2026-09-17 11:26:23 - amazon_us_rrc 有 12 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:23 - 查询Amazon API(target): amazon_us_rrc ids: 467606197927225,480007561154609,307407710633977,391239685673937,546252534229962,284297200481637,451777611408718,363567156949810,450892434396962,433435062593170,354104435027352,500063983134616
+2026-09-17 11:26:23 - amazon_us_cover keyword查询汇总: 可用1个, archived 0个, 未找到2个, bid一致 0个, 待调整1个
+2026-09-17 11:26:23 - amazon_us_cover keyword未查到的id: 2个，将顺延到target查询
+2026-09-17 11:26:23 - amazon_us_cover 调整keyword bid: 1个
+2026-09-17 11:26:24 - amazon 开始校验 295 个id
+2026-09-17 11:26:24 - 查询Amazon API(keyword): amazon ids: 313923894403492,295671951959806,529366644678230,404665884980699,82000239105255,305727815999123,521302888104285,365809814263506,460202696861831,502139892811650,300620024724722,401190533654347,471155219021385,323760958264346,35787051580098,183501525196077,427221177957896,292897994064340,491984215936628,441476204979062,471184003352201,443490679788021,345980628401970,389999053126954,456168192269727,531083614354172,460874821967871,430305993681832,200979554281086,463773102453738,380338357391540,454068915030340,366388947290953,484276237473073,537495714568423,2503988747412,286061266454921,366722539028739,376149210192323,539751134548994,500567392393823,377264688660997,315774462340357,490568642064998,307740772477746,503894243225573,406286535429335,82942186077881,497616422169451,392819341813515,65450544399296,421253212120160,497265006114528,359904718148225,332289573289244,353724360881720,237018539191526,336013263408861,90837597384952,547673120768976,424032561516497,465607655350847,525061644708622,555867806967460,461706917091048,329229922600351,529491420617892,376963774730954,287764708008034,532286706901916,292272320395389,78895042367526,292675568871650,329732511571241,380001357234854,330711698364611,130889620200730,510623276294697,181399419580364,335148523131879,505924496488513,471726443963815,511102575101527,98690970353515,412332501031540,513703833752845,157540355975160,366350929285452,348787081762055,402256889216210,419399111898350,249799007421725,556454327883539,388560487731456,518363925445881,371954323461509,132165989192023,364673927724983,558601764682415,98588576078314
+2026-09-17 11:26:25 - 查询Amazon API(keyword): amazon ids: 517192370991604,398479678875402,234116264815773,407390858757496,426082807340383,357326533206235,19078792895617,212483939738933,388041697140577,527147821388118,351841807813983,448198681928421,299129722942802,463839642983672,388582311224082,420137145308309,501620177561940,544040303147176,417835806407700,498389705331735,479424475877491,477324234490007,532307211503607,310727675143099,532447547039216,334992792104244,318624230386139,514989450142179,302871262782217,68156464106040,464104999182811,369552813126247,424000190785481,428396610498343,482733667200990,533870408813485,387472398228826,395714674797637,548597425388047,192542424711300,108726847280341,540140119685756,287161553661095,521657143849062,526437336601137,526514808885899,380348454648872,359229024038079,354291780728890,318008826477938,483253908855361,467267431795966,331164804901412,329616157239121,429197219949781,304052754155870,447461195400910,326859017119754,102891278891861,84600195322665,283855592253093,498138799933284,533304069868847,309622680665298,462971360510179,356667361709531,369698890905380,365909658694096,421300370934683,388341741254055,430596670393355,356160461205745,490452302853554,506000793626020,67905670728256,554685231309663,385995141569616,557925885422623,543825394162414,518828585357636,397384097698498,337485633891218,460218784794020,432790758873127,300066546777147,83727013389884,401538436323080,538132541249598,527151107199198,480376338003055,388029400376878,287090656719675,436382191450702,380315965179793,494420732979277,285001877909315,330847723860123,343908094411609,484464233769170,313096038279517
+2026-09-17 11:26:26 - 查询Amazon API(keyword): amazon ids: 308489126829345,543503102934344,548793679066663,318411309078321,462847029067300,553507386055606,476988564764511,321190818281906,430941147957908,454279326905379,416438308310490,328536032932361,322848100198031,420091411824478,367630559670684,420383704829859,154270438536231,557746334084838,298078643525456,77652392980244,512551227326273,477388608684869,411183876769730,382320119526349,488767922984225,372472906525562,409061706315728,518470585310081,288489399552669,481754689602647,124708899723699,27112214907069,540194675797893,302112694158460,304073956841199,32695728373597,436709080318676,395910465288404,200017162921376,185988464000576,308198267531833,474128925978050,398416150047505,174004042384480,313892507897383,86217704317447,417448209506802,492680702899297,416257114826579,302815581008786,398867796065467,354238316286167,548943930358496,384211027323004,287787033869039,525325253356340,295820569493410,379773549932808,554159516170805,384888105099863,401253453834313,471006486018956,122948960132522,382822169028151,537459110267588,315775257774544,503786357300796,359013588032937,481449217246167,298625870167537,523845808786738,322083151061270,325608575635170,31721014076949,296130924036588,295357188983284,462634476566251,427663015154069,348947493006877,317037633628047,396520924642307,494970838718734,442939940518700,363509147293042,335336846796446,425974578346292,396884715236285,290736297555643,343274106732949,332241830584286,312988296530773,176887520201459,325812709205261,403743223786545,434965569298460
+2026-09-17 11:26:27 - amazon 有 268 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:27 - 查询Amazon API(target): amazon ids: 313923894403492,295671951959806,529366644678230,404665884980699,305727815999123,521302888104285,365809814263506,460202696861831,502139892811650,300620024724722,401190533654347,471155219021385,323760958264346,183501525196077,427221177957896,292897994064340,491984215936628,471184003352201,443490679788021,345980628401970,389999053126954,456168192269727,531083614354172,460874821967871,430305993681832,463773102453738,380338357391540,454068915030340,366388947290953,484276237473073,537495714568423,286061266454921,366722539028739,376149210192323,539751134548994,500567392393823,377264688660997,315774462340357,490568642064998,307740772477746,503894243225573,82942186077881,497616422169451,392819341813515,421253212120160,497265006114528,359904718148225,353724360881720,237018539191526,336013263408861,547673120768976,424032561516497,465607655350847,525061644708622,555867806967460,461706917091048,329229922600351,529491420617892,376963774730954,287764708008034,532286706901916,292272320395389,78895042367526,292675568871650,329732511571241,380001357234854,330711698364611,510623276294697,335148523131879,505924496488513,471726443963815,511102575101527,412332501031540,513703833752845,366350929285452,348787081762055,402256889216210,419399111898350,556454327883539,388560487731456,518363925445881,371954323461509,132165989192023,364673927724983,558601764682415,517192370991604,398479678875402,234116264815773,407390858757496,426082807340383,357326533206235,388041697140577,527147821388118,351841807813983,448198681928421,299129722942802,463839642983672,388582311224082,420137145308309,501620177561940
+2026-09-17 11:26:28 - 查询Amazon API(target): amazon ids: 544040303147176,417835806407700,498389705331735,477324234490007,310727675143099,532447547039216,334992792104244,318624230386139,514989450142179,302871262782217,68156464106040,464104999182811,369552813126247,424000190785481,428396610498343,482733667200990,533870408813485,387472398228826,395714674797637,548597425388047,540140119685756,287161553661095,521657143849062,526437336601137,526514808885899,380348454648872,359229024038079,354291780728890,318008826477938,483253908855361,467267431795966,331164804901412,329616157239121,429197219949781,304052754155870,447461195400910,326859017119754,283855592253093,498138799933284,533304069868847,309622680665298,462971360510179,356667361709531,369698890905380,365909658694096,388341741254055,430596670393355,356160461205745,490452302853554,506000793626020,67905670728256,554685231309663,385995141569616,557925885422623,543825394162414,518828585357636,397384097698498,460218784794020,432790758873127,401538436323080,538132541249598,527151107199198,480376338003055,388029400376878,287090656719675,436382191450702,380315965179793,494420732979277,285001877909315,330847723860123,343908094411609,484464233769170,313096038279517,308489126829345,543503102934344,548793679066663,318411309078321,462847029067300,553507386055606,476988564764511,321190818281906,430941147957908,454279326905379,416438308310490,328536032932361,322848100198031,420091411824478,367630559670684,420383704829859,154270438536231,557746334084838,298078643525456,77652392980244,512551227326273,477388608684869,411183876769730,382320119526349,488767922984225,372472906525562,409061706315728
+2026-09-17 11:26:29 - amazon_us_cover keyword调整bid成功: 1个
+2026-09-17 11:26:29 - amazon_us_cover 有 2 个id (keyword失败0个 + keyword未查到2个)，尝试作为target调整bid
+2026-09-17 11:26:30 - 查询Amazon API(target): amazon ids: 518470585310081,288489399552669,481754689602647,124708899723699,27112214907069,540194675797893,302112694158460,304073956841199,32695728373597,436709080318676,395910465288404,200017162921376,185988464000576,308198267531833,474128925978050,398416150047505,174004042384480,313892507897383,86217704317447,417448209506802,492680702899297,416257114826579,302815581008786,398867796065467,354238316286167,548943930358496,384211027323004,287787033869039,525325253356340,295820569493410,379773549932808,554159516170805,384888105099863,401253453834313,471006486018956,122948960132522,382822169028151,537459110267588,315775257774544,503786357300796,359013588032937,481449217246167,298625870167537,523845808786738,322083151061270,325608575635170,31721014076949,296130924036588,295357188983284,462634476566251,427663015154069,348947493006877,317037633628047,396520924642307,494970838718734,442939940518700,363509147293042,335336846796446,425974578346292,396884715236285,290736297555643,343274106732949,332241830584286,312988296530773,176887520201459,325812709205261,403743223786545,434965569298460
+2026-09-17 11:26:31 - amazon_us_cover target查询汇总: 可用2个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 2个, 待调整0个
+2026-09-17 11:26:31 - amazon_us_cover bid已一致的target: 2个，跳过
+2026-09-17 11:26:31 - amazon_uk_rrc 共 3 个id待处理
+2026-09-17 11:26:31 - amazon keyword和target都查不到的id: 12个
+2026-09-17 11:26:31 - amazon_us_moto 开始校验 65 个id
+2026-09-17 11:26:31 - 查询Amazon API(keyword): amazon_us_moto ids: 467407314486216,561408230886803,424415689207764,515819100290492,459898942240732,384169044336717,524517008936345,512822520072865,416394742038317,386370881498663,413697033634013,305740841532782,385837170629432,329463291558038,363618312023194,429536261188329,480469383158688,509887101522146,336921661364669,367818068878375,397976361818029,406762001689462,303881047415108,290435150852906,526019498126751,327245782139678,485710925123912,449199813339541,334879571915592,389243934006098,361840914028121,509493966106161,207290707473037,395446310523174,319106257883629,339949076988805,290056176603062,403939563314614,501875924259430,434774930882349,337585369302868,288164776057421,437485009547820,545803919695736,447519157612602,437091727591757,389213215687833,469055962981309,487620053882959,457030953731443,406501513016372,294485591019160,331664396171382,533192995327384,409485145470837,465420368560475,535172814819401,534902845695742,433368844986026,478615522779674,469808546059848,90210647614787,408606539387591,324476742403432,562566764054595
+2026-09-17 11:26:32 - amazon_us_moto 有 55 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:32 - 查询Amazon API(target): amazon_us_moto ids: 467407314486216,561408230886803,424415689207764,515819100290492,459898942240732,384169044336717,524517008936345,512822520072865,416394742038317,386370881498663,413697033634013,305740841532782,385837170629432,329463291558038,363618312023194,429536261188329,480469383158688,367818068878375,397976361818029,406762001689462,303881047415108,290435150852906,526019498126751,327245782139678,449199813339541,389243934006098,361840914028121,509493966106161,395446310523174,319106257883629,339949076988805,290056176603062,403939563314614,501875924259430,434774930882349,288164776057421,437485009547820,545803919695736,447519157612602,437091727591757,469055962981309,487620053882959,457030953731443,406501513016372,294485591019160,533192995327384,409485145470837,465420368560475,535172814819401,534902845695742,478615522779674,469808546059848,408606539387591,324476742403432,562566764054595
+2026-09-17 11:26:33 - amazon_uk_rrc keyword查询汇总: 可用0个, archived 0个, 未找到3个, bid一致 0个, 待调整0个
+2026-09-17 11:26:33 - amazon_uk_rrc keyword未查到的id: 3个，将顺延到target查询
+2026-09-17 11:26:33 - amazon_uk_rrc 有 3 个id (keyword失败0个 + keyword未查到3个)，尝试作为target调整bid
+2026-09-17 11:26:33 - amazon_ca_moto 开始校验 46 个id
+2026-09-17 11:26:33 - 查询Amazon API(keyword): amazon_ca_moto ids: 371992889519966,535961094282470,436512142275279,444066074812655,490919703641097,503894301767755,341264437049388,339062509218246,391817005834842,417919966216039,244058464085367,397414679458059,449196582074894,439171035548063,276632532632529,536836418008303,369671786970223,537946271990912,236164739763309,441007798522535,339654399351207,317889770048799,447209267821227,428382953851691,470270875931211,305896917426524,394070506951655,317240084245452,389150872336864,494426939489089,454625712142276,485188128262947,558470396173612,513781065351596,492425830446994,368401467461894,455245539094662,358996564920005,464762774811846,415853253056074,468925054020707,333655212806383,161659539504396,432536678921955,302665549099361,315491071012834
+2026-09-17 11:26:34 - amazon_ca_moto 有 41 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:34 - 查询Amazon API(target): amazon_ca_moto ids: 371992889519966,535961094282470,436512142275279,444066074812655,490919703641097,503894301767755,341264437049388,339062509218246,391817005834842,417919966216039,397414679458059,449196582074894,439171035548063,536836418008303,369671786970223,537946271990912,441007798522535,317889770048799,447209267821227,428382953851691,470270875931211,305896917426524,394070506951655,317240084245452,389150872336864,494426939489089,454625712142276,485188128262947,558470396173612,513781065351596,492425830446994,368401467461894,455245539094662,358996564920005,464762774811846,415853253056074,468925054020707,333655212806383,432536678921955,302665549099361,315491071012834
+2026-09-17 11:26:35 - amazon_us_ac1 开始校验 40 个id
+2026-09-17 11:26:35 - 查询Amazon API(keyword): amazon_us_ac1 ids: 522382414622242,326155559748785,371005827068354,459933991617539,308226775652713,153144617758256,485693861921474,337675242902363,407966321892883,420928906904062,542968665162569,395964095483872,551861526238507,546998121986657,518586545445612,532981439084126,557331197930667,307450106866024,435790229056851,469736346402479,521469253812325,226052580430531,519399849189569,20691201375590,335013211671883,534408942427227,525013981350160,423571070358478,425886147461629,302735781246456,357315602254500,508374834342482,495971348263344,429460568246041,15024325891438,405836217498969,351012603614770,403199308039310,495084657301095,519324813064417
+2026-09-17 11:26:37 - amazon_us_ac1 有 28 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:37 - 查询Amazon API(target): amazon_us_ac1 ids: 371005827068354,459933991617539,485693861921474,337675242902363,407966321892883,420928906904062,542968665162569,395964095483872,551861526238507,546998121986657,518586545445612,532981439084126,557331197930667,435790229056851,469736346402479,521469253812325,20691201375590,335013211671883,423571070358478,425886147461629,302735781246456,357315602254500,495971348263344,429460568246041,405836217498969,351012603614770,495084657301095,519324813064417
+2026-09-17 11:26:37 - amazon_uk_rrc target查询汇总: 可用3个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整3个
+2026-09-17 11:26:37 - amazon_uk_rrc 调整target bid: 3个
+2026-09-17 11:26:38 - amazon_ca_tuto 开始校验 18 个id
+2026-09-17 11:26:38 - 查询Amazon API(keyword): amazon_ca_tuto ids: 526687531690600,530023643099141,367185769849170,533250020116870,471472067732101,488043052570780,292416981463849,325560080827335,529114610644544,404594369368913,400600739303370,373455963415729,542379018806611,377649905012286,527544025076447,341721482770607,221362420372108,480229485422066
+2026-09-17 11:26:38 - amazon_ca_tuto 有 16 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:38 - 查询Amazon API(target): amazon_ca_tuto ids: 526687531690600,530023643099141,367185769849170,533250020116870,471472067732101,488043052570780,292416981463849,325560080827335,400600739303370,373455963415729,542379018806611,377649905012286,527544025076447,341721482770607,221362420372108,480229485422066
+2026-09-17 11:26:38 - amazon_uk_rrc target调整bid成功: 3个
+2026-09-17 11:26:39 - amazon_ca_luux 共 7 个id待处理
+2026-09-17 11:26:40 - amazon_us_lift 开始校验 7 个id
+2026-09-17 11:26:40 - 查询Amazon API(keyword): amazon_us_lift ids: 157489545595109,547984726728757,159147698303321,515497373863692,303812905831152,526393862600027,398431743245172
+2026-09-17 11:26:41 - amazon_ca_luux keyword查询汇总: 可用0个, archived 0个, 未找到7个, bid一致 0个, 待调整0个
+2026-09-17 11:26:41 - amazon_ca_luux keyword未查到的id: 7个，将顺延到target查询
+2026-09-17 11:26:41 - amazon_ca_luux 有 7 个id (keyword失败0个 + keyword未查到7个)，尝试作为target调整bid
+2026-09-17 11:26:42 - amazon_us_lift 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:42 - 查询Amazon API(target): amazon_us_lift ids: 515497373863692,303812905831152,526393862600027,398431743245172
+2026-09-17 11:26:42 - amazon_ca_hope 开始校验 18 个id
+2026-09-17 11:26:42 - 查询Amazon API(keyword): amazon_ca_hope ids: 294686953755994,536175305583223,328958745996615,382103423853254,484932324344945,462125828761382,406215794703237,332437818425352,503778873296588,410405246203502,279041832557775,283670817097734,457297173926630,351393500261793,447507182281406,504463474656001,324746221732062,558684975884381
+2026-09-17 11:26:42 - amazon_ca_luux target查询汇总: 可用7个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整7个
+2026-09-17 11:26:42 - amazon_ca_luux 调整target bid: 7个
+2026-09-17 11:26:43 - amazon_ca_hope 有 16 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:43 - 查询Amazon API(target): amazon_ca_hope ids: 294686953755994,536175305583223,328958745996615,382103423853254,484932324344945,462125828761382,406215794703237,332437818425352,503778873296588,410405246203502,283670817097734,457297173926630,351393500261793,504463474656001,324746221732062,558684975884381
+2026-09-17 11:26:43 - amazon_ca_luux target调整bid成功: 7个
+2026-09-17 11:26:44 - amazon_ca_mir 共 1 个id待处理
+2026-09-17 11:26:44 - amazon_us_luux 开始校验 34 个id
+2026-09-17 11:26:44 - 查询Amazon API(keyword): amazon_us_luux ids: 298754818816181,300711309684369,303086562019001,384623094998676,543974189951499,422878407046737,445354634862893,424920571735389,445866821031951,489711593502923,121336054906399,284606592535022,403217467633643,74357865045160,543560395057412,324114791860479,509683561667079,456185433590393,552534706217905,390148607382271,315820029138675,397333647439729,173725433516792,332548921332479,526223343937025,488698837170537,504744867350966,526329372239568,541525913553567,396830345105271,332848056010760,404841310320991,99339760700207,513821145553415
+2026-09-17 11:26:45 - amazon_ca_mir keyword查询汇总: 可用0个, archived 0个, 未找到1个, bid一致 0个, 待调整0个
+2026-09-17 11:26:45 - amazon_ca_mir keyword未查到的id: 1个，将顺延到target查询
+2026-09-17 11:26:45 - amazon_ca_mir 有 1 个id (keyword失败0个 + keyword未查到1个)，尝试作为target调整bid
+2026-09-17 11:26:46 - amazon_ca_mir target查询汇总: 可用1个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整1个
+2026-09-17 11:26:46 - amazon_ca_mir 调整target bid: 1个
+2026-09-17 11:26:47 - amazon_us_luux 有 29 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:47 - 查询Amazon API(target): amazon_us_luux ids: 298754818816181,300711309684369,303086562019001,384623094998676,543974189951499,422878407046737,445354634862893,424920571735389,445866821031951,489711593502923,284606592535022,403217467633643,543560395057412,324114791860479,509683561667079,456185433590393,552534706217905,390148607382271,397333647439729,332548921332479,526223343937025,488698837170537,504744867350966,526329372239568,541525913553567,396830345105271,332848056010760,404841310320991,513821145553415
+2026-09-17 11:26:48 - amazon_ca_mir target调整bid成功: 1个
+2026-09-17 11:26:48 - amazon_ca_swi 共 3 个id待处理
+2026-09-17 11:26:48 - amazon_us_sopro 开始校验 50 个id
+2026-09-17 11:26:48 - 查询Amazon API(keyword): amazon_us_sopro ids: 533563548379538,544179068552777,522230216893305,501134459733461,536043878867775,40132655917986,477264194435100,527461008978410,369363335410537,476773128074090,375445544206979,508406694192154,441486255284249,385825180521047,454514170846313,500628457691496,384603931733301,172832235503309,374252335302872,460359472807713,171562329115625,489514414125511,553664440176647,399915076309503,498421522890180,383543287884588,281690596033282,523060997343619,367691267326125,399929815565898,431767988556959,325240093295971,435191228081129,319850208141785,354991011304624,345028376503738,422096795138896,513145889079873,533492371124962,329430849485098,463999115479000,262010290871408,523869406958101,543087444690340,510489128233399,439912963609703,437412555416138,493669689504614,548445406054666,380377180234488
+2026-09-17 11:26:49 - amazon_ca_swi keyword查询汇总: 可用0个, archived 0个, 未找到3个, bid一致 0个, 待调整0个
+2026-09-17 11:26:49 - amazon_ca_swi keyword未查到的id: 3个，将顺延到target查询
+2026-09-17 11:26:49 - amazon_ca_swi 有 3 个id (keyword失败0个 + keyword未查到3个)，尝试作为target调整bid
+2026-09-17 11:26:49 - amazon_us_sopro 有 40 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:49 - 查询Amazon API(target): amazon_us_sopro ids: 533563548379538,544179068552777,522230216893305,501134459733461,477264194435100,527461008978410,369363335410537,476773128074090,375445544206979,508406694192154,441486255284249,385825180521047,454514170846313,384603931733301,374252335302872,460359472807713,489514414125511,553664440176647,399915076309503,498421522890180,281690596033282,523060997343619,367691267326125,325240093295971,319850208141785,354991011304624,345028376503738,422096795138896,513145889079873,533492371124962,329430849485098,463999115479000,523869406958101,543087444690340,510489128233399,439912963609703,437412555416138,493669689504614,548445406054666,380377180234488
+2026-09-17 11:26:49 - amazon_ca_swi target查询汇总: 可用3个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整3个
+2026-09-17 11:26:49 - amazon_ca_swi 调整target bid: 3个
+2026-09-17 11:26:50 - amazon_uk_luux 开始校验 3 个id
+2026-09-17 11:26:50 - 查询Amazon API(keyword): amazon_uk_luux ids: 1076032009847,70972953283692,106533826790708
+2026-09-17 11:26:50 - amazon_ca_swi target调整bid成功: 3个
+2026-09-17 11:26:50 - amazon_us_auto 共 1 个id待处理
+2026-09-17 11:26:51 - amazon_uk_luux 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:51 - 查询Amazon API(target): amazon_uk_luux ids: 1076032009847,70972953283692,106533826790708
+2026-09-17 11:26:51 - amazon_us_auto keyword查询汇总: 可用0个, archived 0个, 未找到1个, bid一致 0个, 待调整0个
+2026-09-17 11:26:51 - amazon_us_auto keyword未查到的id: 1个，将顺延到target查询
+2026-09-17 11:26:51 - amazon_us_auto 有 1 个id (keyword失败0个 + keyword未查到1个)，尝试作为target调整bid
+2026-09-17 11:26:52 - amazon_us_tuto 开始校验 29 个id
+2026-09-17 11:26:52 - 查询Amazon API(keyword): amazon_us_tuto ids: 482427357224068,162074768645756,425351231259790,513048106458452,305031899391135,397437956703971,428047615835180,427655888321871,362409570210881,459795560705639,302299832248030,338047607273958,289463929816250,518537423403504,378235202106723,352738308179549,395988376020057,311994933075712,345756683802055,392106220937790,338246570145401,432696097544930,514742893925107,120008929933591,540840435394654,526434692029919,71308545197989,425181150193190,561825123953731
+2026-09-17 11:26:53 - amazon_us_auto target查询汇总: 可用1个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整1个
+2026-09-17 11:26:53 - amazon_us_auto 调整target bid: 1个
+2026-09-17 11:26:53 - amazon_us_tuto 有 21 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:53 - 查询Amazon API(target): amazon_us_tuto ids: 482427357224068,305031899391135,397437956703971,427655888321871,362409570210881,459795560705639,302299832248030,338047607273958,289463929816250,378235202106723,352738308179549,395988376020057,311994933075712,345756683802055,392106220937790,338246570145401,514742893925107,540840435394654,526434692029919,425181150193190,561825123953731
+2026-09-17 11:26:55 - amazon_ca_tuc 开始校验 23 个id
+2026-09-17 11:26:55 - 查询Amazon API(keyword): amazon_ca_tuc ids: 541605203832730,329555624423172,425791650725017,457170969132230,479130275974496,487533856592813,494033874283331,450129008128871,489675374549741,495723039121955,304869887679269,444396767396723,192491022704426,486961726503658,422477422537783,412735895390995,408036374914533,496557227574678,301893060046450,562013616221626,460279291153484,464979192861917,322734462133677
+2026-09-17 11:26:55 - amazon_us_auto target调整bid成功: 1个
+2026-09-17 11:26:55 - amazon_ca_hood 共 3 个id待处理
+2026-09-17 11:26:55 - amazon_ca_tuc 有 22 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:55 - 查询Amazon API(target): amazon_ca_tuc ids: 541605203832730,329555624423172,425791650725017,457170969132230,479130275974496,487533856592813,494033874283331,450129008128871,489675374549741,495723039121955,304869887679269,444396767396723,486961726503658,422477422537783,412735895390995,408036374914533,496557227574678,301893060046450,562013616221626,460279291153484,464979192861917,322734462133677
+2026-09-17 11:26:56 - amazon_ca_rrc 开始校验 9 个id
+2026-09-17 11:26:56 - 查询Amazon API(keyword): amazon_ca_rrc ids: 466308729126469,488599188134888,378197671687679,390937008195425,481181317909925,417324682655165,520607329479960,544483160727482,543553368499282
+2026-09-17 11:26:56 - amazon_ca_hood keyword查询汇总: 可用0个, archived 0个, 未找到3个, bid一致 0个, 待调整0个
+2026-09-17 11:26:56 - amazon_ca_hood keyword未查到的id: 3个，将顺延到target查询
+2026-09-17 11:26:56 - amazon_ca_hood 有 3 个id (keyword失败0个 + keyword未查到3个)，尝试作为target调整bid
+2026-09-17 11:26:57 - amazon_ca_rrc 有 9 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:26:57 - 查询Amazon API(target): amazon_ca_rrc ids: 466308729126469,488599188134888,378197671687679,390937008195425,481181317909925,417324682655165,520607329479960,544483160727482,543553368499282
+2026-09-17 11:26:58 - amazon_ca_hood target查询汇总: 可用3个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整3个
+2026-09-17 11:26:58 - amazon_ca_hood 调整target bid: 3个
+2026-09-17 11:26:59 - amazon_ca_hood target调整bid成功: 3个
+2026-09-17 11:26:59 - amazon_ca_luck 共 3 个id待处理
+2026-09-17 11:27:00 - amazon_ca_luck keyword查询汇总: 可用1个, archived 0个, 未找到2个, bid一致 0个, 待调整1个
+2026-09-17 11:27:00 - amazon_ca_luck keyword未查到的id: 2个，将顺延到target查询
+2026-09-17 11:27:00 - amazon_ca_luck 调整keyword bid: 1个
+2026-09-17 11:27:01 - amazon_ca_luck keyword调整bid成功: 1个
+2026-09-17 11:27:01 - amazon_ca_luck 有 2 个id (keyword失败0个 + keyword未查到2个)，尝试作为target调整bid
+2026-09-17 11:27:01 - amazon_ca_piccocasa 开始校验 103 个id
+2026-09-17 11:27:01 - 查询Amazon API(keyword): amazon_ca_piccocasa ids: 296671605803500,390184901579975,559794432064475,532952958263156,518335600883090,325863617039458,404309123355058,414950133673324,306026221168689,514610516285405,408310143162094,533176377064208,464937240071601,406684322593266,533506791903231,334241013572593,190581453405227,359997798827137,547798281885315,514309789784965,298132596351578,467116931116746,378230405763130,439981092314394,471436135901790,358360963106463,70150391076198,313709997827100,511970842417768,399833731085151,387581877260507,455323849484430,516963188308276,411158293171068,558282105607873,339898807257946,443991704366307,363186104857392,382691098207432,413449722420718,452920111119055,482289289905906,508924601209232,378729682985360,533068674176132,442114215584437,314033776258192,549015183476274,326608362798299,536560084894896,562002755891014,286678904809689,322102061170112,506436939289182,437583758462568,332588619206441,557759098930064,395431013307496,500495891548466,454179571428240,356808550469964,328109068429246,452042877857598,220622711997127,486591202769518,520046201721674,351948173314432,329557024620008,360534327736871,441178279679717,340493105208693,198151655055415,473363700185439,344435149557934,364967463640170,330364137309087,410782160028671,427160749242707,358873859413421,399461665349271,519494115109741,312196269774541,362417725248393,445306980245532,428696481858459,369766855245428,415226415780929,375345092000242,552076755993295,452909345002637,411346455408679,382712025415619,356689529015819,493066756956512,449102304355263,379730624623040,527892075197252,516898927496496,360132449585473,426543767209654
+2026-09-17 11:27:02 - amazon_ca_luck target查询汇总: 可用2个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整2个
+2026-09-17 11:27:02 - amazon_ca_luck 调整target bid: 2个
+2026-09-17 11:27:03 - 查询Amazon API(keyword): amazon_ca_piccocasa ids: 539561483749066,529893206813388,365206190902538
+2026-09-17 11:27:03 - amazon_ca_luck target调整bid成功: 2个
+2026-09-17 11:27:04 - amazon_us_mir 共 1 个id待处理
+2026-09-17 11:27:04 - amazon_ca_piccocasa 有 98 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:04 - 查询Amazon API(target): amazon_ca_piccocasa ids: 296671605803500,390184901579975,559794432064475,532952958263156,518335600883090,325863617039458,404309123355058,414950133673324,306026221168689,514610516285405,408310143162094,533176377064208,464937240071601,406684322593266,533506791903231,334241013572593,359997798827137,547798281885315,514309789784965,298132596351578,467116931116746,378230405763130,439981092314394,471436135901790,358360963106463,313709997827100,511970842417768,399833731085151,387581877260507,455323849484430,516963188308276,411158293171068,558282105607873,339898807257946,443991704366307,363186104857392,382691098207432,413449722420718,452920111119055,482289289905906,508924601209232,378729682985360,533068674176132,442114215584437,314033776258192,549015183476274,536560084894896,562002755891014,286678904809689,322102061170112,506436939289182,437583758462568,332588619206441,557759098930064,395431013307496,500495891548466,454179571428240,356808550469964,328109068429246,452042877857598,486591202769518,520046201721674,351948173314432,329557024620008,360534327736871,441178279679717,340493105208693,473363700185439,344435149557934,364967463640170,330364137309087,410782160028671,427160749242707,358873859413421,399461665349271,519494115109741,312196269774541,362417725248393,445306980245532,428696481858459,369766855245428,415226415780929,375345092000242,552076755993295,452909345002637,411346455408679,382712025415619,356689529015819,493066756956512,449102304355263,379730624623040,527892075197252,516898927496496,360132449585473,426543767209654,539561483749066,529893206813388,365206190902538
+2026-09-17 11:27:04 - amazon_us_mir keyword查询汇总: 可用0个, archived 0个, 未找到1个, bid一致 0个, 待调整0个
+2026-09-17 11:27:04 - amazon_us_mir keyword未查到的id: 1个，将顺延到target查询
+2026-09-17 11:27:04 - amazon_us_mir 有 1 个id (keyword失败0个 + keyword未查到1个)，尝试作为target调整bid
+2026-09-17 11:27:05 - amazon_uk_moto 开始校验 9 个id
+2026-09-17 11:27:05 - 查询Amazon API(keyword): amazon_uk_moto ids: 252899613692667,77015052336417,68410039644264,90238272332235,11888609356343,112814668289518,191092674620194,235911051369478,239618174770852
+2026-09-17 11:27:06 - amazon_us_mir target查询汇总: 可用1个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整1个
+2026-09-17 11:27:06 - amazon_us_mir 调整target bid: 1个
+2026-09-17 11:27:07 - amazon_us_mir target调整bid成功: 1个
+2026-09-17 11:27:07 - amazon_uk_bull 共 2 个id待处理
+2026-09-17 11:27:07 - amazon_uk_moto 有 9 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:07 - 查询Amazon API(target): amazon_uk_moto ids: 252899613692667,77015052336417,68410039644264,90238272332235,11888609356343,112814668289518,191092674620194,235911051369478,239618174770852
+2026-09-17 11:27:08 - amazon_uk_bull keyword查询汇总: 可用0个, archived 0个, 未找到2个, bid一致 0个, 待调整0个
+2026-09-17 11:27:08 - amazon_uk_bull keyword未查到的id: 2个，将顺延到target查询
+2026-09-17 11:27:08 - amazon_uk_bull 有 2 个id (keyword失败0个 + keyword未查到2个)，尝试作为target调整bid
+2026-09-17 11:27:08 - amazon_us_swi 开始校验 19 个id
+2026-09-17 11:27:08 - 查询Amazon API(keyword): amazon_us_swi ids: 479571923124099,363479971175546,24294339672729,270076623639856,479001048651355,346311186348543,547641126367163,451034136875038,312084612995634,417313176207782,331744841206227,507226759961318,455889243449041,374340605459582,160704723427038,513755716173506,555389919507514,410318932139332,284857140475816
+2026-09-17 11:27:11 - amazon_uk_bull target查询汇总: 可用2个, archived 0个, 确认未找到0个, keyword失败且target未找到0个, bid一致 0个, 待调整2个
+2026-09-17 11:27:11 - amazon_uk_bull 调整target bid: 2个
+2026-09-17 11:27:12 - amazon_us_swi 有 13 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:12 - 查询Amazon API(target): amazon_us_swi ids: 479571923124099,363479971175546,479001048651355,346311186348543,547641126367163,451034136875038,312084612995634,417313176207782,455889243449041,374340605459582,513755716173506,410318932139332,284857140475816
+2026-09-17 11:27:12 - amazon_uk_bull target调整bid成功: 2个
+2026-09-17 11:27:12 - updateKeywordBidV2s channel:全部 处理完毕
+2026-09-17 11:27:12 - verifyKeywordBidStates 开始校验 file:M8降bid.xlsx channel:全部
+2026-09-17 11:27:13 - channel:全部 共 49 个seller, 1536 个id
+2026-09-17 11:27:13 - amazon_ca_sopro 开始校验 45 个id
+2026-09-17 11:27:13 - amazon_us_hero 开始校验 34 个id
+2026-09-17 11:27:13 - 查询Amazon API(keyword): amazon_us_hero ids: 301353709205895,290065627006110,364117472352454,516919323941279,500896677624655,445182214899085,554412874932584,222477722025034,283641808980097,229979827957164,428528603089978,101650004477214,341987160105569,404942582315202,378070919826040,308932767985681,370772583466644,498751018847985,490501095642339,533333298374845,378337784493034,486566329551964,518502143849104,385162715924317,487508590155962,97018401535509,54664902427519,529403412728920,336094824431504,471995158940990,303492395725268,465311824760129,472101283965596,306567636309863
+2026-09-17 11:27:14 - amazon_ca_sopro 有 42 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:15 - amazon_us_hero 有 28 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:15 - 查询Amazon API(target): amazon_us_hero ids: 301353709205895,290065627006110,364117472352454,500896677624655,445182214899085,554412874932584,283641808980097,428528603089978,341987160105569,404942582315202,378070919826040,308932767985681,370772583466644,498751018847985,490501095642339,533333298374845,378337784493034,486566329551964,518502143849104,385162715924317,487508590155962,529403412728920,336094824431504,471995158940990,303492395725268,465311824760129,472101283965596,306567636309863
+2026-09-17 11:27:16 - amazon_ca_ifn 开始校验 27 个id
+2026-09-17 11:27:16 - 查询Amazon API(keyword): amazon_ca_ifn ids: 527395389075344,500433270457042,491551245385557,445309855906757,494678290101719,425167768790141,404053919430455,395102377268780,405503850608851,409341466614196,358682417125201,453887859355788,345644411067164,369512387383613,497770308492580,422600249728207,443105857440783,345583534942195,40287286201171,431712289890562,203999576982326,378014572645803,466454067443961,312991548474460,529860385066005,450120539896333,514113681277510
+2026-09-17 11:27:17 - amazon_us_moto 开始校验 92 个id
+2026-09-17 11:27:17 - amazon_ca_ifn 有 23 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:17 - 查询Amazon API(target): amazon_ca_ifn ids: 527395389075344,491551245385557,445309855906757,494678290101719,425167768790141,404053919430455,395102377268780,405503850608851,409341466614196,358682417125201,345644411067164,369512387383613,497770308492580,422600249728207,443105857440783,345583534942195,431712289890562,378014572645803,466454067443961,312991548474460,529860385066005,450120539896333,514113681277510
+2026-09-17 11:27:18 - amazon_us_moto 有 80 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:18 - amazon_ca_hero 开始校验 21 个id
+2026-09-17 11:27:18 - 查询Amazon API(keyword): amazon_ca_hero ids: 194486889340318,491128601557733,531820450579034,333431767600399,370981816533127,525942932946220,52076184439132,308815446809508,113906668011811,445610701555891,260590718524155,469937141784148,345294477482964,529306143644472,303290427060824,377840097113552,324023373992892,306228329885485,331113491968142,438503695091973,483004859175042
+2026-09-17 11:27:19 - amazon_uk2 开始校验 76 个id
+2026-09-17 11:27:19 - amazon_ca_hero 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:19 - 查询Amazon API(target): amazon_ca_hero ids: 491128601557733,531820450579034,333431767600399,370981816533127,525942932946220,308815446809508,445610701555891,260590718524155,469937141784148,345294477482964,529306143644472,303290427060824,377840097113552,324023373992892,306228329885485,331113491968142,438503695091973,483004859175042
+2026-09-17 11:27:20 - amazon_uk2 有 65 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:21 - amazon_uk_hero 开始校验 3 个id
+2026-09-17 11:27:21 - 查询Amazon API(keyword): amazon_uk_hero ids: 130809291052192,183629993072946,90855372817599
+2026-09-17 11:27:22 - amazon_uk_hero 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:22 - 查询Amazon API(target): amazon_uk_hero ids: 183629993072946,90855372817599
+2026-09-17 11:27:22 - amazon 开始校验 461 个id
+2026-09-17 11:27:22 - amazon_us_rock 开始校验 6 个id
+2026-09-17 11:27:22 - 查询Amazon API(keyword): amazon_us_rock ids: 515015672757434,377251997705038,385176365609467,359741097726973,555317692507309,508757149355475
+2026-09-17 11:27:23 - amazon_us_rock 有 6 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:23 - 查询Amazon API(target): amazon_us_rock ids: 515015672757434,377251997705038,385176365609467,359741097726973,555317692507309,508757149355475
+2026-09-17 11:27:27 - amazon 有 343 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:27 - amazon_ca_ac1 开始校验 38 个id
+2026-09-17 11:27:27 - 查询Amazon API(keyword): amazon_ca_ac1 ids: 302139920427524,486797276401838,444266133120864,401249460345773,306113821911530,497181339544639,473047149904977,522412213214534,326537359379411,300113552871384,316522075922835,338606357805528,364711250799528,361616485000048,356373495948897,285880563325964,505327337854228,561299153096284,406625334645864,507842921239338,351957320648877,561523883823365,553778007627643,465735948591992,557792807147603,439338874578075,375108948117014,312520079985912,524476100575747,353853490273031,406062386718439,423007867572045,490576475380153,552339425162385,452996385936483,401830654281206,311577150997114,489477407756386
+2026-09-17 11:27:29 - amazon_ca_ac1 有 38 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:29 - 查询Amazon API(target): amazon_ca_ac1 ids: 302139920427524,486797276401838,444266133120864,401249460345773,306113821911530,497181339544639,473047149904977,522412213214534,326537359379411,300113552871384,316522075922835,338606357805528,364711250799528,361616485000048,356373495948897,285880563325964,505327337854228,561299153096284,406625334645864,507842921239338,351957320648877,561523883823365,553778007627643,465735948591992,557792807147603,439338874578075,375108948117014,312520079985912,524476100575747,353853490273031,406062386718439,423007867572045,490576475380153,552339425162385,452996385936483,401830654281206,311577150997114,489477407756386
+2026-09-17 11:27:30 - amazon_us_tuc 开始校验 34 个id
+2026-09-17 11:27:30 - 查询Amazon API(keyword): amazon_us_tuc ids: 443748824394191,526932999968450,460657107830969,379282033077629,357563509739398,471262765551685,397494681836146,399046445377193,448888982486672,457522077606608,359850866069997,374797751891825,507577467647119,361025857966787,470667020073808,390652815457690,420299565389003,304990355578067,552774462260080,511805427273025,379420883861905,340157005375771,501386383789977,530249966374268,562555470666104,426497596706308,376188117121513,370404778003171,361636586956699,286584305292850,378537914253821,423351199941584,322935464544100,397353540917625
+2026-09-17 11:27:30 - ❌ amazon id:180463622000038 (target) bid不一致: 期望0.405, 实际0.4
+2026-09-17 11:27:30 - ❌ amazon id:450763427919313 (target) bid不一致: 期望0.056, 实际0.05
+2026-09-17 11:27:32 - amazon_us_tuc 有 31 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:32 - 查询Amazon API(target): amazon_us_tuc ids: 443748824394191,526932999968450,460657107830969,357563509739398,397494681836146,399046445377193,448888982486672,457522077606608,374797751891825,507577467647119,361025857966787,470667020073808,390652815457690,420299565389003,304990355578067,552774462260080,511805427273025,379420883861905,340157005375771,501386383789977,530249966374268,562555470666104,426497596706308,376188117121513,370404778003171,361636586956699,286584305292850,378537914253821,423351199941584,322935464544100,397353540917625
+2026-09-17 11:27:33 - amazon_ca_swi 开始校验 4 个id
+2026-09-17 11:27:33 - 查询Amazon API(keyword): amazon_ca_swi ids: 460169594962893,498565433798295,493490351770329,478448356362889
+2026-09-17 11:27:34 - amazon_ca_swi 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:34 - 查询Amazon API(target): amazon_ca_swi ids: 460169594962893,498565433798295,493490351770329,478448356362889
+2026-09-17 11:27:35 - ❌ amazon id:333268819669492 (target) bid不一致: 期望0.168, 实际0.21
+2026-09-17 11:27:35 - ❌ amazon id:453770192459920 (target) bid不一致: 期望0.096, 实际0.12
+2026-09-17 11:27:35 - ❌ amazon id:223005479431281 (target) bid不一致: 期望0.3564, 实际0.4
+2026-09-17 11:27:35 - ❌ amazon id:518423371294996 (target) bid不一致: 期望0.16, 实际0.2
+2026-09-17 11:27:35 - ❌ amazon id:555435734181330 (target) bid不一致: 期望0.396, 实际0.44
+2026-09-17 11:27:35 - ❌ amazon id:511788459626190 (target) bid不一致: 期望0.24, 实际0.3
+2026-09-17 11:27:35 - ❌ amazon id:536523407817420 (target) bid不一致: 期望0.351, 实际0.31
+2026-09-17 11:27:35 - ❌ amazon id:414403088517650 (target) bid不一致: 期望0.24, 实际0.3
+2026-09-17 11:27:35 - ❌ amazon id:469738208654826 (target) bid不一致: 期望0.855, 实际0.95
+2026-09-17 11:27:35 - ❌ amazon id:496072002327788 (target) bid不一致: 期望0.24, 实际0.3
+2026-09-17 11:27:35 - ❌ amazon id:2296016700758 (target) bid不一致: 期望0.192, 实际0.24
+2026-09-17 11:27:35 - ❌ amazon id:265299703714198 (target) bid不一致: 期望0.45, 实际0.5
+2026-09-17 11:27:35 - ❌ amazon id:191437593542356 (target) bid不一致: 期望0.24, 实际0.3
+2026-09-17 11:27:35 - ❌ amazon id:430186735013169 (target) bid不一致: 期望0.12, 实际0.15
+2026-09-17 11:27:35 - ❌ amazon id:502253221611325 (target) bid不一致: 期望0.549, 实际0.61
+2026-09-17 11:27:35 - ❌ amazon id:341783172265564 (target) bid不一致: 期望0.16, 实际0.2
+2026-09-17 11:27:35 - ❌ amazon id:306520246967790 (target) bid不一致: 期望0.45, 实际0.5
+2026-09-17 11:27:35 - ❌ amazon id:377704642661289 (target) bid不一致: 期望0.405, 实际0.45
+2026-09-17 11:27:35 - ❌ amazon id:549877402012815 (target) bid不一致: 期望0.216, 实际0.27
+2026-09-17 11:27:35 - ❌ amazon id:284571598794419 (target) bid不一致: 期望0.2, 实际0.25
+2026-09-17 11:27:35 - ❌ amazon id:352572986717069 (target) bid不一致: 期望0.2, 实际0.25
+2026-09-17 11:27:35 - ❌ amazon id:369931897548973 (target) bid不一致: 期望0.16, 实际0.2
+2026-09-17 11:27:35 - ❌ amazon id:529748840453833 (target) bid不一致: 期望0.168, 实际0.21
+2026-09-17 11:27:35 - ❌ amazon id:316405638944223 (target) bid不一致: 期望0.12, 实际0.15
+2026-09-17 11:27:35 - ❌ amazon id:474309335016894 (target) bid不一致: 期望0.12, 实际0.15
+2026-09-17 11:27:35 - ❌ amazon id:461320102900827 (target) bid不一致: 期望0.24, 实际0.2
+2026-09-17 11:27:35 - ❌ amazon id:426685861207206 (target) bid不一致: 期望0.16, 实际0.2
+2026-09-17 11:27:35 - ❌ amazon id:333712025037570 (target) bid不一致: 期望0.16, 实际0.2
+2026-09-17 11:27:35 - ❌ amazon id:436453494640433 (target) bid不一致: 期望0.12, 实际0.15
+2026-09-17 11:27:35 - ❌ amazon id:359212660642861 (target) bid不一致: 期望0.315, 实际0.35
+2026-09-17 11:27:35 - ❌ amazon id:425370739757451 (target) bid不一致: 期望0.16, 实际0.2
+2026-09-17 11:27:35 - ❌ amazon id:480020847438827 (target) bid不一致: 期望0.36, 实际0.4
+2026-09-17 11:27:35 - ❌ amazon id:301713102239486 (target) bid不一致: 期望0.315, 实际0.2
+2026-09-17 11:27:35 - ❌ amazon id:296945228577615 (target) bid不一致: 期望0.315, 实际0.35
+2026-09-17 11:27:35 - ❌ amazon id:448466725994051 (target) bid不一致: 期望0.12, 实际0.15
+2026-09-17 11:27:35 - ❌ amazon id:429309534629611 (target) bid不一致: 期望0.16, 实际0.2
+2026-09-17 11:27:35 - ❌ amazon id:357821700326677 (target) bid不一致: 期望0.2, 实际0.25
+2026-09-17 11:27:35 - ❌ amazon id:540018033979395 (target) bid不一致: 期望0.405, 实际0.45
+2026-09-17 11:27:35 - ❌ amazon id:491365775963760 (target) bid不一致: 期望0.855, 实际0.95
+2026-09-17 11:27:35 - ❌ amazon id:491045578972212 (target) bid不一致: 期望0.324, 实际0.36
+2026-09-17 11:27:35 - ❌ amazon id:133902596294202 (target) bid不一致: 期望0.45, 实际0.5
+2026-09-17 11:27:35 - ❌ amazon id:414864241249754 (target) bid不一致: 期望0.36, 实际0.4
+2026-09-17 11:27:35 - ❌ amazon id:407776197788033 (target) bid不一致: 期望0.24, 实际0.3
+2026-09-17 11:27:35 - amazon_us_ifn 开始校验 40 个id
+2026-09-17 11:27:35 - amazon_us_ifn 有 33 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:37 - amazon_us_hero 开始校验 45 个id
+2026-09-17 11:27:38 - amazon_us_hero 有 37 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:39 - amazon_ca_luux 开始校验 21 个id
+2026-09-17 11:27:39 - 查询Amazon API(keyword): amazon_ca_luux ids: 296068822910408,321333279301493,516983337920218,28059388824969,422743521283309,483041917642812,379408362744718,427526348013515,528268446901194,330171172760627,493356873894800,319252483903291,376643760595957,456248122111850,412082315421482,386524218189611,407917652290639,320751442173311,539264892732183,56687602609326,482817906205859
+2026-09-17 11:27:40 - amazon_us_luux 开始校验 50 个id
+2026-09-17 11:27:40 - amazon_ca_luux 有 17 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:40 - 查询Amazon API(target): amazon_ca_luux ids: 296068822910408,321333279301493,516983337920218,422743521283309,379408362744718,427526348013515,528268446901194,330171172760627,319252483903291,376643760595957,456248122111850,412082315421482,386524218189611,407917652290639,320751442173311,539264892732183,482817906205859
+2026-09-17 11:27:41 - amazon_ca_sopro 开始校验 27 个id
+2026-09-17 11:27:41 - 查询Amazon API(keyword): amazon_ca_sopro ids: 540835406657523,477861178833709,516562724627291,477241868582634,349152915698586,23667482886259,337998724053427,493984720787312,296101987700013,284382946011772,303110496874097,100813923131025,482631667758256,303299593658230,503491150762692,322874094945209,345843500903915,397905446218199,459745966448693,362216500956750,404729915264686,376801293328866,346959954088447,461227503747129,394691044001471,507289983153112,479015170178473
+2026-09-17 11:27:41 - amazon_us_luux 有 42 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:42 - amazon_ca_sopro 有 25 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:42 - 查询Amazon API(target): amazon_ca_sopro ids: 540835406657523,477861178833709,516562724627291,477241868582634,349152915698586,337998724053427,493984720787312,296101987700013,284382946011772,303110496874097,100813923131025,482631667758256,303299593658230,503491150762692,322874094945209,397905446218199,459745966448693,362216500956750,404729915264686,376801293328866,346959954088447,461227503747129,394691044001471,507289983153112,479015170178473
+2026-09-17 11:27:42 - amazon_uk_moto 开始校验 18 个id
+2026-09-17 11:27:43 - amazon_ca_lift 开始校验 2 个id
+2026-09-17 11:27:43 - 查询Amazon API(keyword): amazon_ca_lift ids: 550345295448219,466605800958983
+2026-09-17 11:27:44 - amazon_uk_moto 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:44 - amazon_ca_lift 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:44 - 查询Amazon API(target): amazon_ca_lift ids: 550345295448219,466605800958983
+2026-09-17 11:27:46 - amazon_us_rrc 开始校验 22 个id
+2026-09-17 11:27:46 - amazon_us_ifn 开始校验 33 个id
+2026-09-17 11:27:46 - 查询Amazon API(keyword): amazon_us_ifn ids: 337827035583823,438662612102134,161197484434795,528156325353141,310727937338661,437171786263326,190293367394293,347093778226833,79598552748579,192012718989760,337397178973302,406069448020430,318766488369974,363648473325649,543280436327784,460741788713659,403707921388743,448343250452055,233736322280626,74283376600044,287046065814034,397360361697216,532311918288524,547873517761861,385835169126340,12460396379877,180132149155332,299387476662529,480813329993224,140909278771705,283966980400199,474060439280376,287293520398348
+2026-09-17 11:27:48 - amazon_us_rrc 有 13 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:48 - amazon_us_ifn 有 20 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:48 - 查询Amazon API(target): amazon_us_ifn ids: 337827035583823,438662612102134,528156325353141,347093778226833,406069448020430,318766488369974,363648473325649,460741788713659,403707921388743,448343250452055,287046065814034,397360361697216,532311918288524,547873517761861,385835169126340,299387476662529,480813329993224,283966980400199,474060439280376,287293520398348
+2026-09-17 11:27:49 - amazon_us_luck 开始校验 10 个id
+2026-09-17 11:27:49 - 查询Amazon API(keyword): amazon_us_luck ids: 426778393779613,282445195558339,11506740895705,348152136076365,218549198727170,549550999128868,47818088166647,422213855356540,477102754282324,507727625819251
+2026-09-17 11:27:50 - amazon_us_rock 开始校验 4 个id
+2026-09-17 11:27:50 - amazon_us_luck 有 6 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:50 - 查询Amazon API(target): amazon_us_luck ids: 282445195558339,348152136076365,549550999128868,422213855356540,477102754282324,507727625819251
+2026-09-17 11:27:51 - amazon_us_rock 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:51 - amazon_us_find 开始校验 29 个id
+2026-09-17 11:27:51 - 查询Amazon API(keyword): amazon_us_find ids: 522285421086987,447423395379696,395128202396733,471914283885753,414921381365405,300299936500491,327843793897165,29297879060519,517660412827925,473603021319702,536793457575415,547765093727143,320558646823564,329623943027952,523239329157341,465198973957139,517283175142096,104923791236723,467681304787204,283327255439430,312459895694367,413089312541362,429550669516905,375460093521108,517309455460398,285149255572610,372187825515513,524661364700801,310517016378894
+2026-09-17 11:27:51 - amazon_us_dri 开始校验 3 个id
+2026-09-17 11:27:52 - amazon_us_find 有 23 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:52 - 查询Amazon API(target): amazon_us_find ids: 522285421086987,447423395379696,395128202396733,471914283885753,414921381365405,300299936500491,327843793897165,517660412827925,473603021319702,536793457575415,547765093727143,329623943027952,465198973957139,467681304787204,283327255439430,312459895694367,413089312541362,429550669516905,375460093521108,517309455460398,372187825515513,524661364700801,310517016378894
+2026-09-17 11:27:54 - amazon_uk_tuto 开始校验 10 个id
+2026-09-17 11:27:54 - 查询Amazon API(keyword): amazon_uk_tuto ids: 86192864777755,2368149053066,263197269549900,140701028768611,271141075868242,184986797094059,170382699528193,42968003597661,36302013552846,8325768416762
+2026-09-17 11:27:54 - amazon_us_dri 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:55 - amazon_us_sopro 开始校验 108 个id
+2026-09-17 11:27:58 - amazon_us_sopro 有 76 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:58 - amazon_uk_tuto 有 9 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:27:58 - 查询Amazon API(target): amazon_uk_tuto ids: 86192864777755,2368149053066,263197269549900,140701028768611,184986797094059,170382699528193,42968003597661,36302013552846,8325768416762
+2026-09-17 11:27:59 - amazon_us_hood 开始校验 8 个id
+2026-09-17 11:27:59 - 查询Amazon API(keyword): amazon_us_hood ids: 79166367720772,43915519196539,416851122367969,480755241424677,361096591363877,433594173934859,370138610125484,483637637840820
+2026-09-17 11:28:00 - amazon_us_hood 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:00 - 查询Amazon API(target): amazon_us_hood ids: 416851122367969,480755241424677,433594173934859,370138610125484
+2026-09-17 11:28:01 - amazon_ca_moto 开始校验 16 个id
+2026-09-17 11:28:03 - amazon_uk_tuc 开始校验 6 个id
+2026-09-17 11:28:03 - 查询Amazon API(keyword): amazon_uk_tuc ids: 182753916665299,254708670545180,261074630998984,61526683780117,99980795238100,276674583005015
+2026-09-17 11:28:03 - amazon_ca_moto 有 14 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:04 - amazon_uk_sopro 开始校验 52 个id
+2026-09-17 11:28:04 - amazon_uk_tuc 有 5 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:04 - 查询Amazon API(target): amazon_uk_tuc ids: 182753916665299,254708670545180,261074630998984,99980795238100,276674583005015
+2026-09-17 11:28:05 - amazon_ca_luck 开始校验 3 个id
+2026-09-17 11:28:05 - 查询Amazon API(keyword): amazon_ca_luck ids: 506554548615001,348792193770476,366566952766262
+2026-09-17 11:28:06 - amazon_ca_luck 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:06 - 查询Amazon API(target): amazon_ca_luck ids: 506554548615001,348792193770476,366566952766262
+2026-09-17 11:28:07 - amazon_uk_sopro 开始校验 16 个id
+2026-09-17 11:28:07 - 查询Amazon API(keyword): amazon_uk_sopro ids: 44645792955347,266089267538462,64474624499371,239168268696099,119104609322915,2481321400313,268525260502005,60464208840612,265942607355866,17335129851607,121314147287708,9122751490256,210259042105625,266247906593168,248172058434963,155050541899409
+2026-09-17 11:28:09 - amazon_uk_sopro 有 40 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:09 - amazon_uk_sopro 有 10 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:09 - 查询Amazon API(target): amazon_uk_sopro ids: 44645792955347,266089267538462,119104609322915,2481321400313,60464208840612,17335129851607,9122751490256,266247906593168,248172058434963,155050541899409
+2026-09-17 11:28:10 - amazon_us_find 开始校验 64 个id
+2026-09-17 11:28:10 - amazon_ca_kilo 开始校验 3 个id
+2026-09-17 11:28:10 - 查询Amazon API(keyword): amazon_ca_kilo ids: 404188755510870,364670993862733,430394393986973
+2026-09-17 11:28:12 - amazon_ca_kilo 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:12 - 查询Amazon API(target): amazon_ca_kilo ids: 404188755510870,364670993862733,430394393986973
+2026-09-17 11:28:12 - amazon_us_find 有 45 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:14 - amazon_us_luck 开始校验 16 个id
+2026-09-17 11:28:14 - amazon_uk2 开始校验 19 个id
+2026-09-17 11:28:14 - 查询Amazon API(keyword): amazon_uk2 ids: 276596052892812,179716178720840,64533768362885,276968426368890,128702981181148,69563357543846,63835192719165,264416981233970,116160726951242,250607016373076,261973760761662,157317934263700,92194549510972,245155627513159,245084361532176,274421370296200,257354164203151,16743503205906,95751008675034
+2026-09-17 11:28:15 - amazon_us_luck 有 11 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:15 - amazon_uk2 有 15 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:15 - 查询Amazon API(target): amazon_uk2 ids: 276596052892812,179716178720840,64533768362885,276968426368890,128702981181148,69563357543846,116160726951242,250607016373076,157317934263700,92194549510972,245155627513159,245084361532176,257354164203151,16743503205906,95751008675034
+2026-09-17 11:28:17 - amazon_uk_ifn 开始校验 6 个id
+2026-09-17 11:28:17 - 查询Amazon API(keyword): amazon_uk_ifn ids: 154974129777151,68023860011297,6433318841571,272732787776395,59636559008976,252766132753344
+2026-09-17 11:28:18 - amazon_uk_tuc 开始校验 12 个id
+2026-09-17 11:28:19 - amazon_uk_ifn 有 5 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:19 - 查询Amazon API(target): amazon_uk_ifn ids: 68023860011297,6433318841571,272732787776395,59636559008976,252766132753344
+2026-09-17 11:28:22 - amazon_ca_hood 开始校验 9 个id
+2026-09-17 11:28:22 - 查询Amazon API(keyword): amazon_ca_hood ids: 300183830730390,473595724253242,359328610021013,356481085739142,362968177946133,281828715400573,550546957259857,394006072034207,469340595204766
+2026-09-17 11:28:23 - amazon_ca_hood 有 9 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:23 - 查询Amazon API(target): amazon_ca_hood ids: 300183830730390,473595724253242,359328610021013,356481085739142,362968177946133,281828715400573,550546957259857,394006072034207,469340595204766
+2026-09-17 11:28:24 - amazon_uk_tuc 有 12 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:24 - amazon_ca_find 开始校验 22 个id
+2026-09-17 11:28:24 - 查询Amazon API(keyword): amazon_ca_find ids: 434060883251516,386964730116601,287335408950630,326218724561480,514474410540220,364368875899059,491913472707772,487477759433385,392996996848846,513406944811318,557497135012534,338275146681474,417763049722840,453296135222285,395367461142000,345920948196816,343644483506899,556029771939281,487771442115650,412944054146617,321553273611858,474193121273582
+2026-09-17 11:28:26 - amazon_uk_tuto 开始校验 30 个id
+2026-09-17 11:28:27 - amazon_ca_find 有 22 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:27 - 查询Amazon API(target): amazon_ca_find ids: 434060883251516,386964730116601,287335408950630,326218724561480,514474410540220,364368875899059,491913472707772,487477759433385,392996996848846,513406944811318,557497135012534,338275146681474,417763049722840,453296135222285,395367461142000,345920948196816,343644483506899,556029771939281,487771442115650,412944054146617,321553273611858,474193121273582
+2026-09-17 11:28:27 - amazon_uk_tuto 有 29 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:27 - amazon_ca_rock 开始校验 2 个id
+2026-09-17 11:28:27 - 查询Amazon API(keyword): amazon_ca_rock ids: 300076266615178,429785885467805
+2026-09-17 11:28:28 - amazon_ca_ac1 开始校验 49 个id
+2026-09-17 11:28:30 - amazon_ca_ac1 有 45 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:31 - amazon_ca_find 开始校验 23 个id
+2026-09-17 11:28:32 - amazon_ca_find 有 22 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:33 - amazon_us_hope 开始校验 23 个id
+2026-09-17 11:28:33 - amazon_ca_rock 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:33 - 查询Amazon API(target): amazon_ca_rock ids: 300076266615178
+2026-09-17 11:28:34 - amazon_us_hope 有 19 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:35 - amazon_us_mir 开始校验 2 个id
+2026-09-17 11:28:35 - 查询Amazon API(keyword): amazon_us_mir ids: 446945436464866,355389292931923
+2026-09-17 11:28:35 - amazon_ca_hope 开始校验 7 个id
+2026-09-17 11:28:36 - amazon_us_mir 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:36 - 查询Amazon API(target): amazon_us_mir ids: 446945436464866,355389292931923
+2026-09-17 11:28:36 - amazon_ca_hope 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:37 - amazon_us_tuc 开始校验 30 个id
+2026-09-17 11:28:37 - amazon_uk_hope 开始校验 4 个id
+2026-09-17 11:28:37 - 查询Amazon API(keyword): amazon_uk_hope ids: 88428029869249,74257890130896,264495028690133,140882844523206
+2026-09-17 11:28:38 - amazon_us_tuc 有 25 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:38 - amazon_uk_hope 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:38 - 查询Amazon API(target): amazon_uk_hope ids: 88428029869249,74257890130896,264495028690133,140882844523206
+2026-09-17 11:28:39 - amazon_us_swi 开始校验 6 个id
+2026-09-17 11:28:39 - amazon_ca_cover 开始校验 2 个id
+2026-09-17 11:28:39 - 查询Amazon API(keyword): amazon_ca_cover ids: 492407351948099,374467434631742
+2026-09-17 11:28:40 - amazon_ca_cover 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:40 - 查询Amazon API(target): amazon_ca_cover ids: 492407351948099,374467434631742
+2026-09-17 11:28:40 - amazon_us_swi 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:41 - amazon_ca_hero 开始校验 7 个id
+2026-09-17 11:28:41 - amazon_uk_find 开始校验 6 个id
+2026-09-17 11:28:41 - 查询Amazon API(keyword): amazon_uk_find ids: 147257894717533,239427427979038,92252410853204,191827598508233,18409156408111,239098868000599
+2026-09-17 11:28:42 - amazon_ca_hero 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:42 - amazon_uk_find 有 6 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:42 - 查询Amazon API(target): amazon_uk_find ids: 147257894717533,239427427979038,92252410853204,191827598508233,18409156408111,239098868000599
+2026-09-17 11:28:42 - amazon_ca_piccocasa 开始校验 36 个id
+2026-09-17 11:28:43 - amazon_us_auto 开始校验 2 个id
+2026-09-17 11:28:43 - 查询Amazon API(keyword): amazon_us_auto ids: 361960257095241,502953407093731
+2026-09-17 11:28:44 - amazon_ca_piccocasa 有 32 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:45 - amazon_ca_ifn 开始校验 12 个id
+2026-09-17 11:28:45 - amazon_us_auto 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:45 - 查询Amazon API(target): amazon_us_auto ids: 361960257095241,502953407093731
+2026-09-17 11:28:45 - amazon_ca_ifn 有 12 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:46 - amazon_us_bull 开始校验 1 个id
+2026-09-17 11:28:46 - 查询Amazon API(keyword): amazon_us_bull ids: 432710395860173
+2026-09-17 11:28:47 - amazon_ca_tuc 开始校验 10 个id
+2026-09-17 11:28:47 - amazon_us_bull 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:47 - 查询Amazon API(target): amazon_us_bull ids: 432710395860173
+2026-09-17 11:28:48 - amazon_ca_tuc 有 9 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:48 - amazon_us_cover 开始校验 3 个id
+2026-09-17 11:28:48 - 查询Amazon API(keyword): amazon_us_cover ids: 344597266796901,451876985276332,379954535885302
+2026-09-17 11:28:49 - amazon_us_cover 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:49 - 查询Amazon API(target): amazon_us_cover ids: 344597266796901,379954535885302
+2026-09-17 11:28:49 - amazon_us_kilo 开始校验 2 个id
+2026-09-17 11:28:50 - amazon_us_yuru 开始校验 2 个id
+2026-09-17 11:28:50 - 查询Amazon API(keyword): amazon_us_yuru ids: 450350285611578,353292501407937
+2026-09-17 11:28:50 - amazon_us_kilo 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:50 - amazon_us_tuto 开始校验 43 个id
+2026-09-17 11:28:51 - amazon_us_tuto 有 33 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:52 - amazon_us_yuru 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:52 - 查询Amazon API(target): amazon_us_yuru ids: 450350285611578,353292501407937
+2026-09-17 11:28:52 - amazon_ca_mir 开始校验 1 个id
+2026-09-17 11:28:52 - 查询Amazon API(keyword): amazon_ca_mir ids: 550358255411795
+2026-09-17 11:28:52 - amazon_uk_hero 开始校验 3 个id
+2026-09-17 11:28:53 - amazon_ca_mir 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:53 - 查询Amazon API(target): amazon_ca_mir ids: 550358255411795
+2026-09-17 11:28:54 - amazon_uk_hero 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:28:55 - ========== 校验汇总 ==========
+2026-09-17 11:28:55 - 总数据: 1221
+2026-09-17 11:28:55 - ⏭️ archived跳过: 0
+2026-09-17 11:28:55 - ⚠️ 未找到(not_found): 12
+2026-09-17 11:28:55 - 已校验: 1209
+2026-09-17 11:28:55 - ✅ 已暂停(paused): 1209
+2026-09-17 11:28:55 - ❌ 关停失败(非paused): 0
+2026-09-17 11:28:55 - 所有广告状态校验通过，无关停失败数据
+2026-09-17 11:28:55 - verifyKeywordStates channel:全部 校验完毕
+2026-09-17 11:28:56 - amazon_uk_ifn 开始校验 15 个id
+2026-09-17 11:28:57 - amazon_uk_ifn 有 13 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:00 - amazon_us_ac1 开始校验 29 个id
+2026-09-17 11:29:01 - amazon_us_ac1 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:02 - amazon_ca_tuto 开始校验 23 个id
+2026-09-17 11:29:03 - amazon_ca_tuto 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:07 - amazon_ca_rrc 开始校验 9 个id
+2026-09-17 11:29:09 - amazon_ca_rrc 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:10 - amazon_us_hood 开始校验 9 个id
+2026-09-17 11:29:10 - amazon_us_hood 有 8 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:12 - amazon_us_lift 开始校验 3 个id
+2026-09-17 11:29:13 - amazon_us_lift 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:16 - amazon_uk_find 开始校验 6 个id
+2026-09-17 11:29:18 - amazon_uk_find 有 6 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:18 - amazon_uk_luux 开始校验 10 个id
+2026-09-17 11:29:21 - amazon_uk_luux 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:22 - amazon_us_cover 开始校验 3 个id
+2026-09-17 11:29:23 - amazon_us_cover 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:24 - amazon_uk_rrc 开始校验 3 个id
+2026-09-17 11:29:25 - amazon_uk_rrc 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:27 - amazon_ca_luux 开始校验 7 个id
+2026-09-17 11:29:28 - amazon_ca_luux 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:30 - amazon_ca_mir 开始校验 1 个id
+2026-09-17 11:29:31 - amazon_ca_mir 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:32 - amazon_ca_swi 开始校验 3 个id
+2026-09-17 11:29:33 - amazon_ca_swi 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:34 - amazon_us_auto 开始校验 1 个id
+2026-09-17 11:29:37 - amazon_us_auto 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:37 - amazon_ca_hood 开始校验 3 个id
+2026-09-17 11:29:38 - amazon_ca_hood 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:40 - amazon_ca_luck 开始校验 3 个id
+2026-09-17 11:29:41 - amazon_ca_luck 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:29:44 - amazon_us_mir 开始校验 1 个id
+2026-09-17 11:29:45 - amazon_us_mir 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:30:15 - amazon_us_mir keyword和target都查不到的id: 1个
+2026-09-17 11:30:15 - amazon_uk_bull 开始校验 2 个id
+2026-09-17 11:30:16 - amazon_uk_bull 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:30:18 - ========== 校验汇总 ==========
+2026-09-17 11:30:18 - 总数据: 1536
+2026-09-17 11:30:18 - ⏭️ archived跳过: 0
+2026-09-17 11:30:18 - ⚠️ 未找到: 1
+2026-09-17 11:30:18 - 已校验: 1535
+2026-09-17 11:30:18 - ✅ bid一致: 1490
+2026-09-17 11:30:18 - ❌ bid不一致: 45
+2026-09-17 11:30:18 - bid不一致数据已导出: /Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/utils/../shell/sp/keyword/export/校验bid不一致_全部_20260917113018.xlsx
+2026-09-17 11:30:18 - retryUpdateKeywordBid 开始重试 45 条数据
+2026-09-17 11:30:18 - 共 1 个seller, 45 个id待重试
+2026-09-17 11:30:18 - amazon 共 45 个id待重试
+2026-09-17 11:30:20 - amazon keyword重试查询汇总: 可用0个, archived 0个, 未找到45个, bid一致 0个, 待调整0个
+2026-09-17 11:30:20 - amazon keyword未查到的id: 45个，将顺延到target查询
+2026-09-17 11:30:20 - amazon 有 45 个id (keyword重试失败0个 + keyword未查到45个)，尝试作为target调整bid
+2026-09-17 11:30:21 - amazon target重试查询汇总: 可用45个, archived 0个, 确认未找到0个, keyword重试失败且target未找到0个, bid一致 2个, 待调整43个
+2026-09-17 11:30:21 - amazon 跳过bid已一致的target: 2个
+2026-09-17 11:30:21 - amazon 重试调整target bid: 43个
+2026-09-17 11:30:22 - amazon target重试成功: 43个
+2026-09-17 11:30:22 - 所有bid重试成功，无失败数据
+2026-09-17 11:30:22 - retryUpdateKeywordBid 处理完毕
+2026-09-17 11:30:22 - retryUpdateKeywordBid 完成，开始最终bid校验
+2026-09-17 11:30:22 - verifyKeywordBidStates 开始校验 file:M8降bid.xlsx channel:全部
+2026-09-17 11:30:22 - channel:全部 共 49 个seller, 1536 个id
+2026-09-17 11:30:22 - amazon_ca_sopro 开始校验 45 个id
+2026-09-17 11:30:23 - amazon_ca_sopro 有 42 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:30:24 - amazon_us_moto 开始校验 92 个id
+2026-09-17 11:30:25 - amazon_us_moto 有 80 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:30:27 - amazon_uk2 开始校验 76 个id
+2026-09-17 11:30:33 - amazon_uk2 有 65 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:30:35 - amazon 开始校验 461 个id
+2026-09-17 11:30:43 - amazon 有 343 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:30:46 - ❌ amazon id:180463622000038 (target) bid不一致: 期望0.405, 实际0.4
+2026-09-17 11:30:46 - ❌ amazon id:450763427919313 (target) bid不一致: 期望0.056, 实际0.05
+2026-09-17 11:30:48 - amazon_us_ifn 开始校验 40 个id
+2026-09-17 11:30:49 - amazon_us_ifn 有 33 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:30:50 - amazon_us_hero 开始校验 45 个id
+2026-09-17 11:30:51 - amazon_us_hero 有 37 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:30:56 - amazon_us_luux 开始校验 50 个id
+2026-09-17 11:30:57 - amazon_us_luux 有 42 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:30:58 - amazon_uk_moto 开始校验 18 个id
+2026-09-17 11:30:59 - amazon_uk_moto 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:01 - amazon_us_rrc 开始校验 22 个id
+2026-09-17 11:31:01 - amazon_us_rrc 有 13 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:02 - amazon_us_rock 开始校验 4 个id
+2026-09-17 11:31:03 - amazon_us_rock 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:04 - amazon_us_dri 开始校验 3 个id
+2026-09-17 11:31:05 - amazon_us_dri 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:06 - amazon_us_sopro 开始校验 108 个id
+2026-09-17 11:31:09 - amazon_us_sopro 有 76 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:10 - amazon_ca_moto 开始校验 16 个id
+2026-09-17 11:31:11 - amazon_ca_moto 有 14 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:12 - amazon_uk_sopro 开始校验 52 个id
+2026-09-17 11:31:16 - amazon_uk_sopro 有 40 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:17 - amazon_us_find 开始校验 64 个id
+2026-09-17 11:31:20 - amazon_us_find 有 45 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:20 - amazon_us_luck 开始校验 16 个id
+2026-09-17 11:31:21 - amazon_us_luck 有 11 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:28 - amazon_uk_tuc 开始校验 12 个id
+2026-09-17 11:31:29 - amazon_uk_tuc 有 12 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:30 - amazon_uk_tuto 开始校验 30 个id
+2026-09-17 11:31:31 - amazon_uk_tuto 有 29 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:32 - amazon_ca_ac1 开始校验 49 个id
+2026-09-17 11:31:33 - amazon_ca_ac1 有 45 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:34 - amazon_ca_find 开始校验 23 个id
+2026-09-17 11:31:35 - amazon_ca_find 有 22 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:36 - amazon_us_hope 开始校验 23 个id
+2026-09-17 11:31:37 - amazon_us_hope 有 19 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:38 - amazon_ca_hope 开始校验 7 个id
+2026-09-17 11:31:39 - amazon_ca_hope 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:40 - amazon_us_tuc 开始校验 30 个id
+2026-09-17 11:31:41 - amazon_us_tuc 有 25 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:42 - amazon_us_swi 开始校验 6 个id
+2026-09-17 11:31:43 - amazon_us_swi 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:44 - amazon_ca_hero 开始校验 7 个id
+2026-09-17 11:31:45 - amazon_ca_hero 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:46 - amazon_ca_piccocasa 开始校验 36 个id
+2026-09-17 11:31:47 - amazon_ca_piccocasa 有 32 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:48 - amazon_ca_ifn 开始校验 12 个id
+2026-09-17 11:31:49 - amazon_ca_ifn 有 12 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:50 - amazon_ca_tuc 开始校验 10 个id
+2026-09-17 11:31:54 - amazon_ca_tuc 有 9 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:55 - amazon_us_kilo 开始校验 2 个id
+2026-09-17 11:31:56 - amazon_us_kilo 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:57 - amazon_us_tuto 开始校验 43 个id
+2026-09-17 11:31:58 - amazon_us_tuto 有 33 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:31:59 - amazon_uk_hero 开始校验 3 个id
+2026-09-17 11:32:00 - amazon_uk_hero 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:00 - amazon_uk_ifn 开始校验 15 个id
+2026-09-17 11:32:01 - amazon_uk_ifn 有 13 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:03 - amazon_us_ac1 开始校验 29 个id
+2026-09-17 11:32:04 - amazon_us_ac1 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:05 - amazon_ca_tuto 开始校验 23 个id
+2026-09-17 11:32:06 - amazon_ca_tuto 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:07 - amazon_ca_rrc 开始校验 9 个id
+2026-09-17 11:32:08 - amazon_ca_rrc 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:10 - amazon_us_hood 开始校验 9 个id
+2026-09-17 11:32:11 - amazon_us_hood 有 8 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:12 - amazon_us_lift 开始校验 3 个id
+2026-09-17 11:32:13 - amazon_us_lift 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:14 - amazon_uk_find 开始校验 6 个id
+2026-09-17 11:32:16 - amazon_uk_find 有 6 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:17 - amazon_uk_luux 开始校验 10 个id
+2026-09-17 11:32:18 - amazon_uk_luux 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:19 - amazon_us_cover 开始校验 3 个id
+2026-09-17 11:32:20 - amazon_us_cover 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:21 - amazon_uk_rrc 开始校验 3 个id
+2026-09-17 11:32:23 - amazon_uk_rrc 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:24 - amazon_ca_luux 开始校验 7 个id
+2026-09-17 11:32:25 - amazon_ca_luux 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:26 - amazon_ca_mir 开始校验 1 个id
+2026-09-17 11:32:27 - amazon_ca_mir 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:29 - amazon_ca_swi 开始校验 3 个id
+2026-09-17 11:32:30 - amazon_ca_swi 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:31 - amazon_us_auto 开始校验 1 个id
+2026-09-17 11:32:32 - amazon_us_auto 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:33 - amazon_ca_hood 开始校验 3 个id
+2026-09-17 11:32:34 - amazon_ca_hood 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:35 - amazon_ca_luck 开始校验 3 个id
+2026-09-17 11:32:35 - amazon_ca_luck 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:36 - amazon_us_mir 开始校验 1 个id
+2026-09-17 11:32:37 - amazon_us_mir 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:39 - amazon_uk_bull 开始校验 2 个id
+2026-09-17 11:32:41 - amazon_uk_bull 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 11:32:43 - ========== 校验汇总 ==========
+2026-09-17 11:32:43 - 总数据: 1536
+2026-09-17 11:32:43 - ⏭️ archived跳过: 0
+2026-09-17 11:32:43 - ⚠️ 未找到: 0
+2026-09-17 11:32:43 - 已校验: 1536
+2026-09-17 11:32:43 - ✅ bid一致: 1534
+2026-09-17 11:32:43 - ❌ bid不一致: 2
+2026-09-17 11:32:43 - bid不一致数据已导出: /Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/utils/../shell/sp/keyword/export/校验bid不一致_全部_20260917113243.xlsx
+2026-09-17 11:32:43 - verifyKeywordBidStates channel:全部 校验完毕
+2026-09-17 11:32:43 - verifyKeywordBidStates channel:全部 校验完毕
+2026-09-17 12:12:12 - verifyKeywordBidStates 开始校验 file:M8降bid.xlsx channel:全部
+2026-09-17 12:12:12 - channel:全部 共 49 个seller, 1536 个id
+2026-09-17 12:12:12 - amazon_ca_sopro 开始校验 45 个id
+2026-09-17 12:12:12 - amazon_ca_sopro 有 42 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:13 - amazon_us_moto 开始校验 92 个id
+2026-09-17 12:12:14 - amazon_us_moto 有 80 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:15 - amazon_uk2 开始校验 76 个id
+2026-09-17 12:12:17 - amazon_uk2 有 65 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:20 - amazon 开始校验 461 个id
+2026-09-17 12:12:26 - amazon 有 343 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:28 - ❌ amazon id:180463622000038 (target) bid不一致: 期望0.405, 实际0.4
+2026-09-17 12:12:28 - ❌ amazon id:450763427919313 (target) bid不一致: 期望0.056, 实际0.05
+2026-09-17 12:12:30 - amazon_us_ifn 开始校验 40 个id
+2026-09-17 12:12:31 - amazon_us_ifn 有 33 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:32 - amazon_us_hero 开始校验 45 个id
+2026-09-17 12:12:33 - amazon_us_hero 有 37 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:33 - amazon_us_luux 开始校验 50 个id
+2026-09-17 12:12:34 - amazon_us_luux 有 42 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:35 - amazon_uk_moto 开始校验 18 个id
+2026-09-17 12:12:36 - amazon_uk_moto 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:37 - amazon_us_rrc 开始校验 22 个id
+2026-09-17 12:12:38 - amazon_us_rrc 有 13 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:39 - amazon_us_rock 开始校验 4 个id
+2026-09-17 12:12:40 - amazon_us_rock 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:41 - amazon_us_dri 开始校验 3 个id
+2026-09-17 12:12:42 - amazon_us_dri 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:43 - amazon_us_sopro 开始校验 108 个id
+2026-09-17 12:12:45 - amazon_us_sopro 有 76 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:46 - amazon_ca_moto 开始校验 16 个id
+2026-09-17 12:12:47 - amazon_ca_moto 有 14 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:48 - amazon_uk_sopro 开始校验 52 个id
+2026-09-17 12:12:49 - amazon_uk_sopro 有 40 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:49 - amazon_us_find 开始校验 64 个id
+2026-09-17 12:12:50 - amazon_us_find 有 45 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:51 - amazon_us_luck 开始校验 16 个id
+2026-09-17 12:12:52 - amazon_us_luck 有 11 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:53 - amazon_uk_tuc 开始校验 12 个id
+2026-09-17 12:12:54 - amazon_uk_tuc 有 12 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:54 - ❌ amazon_uk_tuc id:96511762487902 (target) bid不一致: 期望0.152, 实际0.17
+2026-09-17 12:12:54 - amazon_uk_tuto 开始校验 30 个id
+2026-09-17 12:12:55 - amazon_uk_tuto 有 29 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:56 - ❌ amazon_uk_tuto id:17869258849371 (target) bid不一致: 期望0.24, 实际0.13
+2026-09-17 12:12:56 - ❌ amazon_uk_tuto id:6907844625063 (target) bid不一致: 期望0.36, 实际0.4
+2026-09-17 12:12:56 - amazon_ca_ac1 开始校验 49 个id
+2026-09-17 12:12:57 - amazon_ca_ac1 有 45 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:12:58 - amazon_ca_find 开始校验 23 个id
+2026-09-17 12:12:59 - amazon_ca_find 有 22 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:00 - amazon_us_hope 开始校验 23 个id
+2026-09-17 12:13:01 - amazon_us_hope 有 19 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:02 - amazon_ca_hope 开始校验 7 个id
+2026-09-17 12:13:03 - amazon_ca_hope 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:04 - amazon_us_tuc 开始校验 30 个id
+2026-09-17 12:13:05 - amazon_us_tuc 有 25 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:06 - amazon_us_swi 开始校验 6 个id
+2026-09-17 12:13:07 - amazon_us_swi 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:08 - amazon_ca_hero 开始校验 7 个id
+2026-09-17 12:13:09 - amazon_ca_hero 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:09 - amazon_ca_piccocasa 开始校验 36 个id
+2026-09-17 12:13:10 - amazon_ca_piccocasa 有 32 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:11 - amazon_ca_ifn 开始校验 12 个id
+2026-09-17 12:13:12 - amazon_ca_ifn 有 12 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:13 - amazon_ca_tuc 开始校验 10 个id
+2026-09-17 12:13:13 - amazon_ca_tuc 有 9 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:14 - amazon_us_kilo 开始校验 2 个id
+2026-09-17 12:13:15 - amazon_us_kilo 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:16 - amazon_us_tuto 开始校验 43 个id
+2026-09-17 12:13:17 - amazon_us_tuto 有 33 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:17 - amazon_uk_hero 开始校验 3 个id
+2026-09-17 12:13:18 - amazon_uk_hero 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:22 - amazon_uk_ifn 开始校验 15 个id
+2026-09-17 12:13:23 - amazon_uk_ifn 有 13 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:24 - amazon_us_ac1 开始校验 29 个id
+2026-09-17 12:13:25 - amazon_us_ac1 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:26 - amazon_ca_tuto 开始校验 23 个id
+2026-09-17 12:13:26 - amazon_ca_tuto 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:27 - amazon_ca_rrc 开始校验 9 个id
+2026-09-17 12:13:28 - amazon_ca_rrc 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:29 - amazon_us_hood 开始校验 9 个id
+2026-09-17 12:13:30 - amazon_us_hood 有 8 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:31 - amazon_us_lift 开始校验 3 个id
+2026-09-17 12:13:32 - amazon_us_lift 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:32 - amazon_uk_find 开始校验 6 个id
+2026-09-17 12:13:33 - amazon_uk_find 有 6 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:34 - amazon_uk_luux 开始校验 10 个id
+2026-09-17 12:13:35 - amazon_uk_luux 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:36 - amazon_us_cover 开始校验 3 个id
+2026-09-17 12:13:37 - amazon_us_cover 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:37 - amazon_uk_rrc 开始校验 3 个id
+2026-09-17 12:13:38 - amazon_uk_rrc 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:39 - amazon_ca_luux 开始校验 7 个id
+2026-09-17 12:13:40 - amazon_ca_luux 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:41 - amazon_ca_mir 开始校验 1 个id
+2026-09-17 12:13:42 - amazon_ca_mir 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:42 - amazon_ca_swi 开始校验 3 个id
+2026-09-17 12:13:43 - amazon_ca_swi 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:44 - amazon_us_auto 开始校验 1 个id
+2026-09-17 12:13:45 - amazon_us_auto 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:46 - amazon_ca_hood 开始校验 3 个id
+2026-09-17 12:13:48 - amazon_ca_hood 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:50 - amazon_ca_luck 开始校验 3 个id
+2026-09-17 12:13:50 - amazon_ca_luck 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:51 - amazon_us_mir 开始校验 1 个id
+2026-09-17 12:13:52 - amazon_us_mir 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:53 - amazon_uk_bull 开始校验 2 个id
+2026-09-17 12:13:54 - amazon_uk_bull 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:13:55 - ========== 校验汇总 ==========
+2026-09-17 12:13:55 - 总数据: 1536
+2026-09-17 12:13:55 - ⏭️ archived跳过: 0
+2026-09-17 12:13:55 - ⚠️ 未找到: 0
+2026-09-17 12:13:55 - 已校验: 1536
+2026-09-17 12:13:55 - ✅ bid一致: 1531
+2026-09-17 12:13:55 - ❌ bid不一致: 5
+2026-09-17 12:13:55 - bid不一致数据已导出: /Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/utils/../shell/sp/keyword/export/校验bid不一致_全部_20260917121355.xlsx
+2026-09-17 12:13:55 - retryUpdateKeywordBid 开始重试 5 条数据
+2026-09-17 12:13:55 - 共 3 个seller, 5 个id待重试
+2026-09-17 12:13:55 - amazon 共 2 个id待重试
+2026-09-17 12:13:55 - amazon keyword重试查询汇总: 可用0个, archived 0个, 未找到2个, bid一致 0个, 待调整0个
+2026-09-17 12:13:55 - amazon keyword未查到的id: 2个，将顺延到target查询
+2026-09-17 12:13:55 - amazon 有 2 个id (keyword重试失败0个 + keyword未查到2个)，尝试作为target调整bid
+2026-09-17 12:13:56 - amazon target重试查询汇总: 可用2个, archived 0个, 确认未找到0个, keyword重试失败且target未找到0个, bid一致 2个, 待调整0个
+2026-09-17 12:13:56 - amazon 跳过bid已一致的target: 2个
+2026-09-17 12:13:56 - amazon_uk_tuc 共 1 个id待重试
+2026-09-17 12:13:57 - amazon_uk_tuc keyword重试查询汇总: 可用0个, archived 0个, 未找到1个, bid一致 0个, 待调整0个
+2026-09-17 12:13:57 - amazon_uk_tuc keyword未查到的id: 1个，将顺延到target查询
+2026-09-17 12:13:57 - amazon_uk_tuc 有 1 个id (keyword重试失败0个 + keyword未查到1个)，尝试作为target调整bid
+2026-09-17 12:13:58 - amazon_uk_tuc target重试查询汇总: 可用1个, archived 0个, 确认未找到0个, keyword重试失败且target未找到0个, bid一致 0个, 待调整1个
+2026-09-17 12:13:58 - amazon_uk_tuc 重试调整target bid: 1个
+2026-09-17 12:13:59 - amazon_uk_tuc target重试成功: 1个
+2026-09-17 12:13:59 - amazon_uk_tuto 共 2 个id待重试
+2026-09-17 12:14:00 - amazon_uk_tuto keyword重试查询汇总: 可用0个, archived 0个, 未找到2个, bid一致 0个, 待调整0个
+2026-09-17 12:14:00 - amazon_uk_tuto keyword未查到的id: 2个，将顺延到target查询
+2026-09-17 12:14:00 - amazon_uk_tuto 有 2 个id (keyword重试失败0个 + keyword未查到2个)，尝试作为target调整bid
+2026-09-17 12:14:02 - amazon_uk_tuto target重试查询汇总: 可用2个, archived 0个, 确认未找到0个, keyword重试失败且target未找到0个, bid一致 0个, 待调整2个
+2026-09-17 12:14:02 - amazon_uk_tuto 重试调整target bid: 2个
+2026-09-17 12:14:03 - amazon_uk_tuto target重试成功: 2个
+2026-09-17 12:14:03 - 所有bid重试成功，无失败数据
+2026-09-17 12:14:03 - retryUpdateKeywordBid 处理完毕
+2026-09-17 12:14:03 - retryUpdateKeywordBid 完成，开始最终bid校验
+2026-09-17 12:14:03 - verifyKeywordBidStates 开始校验 file:M8降bid.xlsx channel:全部
+2026-09-17 12:14:03 - channel:全部 共 49 个seller, 1536 个id
+2026-09-17 12:14:03 - amazon_ca_sopro 开始校验 45 个id
+2026-09-17 12:14:04 - amazon_ca_sopro 有 42 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:05 - amazon_us_moto 开始校验 92 个id
+2026-09-17 12:14:06 - amazon_us_moto 有 80 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:08 - amazon_uk2 开始校验 76 个id
+2026-09-17 12:14:09 - amazon_uk2 有 65 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:10 - amazon 开始校验 461 个id
+2026-09-17 12:14:15 - amazon 有 343 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:18 - ❌ amazon id:180463622000038 (target) bid不一致: 期望0.405, 实际0.4
+2026-09-17 12:14:18 - ❌ amazon id:450763427919313 (target) bid不一致: 期望0.056, 实际0.05
+2026-09-17 12:14:19 - amazon_us_ifn 开始校验 40 个id
+2026-09-17 12:14:20 - amazon_us_ifn 有 33 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:21 - amazon_us_hero 开始校验 45 个id
+2026-09-17 12:14:22 - amazon_us_hero 有 37 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:23 - amazon_us_luux 开始校验 50 个id
+2026-09-17 12:14:24 - amazon_us_luux 有 42 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:25 - amazon_uk_moto 开始校验 18 个id
+2026-09-17 12:14:27 - amazon_uk_moto 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:28 - amazon_us_rrc 开始校验 22 个id
+2026-09-17 12:14:29 - amazon_us_rrc 有 13 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:30 - amazon_us_rock 开始校验 4 个id
+2026-09-17 12:14:31 - amazon_us_rock 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:32 - amazon_us_dri 开始校验 3 个id
+2026-09-17 12:14:33 - amazon_us_dri 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:34 - amazon_us_sopro 开始校验 108 个id
+2026-09-17 12:14:36 - amazon_us_sopro 有 76 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:37 - amazon_ca_moto 开始校验 16 个id
+2026-09-17 12:14:38 - amazon_ca_moto 有 14 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:39 - amazon_uk_sopro 开始校验 52 个id
+2026-09-17 12:14:40 - amazon_uk_sopro 有 40 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:42 - amazon_us_find 开始校验 64 个id
+2026-09-17 12:14:43 - amazon_us_find 有 45 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:43 - amazon_us_luck 开始校验 16 个id
+2026-09-17 12:14:44 - amazon_us_luck 有 11 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:46 - amazon_uk_tuc 开始校验 12 个id
+2026-09-17 12:14:47 - amazon_uk_tuc 有 12 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:47 - amazon_uk_tuto 开始校验 30 个id
+2026-09-17 12:14:48 - amazon_uk_tuto 有 29 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:49 - amazon_ca_ac1 开始校验 49 个id
+2026-09-17 12:14:50 - amazon_ca_ac1 有 45 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:51 - amazon_ca_find 开始校验 23 个id
+2026-09-17 12:14:52 - amazon_ca_find 有 22 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:53 - amazon_us_hope 开始校验 23 个id
+2026-09-17 12:14:54 - amazon_us_hope 有 19 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:55 - amazon_ca_hope 开始校验 7 个id
+2026-09-17 12:14:56 - amazon_ca_hope 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:14:57 - amazon_us_tuc 开始校验 30 个id
+2026-09-17 12:14:58 - amazon_us_tuc 有 25 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:00 - amazon_us_swi 开始校验 6 个id
+2026-09-17 12:15:02 - amazon_us_swi 有 4 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:04 - amazon_ca_hero 开始校验 7 个id
+2026-09-17 12:15:05 - amazon_ca_hero 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:06 - amazon_ca_piccocasa 开始校验 36 个id
+2026-09-17 12:15:07 - amazon_ca_piccocasa 有 32 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:08 - amazon_ca_ifn 开始校验 12 个id
+2026-09-17 12:15:09 - amazon_ca_ifn 有 12 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:10 - amazon_ca_tuc 开始校验 10 个id
+2026-09-17 12:15:11 - amazon_ca_tuc 有 9 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:12 - amazon_us_kilo 开始校验 2 个id
+2026-09-17 12:15:14 - amazon_us_kilo 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:15 - amazon_us_tuto 开始校验 43 个id
+2026-09-17 12:15:17 - amazon_us_tuto 有 33 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:18 - amazon_uk_hero 开始校验 3 个id
+2026-09-17 12:15:19 - amazon_uk_hero 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:21 - amazon_uk_ifn 开始校验 15 个id
+2026-09-17 12:15:22 - amazon_uk_ifn 有 13 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:23 - amazon_us_ac1 开始校验 29 个id
+2026-09-17 12:15:24 - amazon_us_ac1 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:25 - amazon_ca_tuto 开始校验 23 个id
+2026-09-17 12:15:26 - amazon_ca_tuto 有 18 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:26 - amazon_ca_rrc 开始校验 9 个id
+2026-09-17 12:15:27 - amazon_ca_rrc 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:28 - amazon_us_hood 开始校验 9 个id
+2026-09-17 12:15:29 - amazon_us_hood 有 8 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:30 - amazon_us_lift 开始校验 3 个id
+2026-09-17 12:15:31 - amazon_us_lift 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:32 - amazon_uk_find 开始校验 6 个id
+2026-09-17 12:15:33 - amazon_uk_find 有 6 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:36 - amazon_uk_luux 开始校验 10 个id
+2026-09-17 12:15:37 - amazon_uk_luux 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:39 - amazon_us_cover 开始校验 3 个id
+2026-09-17 12:15:40 - amazon_us_cover 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:41 - amazon_uk_rrc 开始校验 3 个id
+2026-09-17 12:15:42 - amazon_uk_rrc 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:45 - amazon_ca_luux 开始校验 7 个id
+2026-09-17 12:15:46 - amazon_ca_luux 有 7 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:47 - amazon_ca_mir 开始校验 1 个id
+2026-09-17 12:15:48 - amazon_ca_mir 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:49 - amazon_ca_swi 开始校验 3 个id
+2026-09-17 12:15:50 - amazon_ca_swi 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:51 - amazon_us_auto 开始校验 1 个id
+2026-09-17 12:15:52 - amazon_us_auto 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:54 - amazon_ca_hood 开始校验 3 个id
+2026-09-17 12:15:55 - amazon_ca_hood 有 3 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:55 - amazon_ca_luck 开始校验 3 个id
+2026-09-17 12:15:56 - amazon_ca_luck 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:15:58 - amazon_us_mir 开始校验 1 个id
+2026-09-17 12:15:59 - amazon_us_mir 有 1 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:16:00 - amazon_uk_bull 开始校验 2 个id
+2026-09-17 12:16:02 - amazon_uk_bull 有 2 个id未匹配keyword，尝试作为target校验
+2026-09-17 12:16:04 - ========== 校验汇总 ==========
+2026-09-17 12:16:04 - 总数据: 1536
+2026-09-17 12:16:04 - ⏭️ archived跳过: 0
+2026-09-17 12:16:04 - ⚠️ 未找到: 0
+2026-09-17 12:16:04 - 已校验: 1536
+2026-09-17 12:16:04 - ✅ bid一致: 1534
+2026-09-17 12:16:04 - ❌ bid不一致: 2
+2026-09-17 12:16:04 - bid不一致数据已导出: /Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/utils/../shell/sp/keyword/export/校验bid不一致_全部_20260917121604.xlsx
+2026-09-17 12:16:04 - verifyKeywordBidStates channel:全部 校验完毕
+2026-09-17 12:16:04 - verifyKeywordBidStates channel:全部 校验完毕

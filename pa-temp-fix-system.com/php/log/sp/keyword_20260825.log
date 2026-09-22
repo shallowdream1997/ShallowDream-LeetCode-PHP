@@ -1,0 +1,191 @@
+2026-08-25 02:17:20 - amazon_us_ifn 有 3466 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:18:05 - amazon_us_ifn 跳过archived(target): 10个
+2026-08-25 02:18:05 - amazon_us_tuto 开始校验 9858 个id
+2026-08-25 02:20:00 - amazon_us_tuto 有 4139 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:21:10 - amazon_us_tuto 跳过archived(target): 1个
+2026-08-25 02:21:10 - amazon_us_find 开始校验 12913 个id
+2026-08-25 02:23:58 - amazon_us_find 跳过archived(keyword): 7个
+2026-08-25 02:23:58 - amazon_us_find 有 4434 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:24:55 - amazon_us_find 跳过archived(target): 3个
+2026-08-25 02:24:55 - amazon_us_swi 开始校验 3912 个id
+2026-08-25 02:25:49 - amazon_us_swi 跳过archived(keyword): 40个
+2026-08-25 02:25:49 - amazon_us_swi 有 1011 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:26:04 - amazon_us_swi 跳过archived(target): 26个
+2026-08-25 02:26:04 - amazon_us_luck 开始校验 4775 个id
+2026-08-25 02:27:10 - amazon_us_luck 有 838 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:27:23 - amazon_us_hero 开始校验 4773 个id
+2026-08-25 02:28:27 - amazon_us_hero 跳过archived(keyword): 14个
+2026-08-25 02:28:27 - amazon_us_hero 有 1407 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:28:47 - amazon_us_tuc 开始校验 10157 个id
+2026-08-25 02:29:04 - ❌ amazon_us_tuc id:325482283779538 (keyword) bid不一致: 期望0.67, 实际0.74
+2026-08-25 02:32:02 - amazon_us_tuc 跳过archived(keyword): 18个
+2026-08-25 02:32:02 - amazon_us_tuc 有 3640 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:32:51 - amazon_us_tuc keyword和target都查不到的id: 70个
+2026-08-25 02:32:51 - amazon_us_lift 开始校验 934 个id
+2026-08-25 02:33:03 - amazon_us_lift 跳过archived(keyword): 6个
+2026-08-25 02:33:03 - amazon_us_lift 有 295 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:33:06 - amazon_us_hope 开始校验 4927 个id
+2026-08-25 02:34:13 - amazon_us_hope 跳过archived(keyword): 66个
+2026-08-25 02:34:13 - amazon_us_hope 有 1153 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:34:23 - ❌ amazon_us_hope id:314326542541399 (target) bid不一致: 期望0.6, 实际0.45
+2026-08-25 02:34:23 - ❌ amazon_us_hope id:357048143376780 (target) bid不一致: 期望0.6, 实际0.45
+2026-08-25 02:34:28 - amazon_us_hope 跳过archived(target): 2个
+2026-08-25 02:34:28 - amazon_us_rock 开始校验 4434 个id
+2026-08-25 02:35:31 - amazon_us_rock 跳过archived(keyword): 5个
+2026-08-25 02:35:31 - amazon_us_rock 有 1482 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:35:52 - amazon_us_rock 跳过archived(target): 1个
+2026-08-25 02:35:52 - amazon_us_dri 开始校验 187 个id
+2026-08-25 02:35:54 - amazon_us_dri 有 142 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:35:58 - amazon_us_kilo 开始校验 3437 个id
+2026-08-25 02:36:46 - amazon_us_kilo 有 1533 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:37:08 - amazon_us_hood 开始校验 2659 个id
+2026-08-25 02:37:42 - amazon_us_hood 跳过archived(keyword): 4个
+2026-08-25 02:37:42 - amazon_us_hood 有 720 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:37:50 - amazon_us_auto 开始校验 330 个id
+2026-08-25 02:37:55 - amazon_us_auto 有 27 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:37:57 - amazon_us_mir 开始校验 740 个id
+2026-08-25 02:38:06 - amazon_us_mir 跳过archived(keyword): 6个
+2026-08-25 02:38:06 - amazon_us_mir 有 278 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:38:10 - amazon_us_yuru 开始校验 800 个id
+2026-08-25 02:38:19 - amazon_us_yuru 有 179 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:38:21 - amazon_us_bull 开始校验 471 个id
+2026-08-25 02:38:28 - amazon_us_bull 有 81 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:38:29 - amazon_us_gyc 开始校验 5 个id
+2026-08-25 02:38:30 - amazon_us_gyc 有 5 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:38:32 - ========== 校验汇总 ==========
+2026-08-25 02:38:32 - 总数据: 200914
+2026-08-25 02:38:32 - ⏭️ archived跳过: 936
+2026-08-25 02:38:32 - ⚠️ 未找到: 410
+2026-08-25 02:38:32 - 已校验: 199568
+2026-08-25 02:38:32 - ✅ bid一致: 199565
+2026-08-25 02:38:32 - ❌ bid不一致: 3
+2026-08-25 02:38:32 - bid不一致数据已导出: /Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/utils/../shell/sp/keyword/export/校验bid不一致_全部_20260825023832.xlsx
+2026-08-25 02:38:32 - retryUpdateKeywordBid 开始重试 3 条数据
+2026-08-25 02:38:32 - 共 2 个seller, 3 个id待重试
+2026-08-25 02:38:32 - amazon_us_tuc 共 1 个id待重试
+2026-08-25 02:38:33 - amazon_us_tuc keyword重试查询汇总: 可用1个, archived 0个, 未找到0个, bid一致 0个, 待调整1个
+2026-08-25 02:38:33 - amazon_us_tuc 重试调整keyword bid: 1个
+2026-08-25 02:38:34 - amazon_us_tuc keyword重试成功: 1个
+2026-08-25 02:38:34 - amazon_us_hope 共 2 个id待重试
+2026-08-25 02:38:35 - amazon_us_hope keyword重试查询汇总: 可用0个, archived 0个, 未找到2个, bid一致 0个, 待调整0个
+2026-08-25 02:38:35 - amazon_us_hope keyword未查到的id: 2个，将顺延到target查询
+2026-08-25 02:38:35 - amazon_us_hope 有 2 个id (keyword重试失败0个 + keyword未查到2个)，尝试作为target调整bid
+2026-08-25 02:38:36 - amazon_us_hope target重试查询汇总: 可用2个, archived 0个, 确认未找到0个, keyword重试失败且target未找到0个, bid一致 0个, 待调整2个
+2026-08-25 02:38:36 - amazon_us_hope 重试调整target bid: 2个
+2026-08-25 02:38:37 - amazon_us_hope target重试成功: 2个
+2026-08-25 02:38:37 - 所有bid重试成功，无失败数据
+2026-08-25 02:38:37 - retryUpdateKeywordBid 处理完毕
+2026-08-25 02:38:37 - retryUpdateKeywordBid 完成，开始最终bid校验
+2026-08-25 02:38:37 - verifyKeywordBidStates 开始校验 file:投放对象数据 - 恢复BID清单-20260824下午三点.xlsx channel:全部
+2026-08-25 02:38:42 - channel:全部 共 25 个seller, 200914 个id
+2026-08-25 02:38:42 - amazon_us_sopro 开始校验 13854 个id
+2026-08-25 02:41:41 - amazon_us_sopro 有 4270 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:42:32 - amazon_us_sopro 跳过archived(target): 1个
+2026-08-25 02:42:32 - amazon_us_luux 开始校验 7684 个id
+2026-08-25 02:44:03 - amazon_us_luux 跳过archived(keyword): 36个
+2026-08-25 02:44:03 - amazon_us_luux 有 2457 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:44:32 - amazon_us_rrc 开始校验 7854 个id
+2026-08-25 02:46:19 - amazon_us_rrc 跳过archived(keyword): 67个
+2026-08-25 02:46:19 - amazon_us_rrc 有 1450 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:46:37 - amazon 开始校验 32390 个id
+2026-08-25 02:53:53 - amazon 跳过archived(keyword): 425个
+2026-08-25 02:53:53 - amazon 有 4001 个id未匹配keyword，尝试作为target校验
+2026-08-25 02:54:38 - amazon 跳过archived(target): 4个
+2026-08-25 02:54:38 - amazon_us_ac1 开始校验 37227 个id
+2026-08-25 03:02:57 - amazon_us_ac1 跳过archived(keyword): 56个
+2026-08-25 03:02:57 - amazon_us_ac1 有 10061 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:05:07 - amazon_us_ac1 跳过archived(target): 15个
+2026-08-25 03:05:07 - amazon_us_ac1 keyword和target都查不到的id: 72个
+2026-08-25 03:05:07 - amazon_us_moto 开始校验 22389 个id
+2026-08-25 03:10:11 - amazon_us_moto 跳过archived(keyword): 106个
+2026-08-25 03:10:11 - amazon_us_moto 有 3257 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:11:06 - amazon_us_moto 跳过archived(target): 17个
+2026-08-25 03:11:06 - amazon_us_cover 开始校验 1357 个id
+2026-08-25 03:11:23 - amazon_us_cover 有 375 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:11:30 - amazon_us_ifn 开始校验 12847 个id
+2026-08-25 03:13:56 - amazon_us_ifn 有 3466 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:14:33 - amazon_us_ifn 跳过archived(target): 10个
+2026-08-25 03:14:33 - amazon_us_tuto 开始校验 9858 个id
+2026-08-25 03:16:35 - amazon_us_tuto 有 4139 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:17:02 - ❌ amazon_us_tuto id:319242226710154 (target) bid不一致: 期望0.47, 实际0.52
+2026-08-25 03:17:23 - amazon_us_tuto 跳过archived(target): 1个
+2026-08-25 03:17:23 - amazon_us_find 开始校验 12913 个id
+2026-08-25 03:19:52 - amazon_us_find 跳过archived(keyword): 7个
+2026-08-25 03:19:52 - amazon_us_find 有 4434 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:20:45 - amazon_us_find 跳过archived(target): 3个
+2026-08-25 03:20:45 - amazon_us_swi 开始校验 3912 个id
+2026-08-25 03:21:30 - amazon_us_swi 跳过archived(keyword): 40个
+2026-08-25 03:21:30 - amazon_us_swi 有 1011 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:21:41 - amazon_us_swi 跳过archived(target): 26个
+2026-08-25 03:21:41 - amazon_us_luck 开始校验 4775 个id
+2026-08-25 03:23:01 - amazon_us_luck 有 909 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:23:11 - amazon_us_luck keyword和target都查不到的id: 71个
+2026-08-25 03:23:11 - amazon_us_hero 开始校验 4773 个id
+2026-08-25 03:24:04 - amazon_us_hero 跳过archived(keyword): 14个
+2026-08-25 03:24:04 - amazon_us_hero 有 1407 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:24:19 - amazon_us_tuc 开始校验 10157 个id
+2026-08-25 03:26:39 - amazon_us_tuc 跳过archived(keyword): 19个
+2026-08-25 03:26:39 - amazon_us_tuc 有 3642 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:27:19 - amazon_us_tuc keyword和target都查不到的id: 72个
+2026-08-25 03:27:19 - amazon_us_lift 开始校验 934 个id
+2026-08-25 03:27:32 - amazon_us_lift 跳过archived(keyword): 6个
+2026-08-25 03:27:32 - amazon_us_lift 有 295 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:27:37 - amazon_us_hope 开始校验 4927 个id
+2026-08-25 03:28:15 - ❌ amazon_us_hope id:23763378257931 (keyword) bid不一致: 期望0.4, 实际0.6
+2026-08-25 03:28:36 - ❌ amazon_us_hope id:96312007607739 (keyword) bid不一致: 期望0.6, 实际0.4
+2026-08-25 03:28:36 - amazon_us_hope 跳过archived(keyword): 66个
+2026-08-25 03:28:36 - amazon_us_hope 有 1153 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:28:47 - ❌ amazon_us_hope id:395111276682108 (target) bid不一致: 期望0.4, 实际0.35
+2026-08-25 03:28:51 - amazon_us_hope 跳过archived(target): 2个
+2026-08-25 03:28:51 - amazon_us_rock 开始校验 4434 个id
+2026-08-25 03:29:41 - amazon_us_rock 跳过archived(keyword): 5个
+2026-08-25 03:29:41 - amazon_us_rock 有 1482 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:29:57 - amazon_us_rock 跳过archived(target): 1个
+2026-08-25 03:29:58 - amazon_us_dri 开始校验 187 个id
+2026-08-25 03:29:59 - amazon_us_dri 有 142 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:30:01 - amazon_us_kilo 开始校验 3437 个id
+2026-08-25 03:30:55 - amazon_us_kilo 有 1533 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:31:15 - amazon_us_hood 开始校验 2659 个id
+2026-08-25 03:31:47 - amazon_us_hood 跳过archived(keyword): 4个
+2026-08-25 03:31:47 - amazon_us_hood 有 720 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:31:55 - amazon_us_auto 开始校验 330 个id
+2026-08-25 03:31:59 - amazon_us_auto 有 27 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:32:00 - amazon_us_mir 开始校验 740 个id
+2026-08-25 03:32:10 - amazon_us_mir 跳过archived(keyword): 6个
+2026-08-25 03:32:10 - amazon_us_mir 有 278 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:32:13 - amazon_us_yuru 开始校验 800 个id
+2026-08-25 03:32:22 - amazon_us_yuru 有 179 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:32:24 - amazon_us_bull 开始校验 471 个id
+2026-08-25 03:32:30 - amazon_us_bull 有 81 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:32:32 - amazon_us_gyc 开始校验 5 个id
+2026-08-25 03:32:33 - amazon_us_gyc 有 5 个id未匹配keyword，尝试作为target校验
+2026-08-25 03:32:34 - ========== 校验汇总 ==========
+2026-08-25 03:32:34 - 总数据: 200914
+2026-08-25 03:32:34 - ⏭️ archived跳过: 937
+2026-08-25 03:32:34 - ⚠️ 未找到: 215
+2026-08-25 03:32:34 - 已校验: 199762
+2026-08-25 03:32:34 - ✅ bid一致: 199758
+2026-08-25 03:32:34 - ❌ bid不一致: 4
+2026-08-25 03:32:34 - bid不一致数据已导出: /Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/utils/../shell/sp/keyword/export/校验bid不一致_全部_20260825033234.xlsx
+2026-08-25 03:32:34 - verifyKeywordBidStates channel:全部 校验完毕
+2026-08-25 03:32:34 - verifyKeywordBidStates channel:全部 校验完毕
+2026-08-25 03:45:58 - retryUpdateKeywordBid 开始重试 4 条数据
+2026-08-25 03:45:58 - 共 2 个seller, 4 个id待重试
+2026-08-25 03:45:58 - amazon_us_tuto 共 1 个id待重试
+2026-08-25 03:45:59 - amazon_us_tuto keyword重试查询汇总: 可用0个, archived 0个, 未找到1个, bid一致 0个, 待调整0个
+2026-08-25 03:45:59 - amazon_us_tuto keyword未查到的id: 1个，将顺延到target查询
+2026-08-25 03:45:59 - amazon_us_tuto 有 1 个id (keyword重试失败0个 + keyword未查到1个)，尝试作为target调整bid
+2026-08-25 03:46:00 - amazon_us_tuto target重试查询汇总: 可用1个, archived 0个, 确认未找到0个, keyword重试失败且target未找到0个, bid一致 0个, 待调整1个
+2026-08-25 03:46:00 - amazon_us_tuto 重试调整target bid: 1个
+2026-08-25 03:46:01 - amazon_us_tuto target重试成功: 1个
+2026-08-25 03:46:01 - amazon_us_hope 共 3 个id待重试
+2026-08-25 03:46:02 - amazon_us_hope keyword重试查询汇总: 可用2个, archived 0个, 未找到1个, bid一致 0个, 待调整2个
+2026-08-25 03:46:02 - amazon_us_hope keyword未查到的id: 1个，将顺延到target查询
+2026-08-25 03:46:02 - amazon_us_hope 重试调整keyword bid: 2个
+2026-08-25 03:46:03 - amazon_us_hope keyword重试成功: 2个
+2026-08-25 03:46:03 - amazon_us_hope 有 1 个id (keyword重试失败0个 + keyword未查到1个)，尝试作为target调整bid
+2026-08-25 03:46:04 - amazon_us_hope target重试查询汇总: 可用1个, archived 0个, 确认未找到0个, keyword重试失败且target未找到0个, bid一致 0个, 待调整1个
+2026-08-25 03:46:04 - amazon_us_hope 重试调整target bid: 1个
+2026-08-25 03:46:05 - amazon_us_hope target重试成功: 1个
+2026-08-25 03:46:05 - 所有bid重试成功，无失败数据
+2026-08-25 03:46:05 - retryUpdateKeywordBid 处理完毕

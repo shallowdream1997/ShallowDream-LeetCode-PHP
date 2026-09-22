@@ -1,0 +1,102 @@
+2026-08-31 02:57:01 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:01 - 参数：{"pageNum":1,"pageSize":500,"condition":{}}
+2026-08-31 02:57:04 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:04 - 参数：{"pageNum":2,"pageSize":500,"condition":{}}
+2026-08-31 02:57:05 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:05 - 参数：{"pageNum":3,"pageSize":500,"condition":{}}
+2026-08-31 02:57:07 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:07 - 参数：{"pageNum":4,"pageSize":500,"condition":{}}
+2026-08-31 02:57:08 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:08 - 参数：{"pageNum":5,"pageSize":500,"condition":{}}
+2026-08-31 02:57:10 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:10 - 参数：{"pageNum":6,"pageSize":500,"condition":{}}
+2026-08-31 02:57:12 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:12 - 参数：{"pageNum":7,"pageSize":500,"condition":{}}
+2026-08-31 02:57:14 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:14 - 参数：{"pageNum":8,"pageSize":500,"condition":{}}
+2026-08-31 02:57:16 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:16 - 参数：{"pageNum":9,"pageSize":500,"condition":{}}
+2026-08-31 02:57:19 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:19 - 参数：{"pageNum":10,"pageSize":500,"condition":{}}
+2026-08-31 02:57:20 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:20 - 参数：{"pageNum":11,"pageSize":500,"condition":{}}
+2026-08-31 02:57:22 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:22 - 参数：{"pageNum":12,"pageSize":500,"condition":{}}
+2026-08-31 02:57:24 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:24 - 参数：{"pageNum":13,"pageSize":500,"condition":{}}
+2026-08-31 02:57:25 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:25 - 参数：{"pageNum":14,"pageSize":500,"condition":{}}
+2026-08-31 02:57:28 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:28 - 参数：{"pageNum":15,"pageSize":500,"condition":{}}
+2026-08-31 02:57:29 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:29 - 参数：{"pageNum":16,"pageSize":500,"condition":{}}
+2026-08-31 02:57:31 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:31 - 参数：{"pageNum":17,"pageSize":500,"condition":{}}
+2026-08-31 02:57:33 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:33 - 参数：{"pageNum":18,"pageSize":500,"condition":{}}
+2026-08-31 02:57:34 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:34 - 参数：{"pageNum":19,"pageSize":500,"condition":{}}
+2026-08-31 02:57:36 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:36 - 参数：{"pageNum":20,"pageSize":500,"condition":{}}
+2026-08-31 02:57:38 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:38 - 参数：{"pageNum":21,"pageSize":500,"condition":{}}
+2026-08-31 02:57:40 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:40 - 参数：{"pageNum":22,"pageSize":500,"condition":{}}
+2026-08-31 02:57:42 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:42 - 参数：{"pageNum":23,"pageSize":500,"condition":{}}
+2026-08-31 02:57:44 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:44 - 参数：{"pageNum":24,"pageSize":500,"condition":{}}
+2026-08-31 02:57:45 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:45 - 参数：{"pageNum":25,"pageSize":500,"condition":{}}
+2026-08-31 02:57:47 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:47 - 参数：{"pageNum":26,"pageSize":500,"condition":{}}
+2026-08-31 02:57:49 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:49 - 参数：{"pageNum":27,"pageSize":500,"condition":{}}
+2026-08-31 02:57:52 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:52 - 参数：{"pageNum":28,"pageSize":500,"condition":{}}
+2026-08-31 02:57:55 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:55 - 参数：{"pageNum":29,"pageSize":500,"condition":{}}
+2026-08-31 02:57:58 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:57:58 - 参数：{"pageNum":30,"pageSize":500,"condition":{}}
+2026-08-31 02:58:00 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:00 - 参数：{"pageNum":31,"pageSize":500,"condition":{}}
+2026-08-31 02:58:01 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:01 - 参数：{"pageNum":32,"pageSize":500,"condition":{}}
+2026-08-31 02:58:02 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:02 - 参数：{"pageNum":33,"pageSize":500,"condition":{}}
+2026-08-31 02:58:04 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:04 - 参数：{"pageNum":34,"pageSize":500,"condition":{}}
+2026-08-31 02:58:05 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:05 - 参数：{"pageNum":35,"pageSize":500,"condition":{}}
+2026-08-31 02:58:07 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:07 - 参数：{"pageNum":36,"pageSize":500,"condition":{}}
+2026-08-31 02:58:09 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:09 - 参数：{"pageNum":37,"pageSize":500,"condition":{}}
+2026-08-31 02:58:11 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:11 - 参数：{"pageNum":38,"pageSize":500,"condition":{}}
+2026-08-31 02:58:13 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:13 - 参数：{"pageNum":39,"pageSize":500,"condition":{}}
+2026-08-31 02:58:15 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:15 - 参数：{"pageNum":40,"pageSize":500,"condition":{}}
+2026-08-31 02:58:16 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:16 - 参数：{"pageNum":41,"pageSize":500,"condition":{}}
+2026-08-31 02:58:17 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:17 - 参数：{"pageNum":42,"pageSize":500,"condition":{}}
+2026-08-31 02:58:19 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:19 - 参数：{"pageNum":43,"pageSize":500,"condition":{}}
+2026-08-31 02:58:21 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:21 - 参数：{"pageNum":44,"pageSize":500,"condition":{}}
+2026-08-31 02:58:23 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:23 - 参数：{"pageNum":45,"pageSize":500,"condition":{}}
+2026-08-31 02:58:25 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:25 - 参数：{"pageNum":46,"pageSize":500,"condition":{}}
+2026-08-31 02:58:28 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:28 - 参数：{"pageNum":47,"pageSize":500,"condition":{}}
+2026-08-31 02:58:30 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:30 - 参数：{"pageNum":48,"pageSize":500,"condition":{}}
+2026-08-31 02:58:32 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:32 - 参数：{"pageNum":49,"pageSize":500,"condition":{}}
+2026-08-31 02:58:33 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:33 - 参数：{"pageNum":50,"pageSize":500,"condition":{}}
+2026-08-31 02:58:35 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/ebay/seller/allocation/record/v1/page
+2026-08-31 02:58:35 - 参数：{"pageNum":51,"pageSize":500,"condition":{}}

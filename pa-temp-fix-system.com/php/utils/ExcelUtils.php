@@ -154,6 +154,77 @@ class ExcelUtils
 
     }
 
+    /**
+     * 将 CSV 逐行转换为 xlsx，不将全部数据读入内存。
+     */
+    public function downloadXlsxFromCsv($csvFile, $fileName, array $textColumns = [])
+    {
+        $input = fopen($csvFile, 'rb');
+        if (!$input) {
+            throw new Exception("无法读取CSV文件: {$csvFile}");
+        }
+        $headers = fgetcsv($input);
+        if (!is_array($headers)) {
+            fclose($input);
+            throw new Exception("CSV文件缺少表头: {$csvFile}");
+        }
+        $headers[0] = preg_replace('/^\xEF\xBB\xBF/', '', $headers[0]);
+
+        $filePath = $this->downPath . $fileName;
+        $tmpSheet = tempnam(sys_get_temp_dir(), 'xlsx_sheet_');
+        if ($tmpSheet === false) {
+            fclose($input);
+            throw new Exception('无法创建xlsx临时文件');
+        }
+        $zip = new ZipArchive();
+        if ($zip->open($filePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            fclose($input);
+            @unlink($tmpSheet);
+            throw new Exception("无法创建Excel文件: {$filePath}");
+        }
+
+        try {
+            $zip->addFromString('[Content_Types].xml', $this->_xlsxContentTypes());
+            $zip->addFromString('_rels/.rels', $this->_xlsxRootRels());
+            $zip->addFromString('xl/workbook.xml', $this->_xlsxWorkbook());
+            $zip->addFromString('xl/_rels/workbook.xml.rels', $this->_xlsxWorkbookRels());
+
+            $writer = new XMLWriter();
+            if (!$writer->openURI($tmpSheet)) {
+                throw new Exception('XMLWriter无法写入临时文件');
+            }
+            $writer->startDocument('1.0', 'UTF-8', 'yes');
+            $writer->startElementNs(null, 'worksheet', self::XLSX_MAIN_NS);
+            $writer->startElement('sheetData');
+            $this->_writeXlsxRow($writer, 1, $headers, array());
+
+            $rowIndex = 2;
+            while (($row = fgetcsv($input)) !== false) {
+                if ($rowIndex > 1048576) {
+                    throw new Exception('数据行数超过Excel单sheet上限(1048576)');
+                }
+                $this->_writeXlsxRow($writer, $rowIndex, $row, $textColumns);
+                $rowIndex++;
+            }
+            $writer->endElement();
+            $writer->endElement();
+            $writer->endDocument();
+            $writer->flush();
+
+            if ($zip->addFile($tmpSheet, 'xl/worksheets/sheet1.xml') !== true) {
+                throw new Exception('sheet写入zip失败');
+            }
+            $zip->close();
+            return $filePath;
+        } catch (Exception $e) {
+            @$zip->close();
+            throw $e;
+        } finally {
+            fclose($input);
+            @unlink($tmpSheet);
+        }
+    }
+
 
     /**
      * 读取 xls 文件

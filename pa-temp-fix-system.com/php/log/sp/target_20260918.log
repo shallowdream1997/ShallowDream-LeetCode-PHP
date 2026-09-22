@@ -1,0 +1,1991 @@
+2026-09-18 02:16:22 - createTargets 开始处理 file: channel:全部
+2026-09-18 02:16:22 - channel:全部 共 0 个ad group, 0 条数据
+2026-09-18 02:16:22 - createTargets channel:全部 无数据
+2026-09-18 02:16:33 - createTargets 开始处理 file:M8增投asin.xlsx channel:全部
+2026-09-18 02:16:33 - channel:全部 共 333 个ad group, 390 条数据
+2026-09-18 02:16:33 - amazon_uk_moto adGroupId:428777451520114 使用Excel campaignId:457739266711003
+2026-09-18 02:16:35 - amazon_uk_moto adGroupId:428777451520114 已有target 107个
+2026-09-18 02:16:35 - ⏭️ amazon_uk_moto target已存在且enabled: B0DJ966LKG
+2026-09-18 02:16:35 - amazon_ca_ifn adGroupId:70841852469678 使用Excel campaignId:191641005142725
+2026-09-18 02:16:36 - amazon_ca_ifn adGroupId:70841852469678 已有target 17个
+2026-09-18 02:16:36 - ⏭️ amazon_ca_ifn target已存在且enabled: B0F89SCKCC
+2026-09-18 02:16:36 - amazon adGroupId:269723153883542 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:16:37 - amazon adGroupId:269723153883542 Amazon API查到 campaignId:73518040787922
+2026-09-18 02:16:37 - amazon adGroupId:269723153883542 使用Excel campaignId:73518040787922
+2026-09-18 02:16:39 - amazon adGroupId:269723153883542 已有target 23个
+2026-09-18 02:16:39 - ⏭️ amazon target已存在且enabled: B0055B121U
+2026-09-18 02:16:39 - amazon adGroupId:269723153883542 创建target: 2个
+2026-09-18 02:16:40 - ✅ amazon 创建target成功: 12952704237819 - B0F4N9NC2M
+2026-09-18 02:16:40 - ✅ amazon 创建target成功: 241387785488831 - B0BM8Z85KF
+2026-09-18 02:16:41 - amazon_ca_piccocasa adGroupId:309024138071361 使用Excel campaignId:361923200903818
+2026-09-18 02:16:42 - amazon_ca_piccocasa adGroupId:309024138071361 已有target 199个
+2026-09-18 02:16:42 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B08TR67BLN
+2026-09-18 02:16:42 - amazon_ca_tuto adGroupId:260223628596267 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:16:43 - amazon_ca_tuto adGroupId:260223628596267 Amazon API查到 campaignId:144261288626822
+2026-09-18 02:16:43 - amazon_ca_tuto adGroupId:260223628596267 使用Excel campaignId:144261288626822
+2026-09-18 02:16:44 - amazon_ca_tuto adGroupId:260223628596267 已有target 12个
+2026-09-18 02:16:44 - amazon_ca_tuto adGroupId:260223628596267 创建target: 1个
+2026-09-18 02:16:45 - ✅ amazon_ca_tuto 创建target成功: 121157103513894 - B0F59Z7VYX
+2026-09-18 02:16:45 - amazon_uk_tuto adGroupId:261214533787906 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:16:46 - amazon_uk_tuto adGroupId:261214533787906 Amazon API查到 campaignId:214499527027863
+2026-09-18 02:16:46 - amazon_uk_tuto adGroupId:261214533787906 使用Excel campaignId:214499527027863
+2026-09-18 02:16:47 - amazon_uk_tuto adGroupId:261214533787906 已有target 27个
+2026-09-18 02:16:47 - ⏭️ amazon_uk_tuto target已存在且enabled: B0FJ5G5FYB
+2026-09-18 02:16:47 - ⏭️ amazon_uk_tuto target已存在且enabled: B0FJ5G5FYB
+2026-09-18 02:16:47 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DT9Q385G
+2026-09-18 02:16:47 - ⏭️ amazon_uk_tuto target已存在且enabled: B08MZT1T9T
+2026-09-18 02:16:47 - amazon_uk_tuto adGroupId:562465828497339 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:16:48 - amazon_uk_tuto adGroupId:562465828497339 Amazon API查到 campaignId:394710989698759
+2026-09-18 02:16:48 - amazon_uk_tuto adGroupId:562465828497339 使用Excel campaignId:394710989698759
+2026-09-18 02:16:49 - amazon_uk_tuto adGroupId:562465828497339 已有target 1个
+2026-09-18 02:16:49 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DNZHCR76
+2026-09-18 02:16:49 - amazon_ca_piccocasa adGroupId:336929706855595 使用Excel campaignId:545985618892236
+2026-09-18 02:16:51 - amazon_ca_piccocasa adGroupId:336929706855595 已有target 63个
+2026-09-18 02:16:51 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0B5FGD4RX
+2026-09-18 02:16:51 - amazon_uk2 adGroupId:495807031586115 使用Excel campaignId:379490285698626
+2026-09-18 02:16:52 - amazon_uk2 adGroupId:495807031586115 已有target 141个
+2026-09-18 02:16:52 - ⏭️ amazon_uk2 target已存在且enabled: B0BSBW7718
+2026-09-18 02:16:52 - ⏭️ amazon_uk2 target已存在且enabled: B0BSBWMW4P
+2026-09-18 02:16:52 - amazon adGroupId:237491964590617 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:16:54 - amazon adGroupId:237491964590617 Amazon API查到 campaignId:213473243496733
+2026-09-18 02:16:54 - amazon adGroupId:237491964590617 使用Excel campaignId:213473243496733
+2026-09-18 02:16:56 - amazon adGroupId:237491964590617 已有target 19个
+2026-09-18 02:16:56 - ⏭️ amazon target已存在且enabled: B085DBPB8L
+2026-09-18 02:16:56 - amazon_ca_piccocasa adGroupId:376396618095358 使用Excel campaignId:287145215027174
+2026-09-18 02:16:57 - amazon_ca_piccocasa adGroupId:376396618095358 已有target 136个
+2026-09-18 02:16:57 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0CBMT1LJV
+2026-09-18 02:16:57 - amazon_ca_sopro adGroupId:544828965373300 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:16:58 - amazon_ca_sopro adGroupId:544828965373300 Amazon API查到 campaignId:311090839533884
+2026-09-18 02:16:58 - amazon_ca_sopro adGroupId:544828965373300 使用Excel campaignId:311090839533884
+2026-09-18 02:17:00 - amazon_ca_sopro adGroupId:544828965373300 已有target 180个
+2026-09-18 02:17:00 - amazon_ca_sopro adGroupId:544828965373300 创建target: 2个
+2026-09-18 02:17:01 - ✅ amazon_ca_sopro 创建target成功: 157637084535351 - B019CXVE9G
+2026-09-18 02:17:01 - ✅ amazon_ca_sopro 创建target成功: 123378775154748 - B0FRLC5YF1
+2026-09-18 02:17:01 - amazon_uk2 adGroupId:370949315735307 使用Excel campaignId:504603695020136
+2026-09-18 02:17:02 - amazon_uk2 adGroupId:370949315735307 已有target 21个
+2026-09-18 02:17:02 - ⏭️ amazon_uk2 target已存在且enabled: B0992KG5B1
+2026-09-18 02:17:02 - ⏭️ amazon_uk2 target已存在且enabled: B098XL7LH4
+2026-09-18 02:17:02 - amazon_us_hope adGroupId:548521882977456 使用Excel campaignId:363784530739666
+2026-09-18 02:17:03 - amazon_us_hope adGroupId:548521882977456 已有target 37个
+2026-09-18 02:17:03 - ⏭️ amazon_us_hope target已存在且enabled: B0DGLPGQ3G
+2026-09-18 02:17:03 - amazon_ca_hero adGroupId:419932760003434 使用Excel campaignId:380203317796205
+2026-09-18 02:17:05 - amazon_ca_hero adGroupId:419932760003434 已有target 6个
+2026-09-18 02:17:05 - ⏭️ amazon_ca_hero target已存在且enabled: B0G64ZDMDR
+2026-09-18 02:17:05 - amazon_us_swi adGroupId:251107890472436 使用Excel campaignId:269513286542571
+2026-09-18 02:17:06 - amazon_us_swi adGroupId:251107890472436 已有target 45个
+2026-09-18 02:17:06 - ⏭️ amazon_us_swi target已存在且enabled: B0F5W67C1C
+2026-09-18 02:17:06 - amazon_us_find adGroupId:464725414546252 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:07 - amazon_us_find adGroupId:464725414546252 Amazon API查到 campaignId:481404676313821
+2026-09-18 02:17:07 - amazon_us_find adGroupId:464725414546252 使用Excel campaignId:481404676313821
+2026-09-18 02:17:08 - amazon_us_find adGroupId:464725414546252 已有target 116个
+2026-09-18 02:17:08 - ⏭️ amazon_us_find target已存在且enabled: B0D7CXVX1H
+2026-09-18 02:17:08 - amazon_uk2 adGroupId:461493206673195 使用Excel campaignId:167555154908321
+2026-09-18 02:17:09 - amazon_uk2 adGroupId:461493206673195 已有target 135个
+2026-09-18 02:17:09 - ⏭️ amazon_uk2 target已存在且enabled: B09YYBCGG5
+2026-09-18 02:17:09 - amazon_ca_piccocasa adGroupId:370353965984058 使用Excel campaignId:424373771638744
+2026-09-18 02:17:11 - amazon_ca_piccocasa adGroupId:370353965984058 已有target 166个
+2026-09-18 02:17:11 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0DG93BP95
+2026-09-18 02:17:11 - amazon_ca_piccocasa adGroupId:494670372072929 使用Excel campaignId:359131222458752
+2026-09-18 02:17:12 - amazon_ca_piccocasa adGroupId:494670372072929 已有target 135个
+2026-09-18 02:17:12 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0B66YD3KM
+2026-09-18 02:17:12 - amazon_uk2 adGroupId:245627094358744 使用Excel campaignId:168296403354749
+2026-09-18 02:17:13 - amazon_uk2 adGroupId:245627094358744 已有target 102个
+2026-09-18 02:17:13 - amazon_uk2 adGroupId:245627094358744 创建target: 1个
+2026-09-18 02:17:14 - ✅ amazon_uk2 创建target成功: 191723742957240 - B0G4W1CTNC
+2026-09-18 02:17:14 - amazon_us_ac1 adGroupId:260299490814954 使用Excel campaignId:281368716126916
+2026-09-18 02:17:15 - amazon_us_ac1 adGroupId:260299490814954 已有target 2个
+2026-09-18 02:17:15 - ⏭️ amazon_us_ac1 target已存在且enabled: B0H15XYDJ4
+2026-09-18 02:17:15 - amazon_uk2 adGroupId:459099391840467 使用Excel campaignId:478494292954194
+2026-09-18 02:17:17 - amazon_uk2 adGroupId:459099391840467 已有target 109个
+2026-09-18 02:17:17 - ⏭️ amazon_uk2 target已存在且enabled: B0FT15DQGL
+2026-09-18 02:17:17 - amazon_us_tuto adGroupId:429729350965087 使用Excel campaignId:51813574595651
+2026-09-18 02:17:17 - amazon_us_tuto adGroupId:429729350965087 已有target 30个
+2026-09-18 02:17:17 - ⏭️ amazon_us_tuto target已存在且enabled: B07RK3JYZN
+2026-09-18 02:17:17 - ⏭️ amazon_us_tuto target已存在且enabled: B0BKZSD1QR
+2026-09-18 02:17:18 - amazon_us_luux adGroupId:421074896759578 使用Excel campaignId:557798014375958
+2026-09-18 02:17:18 - amazon_us_luux adGroupId:421074896759578 已有target 6个
+2026-09-18 02:17:18 - ⏭️ amazon_us_luux target已存在且enabled: B0CM3XW6B6
+2026-09-18 02:17:19 - amazon_ca_ifn adGroupId:352234396141280 使用Excel campaignId:503902601732899
+2026-09-18 02:17:19 - amazon_ca_ifn adGroupId:352234396141280 已有target 13个
+2026-09-18 02:17:19 - ⏭️ amazon_ca_ifn target已存在且enabled: B0F83SS8X1
+2026-09-18 02:17:19 - amazon_uk_moto adGroupId:524881191072744 使用Excel campaignId:457739266711003
+2026-09-18 02:17:20 - amazon_uk_moto adGroupId:524881191072744 已有target 121个
+2026-09-18 02:17:20 - ⏭️ amazon_uk_moto target已存在且enabled: B0DJ96RNSS
+2026-09-18 02:17:20 - amazon adGroupId:189201017307303 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:21 - amazon adGroupId:189201017307303 Amazon API查到 campaignId:184540146794732
+2026-09-18 02:17:21 - amazon adGroupId:189201017307303 使用Excel campaignId:184540146794732
+2026-09-18 02:17:23 - amazon adGroupId:189201017307303 已有target 92个
+2026-09-18 02:17:23 - ⏭️ amazon target已存在且enabled: B0DN6MJGMQ
+2026-09-18 02:17:23 - amazon adGroupId:526452274968147 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:24 - amazon adGroupId:526452274968147 Amazon API查到 campaignId:470658071944639
+2026-09-18 02:17:24 - amazon adGroupId:526452274968147 使用Excel campaignId:470658071944639
+2026-09-18 02:17:24 - amazon adGroupId:526452274968147 已有target 38个
+2026-09-18 02:17:24 - ⏭️ amazon target已存在且enabled: B075VB8YZS
+2026-09-18 02:17:25 - amazon_uk_tuto adGroupId:547226759062505 使用Excel campaignId:446537127494888
+2026-09-18 02:17:25 - amazon_uk_tuto adGroupId:547226759062505 已有target 3个
+2026-09-18 02:17:25 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DHL69PL4
+2026-09-18 02:17:25 - amazon_us_ac1 adGroupId:208515665061629 使用Excel campaignId:94507650148423
+2026-09-18 02:17:26 - amazon_us_ac1 adGroupId:208515665061629 已有target 73个
+2026-09-18 02:17:26 - amazon_us_ac1 adGroupId:208515665061629 创建target: 1个
+2026-09-18 02:17:27 - ✅ amazon_us_ac1 创建target成功: 193626984567068 - B082PPH3Z2
+2026-09-18 02:17:28 - amazon_us_ifn adGroupId:315496421019255 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:28 - amazon_us_ifn adGroupId:315496421019255 Amazon API查到 campaignId:193059211300890
+2026-09-18 02:17:28 - amazon_us_ifn adGroupId:315496421019255 使用Excel campaignId:193059211300890
+2026-09-18 02:17:29 - amazon_us_ifn adGroupId:315496421019255 已有target 2个
+2026-09-18 02:17:29 - amazon_us_ifn adGroupId:315496421019255 创建target: 1个
+2026-09-18 02:17:30 - ✅ amazon_us_ifn 创建target成功: 71991257354829 - B0G4GNMSPW
+2026-09-18 02:17:31 - amazon_ca_find adGroupId:106216485009823 使用Excel campaignId:229679872804239
+2026-09-18 02:17:31 - amazon_ca_find adGroupId:106216485009823 已有target 3个
+2026-09-18 02:17:31 - ⏭️ amazon_ca_find target已存在且enabled: B0GHP4BMZV
+2026-09-18 02:17:31 - amazon adGroupId:424095280954779 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:32 - amazon adGroupId:424095280954779 Amazon API查到 campaignId:121519398980392
+2026-09-18 02:17:32 - amazon adGroupId:424095280954779 使用Excel campaignId:121519398980392
+2026-09-18 02:17:33 - amazon adGroupId:424095280954779 已有target 26个
+2026-09-18 02:17:33 - amazon adGroupId:424095280954779 创建target: 9个
+2026-09-18 02:17:34 - ✅ amazon 创建target成功: 144014774666681 - B0039Z5TYU
+2026-09-18 02:17:34 - ✅ amazon 创建target成功: 271401858344599 - B0FFHMMLTC
+2026-09-18 02:17:34 - ✅ amazon 创建target成功: 143590761082337 - B0FFHMRN8L
+2026-09-18 02:17:34 - ✅ amazon 创建target成功: 50765021961151 - B078SRC9LB
+2026-09-18 02:17:34 - ✅ amazon 创建target成功: 91485374344623 - B01I3C64ZQ
+2026-09-18 02:17:34 - ✅ amazon 创建target成功: 205727364220813 - B0D1RLJC8V
+2026-09-18 02:17:34 - ✅ amazon 创建target成功: 196851261893190 - B0751CBXBT
+2026-09-18 02:17:34 - ✅ amazon 创建target成功: 272190533335298 - B09MLTQTTC
+2026-09-18 02:17:35 - ❌ amazon 创建target失败: B0D1RLJC8V
+2026-09-18 02:17:35 - amazon adGroupId:251717347273244 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:35 - amazon adGroupId:251717347273244 Amazon API查到 campaignId:225040954511642
+2026-09-18 02:17:35 - amazon adGroupId:251717347273244 使用Excel campaignId:225040954511642
+2026-09-18 02:17:36 - amazon adGroupId:251717347273244 已有target 63个
+2026-09-18 02:17:36 - amazon adGroupId:251717347273244 创建target: 2个
+2026-09-18 02:17:38 - ✅ amazon 创建target成功: 146396808363020 - B0D79K39B5
+2026-09-18 02:17:38 - ✅ amazon 创建target成功: 263040355303512 - B08DFMKHF4
+2026-09-18 02:17:38 - amazon_us_moto adGroupId:414540607232495 使用Excel campaignId:441084638816464
+2026-09-18 02:17:39 - amazon_us_moto adGroupId:414540607232495 已有target 39个
+2026-09-18 02:17:39 - amazon_us_moto adGroupId:414540607232495 创建target: 1个
+2026-09-18 02:17:40 - ✅ amazon_us_moto 创建target成功: 191803483217455 - B0BZHP5D8J
+2026-09-18 02:17:40 - amazon_ca_piccocasa adGroupId:354546810733311 使用Excel campaignId:419660884307142
+2026-09-18 02:17:41 - amazon_ca_piccocasa adGroupId:354546810733311 已有target 2个
+2026-09-18 02:17:41 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0BTY36GVY
+2026-09-18 02:17:41 - amazon_us_luux adGroupId:516613272829218 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:42 - amazon_us_luux adGroupId:516613272829218 Amazon API查到 campaignId:482328218149314
+2026-09-18 02:17:42 - amazon_us_luux adGroupId:516613272829218 使用Excel campaignId:482328218149314
+2026-09-18 02:17:43 - amazon_us_luux adGroupId:516613272829218 已有target 18个
+2026-09-18 02:17:43 - ⏭️ amazon_us_luux target已存在且enabled: B0B24BFT44
+2026-09-18 02:17:43 - amazon_ca_tuc adGroupId:401456032237948 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:44 - amazon_ca_tuc adGroupId:401456032237948 Amazon API查到 campaignId:266127362174204
+2026-09-18 02:17:44 - amazon_ca_tuc adGroupId:401456032237948 使用Excel campaignId:266127362174204
+2026-09-18 02:17:44 - amazon_ca_tuc adGroupId:401456032237948 已有target 8个
+2026-09-18 02:17:44 - ⏭️ amazon_ca_tuc target已存在且enabled: B0FWKK6B6Q
+2026-09-18 02:17:45 - amazon adGroupId:120558013198134 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:46 - amazon adGroupId:120558013198134 Amazon API查到 campaignId:112069045148198
+2026-09-18 02:17:46 - amazon adGroupId:120558013198134 使用Excel campaignId:112069045148198
+2026-09-18 02:17:46 - amazon adGroupId:120558013198134 已有target 46个
+2026-09-18 02:17:46 - ⏭️ amazon target已存在且enabled: B0042ORWNI
+2026-09-18 02:17:47 - amazon_ca_piccocasa adGroupId:476828442870653 使用Excel campaignId:329657134437145
+2026-09-18 02:17:48 - amazon_ca_piccocasa adGroupId:476828442870653 已有target 85个
+2026-09-18 02:17:48 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0BGXQRGK7
+2026-09-18 02:17:48 - amazon_ca_hero adGroupId:342510263649858 使用Excel campaignId:434607891018091
+2026-09-18 02:17:48 - amazon_ca_hero adGroupId:342510263649858 已有target 31个
+2026-09-18 02:17:48 - ⏭️ amazon_ca_hero target已存在且enabled: B0FPR516H6
+2026-09-18 02:17:48 - ⏭️ amazon_ca_hero target已存在且enabled: B0FDNR5G68
+2026-09-18 02:17:48 - amazon adGroupId:225189462296184 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:50 - amazon adGroupId:225189462296184 Amazon API查到 campaignId:97179716504826
+2026-09-18 02:17:50 - amazon adGroupId:225189462296184 使用Excel campaignId:97179716504826
+2026-09-18 02:17:51 - amazon adGroupId:225189462296184 已有target 5个
+2026-09-18 02:17:51 - amazon adGroupId:225189462296184 创建target: 1个
+2026-09-18 02:17:52 - ✅ amazon 创建target成功: 34591370539558 - B000C5CEU2
+2026-09-18 02:17:52 - amazon_ca_lift adGroupId:488712302705639 使用Excel campaignId:306661347001623
+2026-09-18 02:17:54 - amazon_ca_lift adGroupId:488712302705639 已有target 101个
+2026-09-18 02:17:54 - amazon_ca_lift adGroupId:488712302705639 创建target: 1个
+2026-09-18 02:17:55 - ✅ amazon_ca_lift 创建target成功: 66141798009377 - B0F38H23PT
+2026-09-18 02:17:55 - amazon_ca_piccocasa adGroupId:468868066951236 使用Excel campaignId:461720929846803
+2026-09-18 02:17:56 - amazon_ca_piccocasa adGroupId:468868066951236 已有target 48个
+2026-09-18 02:17:56 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B078G6FLHM
+2026-09-18 02:17:56 - amazon_ca_ac1 adGroupId:88853644556415 使用Excel campaignId:178443465486402
+2026-09-18 02:17:57 - amazon_ca_ac1 adGroupId:88853644556415 已有target 47个
+2026-09-18 02:17:57 - ⏭️ amazon_ca_ac1 target已存在且enabled: B0B8BTBYMP
+2026-09-18 02:17:57 - amazon_us_luux adGroupId:420752699170106 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:58 - amazon_us_luux adGroupId:420752699170106 Amazon API查到 campaignId:464786788961648
+2026-09-18 02:17:58 - amazon_us_luux adGroupId:420752699170106 使用Excel campaignId:464786788961648
+2026-09-18 02:17:59 - amazon_us_luux adGroupId:420752699170106 已有target 23个
+2026-09-18 02:17:59 - ⏭️ amazon_us_luux target已存在且enabled: B0FJS41T9S
+2026-09-18 02:17:59 - amazon_us_hero adGroupId:117355397014908 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:17:59 - amazon_us_hero adGroupId:117355397014908 Amazon API查到 campaignId:136514547206884
+2026-09-18 02:17:59 - amazon_us_hero adGroupId:117355397014908 使用Excel campaignId:136514547206884
+2026-09-18 02:18:00 - amazon_us_hero adGroupId:117355397014908 已有target 7个
+2026-09-18 02:18:00 - ⏭️ amazon_us_hero target已存在且enabled: B0DRGBMSSB
+2026-09-18 02:18:00 - amazon_uk_tuto adGroupId:422853232932837 使用Excel campaignId:555595819812429
+2026-09-18 02:18:01 - amazon_uk_tuto adGroupId:422853232932837 已有target 23个
+2026-09-18 02:18:01 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DHJK62MW
+2026-09-18 02:18:01 - amazon_uk_tuto adGroupId:406292046937266 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:18:02 - amazon_uk_tuto adGroupId:406292046937266 Amazon API查到 campaignId:453184151000814
+2026-09-18 02:18:02 - amazon_uk_tuto adGroupId:406292046937266 使用Excel campaignId:453184151000814
+2026-09-18 02:18:03 - amazon_uk_tuto adGroupId:406292046937266 已有target 1个
+2026-09-18 02:18:03 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DJ7C2F9Y
+2026-09-18 02:18:04 - amazon_uk2 adGroupId:29111089545810 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:18:04 - amazon_uk2 adGroupId:29111089545810 Amazon API查到 campaignId:245679504857092
+2026-09-18 02:18:04 - amazon_uk2 adGroupId:29111089545810 使用Excel campaignId:245679504857092
+2026-09-18 02:18:05 - amazon_uk2 adGroupId:29111089545810 已有target 9个
+2026-09-18 02:18:05 - ⏭️ amazon_uk2 target已存在且enabled: B07YWWHCHN
+2026-09-18 02:18:05 - amazon_uk_sopro adGroupId:377356482021193 使用Excel campaignId:291961062944914
+2026-09-18 02:18:06 - amazon_uk_sopro adGroupId:377356482021193 已有target 89个
+2026-09-18 02:18:06 - ⏭️ amazon_uk_sopro target已存在且enabled: B0FDG8V12P
+2026-09-18 02:18:06 - ⏭️ amazon_uk_sopro target已存在且enabled: B0GRG4Y9HF
+2026-09-18 02:18:06 - ⏭️ amazon_uk_sopro target已存在且enabled: B001AXLUX2
+2026-09-18 02:18:06 - ⏭️ amazon_uk_sopro target已存在且enabled: B0CHMC5G88
+2026-09-18 02:18:06 - ⏭️ amazon_uk_sopro target已存在且enabled: B0GRG4Y9HF
+2026-09-18 02:18:06 - ⏭️ amazon_uk_sopro target已存在且enabled: B001AXLUX2
+2026-09-18 02:18:06 - ⏭️ amazon_uk_sopro target已存在且enabled: B0CHMC5G88
+2026-09-18 02:18:07 - amazon_ca_find adGroupId:27398009080364 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:18:07 - amazon_ca_find adGroupId:27398009080364 Amazon API查到 campaignId:120855531005705
+2026-09-18 02:18:07 - amazon_ca_find adGroupId:27398009080364 使用Excel campaignId:120855531005705
+2026-09-18 02:18:08 - amazon_ca_find adGroupId:27398009080364 已有target 1个
+2026-09-18 02:18:08 - ⏭️ amazon_ca_find target已存在且enabled: B0CNZ2RPJW
+2026-09-18 02:18:08 - amazon_uk2 adGroupId:373189718765124 使用Excel campaignId:440242206110191
+2026-09-18 02:18:10 - amazon_uk2 adGroupId:373189718765124 已有target 112个
+2026-09-18 02:18:10 - ⏭️ amazon_uk2 target已存在且enabled: B0CJ9LDVKW
+2026-09-18 02:18:11 - amazon_uk_sopro adGroupId:210892208459148 使用Excel campaignId:254023048123562
+2026-09-18 02:18:12 - amazon_uk_sopro adGroupId:210892208459148 已有target 44个
+2026-09-18 02:18:12 - ⏭️ amazon_uk_sopro target已存在且enabled: B0FFYPMCVP
+2026-09-18 02:18:12 - amazon_ca_tuc adGroupId:505686277669007 使用Excel campaignId:223022847217881
+2026-09-18 02:18:14 - amazon_ca_tuc adGroupId:505686277669007 已有target 1个
+2026-09-18 02:18:14 - ⏭️ amazon_ca_tuc target已存在且enabled: B0F7QZ7JYB
+2026-09-18 02:18:14 - amazon_ca_find adGroupId:560913346275460 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:18:14 - amazon_ca_find adGroupId:560913346275460 Amazon API查到 campaignId:555083642768360
+2026-09-18 02:18:14 - amazon_ca_find adGroupId:560913346275460 使用Excel campaignId:555083642768360
+2026-09-18 02:18:15 - amazon_ca_find adGroupId:560913346275460 已有target 97个
+2026-09-18 02:18:15 - ⏭️ amazon_ca_find target已存在且enabled: B0B3F5VBYX
+2026-09-18 02:18:15 - amazon_uk_tuto adGroupId:383287824865339 使用Excel campaignId:531858912458255
+2026-09-18 02:18:17 - amazon_uk_tuto adGroupId:383287824865339 已有target 98个
+2026-09-18 02:18:17 - ⏭️ amazon_uk_tuto target已存在且enabled: B0FKTFRH5Z
+2026-09-18 02:18:17 - ⏭️ amazon_uk_tuto target已存在且enabled: B00TAH2M0K
+2026-09-18 02:18:17 - amazon_ca_hood adGroupId:353940042554909 使用Excel campaignId:489593705301252
+2026-09-18 02:18:18 - amazon_ca_hood adGroupId:353940042554909 已有target 29个
+2026-09-18 02:18:18 - ⏭️ amazon_ca_hood target已存在且enabled: B0F26D2PCN
+2026-09-18 02:18:18 - amazon adGroupId:394545142081501 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:18:19 - amazon adGroupId:394545142081501 Amazon API查到 campaignId:325888264766740
+2026-09-18 02:18:19 - amazon adGroupId:394545142081501 使用Excel campaignId:325888264766740
+2026-09-18 02:18:20 - amazon adGroupId:394545142081501 已有target 15个
+2026-09-18 02:18:20 - ⏭️ amazon target已存在且enabled: B0CY279ST6
+2026-09-18 02:18:20 - amazon_ca_rrc adGroupId:548541356104236 使用Excel campaignId:345532850360036
+2026-09-18 02:18:21 - amazon_ca_rrc adGroupId:548541356104236 已有target 49个
+2026-09-18 02:18:21 - ⏭️ amazon_ca_rrc target已存在且enabled: B0D3V2264P
+2026-09-18 02:18:22 - amazon_uk2 adGroupId:436365687772437 使用Excel campaignId:356206986336297
+2026-09-18 02:18:23 - amazon_uk2 adGroupId:436365687772437 已有target 50个
+2026-09-18 02:18:23 - ⏭️ amazon_uk2 target已存在且enabled: B0CJCCYL2S
+2026-09-18 02:18:23 - amazon_ca_tuto adGroupId:195332614621456 使用Excel campaignId:84105250584461
+2026-09-18 02:18:24 - amazon_ca_tuto adGroupId:195332614621456 已有target 15个
+2026-09-18 02:18:24 - ⏭️ amazon_ca_tuto target已存在且enabled: B0FQP91ZDR
+2026-09-18 02:18:24 - amazon_ca_ifn adGroupId:464596736584832 使用Excel campaignId:503902601732899
+2026-09-18 02:18:25 - amazon_ca_ifn adGroupId:464596736584832 已有target 13个
+2026-09-18 02:18:25 - ⏭️ amazon_ca_ifn target已存在且enabled: B0F83XMQ5J
+2026-09-18 02:18:25 - amazon adGroupId:429114657274260 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:18:26 - amazon adGroupId:429114657274260 Amazon API查到 campaignId:200472578281457
+2026-09-18 02:18:26 - amazon adGroupId:429114657274260 使用Excel campaignId:200472578281457
+2026-09-18 02:18:27 - amazon adGroupId:429114657274260 已有target 13个
+2026-09-18 02:18:27 - ⏭️ amazon target已存在且enabled: B0BZ877VN3
+2026-09-18 02:18:27 - amazon_ca_find adGroupId:478797910640467 使用Excel campaignId:559315260352865
+2026-09-18 02:18:29 - amazon_ca_find adGroupId:478797910640467 已有target 14个
+2026-09-18 02:18:29 - ⏭️ amazon_ca_find target已存在且enabled: B0DLL18MW9
+2026-09-18 02:18:29 - amazon adGroupId:193401124402262 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:18:29 - amazon adGroupId:193401124402262 Amazon API查到 campaignId:170900881622593
+2026-09-18 02:18:29 - amazon adGroupId:193401124402262 使用Excel campaignId:170900881622593
+2026-09-18 02:18:31 - amazon adGroupId:193401124402262 已有target 18个
+2026-09-18 02:18:31 - amazon adGroupId:193401124402262 创建target: 2个
+2026-09-18 02:18:32 - ✅ amazon 创建target成功: 79594290890041 - B0D78PFFGZ
+2026-09-18 02:18:32 - ✅ amazon 创建target成功: 42944422252111 - B0DPFKZPHZ
+2026-09-18 02:18:32 - amazon_us_tuto adGroupId:400292245273259 使用Excel campaignId:266258630261122
+2026-09-18 02:18:33 - amazon_us_tuto adGroupId:400292245273259 已有target 6个
+2026-09-18 02:18:33 - ⏭️ amazon_us_tuto target已存在且enabled: B0GR96J25R
+2026-09-18 02:18:33 - amazon adGroupId:432505800337430 使用Excel campaignId:501709287860337
+2026-09-18 02:18:34 - amazon adGroupId:432505800337430 已有target 200个
+2026-09-18 02:18:34 - ⏭️ amazon target已存在且enabled: B0CJCDZPG8
+2026-09-18 02:18:34 - amazon_ca_hood adGroupId:546457602135155 使用Excel campaignId:333974694245341
+2026-09-18 02:18:35 - amazon_ca_hood adGroupId:546457602135155 已有target 14个
+2026-09-18 02:18:35 - ⏭️ amazon_ca_hood target已存在且enabled: B0FB9GR1G6
+2026-09-18 02:18:35 - amazon adGroupId:50636112789864 使用Excel campaignId:160257907730949
+2026-09-18 02:18:37 - amazon adGroupId:50636112789864 已有target 47个
+2026-09-18 02:18:37 - amazon adGroupId:50636112789864 创建target: 1个
+2026-09-18 02:18:39 - ✅ amazon 创建target成功: 259732366187227 - B0CBWJZ62J
+2026-09-18 02:18:39 - amazon_uk_tuc adGroupId:424531773644887 使用Excel campaignId:301232635588937
+2026-09-18 02:18:40 - amazon_uk_tuc adGroupId:424531773644887 已有target 67个
+2026-09-18 02:18:40 - ⏭️ amazon_uk_tuc target已存在且enabled: B0DHKZY9X5
+2026-09-18 02:18:40 - amazon adGroupId:93719116059079 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:18:41 - amazon adGroupId:93719116059079 Amazon API查到 campaignId:131494784731465
+2026-09-18 02:18:41 - amazon adGroupId:93719116059079 使用Excel campaignId:131494784731465
+2026-09-18 02:18:42 - amazon adGroupId:93719116059079 已有target 23个
+2026-09-18 02:18:42 - amazon adGroupId:93719116059079 创建target: 3个
+2026-09-18 02:18:43 - ✅ amazon 创建target成功: 132070078912973 - B08CT826SP
+2026-09-18 02:18:43 - ✅ amazon 创建target成功: 273044537951915 - B07SR774Y6
+2026-09-18 02:18:43 - ✅ amazon 创建target成功: 198713042518320 - B07JHHJ5LM
+2026-09-18 02:18:43 - amazon_ca_rrc adGroupId:400092842847040 使用Excel campaignId:529905204200619
+2026-09-18 02:18:44 - amazon_ca_rrc adGroupId:400092842847040 已有target 7个
+2026-09-18 02:18:44 - ⏭️ amazon_ca_rrc target已存在且enabled: B0FMQT3SK9
+2026-09-18 02:18:44 - amazon_ca_hope adGroupId:139755838824291 使用Excel campaignId:268150820621549
+2026-09-18 02:18:45 - amazon_ca_hope adGroupId:139755838824291 已有target 30个
+2026-09-18 02:18:45 - ⏭️ amazon_ca_hope target已存在且enabled: B0GF89DQ58
+2026-09-18 02:18:45 - amazon_us_hope adGroupId:483244191620003 使用Excel campaignId:323581291754623
+2026-09-18 02:18:46 - amazon_us_hope adGroupId:483244191620003 已有target 30个
+2026-09-18 02:18:46 - ⏭️ amazon_us_hope target已存在且enabled: B0DS1NMNPZ
+2026-09-18 02:18:46 - amazon_uk_tuc adGroupId:533651288547557 使用Excel campaignId:362605779175929
+2026-09-18 02:18:48 - amazon_uk_tuc adGroupId:533651288547557 已有target 135个
+2026-09-18 02:18:48 - ⏭️ amazon_uk_tuc target已存在且enabled: B0DCZPH7BQ
+2026-09-18 02:18:48 - ⏭️ amazon_uk_tuc target已存在且enabled: B0DCZR12SQ
+2026-09-18 02:18:48 - amazon_ca_piccocasa adGroupId:417234802863998 使用Excel campaignId:546347693505450
+2026-09-18 02:18:50 - amazon_ca_piccocasa adGroupId:417234802863998 已有target 133个
+2026-09-18 02:18:50 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0DHZZ1HWZ
+2026-09-18 02:18:50 - amazon_uk_tuto adGroupId:503125514603213 使用Excel campaignId:302697996373150
+2026-09-18 02:18:51 - amazon_uk_tuto adGroupId:503125514603213 已有target 2个
+2026-09-18 02:18:51 - ⏭️ amazon_uk_tuto target已存在且enabled: B0FNDB7V21
+2026-09-18 02:18:51 - amazon_us_hood adGroupId:395104085852409 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:18:52 - amazon_us_hood adGroupId:395104085852409 Amazon API查到 campaignId:222072643844671
+2026-09-18 02:18:52 - amazon_us_hood adGroupId:395104085852409 使用Excel campaignId:222072643844671
+2026-09-18 02:18:53 - amazon_us_hood adGroupId:395104085852409 已有target 52个
+2026-09-18 02:18:53 - ⏭️ amazon_us_hood target已存在且enabled: B0D2H3PVH3
+2026-09-18 02:18:53 - amazon_uk_tuto adGroupId:522770700671423 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:18:54 - amazon_uk_tuto adGroupId:522770700671423 Amazon API查到 campaignId:536058235296072
+2026-09-18 02:18:54 - amazon_uk_tuto adGroupId:522770700671423 使用Excel campaignId:536058235296072
+2026-09-18 02:18:56 - amazon_uk_tuto adGroupId:522770700671423 已有target 1个
+2026-09-18 02:18:56 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DN6R96VW
+2026-09-18 02:18:56 - amazon_ca_hood adGroupId:482612761919000 使用Excel campaignId:444422582656886
+2026-09-18 02:18:58 - amazon_ca_hood adGroupId:482612761919000 已有target 9个
+2026-09-18 02:18:58 - ⏭️ amazon_ca_hood target已存在且enabled: B0FNRQS91Q
+2026-09-18 02:18:58 - amazon adGroupId:328821051968421 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:19:00 - amazon adGroupId:328821051968421 Amazon API查到 campaignId:202456784192238
+2026-09-18 02:19:00 - amazon adGroupId:328821051968421 使用Excel campaignId:202456784192238
+2026-09-18 02:19:01 - amazon adGroupId:328821051968421 已有target 19个
+2026-09-18 02:19:01 - ⏭️ amazon target已存在且enabled: B08DWLXZQD
+2026-09-18 02:19:01 - amazon_ca_ifn adGroupId:212013363966552 使用Excel campaignId:191641005142725
+2026-09-18 02:19:02 - amazon_ca_ifn adGroupId:212013363966552 已有target 14个
+2026-09-18 02:19:02 - ⏭️ amazon_ca_ifn target已存在且enabled: B0CPDQX6S2
+2026-09-18 02:19:02 - amazon_us_ifn adGroupId:478487973876522 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:19:03 - amazon_us_ifn adGroupId:478487973876522 Amazon API查到 campaignId:85924700400961
+2026-09-18 02:19:03 - amazon_us_ifn adGroupId:478487973876522 使用Excel campaignId:85924700400961
+2026-09-18 02:19:04 - amazon_us_ifn adGroupId:478487973876522 已有target 2个
+2026-09-18 02:19:04 - ⏭️ amazon_us_ifn target已存在且enabled: B0FGTTVKRP
+2026-09-18 02:19:04 - amazon_uk_tuc adGroupId:421031142637233 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:19:05 - amazon_uk_tuc adGroupId:421031142637233 Amazon API查到 campaignId:396727652492729
+2026-09-18 02:19:05 - amazon_uk_tuc adGroupId:421031142637233 使用Excel campaignId:396727652492729
+2026-09-18 02:19:06 - amazon_uk_tuc adGroupId:421031142637233 已有target 1个
+2026-09-18 02:19:06 - ⏭️ amazon_uk_tuc target已存在且enabled: B08317F8RF
+2026-09-18 02:19:06 - amazon_us_luux adGroupId:531832663675897 使用Excel campaignId:322626705171252
+2026-09-18 02:19:07 - amazon_us_luux adGroupId:531832663675897 已有target 121个
+2026-09-18 02:19:07 - ⏭️ amazon_us_luux target已存在且enabled: B0006ZCGXI
+2026-09-18 02:19:07 - amazon adGroupId:523649336958364 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:19:08 - amazon adGroupId:523649336958364 Amazon API查到 campaignId:292198448594736
+2026-09-18 02:19:08 - amazon adGroupId:523649336958364 使用Excel campaignId:292198448594736
+2026-09-18 02:19:09 - amazon adGroupId:523649336958364 已有target 24个
+2026-09-18 02:19:09 - ⏭️ amazon target已存在且enabled: B07DMK3DV6
+2026-09-18 02:19:09 - amazon_ca_piccocasa adGroupId:537016141750131 使用Excel campaignId:430461815594372
+2026-09-18 02:19:10 - amazon_ca_piccocasa adGroupId:537016141750131 已有target 16个
+2026-09-18 02:19:10 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B08BP1QCLR
+2026-09-18 02:19:10 - amazon_ca_ifn adGroupId:465780297198058 使用Excel campaignId:485226571339642
+2026-09-18 02:19:11 - amazon_ca_ifn adGroupId:465780297198058 已有target 5个
+2026-09-18 02:19:11 - ⏭️ amazon_ca_ifn target已存在且enabled: B0G64QCM3P
+2026-09-18 02:19:11 - amazon_ca_rrc adGroupId:496684287801604 使用Excel campaignId:332026638474155
+2026-09-18 02:19:12 - amazon_ca_rrc adGroupId:496684287801604 已有target 30个
+2026-09-18 02:19:12 - ⏭️ amazon_ca_rrc target已存在且enabled: B09KLNF9Q3
+2026-09-18 02:19:12 - amazon_ca_piccocasa adGroupId:488753048823340 使用Excel campaignId:404271763393159
+2026-09-18 02:19:13 - amazon_ca_piccocasa adGroupId:488753048823340 已有target 139个
+2026-09-18 02:19:13 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0BGY3J7XZ
+2026-09-18 02:19:14 - amazon_us_hope adGroupId:156369322217023 使用Excel campaignId:119083893820786
+2026-09-18 02:19:15 - amazon_us_hope adGroupId:156369322217023 已有target 15个
+2026-09-18 02:19:15 - ⏭️ amazon_us_hope target已存在且enabled: B0C3CTRFKC
+2026-09-18 02:19:15 - amazon_us_moto adGroupId:463522313429521 使用Excel campaignId:306043723346979
+2026-09-18 02:19:16 - amazon_us_moto adGroupId:463522313429521 已有target 39个
+2026-09-18 02:19:16 - ⏭️ amazon_us_moto target已存在且enabled: B0DB1Q3XHJ
+2026-09-18 02:19:16 - amazon_uk_hope adGroupId:244125683614693 使用Excel campaignId:219746612842721
+2026-09-18 02:19:17 - amazon_uk_hope adGroupId:244125683614693 已有target 6个
+2026-09-18 02:19:17 - ⏭️ amazon_uk_hope target已存在且enabled: B0FXLGS19T
+2026-09-18 02:19:18 - amazon_us_tuc adGroupId:176792441127770 使用Excel campaignId:251315409739843
+2026-09-18 02:19:19 - amazon_us_tuc adGroupId:176792441127770 已有target 36个
+2026-09-18 02:19:19 - ⏭️ amazon_us_tuc target已存在且enabled: B0DB4LTWNC
+2026-09-18 02:19:19 - amazon_us_swi adGroupId:170740341715979 使用Excel campaignId:266743535510834
+2026-09-18 02:19:20 - amazon_us_swi adGroupId:170740341715979 已有target 7个
+2026-09-18 02:19:20 - ⏭️ amazon_us_swi target已存在且enabled: B0F92FCFWN
+2026-09-18 02:19:20 - amazon_ca_ac1 adGroupId:503614299632385 使用Excel campaignId:467962212509534
+2026-09-18 02:19:21 - amazon_ca_ac1 adGroupId:503614299632385 已有target 75个
+2026-09-18 02:19:21 - ⏭️ amazon_ca_ac1 target已存在且enabled: B0CNQ13MZD
+2026-09-18 02:19:21 - ⏭️ amazon_ca_ac1 target已存在且enabled: B0CNQ26LV5
+2026-09-18 02:19:22 - amazon_ca_luck adGroupId:382495685323813 使用Excel campaignId:320431470688576
+2026-09-18 02:19:23 - amazon_ca_luck adGroupId:382495685323813 已有target 11个
+2026-09-18 02:19:23 - ⏭️ amazon_ca_luck target已存在且enabled: B0G2C9RTGD
+2026-09-18 02:19:23 - amazon_us_sopro adGroupId:23488604104854 使用Excel campaignId:126750928613713
+2026-09-18 02:19:24 - amazon_us_sopro adGroupId:23488604104854 已有target 46个
+2026-09-18 02:19:24 - ⏭️ amazon_us_sopro target已存在且enabled: B0FWJR1HZ3
+2026-09-18 02:19:24 - amazon_uk_tuto adGroupId:330174338069123 使用Excel campaignId:427972436243469
+2026-09-18 02:19:25 - amazon_uk_tuto adGroupId:330174338069123 已有target 18个
+2026-09-18 02:19:25 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DB2YJMNN
+2026-09-18 02:19:25 - amazon_ca_hope adGroupId:177760278343818 使用Excel campaignId:150939682010984
+2026-09-18 02:19:26 - amazon_ca_hope adGroupId:177760278343818 已有target 18个
+2026-09-18 02:19:26 - ⏭️ amazon_ca_hope target已存在且enabled: B00UG10ZTE
+2026-09-18 02:19:26 - amazon_us_hero adGroupId:200819499009764 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:19:27 - amazon_us_hero adGroupId:200819499009764 Amazon API查到 campaignId:28432951282692
+2026-09-18 02:19:27 - amazon_us_hero adGroupId:200819499009764 使用Excel campaignId:28432951282692
+2026-09-18 02:19:28 - amazon_us_hero adGroupId:200819499009764 已有target 1个
+2026-09-18 02:19:28 - ⏭️ amazon_us_hero target已存在且enabled: B0FJLZGWW4
+2026-09-18 02:19:28 - amazon_ca_piccocasa adGroupId:344051437024912 使用Excel campaignId:314731332325780
+2026-09-18 02:19:29 - amazon_ca_piccocasa adGroupId:344051437024912 已有target 181个
+2026-09-18 02:19:29 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0DGGR6P7D
+2026-09-18 02:19:29 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0DJ35X81V
+2026-09-18 02:19:30 - amazon adGroupId:437046941145198 使用Excel campaignId:336969677723518
+2026-09-18 02:19:31 - amazon adGroupId:437046941145198 已有target 46个
+2026-09-18 02:19:31 - ⏭️ amazon target已存在且enabled: B07RXT6DZT
+2026-09-18 02:19:31 - ⏭️ amazon target已存在且enabled: B07MWWGPBG
+2026-09-18 02:19:31 - amazon adGroupId:421571995635710 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:19:32 - amazon adGroupId:421571995635710 Amazon API查到 campaignId:456093775819188
+2026-09-18 02:19:32 - amazon adGroupId:421571995635710 使用Excel campaignId:456093775819188
+2026-09-18 02:19:34 - amazon adGroupId:421571995635710 已有target 200个
+2026-09-18 02:19:34 - ⏭️ amazon target已存在且enabled: B07RSQ7M67
+2026-09-18 02:19:34 - amazon_us_find adGroupId:464860938064617 使用Excel campaignId:61992732934137
+2026-09-18 02:19:35 - amazon_us_find adGroupId:464860938064617 已有target 58个
+2026-09-18 02:19:35 - ⏭️ amazon_us_find target已存在且enabled: B0F8GXGLQR
+2026-09-18 02:19:35 - amazon_ca_piccocasa adGroupId:327003733756916 使用Excel campaignId:498170919177197
+2026-09-18 02:19:36 - amazon_ca_piccocasa adGroupId:327003733756916 已有target 77个
+2026-09-18 02:19:36 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0C2Z65TQD
+2026-09-18 02:19:36 - amazon_us_cover adGroupId:166995710250567 使用Excel campaignId:101539069390781
+2026-09-18 02:19:38 - amazon_us_cover adGroupId:166995710250567 已有target 5个
+2026-09-18 02:19:38 - ⏭️ amazon_us_cover target已存在且enabled: B0CBWYWBSB
+2026-09-18 02:19:38 - amazon_ca_tuc adGroupId:527494138784105 使用Excel campaignId:292037748321068
+2026-09-18 02:19:39 - amazon_ca_tuc adGroupId:527494138784105 已有target 22个
+2026-09-18 02:19:39 - ⏭️ amazon_ca_tuc target已存在且enabled: B0DK57PT6Z
+2026-09-18 02:19:39 - amazon_ca_ac1 adGroupId:465820781008090 使用Excel campaignId:384611032638073
+2026-09-18 02:19:40 - amazon_ca_ac1 adGroupId:465820781008090 已有target 122个
+2026-09-18 02:19:40 - ⏭️ amazon_ca_ac1 target已存在且enabled: B0D16YX6TB
+2026-09-18 02:19:41 - amazon_us_hero adGroupId:431840537387521 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:19:41 - amazon_us_hero adGroupId:431840537387521 Amazon API查到 campaignId:560314961242879
+2026-09-18 02:19:41 - amazon_us_hero adGroupId:431840537387521 使用Excel campaignId:560314961242879
+2026-09-18 02:19:42 - amazon_us_hero adGroupId:431840537387521 已有target 11个
+2026-09-18 02:19:42 - amazon_us_hero adGroupId:431840537387521 创建target: 1个
+2026-09-18 02:19:44 - ✅ amazon_us_hero 创建target成功: 144169006695926 - B0CH196KH8
+2026-09-18 02:19:44 - amazon_ca_piccocasa adGroupId:545995844159291 使用Excel campaignId:405533129005216
+2026-09-18 02:19:46 - amazon_ca_piccocasa adGroupId:545995844159291 已有target 173个
+2026-09-18 02:19:46 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B08L5WLTDV
+2026-09-18 02:19:46 - amazon adGroupId:465540933707477 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:19:47 - amazon adGroupId:465540933707477 Amazon API查到 campaignId:498989616280192
+2026-09-18 02:19:47 - amazon adGroupId:465540933707477 使用Excel campaignId:498989616280192
+2026-09-18 02:19:47 - amazon adGroupId:465540933707477 已有target 8个
+2026-09-18 02:19:47 - ⏭️ amazon target已存在且enabled: B0DP6WYHVJ
+2026-09-18 02:19:47 - amazon adGroupId:127051887050145 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:19:48 - amazon adGroupId:127051887050145 Amazon API查到 campaignId:49747636929239
+2026-09-18 02:19:48 - amazon adGroupId:127051887050145 使用Excel campaignId:49747636929239
+2026-09-18 02:19:49 - amazon adGroupId:127051887050145 已有target 16个
+2026-09-18 02:19:49 - ⏭️ amazon target已存在且enabled: B0BX3ZFF8S
+2026-09-18 02:19:49 - amazon_uk_tuto adGroupId:516973860490373 使用Excel campaignId:404026381394881
+2026-09-18 02:19:50 - amazon_uk_tuto adGroupId:516973860490373 已有target 34个
+2026-09-18 02:19:50 - ⏭️ amazon_uk_tuto target已存在且enabled: B0D424GMZ8
+2026-09-18 02:19:50 - amazon_us_luux adGroupId:165250442111538 使用Excel campaignId:516952585987
+2026-09-18 02:19:51 - amazon_us_luux adGroupId:165250442111538 已有target 80个
+2026-09-18 02:19:51 - ⏭️ amazon_us_luux target已存在且enabled: B07LGNV26V
+2026-09-18 02:19:51 - amazon adGroupId:331653487750522 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:19:52 - amazon adGroupId:331653487750522 Amazon API查到 campaignId:211640044676074
+2026-09-18 02:19:52 - amazon adGroupId:331653487750522 使用Excel campaignId:211640044676074
+2026-09-18 02:19:53 - amazon adGroupId:331653487750522 已有target 72个
+2026-09-18 02:19:53 - ⏭️ amazon target已存在且enabled: B07RS9XLT6
+2026-09-18 02:19:53 - amazon_ca_piccocasa adGroupId:306537137923968 使用Excel campaignId:415614518928182
+2026-09-18 02:19:55 - amazon_ca_piccocasa adGroupId:306537137923968 已有target 173个
+2026-09-18 02:19:55 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0CMTJCZX4
+2026-09-18 02:19:55 - amazon_uk_ifn adGroupId:20325572478342 使用Excel campaignId:130610113453147
+2026-09-18 02:19:56 - amazon_uk_ifn adGroupId:20325572478342 已有target 20个
+2026-09-18 02:19:56 - ⏭️ amazon_uk_ifn target已存在且enabled: B0G1332VCY
+2026-09-18 02:19:56 - amazon_ca_ac1 adGroupId:9530567224041 使用Excel campaignId:163237292358025
+2026-09-18 02:19:57 - amazon_ca_ac1 adGroupId:9530567224041 已有target 484个
+2026-09-18 02:19:57 - ⏭️ amazon_ca_ac1 target已存在且enabled: B085T38KXQ
+2026-09-18 02:19:57 - amazon_ca_lift adGroupId:555310057283219 使用Excel campaignId:321959999770426
+2026-09-18 02:19:59 - amazon_ca_lift adGroupId:555310057283219 已有target 61个
+2026-09-18 02:19:59 - ⏭️ amazon_ca_lift target已存在且enabled: B0D39RW9HT
+2026-09-18 02:19:59 - ⏭️ amazon_ca_lift target已存在且enabled: B0D39RW9HT
+2026-09-18 02:19:59 - amazon_ca_lift adGroupId:555310057283219 创建target: 1个
+2026-09-18 02:20:00 - ✅ amazon_ca_lift 创建target成功: 40803056928063 - B0GK91FYPZ
+2026-09-18 02:20:00 - amazon_ca_ac1 adGroupId:200019510793304 使用Excel campaignId:44313983004886
+2026-09-18 02:20:02 - amazon_ca_ac1 adGroupId:200019510793304 已有target 336个
+2026-09-18 02:20:02 - ⏭️ amazon_ca_ac1 target已存在且enabled: B00W97VF06
+2026-09-18 02:20:02 - amazon_ca_ac1 adGroupId:2094871551756 使用Excel campaignId:163237292358025
+2026-09-18 02:20:04 - amazon_ca_ac1 adGroupId:2094871551756 已有target 459个
+2026-09-18 02:20:04 - ⏭️ amazon_ca_ac1 target已存在且enabled: B00Z2CX1P2
+2026-09-18 02:20:04 - ⏭️ amazon_ca_ac1 target已存在且enabled: B00AAOESNQ
+2026-09-18 02:20:04 - amazon_ca_rrc adGroupId:149377767233058 使用Excel campaignId:151805254795483
+2026-09-18 02:20:06 - amazon_ca_rrc adGroupId:149377767233058 已有target 20个
+2026-09-18 02:20:06 - ⏭️ amazon_ca_rrc target已存在且enabled: B0GG93J9L2
+2026-09-18 02:20:06 - amazon_ca_piccocasa adGroupId:532903537873827 使用Excel campaignId:560136211924665
+2026-09-18 02:20:08 - amazon_ca_piccocasa adGroupId:532903537873827 已有target 178个
+2026-09-18 02:20:08 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0DJ35X81V
+2026-09-18 02:20:08 - amazon adGroupId:137592487411858 使用Excel campaignId:191674727705214
+2026-09-18 02:20:09 - amazon adGroupId:137592487411858 已有target 5个
+2026-09-18 02:20:09 - amazon adGroupId:137592487411858 创建target: 1个
+2026-09-18 02:20:12 - ✅ amazon 创建target成功: 37076825022647 - B0B3JLBQBG
+2026-09-18 02:20:12 - amazon_ca_piccocasa adGroupId:455882893783492 使用Excel campaignId:523933976890897
+2026-09-18 02:20:13 - amazon_ca_piccocasa adGroupId:455882893783492 已有target 49个
+2026-09-18 02:20:13 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0D4R1ZK7S
+2026-09-18 02:20:13 - amazon adGroupId:386543718283464 使用Excel campaignId:336969677723518
+2026-09-18 02:20:14 - amazon adGroupId:386543718283464 已有target 47个
+2026-09-18 02:20:14 - ⏭️ amazon target已存在且enabled: B07MWWJ8Q8
+2026-09-18 02:20:14 - amazon_ca_ifn adGroupId:252091098038701 使用Excel campaignId:25728365230656
+2026-09-18 02:20:15 - amazon_ca_ifn adGroupId:252091098038701 已有target 21个
+2026-09-18 02:20:15 - ⏭️ amazon_ca_ifn target已存在且enabled: B0DBVMGH7K
+2026-09-18 02:20:15 - ⏭️ amazon_ca_ifn target已存在且enabled: B0F9F4D3BL
+2026-09-18 02:20:15 - amazon adGroupId:266600681791935 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:20:17 - amazon adGroupId:266600681791935 Amazon API查到 campaignId:150989600300134
+2026-09-18 02:20:17 - amazon adGroupId:266600681791935 使用Excel campaignId:150989600300134
+2026-09-18 02:20:19 - amazon adGroupId:266600681791935 已有target 198个
+2026-09-18 02:20:19 - ⏭️ amazon target已存在且enabled: B08NDZ479D
+2026-09-18 02:20:19 - amazon adGroupId:266600681791935 创建target: 1个
+2026-09-18 02:20:20 - ✅ amazon 创建target成功: 28695715030341 - B0H14ZVDVH
+2026-09-18 02:20:20 - amazon_ca_ifn adGroupId:293727464988634 使用Excel campaignId:378579028849297
+2026-09-18 02:20:21 - amazon_ca_ifn adGroupId:293727464988634 已有target 15个
+2026-09-18 02:20:21 - ⏭️ amazon_ca_ifn target已存在且enabled: B0FXGM3GQG
+2026-09-18 02:20:21 - amazon_ca_tuto adGroupId:86508608832093 使用Excel campaignId:84105250584461
+2026-09-18 02:20:22 - amazon_ca_tuto adGroupId:86508608832093 已有target 16个
+2026-09-18 02:20:22 - ⏭️ amazon_ca_tuto target已存在且enabled: B0GRVCS3KP
+2026-09-18 02:20:22 - amazon_us_hero adGroupId:51653180280424 使用Excel campaignId:221415759532203
+2026-09-18 02:20:23 - amazon_us_hero adGroupId:51653180280424 已有target 17个
+2026-09-18 02:20:23 - ⏭️ amazon_us_hero target已存在且enabled: B0BZC9T39N
+2026-09-18 02:20:23 - amazon_ca_swi adGroupId:352931545759387 使用Excel campaignId:534213340161179
+2026-09-18 02:20:32 - amazon_ca_swi adGroupId:352931545759387 已有target 3个
+2026-09-18 02:20:32 - ⏭️ amazon_ca_swi target已存在且enabled: B0DN6JJS96
+2026-09-18 02:20:32 - amazon_us_find adGroupId:560804539922816 使用Excel campaignId:463497428757556
+2026-09-18 02:20:32 - amazon_us_find adGroupId:560804539922816 已有target 7个
+2026-09-18 02:20:32 - ⏭️ amazon_us_find target已存在且enabled: B0FQCLFPDC
+2026-09-18 02:20:33 - amazon_uk2 adGroupId:262625240487550 使用Excel campaignId:106647635197907
+2026-09-18 02:20:34 - amazon_uk2 adGroupId:262625240487550 已有target 147个
+2026-09-18 02:20:34 - ⏭️ amazon_uk2 target已存在且enabled: B09NNKD99Y
+2026-09-18 02:20:34 - ⏭️ amazon_uk2 target已存在且enabled: B0BSNS724G
+2026-09-18 02:20:34 - ⏭️ amazon_uk2 target已存在且enabled: B0BSNV3TVG
+2026-09-18 02:20:34 - amazon_ca_ac1 adGroupId:204720757402907 使用Excel campaignId:44313983004886
+2026-09-18 02:20:36 - amazon_ca_ac1 adGroupId:204720757402907 已有target 314个
+2026-09-18 02:20:36 - ⏭️ amazon_ca_ac1 target已存在且enabled: B08JZ52XNK
+2026-09-18 02:20:36 - 🔄 amazon_ca_ac1 target已存在但非enabled(paused)，将更新: B07GZDKW34 targetId:23104184308872
+2026-09-18 02:20:36 - amazon_ca_ac1 adGroupId:204720757402907 更新target状态为enabled: 1个
+2026-09-18 02:20:37 - ✅ amazon_ca_ac1 更新target状态成功: targetId:23104184308872
+2026-09-18 02:20:37 - amazon_ca_ac1 adGroupId:204720757402907 创建target: 2个
+2026-09-18 02:20:38 - ✅ amazon_ca_ac1 创建target成功: 180936691587054 - B0CS2H9YLX
+2026-09-18 02:20:38 - ✅ amazon_ca_ac1 创建target成功: 67449951133924 - B0DRPHKMN9
+2026-09-18 02:20:39 - amazon_ca_piccocasa adGroupId:303715048145956 使用Excel campaignId:474421455123523
+2026-09-18 02:20:40 - amazon_ca_piccocasa adGroupId:303715048145956 已有target 173个
+2026-09-18 02:20:40 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B09QFZ35MQ
+2026-09-18 02:20:40 - amazon adGroupId:98304110908693 使用Excel campaignId:33187558841750
+2026-09-18 02:20:42 - amazon adGroupId:98304110908693 已有target 16个
+2026-09-18 02:20:42 - ⏭️ amazon target已存在且enabled: B08V8M6JTD
+2026-09-18 02:20:42 - amazon_us_luux adGroupId:342599083613808 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:20:43 - amazon_us_luux adGroupId:342599083613808 Amazon API查到 campaignId:425213081770488
+2026-09-18 02:20:43 - amazon_us_luux adGroupId:342599083613808 使用Excel campaignId:425213081770488
+2026-09-18 02:20:44 - amazon_us_luux adGroupId:342599083613808 已有target 10个
+2026-09-18 02:20:44 - ⏭️ amazon_us_luux target已存在且enabled: B00KTJ993Q
+2026-09-18 02:20:44 - amazon_ca_piccocasa adGroupId:522912794473833 使用Excel campaignId:471088670530708
+2026-09-18 02:20:48 - amazon_ca_piccocasa adGroupId:522912794473833 已有target 178个
+2026-09-18 02:20:48 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B09VC3X3PC
+2026-09-18 02:20:48 - amazon_uk2 adGroupId:447788531857371 使用Excel campaignId:86881664786605
+2026-09-18 02:20:50 - amazon_uk2 adGroupId:447788531857371 已有target 70个
+2026-09-18 02:20:50 - ⏭️ amazon_uk2 target已存在且enabled: B096MMWCP4
+2026-09-18 02:20:50 - amazon adGroupId:391911536145522 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:20:50 - amazon adGroupId:391911536145522 Amazon API查到 campaignId:533565550960503
+2026-09-18 02:20:50 - amazon adGroupId:391911536145522 使用Excel campaignId:533565550960503
+2026-09-18 02:20:52 - amazon adGroupId:391911536145522 已有target 4个
+2026-09-18 02:20:52 - amazon adGroupId:391911536145522 创建target: 1个
+2026-09-18 02:20:53 - ✅ amazon 创建target成功: 254873767329657 - B0FGD68G5T
+2026-09-18 02:20:53 - amazon_ca_ac1 adGroupId:91054819868226 使用Excel campaignId:263581671874846
+2026-09-18 02:20:54 - amazon_ca_ac1 adGroupId:91054819868226 已有target 45个
+2026-09-18 02:20:54 - ⏭️ amazon_ca_ac1 target已存在且enabled: B073QTQ4P6
+2026-09-18 02:20:54 - amazon_us_hood adGroupId:458443464817886 使用Excel campaignId:313917179735442
+2026-09-18 02:20:55 - amazon_us_hood adGroupId:458443464817886 已有target 25个
+2026-09-18 02:20:55 - ⏭️ amazon_us_hood target已存在且enabled: B0FQN7GP83
+2026-09-18 02:20:55 - amazon_ca_piccocasa adGroupId:415047691076305 使用Excel campaignId:415801860328772
+2026-09-18 02:20:56 - amazon_ca_piccocasa adGroupId:415047691076305 已有target 154个
+2026-09-18 02:20:56 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0C1453QCC
+2026-09-18 02:20:56 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0C146YRBM
+2026-09-18 02:20:56 - amazon adGroupId:184889145214859 使用Excel campaignId:16188447204005
+2026-09-18 02:20:57 - amazon adGroupId:184889145214859 已有target 52个
+2026-09-18 02:20:57 - ⏭️ amazon target已存在且enabled: B09QQ688B8
+2026-09-18 02:20:57 - amazon_ca_ifn adGroupId:251826465887105 使用Excel campaignId:194799329689324
+2026-09-18 02:20:59 - amazon_ca_ifn adGroupId:251826465887105 已有target 18个
+2026-09-18 02:20:59 - ⏭️ amazon_ca_ifn target已存在且enabled: B0DNMPCYGZ
+2026-09-18 02:20:59 - amazon_ca_piccocasa adGroupId:513337104957038 使用Excel campaignId:560136211924665
+2026-09-18 02:21:05 - amazon_ca_piccocasa adGroupId:513337104957038 已有target 192个
+2026-09-18 02:21:05 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0DGQD91D6
+2026-09-18 02:21:05 - amazon_uk_ifn adGroupId:250370813388621 使用Excel campaignId:130610113453147
+2026-09-18 02:21:06 - amazon_uk_ifn adGroupId:250370813388621 已有target 30个
+2026-09-18 02:21:06 - ⏭️ amazon_uk_ifn target已存在且enabled: B0GD78ZCL3
+2026-09-18 02:21:06 - ⏭️ amazon_uk_ifn target已存在且enabled: B0GCD5YJSK
+2026-09-18 02:21:06 - ⏭️ amazon_uk_ifn target已存在且enabled: B095X6GNNN
+2026-09-18 02:21:06 - ⏭️ amazon_uk_ifn target已存在且enabled: B0H5HRGP1F
+2026-09-18 02:21:06 - amazon_ca_tuto adGroupId:406435372978726 使用Excel campaignId:237914918252446
+2026-09-18 02:21:09 - amazon_ca_tuto adGroupId:406435372978726 已有target 103个
+2026-09-18 02:21:09 - ⏭️ amazon_ca_tuto target已存在且enabled: B0B4NLG2N8
+2026-09-18 02:21:10 - amazon_ca_ac1 adGroupId:221169249641131 使用Excel campaignId:232985905145828
+2026-09-18 02:21:11 - amazon_ca_ac1 adGroupId:221169249641131 已有target 71个
+2026-09-18 02:21:11 - ⏭️ amazon_ca_ac1 target已存在且enabled: B0H26YM3N9
+2026-09-18 02:21:11 - amazon_ca_piccocasa adGroupId:316867405912624 使用Excel campaignId:487491975812665
+2026-09-18 02:21:13 - amazon_ca_piccocasa adGroupId:316867405912624 已有target 60个
+2026-09-18 02:21:13 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B09B6VYT3D
+2026-09-18 02:21:13 - amazon_us_tuc adGroupId:374584955474668 使用Excel campaignId:359603870686328
+2026-09-18 02:21:14 - amazon_us_tuc adGroupId:374584955474668 已有target 57个
+2026-09-18 02:21:14 - ⏭️ amazon_us_tuc target已存在且enabled: B0D6YP2XHS
+2026-09-18 02:21:14 - amazon_ca_piccocasa adGroupId:283768580875141 使用Excel campaignId:291363700793778
+2026-09-18 02:21:16 - amazon_ca_piccocasa adGroupId:283768580875141 已有target 177个
+2026-09-18 02:21:16 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B09QFS6H52
+2026-09-18 02:21:16 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B09QFX2SM9
+2026-09-18 02:21:16 - amazon_ca_piccocasa adGroupId:532965788474605 使用Excel campaignId:394916447506373
+2026-09-18 02:21:17 - amazon_ca_piccocasa adGroupId:532965788474605 已有target 148个
+2026-09-18 02:21:17 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0B1TBP94G
+2026-09-18 02:21:17 - amazon_ca_ifn adGroupId:201287828818450 使用Excel campaignId:25728365230656
+2026-09-18 02:21:18 - amazon_ca_ifn adGroupId:201287828818450 已有target 42个
+2026-09-18 02:21:18 - ⏭️ amazon_ca_ifn target已存在且enabled: B09HY32Q1C
+2026-09-18 02:21:18 - amazon_us_hope adGroupId:125239927224460 使用Excel campaignId:230223300245242
+2026-09-18 02:21:19 - amazon_us_hope adGroupId:125239927224460 已有target 59个
+2026-09-18 02:21:19 - ⏭️ amazon_us_hope target已存在且enabled: B00144D77E
+2026-09-18 02:21:19 - amazon_us_hope adGroupId:226149342005039 使用Excel campaignId:264408842684160
+2026-09-18 02:21:20 - amazon_us_hope adGroupId:226149342005039 已有target 20个
+2026-09-18 02:21:20 - ⏭️ amazon_us_hope target已存在且enabled: B0FLPQMR1L
+2026-09-18 02:21:20 - amazon_us_tuc adGroupId:253818196292532 使用Excel campaignId:251315409739843
+2026-09-18 02:21:21 - amazon_us_tuc adGroupId:253818196292532 已有target 36个
+2026-09-18 02:21:21 - ⏭️ amazon_us_tuc target已存在且enabled: B0DCDZVH8F
+2026-09-18 02:21:21 - amazon_ca_tuc adGroupId:545027914745601 使用Excel campaignId:292037748321068
+2026-09-18 02:21:22 - amazon_ca_tuc adGroupId:545027914745601 已有target 25个
+2026-09-18 02:21:22 - ⏭️ amazon_ca_tuc target已存在且enabled: B0DFB4N2MT
+2026-09-18 02:21:22 - amazon_us_tuto adGroupId:129213929613104 使用Excel campaignId:266258630261122
+2026-09-18 02:21:23 - amazon_us_tuto adGroupId:129213929613104 已有target 35个
+2026-09-18 02:21:23 - ⏭️ amazon_us_tuto target已存在且enabled: B0GS58RCDR
+2026-09-18 02:21:23 - ⏭️ amazon_us_tuto target已存在且enabled: B0FBR7ZGMV
+2026-09-18 02:21:23 - amazon_ca_piccocasa adGroupId:399565429232843 使用Excel campaignId:282144558048052
+2026-09-18 02:21:24 - amazon_ca_piccocasa adGroupId:399565429232843 已有target 95个
+2026-09-18 02:21:24 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0B863FPWF
+2026-09-18 02:21:24 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0B863XGDM
+2026-09-18 02:21:24 - amazon_uk_tuto adGroupId:303690444569834 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:21:25 - amazon_uk_tuto adGroupId:303690444569834 Amazon API查到 campaignId:453184151000814
+2026-09-18 02:21:25 - amazon_uk_tuto adGroupId:303690444569834 使用Excel campaignId:453184151000814
+2026-09-18 02:21:26 - amazon_uk_tuto adGroupId:303690444569834 已有target 1个
+2026-09-18 02:21:26 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DJ7BLCBM
+2026-09-18 02:21:26 - amazon_ca_piccocasa adGroupId:478514656936910 使用Excel campaignId:545985618892236
+2026-09-18 02:21:27 - amazon_ca_piccocasa adGroupId:478514656936910 已有target 83个
+2026-09-18 02:21:27 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0B5FCWDBK
+2026-09-18 02:21:27 - amazon_us_swi adGroupId:183341147371380 使用Excel campaignId:231325675543383
+2026-09-18 02:21:28 - amazon_us_swi adGroupId:183341147371380 已有target 51个
+2026-09-18 02:21:28 - ⏭️ amazon_us_swi target已存在且enabled: B0GJ51HLKS
+2026-09-18 02:21:28 - ⏭️ amazon_us_swi target已存在且enabled: B0DJS8PJ9B
+2026-09-18 02:21:29 - amazon_ca_tuc adGroupId:555911747219541 使用Excel campaignId:292037748321068
+2026-09-18 02:21:29 - amazon_ca_tuc adGroupId:555911747219541 已有target 30个
+2026-09-18 02:21:29 - ⏭️ amazon_ca_tuc target已存在且enabled: B0BG24MY3J
+2026-09-18 02:21:30 - amazon_us_moto adGroupId:560100494469107 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:21:30 - amazon_us_moto adGroupId:560100494469107 Amazon API查到 campaignId:453159350676931
+2026-09-18 02:21:30 - amazon_us_moto adGroupId:560100494469107 使用Excel campaignId:453159350676931
+2026-09-18 02:21:32 - amazon_us_moto adGroupId:560100494469107 已有target 97个
+2026-09-18 02:21:32 - ⏭️ amazon_us_moto target已存在且enabled: B0D8BL2D54
+2026-09-18 02:21:32 - ⏭️ amazon_us_moto target已存在且enabled: B0DSZQKKFL
+2026-09-18 02:21:32 - amazon_us_moto adGroupId:560100494469107 创建target: 1个
+2026-09-18 02:21:35 - ✅ amazon_us_moto 创建target成功: 3307785629026 - B0FN6ZFGLD
+2026-09-18 02:21:35 - amazon_uk_tuto adGroupId:119648912734112 使用Excel campaignId:94235555719661
+2026-09-18 02:21:36 - amazon_uk_tuto adGroupId:119648912734112 已有target 42个
+2026-09-18 02:21:36 - ⏭️ amazon_uk_tuto target已存在且enabled: B0FMYLV79D
+2026-09-18 02:21:36 - amazon_ca_ac1 adGroupId:326096496553923 使用Excel campaignId:436484610521376
+2026-09-18 02:21:37 - amazon_ca_ac1 adGroupId:326096496553923 已有target 41个
+2026-09-18 02:21:37 - ⏭️ amazon_ca_ac1 target已存在且enabled: B0CXPBXY4C
+2026-09-18 02:21:37 - amazon_ca_piccocasa adGroupId:387435226896809 使用Excel campaignId:473041403323080
+2026-09-18 02:21:39 - amazon_ca_piccocasa adGroupId:387435226896809 已有target 173个
+2026-09-18 02:21:39 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0CJ56V6X7
+2026-09-18 02:21:39 - amazon_uk_tuto adGroupId:336064020485703 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:21:40 - amazon_uk_tuto adGroupId:336064020485703 Amazon API查到 campaignId:394710989698759
+2026-09-18 02:21:40 - amazon_uk_tuto adGroupId:336064020485703 使用Excel campaignId:394710989698759
+2026-09-18 02:21:41 - amazon_uk_tuto adGroupId:336064020485703 已有target 1个
+2026-09-18 02:21:41 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DNZHZZQ9
+2026-09-18 02:21:41 - amazon_uk_tuto adGroupId:242863140996090 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:21:42 - amazon_uk_tuto adGroupId:242863140996090 Amazon API查到 campaignId:211154072730985
+2026-09-18 02:21:42 - amazon_uk_tuto adGroupId:242863140996090 使用Excel campaignId:211154072730985
+2026-09-18 02:21:43 - amazon_uk_tuto adGroupId:242863140996090 已有target 12个
+2026-09-18 02:21:43 - ⏭️ amazon_uk_tuto target已存在且enabled: B0015KXNUI
+2026-09-18 02:21:43 - amazon_uk_tuc adGroupId:358143862684340 使用Excel campaignId:352015183099222
+2026-09-18 02:21:44 - amazon_uk_tuc adGroupId:358143862684340 已有target 117个
+2026-09-18 02:21:44 - ⏭️ amazon_uk_tuc target已存在且enabled: B0DCZRYSS8
+2026-09-18 02:21:45 - amazon_ca_piccocasa adGroupId:551287108509783 使用Excel campaignId:394394200123362
+2026-09-18 02:21:46 - amazon_ca_piccocasa adGroupId:551287108509783 已有target 102个
+2026-09-18 02:21:46 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0B8ZPF74J
+2026-09-18 02:21:46 - amazon_ca_tuto adGroupId:223371676481642 使用Excel campaignId:481509584709177
+2026-09-18 02:21:47 - amazon_ca_tuto adGroupId:223371676481642 已有target 24个
+2026-09-18 02:21:47 - ⏭️ amazon_ca_tuto target已存在且enabled: B0GC7GRN11
+2026-09-18 02:21:47 - amazon_us_hope adGroupId:473387469260000 使用Excel campaignId:313660857576464
+2026-09-18 02:21:48 - amazon_us_hope adGroupId:473387469260000 已有target 2个
+2026-09-18 02:21:48 - ⏭️ amazon_us_hope target已存在且enabled: B0F6LZFJ2H
+2026-09-18 02:21:48 - amazon_us_hero adGroupId:160749517493249 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:21:49 - amazon_us_hero adGroupId:160749517493249 Amazon API查到 campaignId:86193993770299
+2026-09-18 02:21:49 - amazon_us_hero adGroupId:160749517493249 使用Excel campaignId:86193993770299
+2026-09-18 02:21:50 - amazon_us_hero adGroupId:160749517493249 已有target 6个
+2026-09-18 02:21:50 - amazon_us_hero adGroupId:160749517493249 创建target: 1个
+2026-09-18 02:21:51 - ✅ amazon_us_hero 创建target成功: 202079244252517 - B0DHXPBVM4
+2026-09-18 02:21:52 - amazon_ca_piccocasa adGroupId:376962297013810 使用Excel campaignId:332537161554771
+2026-09-18 02:21:53 - amazon_ca_piccocasa adGroupId:376962297013810 已有target 83个
+2026-09-18 02:21:53 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B097HJL1T1
+2026-09-18 02:21:53 - amazon_ca_tuc adGroupId:228538326183393 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:21:54 - amazon_ca_tuc adGroupId:228538326183393 Amazon API查到 campaignId:2671455715300
+2026-09-18 02:21:54 - amazon_ca_tuc adGroupId:228538326183393 使用Excel campaignId:2671455715300
+2026-09-18 02:21:55 - amazon_ca_tuc adGroupId:228538326183393 已有target 13个
+2026-09-18 02:21:55 - ⏭️ amazon_ca_tuc target已存在且enabled: B0CYSVFB61
+2026-09-18 02:21:55 - amazon_ca_tuto adGroupId:403108015704082 使用Excel campaignId:469984442667244
+2026-09-18 02:21:56 - amazon_ca_tuto adGroupId:403108015704082 已有target 19个
+2026-09-18 02:21:56 - ⏭️ amazon_ca_tuto target已存在且enabled: B0DF2RVMHP
+2026-09-18 02:21:56 - amazon_uk_tuc adGroupId:242240520965463 使用Excel campaignId:56807071992859
+2026-09-18 02:21:57 - amazon_uk_tuc adGroupId:242240520965463 已有target 36个
+2026-09-18 02:21:57 - ⏭️ amazon_uk_tuc target已存在且enabled: B0FH5C3HF6
+2026-09-18 02:21:57 - amazon_ca_ifn adGroupId:552776552320497 使用Excel campaignId:434838066500332
+2026-09-18 02:21:58 - amazon_ca_ifn adGroupId:552776552320497 已有target 8个
+2026-09-18 02:21:58 - ⏭️ amazon_ca_ifn target已存在且enabled: B0G6DZQWPW
+2026-09-18 02:21:58 - amazon adGroupId:419956778003173 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:21:59 - amazon adGroupId:419956778003173 Amazon API查到 campaignId:403262971940249
+2026-09-18 02:21:59 - amazon adGroupId:419956778003173 使用Excel campaignId:403262971940249
+2026-09-18 02:22:00 - amazon adGroupId:419956778003173 已有target 20个
+2026-09-18 02:22:00 - ⏭️ amazon target已存在且enabled: B0894Q4XKY
+2026-09-18 02:22:00 - ⏭️ amazon target已存在且enabled: B0BHDBZFRW
+2026-09-18 02:22:00 - amazon adGroupId:419956778003173 创建target: 1个
+2026-09-18 02:22:03 - ✅ amazon 创建target成功: 183963059015060 - B09PQJBVJG
+2026-09-18 02:22:03 - amazon_uk_tuto adGroupId:310688500839092 使用Excel campaignId:404026381394881
+2026-09-18 02:22:04 - amazon_uk_tuto adGroupId:310688500839092 已有target 34个
+2026-09-18 02:22:04 - ⏭️ amazon_uk_tuto target已存在且enabled: B0D424GMZ8
+2026-09-18 02:22:04 - amazon_us_tuc adGroupId:380112291150096 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:22:05 - amazon_us_tuc adGroupId:380112291150096 Amazon API查到 campaignId:247846026527405
+2026-09-18 02:22:05 - amazon_us_tuc adGroupId:380112291150096 使用Excel campaignId:247846026527405
+2026-09-18 02:22:06 - amazon_us_tuc adGroupId:380112291150096 已有target 10个
+2026-09-18 02:22:06 - ⏭️ amazon_us_tuc target已存在且enabled: B0F8VKNWPL
+2026-09-18 02:22:06 - amazon_ca_kilo adGroupId:523918683977425 使用Excel campaignId:368801126969422
+2026-09-18 02:22:07 - amazon_ca_kilo adGroupId:523918683977425 已有target 105个
+2026-09-18 02:22:07 - ⏭️ amazon_ca_kilo target已存在且enabled: B0DYPKBK4G
+2026-09-18 02:22:07 - amazon_ca_tuc adGroupId:530010366681926 使用Excel campaignId:393972150802437
+2026-09-18 02:22:08 - amazon_ca_tuc adGroupId:530010366681926 已有target 9个
+2026-09-18 02:22:08 - ⏭️ amazon_ca_tuc target已存在且enabled: B0FWGH8M17
+2026-09-18 02:22:08 - amazon_us_ifn adGroupId:264668185784003 使用Excel campaignId:202638207235567
+2026-09-18 02:22:09 - amazon_us_ifn adGroupId:264668185784003 已有target 31个
+2026-09-18 02:22:09 - ⏭️ amazon_us_ifn target已存在且enabled: B0049S94NS
+2026-09-18 02:22:09 - amazon_uk_tuto adGroupId:396933318138371 使用Excel campaignId:412546032107762
+2026-09-18 02:22:11 - amazon_uk_tuto adGroupId:396933318138371 已有target 125个
+2026-09-18 02:22:11 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DHS9Q9S3
+2026-09-18 02:22:11 - amazon_ca_ac1 adGroupId:126191367688643 使用Excel campaignId:232985905145828
+2026-09-18 02:22:12 - amazon_ca_ac1 adGroupId:126191367688643 已有target 17个
+2026-09-18 02:22:12 - ⏭️ amazon_ca_ac1 target已存在且enabled: B0GYRT8BFS
+2026-09-18 02:22:12 - amazon_uk_tuto adGroupId:434054170050700 使用Excel campaignId:427972436243469
+2026-09-18 02:22:13 - amazon_uk_tuto adGroupId:434054170050700 已有target 18个
+2026-09-18 02:22:13 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DB398CJ4
+2026-09-18 02:22:13 - amazon_us_sopro adGroupId:147352825411742 使用Excel campaignId:149098771462337
+2026-09-18 02:22:14 - amazon_us_sopro adGroupId:147352825411742 已有target 39个
+2026-09-18 02:22:14 - ⏭️ amazon_us_sopro target已存在且enabled: B0DZJ44GDF
+2026-09-18 02:22:14 - amazon_ca_ifn adGroupId:300866708997812 使用Excel campaignId:289097175416452
+2026-09-18 02:22:14 - amazon_ca_ifn adGroupId:300866708997812 已有target 17个
+2026-09-18 02:22:14 - ⏭️ amazon_ca_ifn target已存在且enabled: B0FWQ6PXRP
+2026-09-18 02:22:15 - amazon_ca_sopro adGroupId:123460624993041 使用Excel campaignId:151379555469939
+2026-09-18 02:22:16 - amazon_ca_sopro adGroupId:123460624993041 已有target 18个
+2026-09-18 02:22:16 - ⏭️ amazon_ca_sopro target已存在且enabled: B0CQTCP2H9
+2026-09-18 02:22:16 - amazon_ca_piccocasa adGroupId:516308534652247 使用Excel campaignId:447465398595804
+2026-09-18 02:22:17 - amazon_ca_piccocasa adGroupId:516308534652247 已有target 31个
+2026-09-18 02:22:17 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0BGY43Q9X
+2026-09-18 02:22:17 - amazon_uk_tuto adGroupId:521613550618884 使用Excel campaignId:519769714808307
+2026-09-18 02:22:18 - amazon_uk_tuto adGroupId:521613550618884 已有target 20个
+2026-09-18 02:22:18 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DRSLTMBP
+2026-09-18 02:22:18 - amazon_ca_tuto adGroupId:43760139945264 使用Excel campaignId:88515115073476
+2026-09-18 02:22:19 - amazon_ca_tuto adGroupId:43760139945264 已有target 20个
+2026-09-18 02:22:19 - ⏭️ amazon_ca_tuto target已存在且enabled: B0FYC18NTD
+2026-09-18 02:22:19 - amazon_ca_hero adGroupId:195703462508075 使用Excel campaignId:98170002926650
+2026-09-18 02:22:20 - amazon_ca_hero adGroupId:195703462508075 已有target 30个
+2026-09-18 02:22:20 - ⏭️ amazon_ca_hero target已存在且enabled: B0DJVMRN93
+2026-09-18 02:22:20 - amazon_uk2 adGroupId:469954802333911 使用Excel campaignId:397925413718915
+2026-09-18 02:22:21 - amazon_uk2 adGroupId:469954802333911 已有target 115个
+2026-09-18 02:22:21 - ⏭️ amazon_uk2 target已存在且enabled: B07111YGF9
+2026-09-18 02:22:21 - amazon_ca_sopro adGroupId:228619020563102 使用Excel campaignId:236317788873072
+2026-09-18 02:22:22 - amazon_ca_sopro adGroupId:228619020563102 已有target 27个
+2026-09-18 02:22:22 - ⏭️ amazon_ca_sopro target已存在且enabled: B0D9H16DN4
+2026-09-18 02:22:22 - amazon_ca_piccocasa adGroupId:458228348415119 使用Excel campaignId:400785823840927
+2026-09-18 02:22:24 - amazon_ca_piccocasa adGroupId:458228348415119 已有target 183个
+2026-09-18 02:22:24 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0DHXWZQPB
+2026-09-18 02:22:24 - amazon adGroupId:1604479855744 使用Excel campaignId:214091338915813
+2026-09-18 02:22:25 - amazon adGroupId:1604479855744 已有target 5个
+2026-09-18 02:22:25 - ⏭️ amazon target已存在且enabled: B06XDDXJ22
+2026-09-18 02:22:26 - amazon_ca_moto adGroupId:20695510678452 使用Excel campaignId:8465299116094
+2026-09-18 02:22:26 - amazon_ca_moto adGroupId:20695510678452 已有target 1个
+2026-09-18 02:22:26 - ⏭️ amazon_ca_moto target已存在且enabled: B0CCVV86HW
+2026-09-18 02:22:26 - amazon_ca_tuto adGroupId:288429713908650 使用Excel campaignId:444241166376489
+2026-09-18 02:22:27 - amazon_ca_tuto adGroupId:288429713908650 已有target 1个
+2026-09-18 02:22:27 - ⏭️ amazon_ca_tuto target已存在且enabled: B0DRTJH1W6
+2026-09-18 02:22:27 - amazon_ca_ac1 adGroupId:235587923553886 使用Excel campaignId:100606252289974
+2026-09-18 02:22:29 - amazon_ca_ac1 adGroupId:235587923553886 已有target 25个
+2026-09-18 02:22:29 - ⏭️ amazon_ca_ac1 target已存在且enabled: B0B56979GR
+2026-09-18 02:22:29 - amazon_ca_hood adGroupId:533654924120391 使用Excel campaignId:368792544717587
+2026-09-18 02:22:30 - amazon_ca_hood adGroupId:533654924120391 已有target 6个
+2026-09-18 02:22:30 - ⏭️ amazon_ca_hood target已存在且enabled: B0FP2NMR4S
+2026-09-18 02:22:30 - amazon_uk_moto adGroupId:403139691112894 使用Excel campaignId:457739266711003
+2026-09-18 02:22:31 - amazon_uk_moto adGroupId:403139691112894 已有target 118个
+2026-09-18 02:22:31 - ⏭️ amazon_uk_moto target已存在且enabled: B0DJ95ST9Z
+2026-09-18 02:22:32 - amazon_uk_sopro adGroupId:105181987052353 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:22:33 - amazon_uk_sopro adGroupId:105181987052353 Amazon API查到 campaignId:106648990069944
+2026-09-18 02:22:33 - amazon_uk_sopro adGroupId:105181987052353 使用Excel campaignId:106648990069944
+2026-09-18 02:22:34 - amazon_uk_sopro adGroupId:105181987052353 已有target 7个
+2026-09-18 02:22:34 - ⏭️ amazon_uk_sopro target已存在且enabled: B0D6FZQ2SM
+2026-09-18 02:22:34 - amazon_ca_swi adGroupId:69357361087344 使用Excel campaignId:248037369225064
+2026-09-18 02:22:35 - amazon_ca_swi adGroupId:69357361087344 已有target 24个
+2026-09-18 02:22:35 - ⏭️ amazon_ca_swi target已存在且enabled: B0GCJCDHJX
+2026-09-18 02:22:35 - amazon_us_tuc adGroupId:491263804996273 使用Excel campaignId:479533384285800
+2026-09-18 02:22:36 - amazon_us_tuc adGroupId:491263804996273 已有target 27个
+2026-09-18 02:22:36 - ⏭️ amazon_us_tuc target已存在且enabled: B0CN6RX78G
+2026-09-18 02:22:36 - amazon_ca_kilo adGroupId:378117841855823 使用Excel campaignId:538955461744093
+2026-09-18 02:22:36 - amazon_ca_kilo adGroupId:378117841855823 已有target 19个
+2026-09-18 02:22:36 - ⏭️ amazon_ca_kilo target已存在且enabled: B0F7LJF59H
+2026-09-18 02:22:37 - amazon_uk_tuto adGroupId:300650773497478 使用Excel campaignId:522931868815380
+2026-09-18 02:22:38 - amazon_uk_tuto adGroupId:300650773497478 已有target 19个
+2026-09-18 02:22:38 - ⏭️ amazon_uk_tuto target已存在且enabled: B0CTFC7YBN
+2026-09-18 02:22:38 - amazon_ca_kilo adGroupId:460193799289325 使用Excel campaignId:405159455911205
+2026-09-18 02:22:38 - amazon_ca_kilo adGroupId:460193799289325 已有target 2个
+2026-09-18 02:22:38 - ⏭️ amazon_ca_kilo target已存在且enabled: B0CTTGJR7D
+2026-09-18 02:22:38 - amazon_uk_tuto adGroupId:524610898015929 使用Excel campaignId:323445070075414
+2026-09-18 02:22:40 - amazon_uk_tuto adGroupId:524610898015929 已有target 4个
+2026-09-18 02:22:40 - ⏭️ amazon_uk_tuto target已存在且enabled: B0FH4LS7BS
+2026-09-18 02:22:40 - amazon_us_luux adGroupId:276189340398056 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:22:41 - amazon_us_luux adGroupId:276189340398056 Amazon API查到 campaignId:75550127442719
+2026-09-18 02:22:41 - amazon_us_luux adGroupId:276189340398056 使用Excel campaignId:75550127442719
+2026-09-18 02:22:42 - amazon_us_luux adGroupId:276189340398056 已有target 6个
+2026-09-18 02:22:42 - ⏭️ amazon_us_luux target已存在且enabled: B0DJQD65GF
+2026-09-18 02:22:42 - amazon_us_tuc adGroupId:14883076008128 使用Excel campaignId:14081079992774
+2026-09-18 02:22:43 - amazon_us_tuc adGroupId:14883076008128 已有target 1个
+2026-09-18 02:22:43 - ⏭️ amazon_us_tuc target已存在且enabled: B0BT8PN88G
+2026-09-18 02:22:43 - amazon_us_rrc adGroupId:272559773782605 使用Excel campaignId:160321059966428
+2026-09-18 02:22:44 - amazon_us_rrc adGroupId:272559773782605 已有target 4个
+2026-09-18 02:22:44 - ⏭️ amazon_us_rrc target已存在且enabled: B0DBL8PF45
+2026-09-18 02:22:44 - amazon_ca_hero adGroupId:237441789355771 使用Excel campaignId:110516764472458
+2026-09-18 02:22:44 - amazon_ca_hero adGroupId:237441789355771 已有target 9个
+2026-09-18 02:22:44 - ⏭️ amazon_ca_hero target已存在且enabled: B09P6BRR2K
+2026-09-18 02:22:45 - amazon_uk_tuto adGroupId:429656735256063 使用Excel campaignId:343386427444094
+2026-09-18 02:22:46 - amazon_uk_tuto adGroupId:429656735256063 已有target 47个
+2026-09-18 02:22:46 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DB36QFWF
+2026-09-18 02:22:46 - amazon_uk_moto adGroupId:301926182966680 使用Excel campaignId:457739266711003
+2026-09-18 02:22:47 - amazon_uk_moto adGroupId:301926182966680 已有target 116个
+2026-09-18 02:22:47 - ⏭️ amazon_uk_moto target已存在且enabled: B0DKXY3FYX
+2026-09-18 02:22:47 - amazon_ca_ac1 adGroupId:364608901439866 使用Excel campaignId:293128222793822
+2026-09-18 02:22:48 - amazon_ca_ac1 adGroupId:364608901439866 已有target 18个
+2026-09-18 02:22:48 - ⏭️ amazon_ca_ac1 target已存在且enabled: B0F12PQL95
+2026-09-18 02:22:48 - amazon adGroupId:515375142618972 使用Excel campaignId:466397337173358
+2026-09-18 02:22:49 - amazon adGroupId:515375142618972 已有target 0个
+2026-09-18 02:22:49 - amazon adGroupId:515375142618972 创建target: 1个
+2026-09-18 02:22:50 - ✅ amazon 创建target成功: 26449256656618 - 805014HB0A
+2026-09-18 02:22:50 - amazon_us_tuc adGroupId:466961425507651 使用Excel campaignId:305406796086324
+2026-09-18 02:22:51 - amazon_us_tuc adGroupId:466961425507651 已有target 21个
+2026-09-18 02:22:51 - ⏭️ amazon_us_tuc target已存在且enabled: B081TSJPLS
+2026-09-18 02:22:51 - amazon_us_luux adGroupId:157461551121264 使用Excel campaignId:27506182592050
+2026-09-18 02:22:52 - amazon_us_luux adGroupId:157461551121264 已有target 29个
+2026-09-18 02:22:52 - ⏭️ amazon_us_luux target已存在且enabled: B0CHJJ232D
+2026-09-18 02:22:52 - amazon_ca_find adGroupId:278492250436066 使用Excel campaignId:107127628228099
+2026-09-18 02:22:53 - amazon_ca_find adGroupId:278492250436066 已有target 5个
+2026-09-18 02:22:53 - ⏭️ amazon_ca_find target已存在且enabled: B0F3JN6XY8
+2026-09-18 02:22:53 - amazon adGroupId:113743614938258 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:22:54 - amazon adGroupId:113743614938258 Amazon API查到 campaignId:150040660740335
+2026-09-18 02:22:54 - amazon adGroupId:113743614938258 使用Excel campaignId:150040660740335
+2026-09-18 02:22:55 - amazon adGroupId:113743614938258 已有target 49个
+2026-09-18 02:22:55 - amazon adGroupId:113743614938258 创建target: 1个
+2026-09-18 02:22:56 - ✅ amazon 创建target成功: 241251773699164 - B09L11H57J
+2026-09-18 02:22:57 - amazon_ca_hope adGroupId:159267576211452 使用Excel campaignId:271778764463096
+2026-09-18 02:22:58 - amazon_ca_hope adGroupId:159267576211452 已有target 31个
+2026-09-18 02:22:58 - ⏭️ amazon_ca_hope target已存在且enabled: B0G6YTB4Q4
+2026-09-18 02:22:58 - amazon_ca_piccocasa adGroupId:87280078203790 使用Excel campaignId:64604455846926
+2026-09-18 02:22:59 - amazon_ca_piccocasa adGroupId:87280078203790 已有target 14个
+2026-09-18 02:22:59 - amazon_ca_piccocasa adGroupId:87280078203790 创建target: 1个
+2026-09-18 02:23:00 - ✅ amazon_ca_piccocasa 创建target成功: 125122750709524 - B074STNQBQ
+2026-09-18 02:23:01 - amazon_uk_moto adGroupId:60305731111028 使用Excel campaignId:90087869360078
+2026-09-18 02:23:02 - amazon_uk_moto adGroupId:60305731111028 已有target 11个
+2026-09-18 02:23:02 - ⏭️ amazon_uk_moto target已存在且enabled: B0D5CHWLBF
+2026-09-18 02:23:02 - amazon_ca_piccocasa adGroupId:370318066734695 使用Excel campaignId:340578519844337
+2026-09-18 02:23:04 - amazon_ca_piccocasa adGroupId:370318066734695 已有target 13个
+2026-09-18 02:23:04 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0924KW6YV
+2026-09-18 02:23:04 - amazon_ca_tuc adGroupId:421175270006187 使用Excel campaignId:452679210528128
+2026-09-18 02:23:05 - amazon_ca_tuc adGroupId:421175270006187 已有target 144个
+2026-09-18 02:23:05 - ⏭️ amazon_ca_tuc target已存在且enabled: B0D8QG37CL
+2026-09-18 02:23:05 - amazon adGroupId:192074563698978 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:23:06 - amazon adGroupId:192074563698978 Amazon API查到 campaignId:75681580161682
+2026-09-18 02:23:06 - amazon adGroupId:192074563698978 使用Excel campaignId:75681580161682
+2026-09-18 02:23:07 - amazon adGroupId:192074563698978 已有target 239个
+2026-09-18 02:23:07 - ⏭️ amazon target已存在且enabled: B0G428PFBX
+2026-09-18 02:23:07 - ⏭️ amazon target已存在且enabled: B01KAD24RI
+2026-09-18 02:23:07 - amazon_uk_ifn adGroupId:115060876785432 使用Excel campaignId:186167248778859
+2026-09-18 02:23:09 - amazon_uk_ifn adGroupId:115060876785432 已有target 101个
+2026-09-18 02:23:09 - ⏭️ amazon_uk_ifn target已存在且enabled: B0CN9NTS6M
+2026-09-18 02:23:09 - amazon_us_moto adGroupId:539930007026595 使用Excel campaignId:7666377284151
+2026-09-18 02:23:10 - amazon_us_moto adGroupId:539930007026595 已有target 34个
+2026-09-18 02:23:10 - ⏭️ amazon_us_moto target已存在且enabled: B0DHH3ML1D
+2026-09-18 02:23:10 - amazon_us_luck adGroupId:159544913600261 使用Excel campaignId:53322496524636
+2026-09-18 02:23:11 - amazon_us_luck adGroupId:159544913600261 已有target 22个
+2026-09-18 02:23:11 - ⏭️ amazon_us_luck target已存在且enabled: B01IQ69S66
+2026-09-18 02:23:11 - amazon_ca_tuto adGroupId:545606496221340 使用Excel campaignId:467761996833121
+2026-09-18 02:23:14 - amazon_ca_tuto adGroupId:545606496221340 已有target 12个
+2026-09-18 02:23:14 - ⏭️ amazon_ca_tuto target已存在且enabled: B0CH186KPW
+2026-09-18 02:23:14 - amazon_uk_tuto adGroupId:528358023033484 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:23:15 - amazon_uk_tuto adGroupId:528358023033484 Amazon API查到 campaignId:394710989698759
+2026-09-18 02:23:15 - amazon_uk_tuto adGroupId:528358023033484 使用Excel campaignId:394710989698759
+2026-09-18 02:23:16 - amazon_uk_tuto adGroupId:528358023033484 已有target 1个
+2026-09-18 02:23:16 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DNZGCJ8G
+2026-09-18 02:23:16 - amazon_ca_ifn adGroupId:318325546039524 使用Excel campaignId:319992601737245
+2026-09-18 02:23:17 - amazon_ca_ifn adGroupId:318325546039524 已有target 78个
+2026-09-18 02:23:17 - ⏭️ amazon_ca_ifn target已存在且enabled: B0FBW4JBMH
+2026-09-18 02:23:17 - amazon_us_sopro adGroupId:223934656996609 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:23:18 - amazon_us_sopro adGroupId:223934656996609 Amazon API查到 campaignId:23387570015973
+2026-09-18 02:23:18 - amazon_us_sopro adGroupId:223934656996609 使用Excel campaignId:23387570015973
+2026-09-18 02:23:19 - amazon_us_sopro adGroupId:223934656996609 已有target 137个
+2026-09-18 02:23:19 - amazon_us_sopro adGroupId:223934656996609 创建target: 1个
+2026-09-18 02:23:20 - ✅ amazon_us_sopro 创建target成功: 14397117668640 - B0DM6671XL
+2026-09-18 02:23:20 - amazon_uk2 adGroupId:111907860066338 使用Excel campaignId:137104999472584
+2026-09-18 02:23:21 - amazon_uk2 adGroupId:111907860066338 已有target 37个
+2026-09-18 02:23:21 - ⏭️ amazon_uk2 target已存在且enabled: B086PF59F7
+2026-09-18 02:23:22 - amazon_us_ifn adGroupId:213431853227128 使用Excel campaignId:202638207235567
+2026-09-18 02:23:22 - amazon_us_ifn adGroupId:213431853227128 已有target 20个
+2026-09-18 02:23:22 - ⏭️ amazon_us_ifn target已存在且enabled: B000CAVDHC
+2026-09-18 02:23:23 - amazon_ca_luux adGroupId:228411252430432 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:23:23 - amazon_ca_luux adGroupId:228411252430432 Amazon API查到 campaignId:110938791418685
+2026-09-18 02:23:23 - amazon_ca_luux adGroupId:228411252430432 使用Excel campaignId:110938791418685
+2026-09-18 02:23:24 - amazon_ca_luux adGroupId:228411252430432 已有target 16个
+2026-09-18 02:23:24 - ⏭️ amazon_ca_luux target已存在且enabled: B0DZ2MJ93T
+2026-09-18 02:23:24 - amazon_uk_tuto adGroupId:144466671950725 使用Excel campaignId:235037106024355
+2026-09-18 02:23:26 - amazon_uk_tuto adGroupId:144466671950725 已有target 25个
+2026-09-18 02:23:26 - ⏭️ amazon_uk_tuto target已存在且enabled: B0F7PRTSZP
+2026-09-18 02:23:26 - amazon_ca_tuc adGroupId:331544391085788 使用Excel campaignId:171282647083409
+2026-09-18 02:23:28 - amazon_ca_tuc adGroupId:331544391085788 已有target 47个
+2026-09-18 02:23:28 - ⏭️ amazon_ca_tuc target已存在且enabled: B0BV2KJKCJ
+2026-09-18 02:23:28 - amazon_ca_ifn adGroupId:249174794088743 使用Excel campaignId:128047072641911
+2026-09-18 02:23:29 - amazon_ca_ifn adGroupId:249174794088743 已有target 24个
+2026-09-18 02:23:29 - ⏭️ amazon_ca_ifn target已存在且enabled: B0G8XGCJPH
+2026-09-18 02:23:29 - amazon_uk2 adGroupId:522329833727701 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:23:30 - amazon_uk2 adGroupId:522329833727701 Amazon API查到 campaignId:420346293528972
+2026-09-18 02:23:30 - amazon_uk2 adGroupId:522329833727701 使用Excel campaignId:420346293528972
+2026-09-18 02:23:32 - amazon_uk2 adGroupId:522329833727701 已有target 1个
+2026-09-18 02:23:32 - ⏭️ amazon_uk2 target已存在且enabled: B0DLL18NPM
+2026-09-18 02:23:32 - amazon_us_hope adGroupId:265739071588823 使用Excel campaignId:277673041191861
+2026-09-18 02:23:33 - amazon_us_hope adGroupId:265739071588823 已有target 29个
+2026-09-18 02:23:33 - ⏭️ amazon_us_hope target已存在且enabled: B0GYZ75N4B
+2026-09-18 02:23:33 - amazon_ca_sopro adGroupId:236938728104552 使用Excel campaignId:236317788873072
+2026-09-18 02:23:34 - amazon_ca_sopro adGroupId:236938728104552 已有target 27个
+2026-09-18 02:23:34 - ⏭️ amazon_ca_sopro target已存在且enabled: B0GLQHJFK6
+2026-09-18 02:23:34 - amazon_ca_swi adGroupId:205786404685571 使用Excel campaignId:23275538336109
+2026-09-18 02:23:36 - amazon_ca_swi adGroupId:205786404685571 已有target 62个
+2026-09-18 02:23:36 - ⏭️ amazon_ca_swi target已存在且enabled: B0H6X5PK61
+2026-09-18 02:23:36 - amazon_ca_ifn adGroupId:295506390132875 使用Excel campaignId:168083202588647
+2026-09-18 02:23:36 - amazon_ca_ifn adGroupId:295506390132875 已有target 12个
+2026-09-18 02:23:36 - ⏭️ amazon_ca_ifn target已存在且enabled: B0GF7JZKQ4
+2026-09-18 02:23:37 - amazon_us_swi adGroupId:41344442205017 使用Excel campaignId:3890511390934
+2026-09-18 02:23:38 - amazon_us_swi adGroupId:41344442205017 已有target 37个
+2026-09-18 02:23:38 - ⏭️ amazon_us_swi target已存在且enabled: B0C2DDMKD7
+2026-09-18 02:23:38 - amazon_us_sopro adGroupId:287995958092124 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:23:39 - amazon_us_sopro adGroupId:287995958092124 Amazon API查到 campaignId:131972946666977
+2026-09-18 02:23:39 - amazon_us_sopro adGroupId:287995958092124 使用Excel campaignId:131972946666977
+2026-09-18 02:23:39 - amazon_us_sopro adGroupId:287995958092124 已有target 8个
+2026-09-18 02:23:39 - ⏭️ amazon_us_sopro target已存在且enabled: B0BX9JKFXS
+2026-09-18 02:23:40 - amazon_us_find adGroupId:10734835975224 使用Excel campaignId:29507482073386
+2026-09-18 02:23:41 - amazon_us_find adGroupId:10734835975224 已有target 142个
+2026-09-18 02:23:41 - ⏭️ amazon_us_find target已存在且enabled: B0DQQ6N2MW
+2026-09-18 02:23:41 - amazon_us_luck adGroupId:15809639003919 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:23:42 - amazon_us_luck adGroupId:15809639003919 Amazon API查到 campaignId:49814174336204
+2026-09-18 02:23:42 - amazon_us_luck adGroupId:15809639003919 使用Excel campaignId:49814174336204
+2026-09-18 02:23:43 - amazon_us_luck adGroupId:15809639003919 已有target 3个
+2026-09-18 02:23:43 - ⏭️ amazon_us_luck target已存在且enabled: B0DD7FF64D
+2026-09-18 02:23:43 - amazon_ca_piccocasa adGroupId:521451522897788 使用Excel campaignId:538678232804095
+2026-09-18 02:23:45 - amazon_ca_piccocasa adGroupId:521451522897788 已有target 88个
+2026-09-18 02:23:45 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0BGXQRGK7
+2026-09-18 02:23:45 - amazon adGroupId:321395626077922 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:23:46 - amazon adGroupId:321395626077922 Amazon API查到 campaignId:481859842177543
+2026-09-18 02:23:46 - amazon adGroupId:321395626077922 使用Excel campaignId:481859842177543
+2026-09-18 02:23:47 - amazon adGroupId:321395626077922 已有target 5个
+2026-09-18 02:23:47 - ⏭️ amazon target已存在且enabled: B0B3RJRL56
+2026-09-18 02:23:47 - amazon adGroupId:394298025317436 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:23:48 - amazon adGroupId:394298025317436 Amazon API查到 campaignId:380561286238321
+2026-09-18 02:23:48 - amazon adGroupId:394298025317436 使用Excel campaignId:380561286238321
+2026-09-18 02:23:49 - amazon adGroupId:394298025317436 已有target 53个
+2026-09-18 02:23:49 - ⏭️ amazon target已存在且enabled: B0CB18DDFY
+2026-09-18 02:23:49 - amazon_us_find adGroupId:81168837993116 使用Excel campaignId:85273117672499
+2026-09-18 02:23:50 - amazon_us_find adGroupId:81168837993116 已有target 31个
+2026-09-18 02:23:50 - ⏭️ amazon_us_find target已存在且enabled: B0FH3WR94C
+2026-09-18 02:23:50 - amazon_ca_ac1 adGroupId:227833367188511 使用Excel campaignId:116254876133364
+2026-09-18 02:23:51 - amazon_ca_ac1 adGroupId:227833367188511 已有target 4个
+2026-09-18 02:23:51 - ⏭️ amazon_ca_ac1 target已存在且enabled: B08VKBGZ7F
+2026-09-18 02:23:51 - amazon_us_tuc adGroupId:59557961526952 使用Excel campaignId:251315409739843
+2026-09-18 02:23:52 - amazon_us_tuc adGroupId:59557961526952 已有target 22个
+2026-09-18 02:23:52 - ⏭️ amazon_us_tuc target已存在且enabled: B0DB82DTZF
+2026-09-18 02:23:53 - amazon_us_swi adGroupId:9195093694203 使用Excel campaignId:82045852665147
+2026-09-18 02:23:53 - amazon_us_swi adGroupId:9195093694203 已有target 35个
+2026-09-18 02:23:53 - ⏭️ amazon_us_swi target已存在且enabled: B0C2XYHF3Y
+2026-09-18 02:23:53 - amazon adGroupId:370711252983828 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:23:54 - amazon adGroupId:370711252983828 Amazon API查到 campaignId:295934674182848
+2026-09-18 02:23:54 - amazon adGroupId:370711252983828 使用Excel campaignId:295934674182848
+2026-09-18 02:23:55 - amazon adGroupId:370711252983828 已有target 3个
+2026-09-18 02:23:55 - ⏭️ amazon target已存在且enabled: B09GS3FGWB
+2026-09-18 02:23:55 - amazon_us_rrc adGroupId:139553227295093 使用Excel campaignId:231045092630669
+2026-09-18 02:23:56 - amazon_us_rrc adGroupId:139553227295093 已有target 8个
+2026-09-18 02:23:56 - ⏭️ amazon_us_rrc target已存在且enabled: B0H7SG4SBZ
+2026-09-18 02:23:56 - amazon_ca_piccocasa adGroupId:331636008765436 使用Excel campaignId:534763748342683
+2026-09-18 02:23:57 - amazon_ca_piccocasa adGroupId:331636008765436 已有target 187个
+2026-09-18 02:23:57 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0886ZQ3CN
+2026-09-18 02:23:57 - amazon_uk2 adGroupId:527936071500143 使用Excel campaignId:486381666326895
+2026-09-18 02:23:59 - amazon_uk2 adGroupId:527936071500143 已有target 53个
+2026-09-18 02:23:59 - ⏭️ amazon_uk2 target已存在且enabled: B0C4PRKG4S
+2026-09-18 02:23:59 - amazon_ca_sopro adGroupId:339714149923952 使用Excel campaignId:550287737558199
+2026-09-18 02:24:00 - amazon_ca_sopro adGroupId:339714149923952 已有target 116个
+2026-09-18 02:24:00 - ⏭️ amazon_ca_sopro target已存在且enabled: B0DGCGR27B
+2026-09-18 02:24:00 - amazon_ca_swi adGroupId:72899362555903 使用Excel campaignId:23275538336109
+2026-09-18 02:24:01 - amazon_ca_swi adGroupId:72899362555903 已有target 24个
+2026-09-18 02:24:01 - ⏭️ amazon_ca_swi target已存在且enabled: B0GF13GNSV
+2026-09-18 02:24:01 - amazon_uk_moto adGroupId:506690761321004 使用Excel campaignId:437354311424945
+2026-09-18 02:24:02 - amazon_uk_moto adGroupId:506690761321004 已有target 4个
+2026-09-18 02:24:02 - ⏭️ amazon_uk_moto target已存在且enabled: B0BFF476WN
+2026-09-18 02:24:02 - amazon adGroupId:85603551969920 使用Excel campaignId:179161869862059
+2026-09-18 02:24:04 - amazon adGroupId:85603551969920 已有target 200个
+2026-09-18 02:24:04 - ⏭️ amazon target已存在且enabled: B093HK7PN1
+2026-09-18 02:24:04 - amazon_uk_rrc adGroupId:354126821843739 使用Excel campaignId:360067177492927
+2026-09-18 02:24:05 - amazon_uk_rrc adGroupId:354126821843739 已有target 14个
+2026-09-18 02:24:05 - ⏭️ amazon_uk_rrc target已存在且enabled: B0FMQT3SK9
+2026-09-18 02:24:05 - amazon_uk2 adGroupId:463045661743373 使用Excel campaignId:552170017571772
+2026-09-18 02:24:06 - amazon_uk2 adGroupId:463045661743373 已有target 200个
+2026-09-18 02:24:06 - ⏭️ amazon_uk2 target已存在且enabled: B01K9X4710
+2026-09-18 02:24:07 - amazon_ca_piccocasa adGroupId:350511967376593 使用Excel campaignId:478222888956075
+2026-09-18 02:24:08 - amazon_ca_piccocasa adGroupId:350511967376593 已有target 128个
+2026-09-18 02:24:08 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0B84J3532
+2026-09-18 02:24:08 - amazon adGroupId:99040491456876 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:24:10 - amazon adGroupId:99040491456876 Amazon API查到 campaignId:265023392381441
+2026-09-18 02:24:10 - amazon adGroupId:99040491456876 使用Excel campaignId:265023392381441
+2026-09-18 02:24:11 - amazon adGroupId:99040491456876 已有target 20个
+2026-09-18 02:24:11 - amazon adGroupId:99040491456876 创建target: 2个
+2026-09-18 02:24:12 - ✅ amazon 创建target成功: 149751168095578 - B0FSRPGLNW
+2026-09-18 02:24:12 - ✅ amazon 创建target成功: 86054648798727 - B0DCFYNYNC
+2026-09-18 02:24:12 - amazon_ca_piccocasa adGroupId:461713454689924 使用Excel campaignId:385734297210691
+2026-09-18 02:24:13 - amazon_ca_piccocasa adGroupId:461713454689924 已有target 64个
+2026-09-18 02:24:13 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B075K57YB8
+2026-09-18 02:24:13 - amazon_us_ifn adGroupId:126729962813906 使用Excel campaignId:36855962711669
+2026-09-18 02:24:14 - amazon_us_ifn adGroupId:126729962813906 已有target 34个
+2026-09-18 02:24:14 - ⏭️ amazon_us_ifn target已存在且enabled: B0CTB7XK27
+2026-09-18 02:24:14 - amazon_uk_tuto adGroupId:379159750856805 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:24:15 - amazon_uk_tuto adGroupId:379159750856805 Amazon API查到 campaignId:531279521309534
+2026-09-18 02:24:15 - amazon_uk_tuto adGroupId:379159750856805 使用Excel campaignId:531279521309534
+2026-09-18 02:24:16 - amazon_uk_tuto adGroupId:379159750856805 已有target 1个
+2026-09-18 02:24:16 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DM6F3VKF
+2026-09-18 02:24:16 - amazon_uk_tuc adGroupId:512244045578215 使用Excel campaignId:387500485783280
+2026-09-18 02:24:17 - amazon_uk_tuc adGroupId:512244045578215 已有target 2个
+2026-09-18 02:24:17 - ⏭️ amazon_uk_tuc target已存在且enabled: B0DDPSKKSS
+2026-09-18 02:24:17 - amazon_uk2 adGroupId:214306162977531 使用Excel campaignId:39772662135160
+2026-09-18 02:24:18 - amazon_uk2 adGroupId:214306162977531 已有target 5个
+2026-09-18 02:24:18 - amazon_uk2 adGroupId:214306162977531 创建target: 1个
+2026-09-18 02:24:19 - ✅ amazon_uk2 创建target成功: 203442742363283 - B06XSJL8HY
+2026-09-18 02:24:20 - amazon adGroupId:341768773213047 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:24:20 - amazon adGroupId:341768773213047 Amazon API查到 campaignId:535182136791707
+2026-09-18 02:24:20 - amazon adGroupId:341768773213047 使用Excel campaignId:535182136791707
+2026-09-18 02:24:22 - amazon adGroupId:341768773213047 已有target 17个
+2026-09-18 02:24:22 - ⏭️ amazon target已存在且enabled: B0BR4S3SM5
+2026-09-18 02:24:22 - amazon_uk_tuc adGroupId:451098837355839 使用Excel campaignId:362605779175929
+2026-09-18 02:24:23 - amazon_uk_tuc adGroupId:451098837355839 已有target 130个
+2026-09-18 02:24:23 - ⏭️ amazon_uk_tuc target已存在且enabled: B0DCZR6RTD
+2026-09-18 02:24:23 - amazon adGroupId:318815922501431 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:24:24 - amazon adGroupId:318815922501431 Amazon API查到 campaignId:434725624425289
+2026-09-18 02:24:24 - amazon adGroupId:318815922501431 使用Excel campaignId:434725624425289
+2026-09-18 02:24:25 - amazon adGroupId:318815922501431 已有target 27个
+2026-09-18 02:24:25 - ⏭️ amazon target已存在且enabled: B08FC9B54M
+2026-09-18 02:24:25 - amazon_uk_sopro adGroupId:416581704725726 使用Excel campaignId:381780457425954
+2026-09-18 02:24:26 - amazon_uk_sopro adGroupId:416581704725726 已有target 36个
+2026-09-18 02:24:26 - ⏭️ amazon_uk_sopro target已存在且enabled: B0FC6H4R4W
+2026-09-18 02:24:26 - amazon_ca_ifn adGroupId:93445999422535 使用Excel campaignId:267731641948631
+2026-09-18 02:24:27 - amazon_ca_ifn adGroupId:93445999422535 已有target 11个
+2026-09-18 02:24:27 - ⏭️ amazon_ca_ifn target已存在且enabled: B0F1CPCC44
+2026-09-18 02:24:27 - amazon_us_swi adGroupId:523522764879182 使用Excel campaignId:521419211166013
+2026-09-18 02:24:28 - amazon_us_swi adGroupId:523522764879182 已有target 6个
+2026-09-18 02:24:28 - ⏭️ amazon_us_swi target已存在且enabled: B0DN6JJS96
+2026-09-18 02:24:28 - amazon_uk_find adGroupId:419480877241119 使用Excel campaignId:542161743008780
+2026-09-18 02:24:29 - amazon_uk_find adGroupId:419480877241119 已有target 26个
+2026-09-18 02:24:29 - ⏭️ amazon_uk_find target已存在且enabled: B0DHLB2QGS
+2026-09-18 02:24:29 - amazon_us_rrc adGroupId:215900352415913 使用Excel campaignId:9203221003567
+2026-09-18 02:24:30 - amazon_us_rrc adGroupId:215900352415913 已有target 12个
+2026-09-18 02:24:30 - ⏭️ amazon_us_rrc target已存在且enabled: B0GVXM8MTZ
+2026-09-18 02:24:30 - amazon_uk_hope adGroupId:208474332582773 使用Excel campaignId:81064907554102
+2026-09-18 02:24:31 - amazon_uk_hope adGroupId:208474332582773 已有target 8个
+2026-09-18 02:24:31 - ⏭️ amazon_uk_hope target已存在且enabled: B0CDLT8HJV
+2026-09-18 02:24:31 - amazon_ca_tuto adGroupId:216576864369797 使用Excel campaignId:22711451279477
+2026-09-18 02:24:33 - amazon_ca_tuto adGroupId:216576864369797 已有target 25个
+2026-09-18 02:24:33 - ⏭️ amazon_ca_tuto target已存在且enabled: B0CN441SW7
+2026-09-18 02:24:33 - amazon_ca_sopro adGroupId:96415891825465 使用Excel campaignId:43460812924699
+2026-09-18 02:24:34 - amazon_ca_sopro adGroupId:96415891825465 已有target 23个
+2026-09-18 02:24:34 - ⏭️ amazon_ca_sopro target已存在且enabled: B0GCT1TXSZ
+2026-09-18 02:24:34 - amazon_ca_hood adGroupId:442200485263930 使用Excel campaignId:313093777991648
+2026-09-18 02:24:35 - amazon_ca_hood adGroupId:442200485263930 已有target 25个
+2026-09-18 02:24:35 - ⏭️ amazon_ca_hood target已存在且enabled: B0FNRPB2RX
+2026-09-18 02:24:35 - amazon_us_ac1 adGroupId:178406676822130 使用Excel campaignId:36039639080939
+2026-09-18 02:24:36 - amazon_us_ac1 adGroupId:178406676822130 已有target 35个
+2026-09-18 02:24:36 - ⏭️ amazon_us_ac1 target已存在且enabled: B0FFSL9KZR
+2026-09-18 02:24:36 - amazon_us_ifn adGroupId:26880417801168 使用Excel campaignId:281369096385380
+2026-09-18 02:24:37 - amazon_us_ifn adGroupId:26880417801168 已有target 17个
+2026-09-18 02:24:37 - ⏭️ amazon_us_ifn target已存在且enabled: B0B4NP6K1X
+2026-09-18 02:24:37 - amazon_ca_piccocasa adGroupId:358985345419359 使用Excel campaignId:418391543666042
+2026-09-18 02:24:38 - amazon_ca_piccocasa adGroupId:358985345419359 已有target 48个
+2026-09-18 02:24:38 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B0CP3B7G54
+2026-09-18 02:24:39 - amazon_uk_tuto adGroupId:310600630741586 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:24:40 - amazon_uk_tuto adGroupId:310600630741586 Amazon API查到 campaignId:532392504167645
+2026-09-18 02:24:40 - amazon_uk_tuto adGroupId:310600630741586 使用Excel campaignId:532392504167645
+2026-09-18 02:24:41 - amazon_uk_tuto adGroupId:310600630741586 已有target 12个
+2026-09-18 02:24:41 - ⏭️ amazon_uk_tuto target已存在且enabled: B0FTNPNY7K
+2026-09-18 02:24:42 - amazon_ca_tuc adGroupId:283471012066888 使用Excel campaignId:552286352297250
+2026-09-18 02:24:43 - amazon_ca_tuc adGroupId:283471012066888 已有target 44个
+2026-09-18 02:24:43 - ⏭️ amazon_ca_tuc target已存在且enabled: B0DG2Z7RLL
+2026-09-18 02:24:43 - amazon_us_tuto adGroupId:60357973271664 使用Excel campaignId:20053825230537
+2026-09-18 02:24:44 - amazon_us_tuto adGroupId:60357973271664 已有target 2个
+2026-09-18 02:24:44 - ⏭️ amazon_us_tuto target已存在且enabled: B086N1TKSG
+2026-09-18 02:24:45 - amazon_ca_ac1 adGroupId:328881808240880 使用Excel campaignId:238914663055540
+2026-09-18 02:24:46 - amazon_ca_ac1 adGroupId:328881808240880 已有target 53个
+2026-09-18 02:24:46 - ⏭️ amazon_ca_ac1 target已存在且enabled: B0CSDQYLHL
+2026-09-18 02:24:47 - amazon_uk2 adGroupId:355013060760768 使用Excel campaignId:344791883529906
+2026-09-18 02:24:48 - amazon_uk2 adGroupId:355013060760768 已有target 45个
+2026-09-18 02:24:48 - ⏭️ amazon_uk2 target已存在且enabled: B0B46BJWT1
+2026-09-18 02:24:49 - amazon_ca_moto adGroupId:180672774359981 使用Excel campaignId:214710340770971
+2026-09-18 02:24:50 - amazon_ca_moto adGroupId:180672774359981 已有target 4个
+2026-09-18 02:24:50 - ⏭️ amazon_ca_moto target已存在且enabled: B07GR2L5XX
+2026-09-18 02:24:51 - amazon_uk_hope adGroupId:128208525406187 使用Excel campaignId:198991610324708
+2026-09-18 02:24:52 - amazon_uk_hope adGroupId:128208525406187 已有target 34个
+2026-09-18 02:24:52 - ⏭️ amazon_uk_hope target已存在且enabled: B0FC2SS32B
+2026-09-18 02:24:52 - amazon_us_swi adGroupId:332426545608622 使用Excel campaignId:175685851017858
+2026-09-18 02:24:53 - amazon_us_swi adGroupId:332426545608622 已有target 14个
+2026-09-18 02:24:53 - ⏭️ amazon_us_swi target已存在且enabled: B0BXCRPHKV
+2026-09-18 02:24:53 - amazon_ca_piccocasa adGroupId:382735092190377 使用Excel campaignId:341560992822649
+2026-09-18 02:24:55 - amazon_ca_piccocasa adGroupId:382735092190377 已有target 29个
+2026-09-18 02:24:55 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B09NDQRF65
+2026-09-18 02:24:55 - amazon_uk_hero adGroupId:100063634760734 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:24:56 - amazon_uk_hero adGroupId:100063634760734 Amazon API查到 campaignId:212350348463369
+2026-09-18 02:24:56 - amazon_uk_hero adGroupId:100063634760734 使用Excel campaignId:212350348463369
+2026-09-18 02:24:57 - amazon_uk_hero adGroupId:100063634760734 已有target 14个
+2026-09-18 02:24:57 - ⏭️ amazon_uk_hero target已存在且enabled: B0DXVC9FH1
+2026-09-18 02:24:57 - amazon_us_tuto adGroupId:193680265631317 使用Excel campaignId:51813574595651
+2026-09-18 02:24:58 - amazon_us_tuto adGroupId:193680265631317 已有target 56个
+2026-09-18 02:24:58 - ⏭️ amazon_us_tuto target已存在且enabled: B0D9K2Z6QD
+2026-09-18 02:24:59 - amazon adGroupId:338466240251906 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:25:00 - amazon adGroupId:338466240251906 Amazon API查到 campaignId:387417465009464
+2026-09-18 02:25:00 - amazon adGroupId:338466240251906 使用Excel campaignId:387417465009464
+2026-09-18 02:25:00 - amazon adGroupId:338466240251906 已有target 29个
+2026-09-18 02:25:00 - ⏭️ amazon target已存在且enabled: B0D9WBM3RN
+2026-09-18 02:25:01 - amazon adGroupId:517427235213987 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:25:01 - amazon adGroupId:517427235213987 Amazon API查到 campaignId:497825467818543
+2026-09-18 02:25:01 - amazon adGroupId:517427235213987 使用Excel campaignId:497825467818543
+2026-09-18 02:25:03 - amazon adGroupId:517427235213987 已有target 5个
+2026-09-18 02:25:03 - ⏭️ amazon target已存在且enabled: B0B564HJMX
+2026-09-18 02:25:03 - amazon_uk_hope adGroupId:327914300205090 使用Excel campaignId:422633729882253
+2026-09-18 02:25:05 - amazon_uk_hope adGroupId:327914300205090 已有target 69个
+2026-09-18 02:25:05 - ⏭️ amazon_uk_hope target已存在且enabled: B0GF7Q79F7
+2026-09-18 02:25:05 - amazon_uk_ifn adGroupId:48368720557635 使用Excel campaignId:130610113453147
+2026-09-18 02:25:06 - amazon_uk_ifn adGroupId:48368720557635 已有target 20个
+2026-09-18 02:25:06 - ⏭️ amazon_uk_ifn target已存在且enabled: B0H7R8NG8V
+2026-09-18 02:25:06 - amazon_uk_tuto adGroupId:372493217050225 使用Excel campaignId:461192987888921
+2026-09-18 02:25:07 - amazon_uk_tuto adGroupId:372493217050225 已有target 4个
+2026-09-18 02:25:07 - ⏭️ amazon_uk_tuto target已存在且enabled: B0CKP8MWTQ
+2026-09-18 02:25:07 - amazon_us_rrc adGroupId:165068555589016 使用Excel campaignId:233271787412811
+2026-09-18 02:25:08 - amazon_us_rrc adGroupId:165068555589016 已有target 3个
+2026-09-18 02:25:08 - ⏭️ amazon_us_rrc target已存在且enabled: B0DRK2PZFG
+2026-09-18 02:25:08 - amazon adGroupId:50355302835387 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:25:09 - amazon adGroupId:50355302835387 Amazon API查到 campaignId:112069045148198
+2026-09-18 02:25:09 - amazon adGroupId:50355302835387 使用Excel campaignId:112069045148198
+2026-09-18 02:25:10 - amazon adGroupId:50355302835387 已有target 46个
+2026-09-18 02:25:10 - ⏭️ amazon target已存在且enabled: B0CDBNXLM3
+2026-09-18 02:25:11 - amazon_us_tuto adGroupId:256839939654394 使用Excel campaignId:250293455560238
+2026-09-18 02:25:12 - amazon_us_tuto adGroupId:256839939654394 已有target 34个
+2026-09-18 02:25:12 - ⏭️ amazon_us_tuto target已存在且enabled: B0DG2JV83T
+2026-09-18 02:25:12 - amazon_us_ifn adGroupId:136654546283367 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:25:12 - amazon_us_ifn adGroupId:136654546283367 Amazon API查到 campaignId:38028923617442
+2026-09-18 02:25:12 - amazon_us_ifn adGroupId:136654546283367 使用Excel campaignId:38028923617442
+2026-09-18 02:25:13 - amazon_us_ifn adGroupId:136654546283367 已有target 2个
+2026-09-18 02:25:13 - ⏭️ amazon_us_ifn target已存在且enabled: B0FD9TX79N
+2026-09-18 02:25:13 - amazon_us_ifn adGroupId:230574458195177 使用Excel campaignId:166467504147865
+2026-09-18 02:25:14 - amazon_us_ifn adGroupId:230574458195177 已有target 8个
+2026-09-18 02:25:14 - ⏭️ amazon_us_ifn target已存在且enabled: B0D5MF4FHH
+2026-09-18 02:25:14 - amazon_us_sopro adGroupId:27378735950643 使用Excel campaignId:136018799330282
+2026-09-18 02:25:16 - amazon_us_sopro adGroupId:27378735950643 已有target 25个
+2026-09-18 02:25:16 - ⏭️ amazon_us_sopro target已存在且enabled: B0F8ZD1121
+2026-09-18 02:25:16 - amazon_uk_tuto adGroupId:296029056011349 使用Excel campaignId:156354765314168
+2026-09-18 02:25:17 - amazon_uk_tuto adGroupId:296029056011349 已有target 103个
+2026-09-18 02:25:17 - ⏭️ amazon_uk_tuto target已存在且enabled: B0BTD5QJDJ
+2026-09-18 02:25:17 - amazon_ca_luck adGroupId:262781642583612 使用Excel campaignId:235485045255206
+2026-09-18 02:25:18 - amazon_ca_luck adGroupId:262781642583612 已有target 16个
+2026-09-18 02:25:18 - ⏭️ amazon_ca_luck target已存在且enabled: B07THYX7SZ
+2026-09-18 02:25:18 - amazon adGroupId:249764982385294 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:25:19 - amazon adGroupId:249764982385294 Amazon API查到 campaignId:131494784731465
+2026-09-18 02:25:19 - amazon adGroupId:249764982385294 使用Excel campaignId:131494784731465
+2026-09-18 02:25:21 - amazon adGroupId:249764982385294 已有target 39个
+2026-09-18 02:25:21 - amazon adGroupId:249764982385294 创建target: 1个
+2026-09-18 02:25:22 - ✅ amazon 创建target成功: 62676889065241 - B07JWF5GCS
+2026-09-18 02:25:22 - amazon_us_tuto adGroupId:114356900625914 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:25:23 - amazon_us_tuto adGroupId:114356900625914 Amazon API查到 campaignId:211421061709774
+2026-09-18 02:25:23 - amazon_us_tuto adGroupId:114356900625914 使用Excel campaignId:211421061709774
+2026-09-18 02:25:24 - amazon_us_tuto adGroupId:114356900625914 已有target 8个
+2026-09-18 02:25:24 - ⏭️ amazon_us_tuto target已存在且enabled: B0FG783QHD
+2026-09-18 02:25:24 - amazon_ca_ac1 adGroupId:131500539561952 使用Excel campaignId:93073949508028
+2026-09-18 02:25:25 - amazon_ca_ac1 adGroupId:131500539561952 已有target 36个
+2026-09-18 02:25:25 - ⏭️ amazon_ca_ac1 target已存在且enabled: B0CVVVMX7W
+2026-09-18 02:25:25 - amazon_uk_tuto adGroupId:305871137087734 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:25:26 - amazon_uk_tuto adGroupId:305871137087734 Amazon API查到 campaignId:453184151000814
+2026-09-18 02:25:26 - amazon_uk_tuto adGroupId:305871137087734 使用Excel campaignId:453184151000814
+2026-09-18 02:25:27 - amazon_uk_tuto adGroupId:305871137087734 已有target 1个
+2026-09-18 02:25:27 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DM6D7NY9
+2026-09-18 02:25:27 - amazon_us_luux adGroupId:173216348754203 使用Excel campaignId:42607054880775
+2026-09-18 02:25:28 - amazon_us_luux adGroupId:173216348754203 已有target 4个
+2026-09-18 02:25:28 - ⏭️ amazon_us_luux target已存在且enabled: B0DSHHQJQ9
+2026-09-18 02:25:28 - amazon_us_ifn adGroupId:65716298159008 使用Excel campaignId:212517526015603
+2026-09-18 02:25:29 - amazon_us_ifn adGroupId:65716298159008 已有target 15个
+2026-09-18 02:25:29 - ⏭️ amazon_us_ifn target已存在且enabled: B0G3VL1BRD
+2026-09-18 02:25:29 - amazon adGroupId:453336144867716 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:25:30 - amazon adGroupId:453336144867716 Amazon API查到 campaignId:550751915800517
+2026-09-18 02:25:30 - amazon adGroupId:453336144867716 使用Excel campaignId:550751915800517
+2026-09-18 02:25:31 - amazon adGroupId:453336144867716 已有target 7个
+2026-09-18 02:25:31 - ⏭️ amazon target已存在且enabled: B0F1MF31P9
+2026-09-18 02:25:31 - amazon_ca_rrc adGroupId:285536947609617 使用Excel campaignId:411065587670474
+2026-09-18 02:25:32 - amazon_ca_rrc adGroupId:285536947609617 已有target 19个
+2026-09-18 02:25:32 - ⏭️ amazon_ca_rrc target已存在且enabled: B000E8BJHQ
+2026-09-18 02:25:32 - amazon_ca_tuto adGroupId:152895845877812 使用Excel campaignId:186910740745617
+2026-09-18 02:25:33 - amazon_ca_tuto adGroupId:152895845877812 已有target 4个
+2026-09-18 02:25:33 - ⏭️ amazon_ca_tuto target已存在且enabled: B0015KXNUI
+2026-09-18 02:25:33 - amazon_uk_tuto adGroupId:553566955408977 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:25:35 - amazon_uk_tuto adGroupId:553566955408977 Amazon API查到 campaignId:536058235296072
+2026-09-18 02:25:35 - amazon_uk_tuto adGroupId:553566955408977 使用Excel campaignId:536058235296072
+2026-09-18 02:25:36 - amazon_uk_tuto adGroupId:553566955408977 已有target 1个
+2026-09-18 02:25:36 - ⏭️ amazon_uk_tuto target已存在且enabled: B0DN6QGZS9
+2026-09-18 02:25:36 - amazon_ca_piccocasa adGroupId:213213754211783 使用Excel campaignId:64604455846926
+2026-09-18 02:25:37 - amazon_ca_piccocasa adGroupId:213213754211783 已有target 16个
+2026-09-18 02:25:37 - amazon_ca_piccocasa adGroupId:213213754211783 创建target: 1个
+2026-09-18 02:25:39 - ✅ amazon_ca_piccocasa 创建target成功: 200346907244282 - B074STNQBQ
+2026-09-18 02:25:40 - amazon adGroupId:243281648058901 Mongo未找到，尝试Amazon API查询
+2026-09-18 02:25:40 - amazon adGroupId:243281648058901 Amazon API查到 campaignId:58588044820082
+2026-09-18 02:25:40 - amazon adGroupId:243281648058901 使用Excel campaignId:58588044820082
+2026-09-18 02:25:41 - amazon adGroupId:243281648058901 已有target 21个
+2026-09-18 02:25:41 - ⏭️ amazon target已存在且enabled: B0DDBTWMGK
+2026-09-18 02:25:42 - amazon_us_rrc adGroupId:215021794183186 使用Excel campaignId:63093067823912
+2026-09-18 02:25:42 - amazon_us_rrc adGroupId:215021794183186 已有target 5个
+2026-09-18 02:25:42 - ⏭️ amazon_us_rrc target已存在且enabled: B0CJBYRV3H
+2026-09-18 02:25:42 - amazon_ca_piccocasa adGroupId:371825189112530 使用Excel campaignId:331990274985270
+2026-09-18 02:25:43 - amazon_ca_piccocasa adGroupId:371825189112530 已有target 13个
+2026-09-18 02:25:43 - ⏭️ amazon_ca_piccocasa target已存在且enabled: B07XFNSYNL
+2026-09-18 02:25:43 - ========== 处理汇总 ==========
+2026-09-18 02:25:43 - 总数据数: 390
+2026-09-18 02:25:43 - ✅ 创建成功: 46
+2026-09-18 02:25:43 - 🔄 更新状态为enabled: 1
+2026-09-18 02:25:43 - ⏭️ 已存在且enabled跳过: 342
+2026-09-18 02:25:43 - ❌ 失败: 1
+2026-09-18 02:25:43 - 失败数据已导出: /Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/utils/../shell/sp/target/export/创建target失败_全部_20260918022543.xlsx
+2026-09-18 02:25:43 - createTargets channel:全部 处理完毕
+2026-09-18 02:36:09 - verifyTargets 开始校验 file:M8增投asin.xlsx channel:全部
+2026-09-18 02:36:09 - channel:全部 共 333 个ad group, 390 条数据
+2026-09-18 02:36:10 - amazon_uk_moto adGroupId:428777451520114 Amazon已有target 107个
+2026-09-18 02:36:10 - ✅ amazon_uk_moto target已投放且一致: B0DJ966LKG state:enabled bid:0.19
+2026-09-18 02:36:12 - amazon_ca_ifn adGroupId:70841852469678 Amazon已有target 17个
+2026-09-18 02:36:12 - ✅ amazon_ca_ifn target已投放且一致: B0F89SCKCC state:enabled bid:0.55
+2026-09-18 02:36:15 - amazon adGroupId:269723153883542 Amazon已有target 25个
+2026-09-18 02:36:15 - ✅ amazon target已投放且一致: B0055B121U state:enabled bid:0.14
+2026-09-18 02:36:15 - ✅ amazon target已投放且一致: B0F4N9NC2M state:enabled bid:0
+2026-09-18 02:36:15 - ✅ amazon target已投放且一致: B0BM8Z85KF state:enabled bid:0
+2026-09-18 02:36:17 - amazon_ca_piccocasa adGroupId:309024138071361 Amazon已有target 199个
+2026-09-18 02:36:17 - ✅ amazon_ca_piccocasa target已投放且一致: B08TR67BLN state:enabled bid:0.28
+2026-09-18 02:36:19 - amazon_ca_tuto adGroupId:260223628596267 Amazon已有target 13个
+2026-09-18 02:36:19 - ✅ amazon_ca_tuto target已投放且一致: B0F59Z7VYX state:enabled bid:0
+2026-09-18 02:36:22 - amazon_uk_tuto adGroupId:261214533787906 Amazon已有target 27个
+2026-09-18 02:36:22 - ✅ amazon_uk_tuto target已投放且一致: B0FJ5G5FYB state:enabled bid:0
+2026-09-18 02:36:22 - ✅ amazon_uk_tuto target已投放且一致: B0FJ5G5FYB state:enabled bid:0
+2026-09-18 02:36:22 - ✅ amazon_uk_tuto target已投放且一致: B0DT9Q385G state:enabled bid:0
+2026-09-18 02:36:22 - ✅ amazon_uk_tuto target已投放且一致: B08MZT1T9T state:enabled bid:0
+2026-09-18 02:36:25 - amazon_uk_tuto adGroupId:562465828497339 Amazon已有target 1个
+2026-09-18 02:36:25 - ✅ amazon_uk_tuto target已投放且一致: B0DNZHCR76 state:enabled bid:0.69
+2026-09-18 02:36:27 - amazon_ca_piccocasa adGroupId:336929706855595 Amazon已有target 63个
+2026-09-18 02:36:27 - ✅ amazon_ca_piccocasa target已投放且一致: B0B5FGD4RX state:enabled bid:0.25
+2026-09-18 02:36:28 - amazon_uk2 adGroupId:495807031586115 Amazon已有target 141个
+2026-09-18 02:36:28 - ✅ amazon_uk2 target已投放且一致: B0BSBW7718 state:enabled bid:0.15
+2026-09-18 02:36:28 - ✅ amazon_uk2 target已投放且一致: B0BSBWMW4P state:enabled bid:0.15
+2026-09-18 02:36:30 - amazon adGroupId:237491964590617 Amazon已有target 19个
+2026-09-18 02:36:30 - ✅ amazon target已投放且一致: B085DBPB8L state:enabled bid:0.3
+2026-09-18 02:36:32 - amazon_ca_piccocasa adGroupId:376396618095358 Amazon已有target 136个
+2026-09-18 02:36:32 - ✅ amazon_ca_piccocasa target已投放且一致: B0CBMT1LJV state:enabled bid:0.25
+2026-09-18 02:36:34 - amazon_ca_sopro adGroupId:544828965373300 Amazon已有target 182个
+2026-09-18 02:36:34 - ✅ amazon_ca_sopro target已投放且一致: B019CXVE9G state:enabled bid:0
+2026-09-18 02:36:34 - ✅ amazon_ca_sopro target已投放且一致: B0FRLC5YF1 state:enabled bid:0
+2026-09-18 02:36:35 - amazon_uk2 adGroupId:370949315735307 Amazon已有target 21个
+2026-09-18 02:36:35 - ✅ amazon_uk2 target已投放且一致: B0992KG5B1 state:enabled bid:0.15
+2026-09-18 02:36:35 - ✅ amazon_uk2 target已投放且一致: B098XL7LH4 state:enabled bid:0.15
+2026-09-18 02:36:37 - amazon_us_hope adGroupId:548521882977456 Amazon已有target 37个
+2026-09-18 02:36:37 - ✅ amazon_us_hope target已投放且一致: B0DGLPGQ3G state:enabled bid:0.2
+2026-09-18 02:36:38 - amazon_ca_hero adGroupId:419932760003434 Amazon已有target 6个
+2026-09-18 02:36:38 - ✅ amazon_ca_hero target已投放且一致: B0G64ZDMDR state:enabled bid:0.53
+2026-09-18 02:36:39 - amazon_us_swi adGroupId:251107890472436 Amazon已有target 45个
+2026-09-18 02:36:39 - ✅ amazon_us_swi target已投放且一致: B0F5W67C1C state:enabled bid:0.4
+2026-09-18 02:36:41 - amazon_us_find adGroupId:464725414546252 Amazon已有target 116个
+2026-09-18 02:36:41 - ✅ amazon_us_find target已投放且一致: B0D7CXVX1H state:enabled bid:0.05
+2026-09-18 02:36:43 - amazon_uk2 adGroupId:461493206673195 Amazon已有target 135个
+2026-09-18 02:36:43 - ✅ amazon_uk2 target已投放且一致: B09YYBCGG5 state:enabled bid:0.15
+2026-09-18 02:36:44 - amazon_ca_piccocasa adGroupId:370353965984058 Amazon已有target 166个
+2026-09-18 02:36:44 - ✅ amazon_ca_piccocasa target已投放且一致: B0DG93BP95 state:enabled bid:0.28
+2026-09-18 02:36:45 - amazon_ca_piccocasa adGroupId:494670372072929 Amazon已有target 135个
+2026-09-18 02:36:45 - ✅ amazon_ca_piccocasa target已投放且一致: B0B66YD3KM state:enabled bid:0.25
+2026-09-18 02:36:49 - amazon_uk2 adGroupId:245627094358744 Amazon已有target 103个
+2026-09-18 02:36:49 - ✅ amazon_uk2 target已投放且一致: B0G4W1CTNC state:enabled bid:0
+2026-09-18 02:36:51 - amazon_us_ac1 adGroupId:260299490814954 Amazon已有target 2个
+2026-09-18 02:36:51 - ✅ amazon_us_ac1 target已投放且一致: B0H15XYDJ4 state:enabled bid:0.35
+2026-09-18 02:36:52 - amazon_uk2 adGroupId:459099391840467 Amazon已有target 109个
+2026-09-18 02:36:52 - ✅ amazon_uk2 target已投放且一致: B0FT15DQGL state:enabled bid:0.2
+2026-09-18 02:36:53 - amazon_us_tuto adGroupId:429729350965087 Amazon已有target 30个
+2026-09-18 02:36:53 - ✅ amazon_us_tuto target已投放且一致: B07RK3JYZN state:enabled bid:0.41
+2026-09-18 02:36:53 - ✅ amazon_us_tuto target已投放且一致: B0BKZSD1QR state:enabled bid:0.41
+2026-09-18 02:36:54 - amazon_us_luux adGroupId:421074896759578 Amazon已有target 6个
+2026-09-18 02:36:54 - ✅ amazon_us_luux target已投放且一致: B0CM3XW6B6 state:enabled bid:0.3
+2026-09-18 02:36:55 - amazon_ca_ifn adGroupId:352234396141280 Amazon已有target 13个
+2026-09-18 02:36:55 - ✅ amazon_ca_ifn target已投放且一致: B0F83SS8X1 state:enabled bid:0.53
+2026-09-18 02:36:56 - amazon_uk_moto adGroupId:524881191072744 Amazon已有target 121个
+2026-09-18 02:36:56 - ✅ amazon_uk_moto target已投放且一致: B0DJ96RNSS state:enabled bid:0.15
+2026-09-18 02:36:59 - amazon adGroupId:189201017307303 Amazon已有target 92个
+2026-09-18 02:36:59 - ✅ amazon target已投放且一致: B0DN6MJGMQ state:enabled bid:0
+2026-09-18 02:37:01 - amazon adGroupId:526452274968147 Amazon已有target 38个
+2026-09-18 02:37:01 - ✅ amazon target已投放且一致: B075VB8YZS state:enabled bid:0.4
+2026-09-18 02:37:01 - amazon_uk_tuto adGroupId:547226759062505 Amazon已有target 3个
+2026-09-18 02:37:01 - ✅ amazon_uk_tuto target已投放且一致: B0DHL69PL4 state:enabled bid:0.22
+2026-09-18 02:37:03 - amazon_us_ac1 adGroupId:208515665061629 Amazon已有target 74个
+2026-09-18 02:37:03 - ✅ amazon_us_ac1 target已投放且一致: B082PPH3Z2 state:enabled bid:0
+2026-09-18 02:37:05 - amazon_us_ifn adGroupId:315496421019255 Amazon已有target 3个
+2026-09-18 02:37:05 - ✅ amazon_us_ifn target已投放且一致: B0G4GNMSPW state:enabled bid:0
+2026-09-18 02:37:06 - amazon_ca_find adGroupId:106216485009823 Amazon已有target 3个
+2026-09-18 02:37:06 - ✅ amazon_ca_find target已投放且一致: B0GHP4BMZV state:enabled bid:0.4
+2026-09-18 02:37:08 - amazon adGroupId:424095280954779 Amazon已有target 34个
+2026-09-18 02:37:08 - ✅ amazon target已投放且一致: B0039Z5TYU state:enabled bid:0
+2026-09-18 02:37:08 - ✅ amazon target已投放且一致: B0FFHMMLTC state:enabled bid:0
+2026-09-18 02:37:08 - ✅ amazon target已投放且一致: B0FFHMRN8L state:enabled bid:0
+2026-09-18 02:37:08 - ✅ amazon target已投放且一致: B078SRC9LB state:enabled bid:0
+2026-09-18 02:37:08 - ✅ amazon target已投放且一致: B01I3C64ZQ state:enabled bid:0
+2026-09-18 02:37:08 - ✅ amazon target已投放且一致: B0D1RLJC8V state:enabled bid:0
+2026-09-18 02:37:08 - ✅ amazon target已投放且一致: B0751CBXBT state:enabled bid:0
+2026-09-18 02:37:08 - ✅ amazon target已投放且一致: B09MLTQTTC state:enabled bid:0
+2026-09-18 02:37:08 - ✅ amazon target已投放且一致: B0D1RLJC8V state:enabled bid:0
+2026-09-18 02:37:10 - amazon adGroupId:251717347273244 Amazon已有target 65个
+2026-09-18 02:37:10 - ✅ amazon target已投放且一致: B0D79K39B5 state:enabled bid:0
+2026-09-18 02:37:10 - ✅ amazon target已投放且一致: B08DFMKHF4 state:enabled bid:0
+2026-09-18 02:37:10 - amazon_us_moto adGroupId:414540607232495 Amazon已有target 40个
+2026-09-18 02:37:10 - ✅ amazon_us_moto target已投放且一致: B0BZHP5D8J state:enabled bid:0
+2026-09-18 02:37:11 - amazon_ca_piccocasa adGroupId:354546810733311 Amazon已有target 2个
+2026-09-18 02:37:11 - ✅ amazon_ca_piccocasa target已投放且一致: B0BTY36GVY state:enabled bid:0.25
+2026-09-18 02:37:15 - amazon_us_luux adGroupId:516613272829218 Amazon已有target 18个
+2026-09-18 02:37:15 - ✅ amazon_us_luux target已投放且一致: B0B24BFT44 state:enabled bid:0.3
+2026-09-18 02:37:16 - amazon_ca_tuc adGroupId:401456032237948 Amazon已有target 8个
+2026-09-18 02:37:16 - ✅ amazon_ca_tuc target已投放且一致: B0FWKK6B6Q state:enabled bid:0.3
+2026-09-18 02:37:19 - amazon adGroupId:120558013198134 Amazon已有target 46个
+2026-09-18 02:37:19 - ✅ amazon target已投放且一致: B0042ORWNI state:enabled bid:0.3
+2026-09-18 02:37:21 - amazon_ca_piccocasa adGroupId:476828442870653 Amazon已有target 85个
+2026-09-18 02:37:21 - ✅ amazon_ca_piccocasa target已投放且一致: B0BGXQRGK7 state:enabled bid:0.5
+2026-09-18 02:37:22 - amazon_ca_hero adGroupId:342510263649858 Amazon已有target 31个
+2026-09-18 02:37:22 - ✅ amazon_ca_hero target已投放且一致: B0FPR516H6 state:enabled bid:0.41
+2026-09-18 02:37:22 - ✅ amazon_ca_hero target已投放且一致: B0FDNR5G68 state:enabled bid:0.41
+2026-09-18 02:37:23 - amazon adGroupId:225189462296184 Amazon已有target 6个
+2026-09-18 02:37:23 - ✅ amazon target已投放且一致: B000C5CEU2 state:enabled bid:0
+2026-09-18 02:37:24 - amazon_ca_lift adGroupId:488712302705639 Amazon已有target 102个
+2026-09-18 02:37:24 - ✅ amazon_ca_lift target已投放且一致: B0F38H23PT state:enabled bid:0
+2026-09-18 02:37:25 - amazon_ca_piccocasa adGroupId:468868066951236 Amazon已有target 48个
+2026-09-18 02:37:25 - ✅ amazon_ca_piccocasa target已投放且一致: B078G6FLHM state:enabled bid:0.25
+2026-09-18 02:37:26 - amazon_ca_ac1 adGroupId:88853644556415 Amazon已有target 47个
+2026-09-18 02:37:26 - ✅ amazon_ca_ac1 target已投放且一致: B0B8BTBYMP state:enabled bid:0.18
+2026-09-18 02:37:29 - amazon_us_luux adGroupId:420752699170106 Amazon已有target 23个
+2026-09-18 02:37:29 - ✅ amazon_us_luux target已投放且一致: B0FJS41T9S state:enabled bid:0.15
+2026-09-18 02:37:30 - amazon_us_hero adGroupId:117355397014908 Amazon已有target 7个
+2026-09-18 02:37:30 - ✅ amazon_us_hero target已投放且一致: B0DRGBMSSB state:enabled bid:0.4
+2026-09-18 02:37:31 - amazon_uk_tuto adGroupId:422853232932837 Amazon已有target 23个
+2026-09-18 02:37:31 - ✅ amazon_uk_tuto target已投放且一致: B0DHJK62MW state:enabled bid:0.45
+2026-09-18 02:37:34 - amazon_uk_tuto adGroupId:406292046937266 Amazon已有target 1个
+2026-09-18 02:37:34 - ✅ amazon_uk_tuto target已投放且一致: B0DJ7C2F9Y state:enabled bid:0.66
+2026-09-18 02:37:36 - amazon_uk2 adGroupId:29111089545810 Amazon已有target 9个
+2026-09-18 02:37:36 - ✅ amazon_uk2 target已投放且一致: B07YWWHCHN state:enabled bid:0.1
+2026-09-18 02:37:37 - amazon_uk_sopro adGroupId:377356482021193 Amazon已有target 89个
+2026-09-18 02:37:37 - ✅ amazon_uk_sopro target已投放且一致: B0FDG8V12P state:enabled bid:0.3
+2026-09-18 02:37:37 - ✅ amazon_uk_sopro target已投放且一致: B0GRG4Y9HF state:enabled bid:0.24
+2026-09-18 02:37:37 - ✅ amazon_uk_sopro target已投放且一致: B001AXLUX2 state:enabled bid:0.15
+2026-09-18 02:37:37 - ✅ amazon_uk_sopro target已投放且一致: B0CHMC5G88 state:enabled bid:0.3
+2026-09-18 02:37:37 - ✅ amazon_uk_sopro target已投放且一致: B0GRG4Y9HF state:enabled bid:0.24
+2026-09-18 02:37:37 - ✅ amazon_uk_sopro target已投放且一致: B001AXLUX2 state:enabled bid:0.15
+2026-09-18 02:37:37 - ✅ amazon_uk_sopro target已投放且一致: B0CHMC5G88 state:enabled bid:0.3
+2026-09-18 02:37:39 - amazon_ca_find adGroupId:27398009080364 Amazon已有target 1个
+2026-09-18 02:37:39 - ✅ amazon_ca_find target已投放且一致: B0CNZ2RPJW state:enabled bid:0.4
+2026-09-18 02:37:41 - amazon_uk2 adGroupId:373189718765124 Amazon已有target 112个
+2026-09-18 02:37:41 - ✅ amazon_uk2 target已投放且一致: B0CJ9LDVKW state:enabled bid:0.4
+2026-09-18 02:37:42 - amazon_uk_sopro adGroupId:210892208459148 Amazon已有target 44个
+2026-09-18 02:37:42 - ✅ amazon_uk_sopro target已投放且一致: B0FFYPMCVP state:enabled bid:0.3
+2026-09-18 02:37:44 - amazon_ca_tuc adGroupId:505686277669007 Amazon已有target 1个
+2026-09-18 02:37:44 - ✅ amazon_ca_tuc target已投放且一致: B0F7QZ7JYB state:enabled bid:0.25
+2026-09-18 02:37:47 - amazon_ca_find adGroupId:560913346275460 Amazon已有target 97个
+2026-09-18 02:37:47 - ✅ amazon_ca_find target已投放且一致: B0B3F5VBYX state:enabled bid:0.31
+2026-09-18 02:37:48 - amazon_uk_tuto adGroupId:383287824865339 Amazon已有target 98个
+2026-09-18 02:37:48 - ✅ amazon_uk_tuto target已投放且一致: B0FKTFRH5Z state:enabled bid:0.2
+2026-09-18 02:37:48 - ✅ amazon_uk_tuto target已投放且一致: B00TAH2M0K state:enabled bid:0.2
+2026-09-18 02:37:51 - amazon_ca_hood adGroupId:353940042554909 Amazon已有target 29个
+2026-09-18 02:37:51 - ✅ amazon_ca_hood target已投放且一致: B0F26D2PCN state:enabled bid:0.5
+2026-09-18 02:37:53 - amazon adGroupId:394545142081501 Amazon已有target 15个
+2026-09-18 02:37:53 - ✅ amazon target已投放且一致: B0CY279ST6 state:enabled bid:0.78
+2026-09-18 02:37:54 - amazon_ca_rrc adGroupId:548541356104236 Amazon已有target 49个
+2026-09-18 02:37:54 - ✅ amazon_ca_rrc target已投放且一致: B0D3V2264P state:enabled bid:0.5
+2026-09-18 02:37:58 - amazon_uk2 adGroupId:436365687772437 Amazon已有target 50个
+2026-09-18 02:37:58 - ✅ amazon_uk2 target已投放且一致: B0CJCCYL2S state:enabled bid:0.15
+2026-09-18 02:37:59 - amazon_ca_tuto adGroupId:195332614621456 Amazon已有target 15个
+2026-09-18 02:37:59 - ✅ amazon_ca_tuto target已投放且一致: B0FQP91ZDR state:enabled bid:0.63
+2026-09-18 02:38:00 - amazon_ca_ifn adGroupId:464596736584832 Amazon已有target 13个
+2026-09-18 02:38:00 - ✅ amazon_ca_ifn target已投放且一致: B0F83XMQ5J state:enabled bid:0.25
+2026-09-18 02:38:03 - amazon adGroupId:429114657274260 Amazon已有target 13个
+2026-09-18 02:38:03 - ✅ amazon target已投放且一致: B0BZ877VN3 state:enabled bid:0.15
+2026-09-18 02:38:05 - amazon_ca_find adGroupId:478797910640467 Amazon已有target 14个
+2026-09-18 02:38:05 - ✅ amazon_ca_find target已投放且一致: B0DLL18MW9 state:enabled bid:0.15
+2026-09-18 02:38:06 - amazon adGroupId:193401124402262 Amazon已有target 20个
+2026-09-18 02:38:06 - ✅ amazon target已投放且一致: B0D78PFFGZ state:enabled bid:0
+2026-09-18 02:38:06 - ✅ amazon target已投放且一致: B0DPFKZPHZ state:enabled bid:0
+2026-09-18 02:38:08 - amazon_us_tuto adGroupId:400292245273259 Amazon已有target 6个
+2026-09-18 02:38:08 - ✅ amazon_us_tuto target已投放且一致: B0GR96J25R state:enabled bid:0.4
+2026-09-18 02:38:10 - amazon adGroupId:432505800337430 Amazon已有target 200个
+2026-09-18 02:38:10 - ✅ amazon target已投放且一致: B0CJCDZPG8 state:enabled bid:0.2
+2026-09-18 02:38:11 - amazon_ca_hood adGroupId:546457602135155 Amazon已有target 14个
+2026-09-18 02:38:11 - ✅ amazon_ca_hood target已投放且一致: B0FB9GR1G6 state:enabled bid:0.25
+2026-09-18 02:38:12 - amazon adGroupId:50636112789864 Amazon已有target 48个
+2026-09-18 02:38:12 - ✅ amazon target已投放且一致: B0CBWJZ62J state:enabled bid:0
+2026-09-18 02:38:13 - amazon_uk_tuc adGroupId:424531773644887 Amazon已有target 67个
+2026-09-18 02:38:13 - ✅ amazon_uk_tuc target已投放且一致: B0DHKZY9X5 state:enabled bid:0.2
+2026-09-18 02:38:16 - amazon adGroupId:93719116059079 Amazon已有target 26个
+2026-09-18 02:38:16 - ✅ amazon target已投放且一致: B08CT826SP state:enabled bid:0
+2026-09-18 02:38:16 - ✅ amazon target已投放且一致: B07SR774Y6 state:enabled bid:0
+2026-09-18 02:38:16 - ✅ amazon target已投放且一致: B07JHHJ5LM state:enabled bid:0
+2026-09-18 02:38:17 - amazon_ca_rrc adGroupId:400092842847040 Amazon已有target 7个
+2026-09-18 02:38:17 - ✅ amazon_ca_rrc target已投放且一致: B0FMQT3SK9 state:enabled bid:0.5
+2026-09-18 02:38:18 - amazon_ca_hope adGroupId:139755838824291 Amazon已有target 30个
+2026-09-18 02:38:18 - ✅ amazon_ca_hope target已投放且一致: B0GF89DQ58 state:enabled bid:0.25
+2026-09-18 02:38:19 - amazon_us_hope adGroupId:483244191620003 Amazon已有target 30个
+2026-09-18 02:38:19 - ✅ amazon_us_hope target已投放且一致: B0DS1NMNPZ state:enabled bid:0.5
+2026-09-18 02:38:20 - amazon_uk_tuc adGroupId:533651288547557 Amazon已有target 135个
+2026-09-18 02:38:20 - ✅ amazon_uk_tuc target已投放且一致: B0DCZPH7BQ state:enabled bid:0.24
+2026-09-18 02:38:20 - ✅ amazon_uk_tuc target已投放且一致: B0DCZR12SQ state:enabled bid:0.24
+2026-09-18 02:38:22 - amazon_ca_piccocasa adGroupId:417234802863998 Amazon已有target 133个
+2026-09-18 02:38:22 - ✅ amazon_ca_piccocasa target已投放且一致: B0DHZZ1HWZ state:enabled bid:0.25
+2026-09-18 02:38:23 - amazon_uk_tuto adGroupId:503125514603213 Amazon已有target 2个
+2026-09-18 02:38:23 - ✅ amazon_uk_tuto target已投放且一致: B0FNDB7V21 state:enabled bid:0.53
+2026-09-18 02:38:25 - amazon_us_hood adGroupId:395104085852409 Amazon已有target 52个
+2026-09-18 02:38:25 - ✅ amazon_us_hood target已投放且一致: B0D2H3PVH3 state:enabled bid:0.35
+2026-09-18 02:38:26 - amazon_uk_tuto adGroupId:522770700671423 Amazon已有target 1个
+2026-09-18 02:38:26 - ✅ amazon_uk_tuto target已投放且一致: B0DN6R96VW state:enabled bid:0
+2026-09-18 02:38:27 - amazon_ca_hood adGroupId:482612761919000 Amazon已有target 9个
+2026-09-18 02:38:27 - ✅ amazon_ca_hood target已投放且一致: B0FNRQS91Q state:enabled bid:0.25
+2026-09-18 02:38:29 - amazon adGroupId:328821051968421 Amazon已有target 19个
+2026-09-18 02:38:29 - ✅ amazon target已投放且一致: B08DWLXZQD state:enabled bid:0.68
+2026-09-18 02:38:30 - amazon_ca_ifn adGroupId:212013363966552 Amazon已有target 14个
+2026-09-18 02:38:30 - ✅ amazon_ca_ifn target已投放且一致: B0CPDQX6S2 state:enabled bid:0.58
+2026-09-18 02:38:32 - amazon_us_ifn adGroupId:478487973876522 Amazon已有target 2个
+2026-09-18 02:38:32 - ✅ amazon_us_ifn target已投放且一致: B0FGTTVKRP state:enabled bid:0.35
+2026-09-18 02:38:34 - amazon_uk_tuc adGroupId:421031142637233 Amazon已有target 1个
+2026-09-18 02:38:34 - ✅ amazon_uk_tuc target已投放且一致: B08317F8RF state:enabled bid:0
+2026-09-18 02:38:37 - amazon_us_luux adGroupId:531832663675897 Amazon已有target 121个
+2026-09-18 02:38:37 - ✅ amazon_us_luux target已投放且一致: B0006ZCGXI state:enabled bid:0.18
+2026-09-18 02:38:39 - amazon adGroupId:523649336958364 Amazon已有target 24个
+2026-09-18 02:38:39 - ✅ amazon target已投放且一致: B07DMK3DV6 state:enabled bid:0.45
+2026-09-18 02:38:40 - amazon_ca_piccocasa adGroupId:537016141750131 Amazon已有target 16个
+2026-09-18 02:38:40 - ✅ amazon_ca_piccocasa target已投放且一致: B08BP1QCLR state:enabled bid:0.25
+2026-09-18 02:38:42 - amazon_ca_ifn adGroupId:465780297198058 Amazon已有target 5个
+2026-09-18 02:38:42 - ✅ amazon_ca_ifn target已投放且一致: B0G64QCM3P state:enabled bid:0.4
+2026-09-18 02:38:43 - amazon_ca_rrc adGroupId:496684287801604 Amazon已有target 30个
+2026-09-18 02:38:43 - ✅ amazon_ca_rrc target已投放且一致: B09KLNF9Q3 state:enabled bid:0.5
+2026-09-18 02:38:45 - amazon_ca_piccocasa adGroupId:488753048823340 Amazon已有target 139个
+2026-09-18 02:38:45 - ✅ amazon_ca_piccocasa target已投放且一致: B0BGY3J7XZ state:enabled bid:0.25
+2026-09-18 02:38:46 - amazon_us_hope adGroupId:156369322217023 Amazon已有target 15个
+2026-09-18 02:38:46 - ✅ amazon_us_hope target已投放且一致: B0C3CTRFKC state:enabled bid:0.45
+2026-09-18 02:38:47 - amazon_us_moto adGroupId:463522313429521 Amazon已有target 39个
+2026-09-18 02:38:47 - ✅ amazon_us_moto target已投放且一致: B0DB1Q3XHJ state:enabled bid:0.38
+2026-09-18 02:38:48 - amazon_uk_hope adGroupId:244125683614693 Amazon已有target 6个
+2026-09-18 02:38:48 - ✅ amazon_uk_hope target已投放且一致: B0FXLGS19T state:enabled bid:0.2
+2026-09-18 02:38:49 - amazon_us_tuc adGroupId:176792441127770 Amazon已有target 36个
+2026-09-18 02:38:49 - ✅ amazon_us_tuc target已投放且一致: B0DB4LTWNC state:enabled bid:0.4
+2026-09-18 02:38:51 - amazon_us_swi adGroupId:170740341715979 Amazon已有target 7个
+2026-09-18 02:38:51 - ✅ amazon_us_swi target已投放且一致: B0F92FCFWN state:enabled bid:0.4
+2026-09-18 02:38:52 - amazon_ca_ac1 adGroupId:503614299632385 Amazon已有target 75个
+2026-09-18 02:38:52 - ✅ amazon_ca_ac1 target已投放且一致: B0CNQ13MZD state:enabled bid:0.2
+2026-09-18 02:38:52 - ✅ amazon_ca_ac1 target已投放且一致: B0CNQ26LV5 state:enabled bid:0.21
+2026-09-18 02:38:53 - amazon_ca_luck adGroupId:382495685323813 Amazon已有target 11个
+2026-09-18 02:38:53 - ✅ amazon_ca_luck target已投放且一致: B0G2C9RTGD state:enabled bid:0.5
+2026-09-18 02:38:54 - amazon_us_sopro adGroupId:23488604104854 Amazon已有target 46个
+2026-09-18 02:38:54 - ✅ amazon_us_sopro target已投放且一致: B0FWJR1HZ3 state:enabled bid:0.4
+2026-09-18 02:38:55 - amazon_uk_tuto adGroupId:330174338069123 Amazon已有target 18个
+2026-09-18 02:38:55 - ✅ amazon_uk_tuto target已投放且一致: B0DB2YJMNN state:enabled bid:0.62
+2026-09-18 02:38:56 - amazon_ca_hope adGroupId:177760278343818 Amazon已有target 18个
+2026-09-18 02:38:56 - ✅ amazon_ca_hope target已投放且一致: B00UG10ZTE state:enabled bid:0.25
+2026-09-18 02:38:58 - amazon_us_hero adGroupId:200819499009764 Amazon已有target 1个
+2026-09-18 02:38:58 - ✅ amazon_us_hero target已投放且一致: B0FJLZGWW4 state:enabled bid:0.25
+2026-09-18 02:39:00 - amazon_ca_piccocasa adGroupId:344051437024912 Amazon已有target 181个
+2026-09-18 02:39:00 - ✅ amazon_ca_piccocasa target已投放且一致: B0DGGR6P7D state:enabled bid:0.25
+2026-09-18 02:39:00 - ✅ amazon_ca_piccocasa target已投放且一致: B0DJ35X81V state:enabled bid:0.25
+2026-09-18 02:39:01 - amazon adGroupId:437046941145198 Amazon已有target 46个
+2026-09-18 02:39:01 - ✅ amazon target已投放且一致: B07RXT6DZT state:enabled bid:0.2
+2026-09-18 02:39:01 - ✅ amazon target已投放且一致: B07MWWGPBG state:enabled bid:0.2
+2026-09-18 02:39:03 - amazon adGroupId:421571995635710 Amazon已有target 200个
+2026-09-18 02:39:03 - ✅ amazon target已投放且一致: B07RSQ7M67 state:enabled bid:0.1
+2026-09-18 02:39:04 - amazon_us_find adGroupId:464860938064617 Amazon已有target 58个
+2026-09-18 02:39:04 - ✅ amazon_us_find target已投放且一致: B0F8GXGLQR state:enabled bid:0.34
+2026-09-18 02:39:07 - amazon_ca_piccocasa adGroupId:327003733756916 Amazon已有target 77个
+2026-09-18 02:39:07 - ✅ amazon_ca_piccocasa target已投放且一致: B0C2Z65TQD state:enabled bid:0.5
+2026-09-18 02:39:08 - amazon_us_cover adGroupId:166995710250567 Amazon已有target 5个
+2026-09-18 02:39:08 - ✅ amazon_us_cover target已投放且一致: B0CBWYWBSB state:enabled bid:0.4
+2026-09-18 02:39:09 - amazon_ca_tuc adGroupId:527494138784105 Amazon已有target 22个
+2026-09-18 02:39:09 - ✅ amazon_ca_tuc target已投放且一致: B0DK57PT6Z state:enabled bid:0.26
+2026-09-18 02:39:10 - amazon_ca_ac1 adGroupId:465820781008090 Amazon已有target 122个
+2026-09-18 02:39:10 - ✅ amazon_ca_ac1 target已投放且一致: B0D16YX6TB state:enabled bid:0.53
+2026-09-18 02:39:12 - amazon_us_hero adGroupId:431840537387521 Amazon已有target 12个
+2026-09-18 02:39:12 - ✅ amazon_us_hero target已投放且一致: B0CH196KH8 state:enabled bid:0
+2026-09-18 02:39:13 - amazon_ca_piccocasa adGroupId:545995844159291 Amazon已有target 173个
+2026-09-18 02:39:13 - ✅ amazon_ca_piccocasa target已投放且一致: B08L5WLTDV state:enabled bid:0.25
+2026-09-18 02:39:15 - amazon adGroupId:465540933707477 Amazon已有target 8个
+2026-09-18 02:39:15 - ✅ amazon target已投放且一致: B0DP6WYHVJ state:enabled bid:0.24
+2026-09-18 02:39:17 - amazon adGroupId:127051887050145 Amazon已有target 16个
+2026-09-18 02:39:17 - ✅ amazon target已投放且一致: B0BX3ZFF8S state:enabled bid:0.5
+2026-09-18 02:39:18 - amazon_uk_tuto adGroupId:516973860490373 Amazon已有target 34个
+2026-09-18 02:39:18 - ✅ amazon_uk_tuto target已投放且一致: B0D424GMZ8 state:enabled bid:0.2
+2026-09-18 02:39:19 - amazon_us_luux adGroupId:165250442111538 Amazon已有target 80个
+2026-09-18 02:39:19 - ✅ amazon_us_luux target已投放且一致: B07LGNV26V state:enabled bid:0.4
+2026-09-18 02:39:21 - amazon adGroupId:331653487750522 Amazon已有target 72个
+2026-09-18 02:39:21 - ✅ amazon target已投放且一致: B07RS9XLT6 state:enabled bid:0.4
+2026-09-18 02:39:23 - amazon_ca_piccocasa adGroupId:306537137923968 Amazon已有target 173个
+2026-09-18 02:39:23 - ✅ amazon_ca_piccocasa target已投放且一致: B0CMTJCZX4 state:enabled bid:0.25
+2026-09-18 02:39:24 - amazon_uk_ifn adGroupId:20325572478342 Amazon已有target 20个
+2026-09-18 02:39:24 - ✅ amazon_uk_ifn target已投放且一致: B0G1332VCY state:enabled bid:0.3
+2026-09-18 02:39:25 - amazon_ca_ac1 adGroupId:9530567224041 Amazon已有target 484个
+2026-09-18 02:39:25 - ✅ amazon_ca_ac1 target已投放且一致: B085T38KXQ state:enabled bid:0.27
+2026-09-18 02:39:27 - amazon_ca_lift adGroupId:555310057283219 Amazon已有target 62个
+2026-09-18 02:39:27 - ✅ amazon_ca_lift target已投放且一致: B0D39RW9HT state:enabled bid:0.25
+2026-09-18 02:39:27 - ✅ amazon_ca_lift target已投放且一致: B0GK91FYPZ state:enabled bid:0
+2026-09-18 02:39:27 - ✅ amazon_ca_lift target已投放且一致: B0D39RW9HT state:enabled bid:0.25
+2026-09-18 02:39:29 - amazon_ca_ac1 adGroupId:200019510793304 Amazon已有target 336个
+2026-09-18 02:39:29 - ✅ amazon_ca_ac1 target已投放且一致: B00W97VF06 state:enabled bid:0.22
+2026-09-18 02:39:31 - amazon_ca_ac1 adGroupId:2094871551756 Amazon已有target 459个
+2026-09-18 02:39:31 - ✅ amazon_ca_ac1 target已投放且一致: B00Z2CX1P2 state:enabled bid:0.27
+2026-09-18 02:39:31 - ✅ amazon_ca_ac1 target已投放且一致: B00AAOESNQ state:enabled bid:0.27
+2026-09-18 02:39:32 - amazon_ca_rrc adGroupId:149377767233058 Amazon已有target 20个
+2026-09-18 02:39:32 - ✅ amazon_ca_rrc target已投放且一致: B0GG93J9L2 state:enabled bid:0.35
+2026-09-18 02:39:34 - amazon_ca_piccocasa adGroupId:532903537873827 Amazon已有target 178个
+2026-09-18 02:39:34 - ✅ amazon_ca_piccocasa target已投放且一致: B0DJ35X81V state:enabled bid:0.25
+2026-09-18 02:39:34 - amazon adGroupId:137592487411858 Amazon已有target 6个
+2026-09-18 02:39:34 - ✅ amazon target已投放且一致: B0B3JLBQBG state:enabled bid:0
+2026-09-18 02:39:36 - amazon_ca_piccocasa adGroupId:455882893783492 Amazon已有target 49个
+2026-09-18 02:39:36 - ✅ amazon_ca_piccocasa target已投放且一致: B0D4R1ZK7S state:enabled bid:0.25
+2026-09-18 02:39:38 - amazon adGroupId:386543718283464 Amazon已有target 47个
+2026-09-18 02:39:38 - ✅ amazon target已投放且一致: B07MWWJ8Q8 state:enabled bid:0.2
+2026-09-18 02:39:38 - amazon_ca_ifn adGroupId:252091098038701 Amazon已有target 21个
+2026-09-18 02:39:38 - ✅ amazon_ca_ifn target已投放且一致: B0DBVMGH7K state:enabled bid:0.4
+2026-09-18 02:39:38 - ✅ amazon_ca_ifn target已投放且一致: B0F9F4D3BL state:enabled bid:0.4
+2026-09-18 02:39:41 - amazon adGroupId:266600681791935 Amazon已有target 199个
+2026-09-18 02:39:41 - ✅ amazon target已投放且一致: B0H14ZVDVH state:enabled bid:0
+2026-09-18 02:39:41 - ✅ amazon target已投放且一致: B08NDZ479D state:enabled bid:0.1
+2026-09-18 02:39:42 - amazon_ca_ifn adGroupId:293727464988634 Amazon已有target 15个
+2026-09-18 02:39:42 - ✅ amazon_ca_ifn target已投放且一致: B0FXGM3GQG state:enabled bid:0.25
+2026-09-18 02:39:43 - amazon_ca_tuto adGroupId:86508608832093 Amazon已有target 16个
+2026-09-18 02:39:43 - ✅ amazon_ca_tuto target已投放且一致: B0GRVCS3KP state:enabled bid:0.45
+2026-09-18 02:39:44 - amazon_us_hero adGroupId:51653180280424 Amazon已有target 17个
+2026-09-18 02:39:44 - ✅ amazon_us_hero target已投放且一致: B0BZC9T39N state:enabled bid:0.4
+2026-09-18 02:39:45 - amazon_ca_swi adGroupId:352931545759387 Amazon已有target 3个
+2026-09-18 02:39:45 - ✅ amazon_ca_swi target已投放且一致: B0DN6JJS96 state:enabled bid:0.25
+2026-09-18 02:39:46 - amazon_us_find adGroupId:560804539922816 Amazon已有target 7个
+2026-09-18 02:39:46 - ✅ amazon_us_find target已投放且一致: B0FQCLFPDC state:enabled bid:0.2
+2026-09-18 02:39:48 - amazon_uk2 adGroupId:262625240487550 Amazon已有target 147个
+2026-09-18 02:39:48 - ✅ amazon_uk2 target已投放且一致: B09NNKD99Y state:enabled bid:0.15
+2026-09-18 02:39:48 - ✅ amazon_uk2 target已投放且一致: B0BSNS724G state:enabled bid:0.15
+2026-09-18 02:39:48 - ✅ amazon_uk2 target已投放且一致: B0BSNV3TVG state:enabled bid:0.15
+2026-09-18 02:39:51 - amazon_ca_ac1 adGroupId:204720757402907 Amazon已有target 316个
+2026-09-18 02:39:51 - ✅ amazon_ca_ac1 target已投放且一致: B08JZ52XNK state:enabled bid:0.44
+2026-09-18 02:39:51 - ✅ amazon_ca_ac1 target已投放且一致: B07GZDKW34 state:enabled bid:0.3
+2026-09-18 02:39:51 - ✅ amazon_ca_ac1 target已投放且一致: B0CS2H9YLX state:enabled bid:0
+2026-09-18 02:39:51 - ✅ amazon_ca_ac1 target已投放且一致: B0DRPHKMN9 state:enabled bid:0
+2026-09-18 02:39:52 - amazon_ca_piccocasa adGroupId:303715048145956 Amazon已有target 173个
+2026-09-18 02:39:52 - ✅ amazon_ca_piccocasa target已投放且一致: B09QFZ35MQ state:enabled bid:0.25
+2026-09-18 02:39:53 - amazon adGroupId:98304110908693 Amazon已有target 16个
+2026-09-18 02:39:53 - ✅ amazon target已投放且一致: B08V8M6JTD state:enabled bid:0.1
+2026-09-18 02:39:57 - amazon_us_luux adGroupId:342599083613808 Amazon已有target 10个
+2026-09-18 02:39:57 - ✅ amazon_us_luux target已投放且一致: B00KTJ993Q state:enabled bid:0.5
+2026-09-18 02:39:58 - amazon_ca_piccocasa adGroupId:522912794473833 Amazon已有target 178个
+2026-09-18 02:39:58 - ✅ amazon_ca_piccocasa target已投放且一致: B09VC3X3PC state:enabled bid:0.25
+2026-09-18 02:39:59 - amazon_uk2 adGroupId:447788531857371 Amazon已有target 70个
+2026-09-18 02:39:59 - ✅ amazon_uk2 target已投放且一致: B096MMWCP4 state:enabled bid:0.4
+2026-09-18 02:40:02 - amazon adGroupId:391911536145522 Amazon已有target 5个
+2026-09-18 02:40:02 - ✅ amazon target已投放且一致: B0FGD68G5T state:enabled bid:0
+2026-09-18 02:40:03 - amazon_ca_ac1 adGroupId:91054819868226 Amazon已有target 45个
+2026-09-18 02:40:03 - ✅ amazon_ca_ac1 target已投放且一致: B073QTQ4P6 state:enabled bid:0.2
+2026-09-18 02:40:05 - amazon_us_hood adGroupId:458443464817886 Amazon已有target 25个
+2026-09-18 02:40:05 - ✅ amazon_us_hood target已投放且一致: B0FQN7GP83 state:enabled bid:0.5
+2026-09-18 02:40:07 - amazon_ca_piccocasa adGroupId:415047691076305 Amazon已有target 154个
+2026-09-18 02:40:07 - ✅ amazon_ca_piccocasa target已投放且一致: B0C1453QCC state:enabled bid:0.25
+2026-09-18 02:40:07 - ✅ amazon_ca_piccocasa target已投放且一致: B0C146YRBM state:enabled bid:0.25
+2026-09-18 02:40:09 - amazon adGroupId:184889145214859 Amazon已有target 52个
+2026-09-18 02:40:09 - ✅ amazon target已投放且一致: B09QQ688B8 state:enabled bid:0.35
+2026-09-18 02:40:10 - amazon_ca_ifn adGroupId:251826465887105 Amazon已有target 18个
+2026-09-18 02:40:10 - ✅ amazon_ca_ifn target已投放且一致: B0DNMPCYGZ state:enabled bid:0.55
+2026-09-18 02:40:11 - amazon_ca_piccocasa adGroupId:513337104957038 Amazon已有target 192个
+2026-09-18 02:40:11 - ✅ amazon_ca_piccocasa target已投放且一致: B0DGQD91D6 state:enabled bid:0.25
+2026-09-18 02:40:12 - amazon_uk_ifn adGroupId:250370813388621 Amazon已有target 30个
+2026-09-18 02:40:12 - ✅ amazon_uk_ifn target已投放且一致: B0GD78ZCL3 state:enabled bid:0.3
+2026-09-18 02:40:12 - ✅ amazon_uk_ifn target已投放且一致: B0GCD5YJSK state:enabled bid:0.3
+2026-09-18 02:40:12 - ✅ amazon_uk_ifn target已投放且一致: B095X6GNNN state:enabled bid:0.3
+2026-09-18 02:40:12 - ✅ amazon_uk_ifn target已投放且一致: B0H5HRGP1F state:enabled bid:0.3
+2026-09-18 02:40:14 - amazon_ca_tuto adGroupId:406435372978726 Amazon已有target 103个
+2026-09-18 02:40:14 - ✅ amazon_ca_tuto target已投放且一致: B0B4NLG2N8 state:enabled bid:0.91
+2026-09-18 02:40:17 - amazon_ca_ac1 adGroupId:221169249641131 Amazon已有target 71个
+2026-09-18 02:40:17 - ✅ amazon_ca_ac1 target已投放且一致: B0H26YM3N9 state:enabled bid:0.39
+2026-09-18 02:40:19 - amazon_ca_piccocasa adGroupId:316867405912624 Amazon已有target 60个
+2026-09-18 02:40:19 - ✅ amazon_ca_piccocasa target已投放且一致: B09B6VYT3D state:enabled bid:0.25
+2026-09-18 02:40:22 - amazon_us_tuc adGroupId:374584955474668 Amazon已有target 57个
+2026-09-18 02:40:22 - ✅ amazon_us_tuc target已投放且一致: B0D6YP2XHS state:enabled bid:0.2
+2026-09-18 02:40:23 - amazon_ca_piccocasa adGroupId:283768580875141 Amazon已有target 177个
+2026-09-18 02:40:23 - ✅ amazon_ca_piccocasa target已投放且一致: B09QFS6H52 state:enabled bid:0.25
+2026-09-18 02:40:23 - ✅ amazon_ca_piccocasa target已投放且一致: B09QFX2SM9 state:enabled bid:0.25
+2026-09-18 02:40:25 - amazon_ca_piccocasa adGroupId:532965788474605 Amazon已有target 148个
+2026-09-18 02:40:25 - ✅ amazon_ca_piccocasa target已投放且一致: B0B1TBP94G state:enabled bid:0.25
+2026-09-18 02:40:26 - amazon_ca_ifn adGroupId:201287828818450 Amazon已有target 42个
+2026-09-18 02:40:26 - ✅ amazon_ca_ifn target已投放且一致: B09HY32Q1C state:enabled bid:0.4
+2026-09-18 02:40:27 - amazon_us_hope adGroupId:125239927224460 Amazon已有target 59个
+2026-09-18 02:40:27 - ✅ amazon_us_hope target已投放且一致: B00144D77E state:enabled bid:0.4
+2026-09-18 02:40:29 - amazon_us_hope adGroupId:226149342005039 Amazon已有target 20个
+2026-09-18 02:40:29 - ✅ amazon_us_hope target已投放且一致: B0FLPQMR1L state:enabled bid:0.4
+2026-09-18 02:40:30 - amazon_us_tuc adGroupId:253818196292532 Amazon已有target 36个
+2026-09-18 02:40:30 - ✅ amazon_us_tuc target已投放且一致: B0DCDZVH8F state:enabled bid:0.4
+2026-09-18 02:40:31 - amazon_ca_tuc adGroupId:545027914745601 Amazon已有target 25个
+2026-09-18 02:40:31 - ✅ amazon_ca_tuc target已投放且一致: B0DFB4N2MT state:enabled bid:0.3
+2026-09-18 02:40:32 - amazon_us_tuto adGroupId:129213929613104 Amazon已有target 35个
+2026-09-18 02:40:32 - ✅ amazon_us_tuto target已投放且一致: B0GS58RCDR state:enabled bid:0.4
+2026-09-18 02:40:32 - ✅ amazon_us_tuto target已投放且一致: B0FBR7ZGMV state:enabled bid:0.4
+2026-09-18 02:40:33 - amazon_ca_piccocasa adGroupId:399565429232843 Amazon已有target 95个
+2026-09-18 02:40:33 - ✅ amazon_ca_piccocasa target已投放且一致: B0B863FPWF state:enabled bid:0.25
+2026-09-18 02:40:33 - ✅ amazon_ca_piccocasa target已投放且一致: B0B863XGDM state:enabled bid:0.25
+2026-09-18 02:40:35 - amazon_uk_tuto adGroupId:303690444569834 Amazon已有target 1个
+2026-09-18 02:40:35 - ✅ amazon_uk_tuto target已投放且一致: B0DJ7BLCBM state:enabled bid:0.34
+2026-09-18 02:40:37 - amazon_ca_piccocasa adGroupId:478514656936910 Amazon已有target 83个
+2026-09-18 02:40:37 - ✅ amazon_ca_piccocasa target已投放且一致: B0B5FCWDBK state:enabled bid:0.25
+2026-09-18 02:40:38 - amazon_us_swi adGroupId:183341147371380 Amazon已有target 51个
+2026-09-18 02:40:38 - ✅ amazon_us_swi target已投放且一致: B0GJ51HLKS state:enabled bid:0.4
+2026-09-18 02:40:38 - ✅ amazon_us_swi target已投放且一致: B0DJS8PJ9B state:enabled bid:0.4
+2026-09-18 02:40:40 - amazon_ca_tuc adGroupId:555911747219541 Amazon已有target 30个
+2026-09-18 02:40:40 - ✅ amazon_ca_tuc target已投放且一致: B0BG24MY3J state:enabled bid:0.3
+2026-09-18 02:40:43 - amazon_us_moto adGroupId:560100494469107 Amazon已有target 98个
+2026-09-18 02:40:43 - ✅ amazon_us_moto target已投放且一致: B0D8BL2D54 state:enabled bid:0.3
+2026-09-18 02:40:43 - ✅ amazon_us_moto target已投放且一致: B0DSZQKKFL state:enabled bid:0.3
+2026-09-18 02:40:43 - ✅ amazon_us_moto target已投放且一致: B0FN6ZFGLD state:enabled bid:0
+2026-09-18 02:40:46 - amazon_uk_tuto adGroupId:119648912734112 Amazon已有target 42个
+2026-09-18 02:40:46 - ✅ amazon_uk_tuto target已投放且一致: B0FMYLV79D state:enabled bid:0.2
+2026-09-18 02:40:47 - amazon_ca_ac1 adGroupId:326096496553923 Amazon已有target 41个
+2026-09-18 02:40:47 - ✅ amazon_ca_ac1 target已投放且一致: B0CXPBXY4C state:enabled bid:0.13
+2026-09-18 02:40:50 - amazon_ca_piccocasa adGroupId:387435226896809 Amazon已有target 173个
+2026-09-18 02:40:50 - ✅ amazon_ca_piccocasa target已投放且一致: B0CJ56V6X7 state:enabled bid:0.25
+2026-09-18 02:40:54 - amazon_uk_tuto adGroupId:336064020485703 Amazon已有target 1个
+2026-09-18 02:40:54 - ✅ amazon_uk_tuto target已投放且一致: B0DNZHZZQ9 state:enabled bid:1.05
+2026-09-18 02:40:57 - amazon_uk_tuto adGroupId:242863140996090 Amazon已有target 12个
+2026-09-18 02:40:57 - ✅ amazon_uk_tuto target已投放且一致: B0015KXNUI state:enabled bid:0.35
+2026-09-18 02:40:59 - amazon_uk_tuc adGroupId:358143862684340 Amazon已有target 117个
+2026-09-18 02:40:59 - ✅ amazon_uk_tuc target已投放且一致: B0DCZRYSS8 state:enabled bid:0.2
+2026-09-18 02:41:01 - amazon_ca_piccocasa adGroupId:551287108509783 Amazon已有target 102个
+2026-09-18 02:41:01 - ✅ amazon_ca_piccocasa target已投放且一致: B0B8ZPF74J state:enabled bid:0.25
+2026-09-18 02:41:05 - amazon_ca_tuto adGroupId:223371676481642 Amazon已有target 24个
+2026-09-18 02:41:05 - ✅ amazon_ca_tuto target已投放且一致: B0GC7GRN11 state:enabled bid:0.59
+2026-09-18 02:41:08 - amazon_us_hope adGroupId:473387469260000 Amazon已有target 2个
+2026-09-18 02:41:08 - ✅ amazon_us_hope target已投放且一致: B0F6LZFJ2H state:enabled bid:0.35
+2026-09-18 02:41:10 - amazon_us_hero adGroupId:160749517493249 Amazon已有target 7个
+2026-09-18 02:41:10 - ✅ amazon_us_hero target已投放且一致: B0DHXPBVM4 state:enabled bid:0
+2026-09-18 02:41:12 - amazon_ca_piccocasa adGroupId:376962297013810 Amazon已有target 83个
+2026-09-18 02:41:12 - ✅ amazon_ca_piccocasa target已投放且一致: B097HJL1T1 state:enabled bid:0.25
+2026-09-18 02:41:15 - amazon_ca_tuc adGroupId:228538326183393 Amazon已有target 13个
+2026-09-18 02:41:15 - ✅ amazon_ca_tuc target已投放且一致: B0CYSVFB61 state:enabled bid:0.3
+2026-09-18 02:41:16 - amazon_ca_tuto adGroupId:403108015704082 Amazon已有target 19个
+2026-09-18 02:41:16 - ✅ amazon_ca_tuto target已投放且一致: B0DF2RVMHP state:enabled bid:0.38
+2026-09-18 02:41:17 - amazon_uk_tuc adGroupId:242240520965463 Amazon已有target 36个
+2026-09-18 02:41:17 - ✅ amazon_uk_tuc target已投放且一致: B0FH5C3HF6 state:enabled bid:0.3
+2026-09-18 02:41:18 - amazon_ca_ifn adGroupId:552776552320497 Amazon已有target 8个
+2026-09-18 02:41:18 - ✅ amazon_ca_ifn target已投放且一致: B0G6DZQWPW state:enabled bid:0.4
+2026-09-18 02:41:20 - amazon adGroupId:419956778003173 Amazon已有target 21个
+2026-09-18 02:41:20 - ✅ amazon target已投放且一致: B09PQJBVJG state:enabled bid:0
+2026-09-18 02:41:20 - ✅ amazon target已投放且一致: B0894Q4XKY state:enabled bid:0.26
+2026-09-18 02:41:20 - ✅ amazon target已投放且一致: B0BHDBZFRW state:enabled bid:0.33
+2026-09-18 02:41:21 - amazon_uk_tuto adGroupId:310688500839092 Amazon已有target 34个
+2026-09-18 02:41:21 - ✅ amazon_uk_tuto target已投放且一致: B0D424GMZ8 state:enabled bid:0.2
+2026-09-18 02:41:23 - amazon_us_tuc adGroupId:380112291150096 Amazon已有target 10个
+2026-09-18 02:41:23 - ✅ amazon_us_tuc target已投放且一致: B0F8VKNWPL state:enabled bid:0.46
+2026-09-18 02:41:25 - amazon_ca_kilo adGroupId:523918683977425 Amazon已有target 105个
+2026-09-18 02:41:25 - ✅ amazon_ca_kilo target已投放且一致: B0DYPKBK4G state:enabled bid:0.2
+2026-09-18 02:41:26 - amazon_ca_tuc adGroupId:530010366681926 Amazon已有target 9个
+2026-09-18 02:41:26 - ✅ amazon_ca_tuc target已投放且一致: B0FWGH8M17 state:enabled bid:0.3
+2026-09-18 02:41:27 - amazon_us_ifn adGroupId:264668185784003 Amazon已有target 31个
+2026-09-18 02:41:27 - ✅ amazon_us_ifn target已投放且一致: B0049S94NS state:enabled bid:0.35
+2026-09-18 02:41:29 - amazon_uk_tuto adGroupId:396933318138371 Amazon已有target 125个
+2026-09-18 02:41:29 - ✅ amazon_uk_tuto target已投放且一致: B0DHS9Q9S3 state:enabled bid:0.38
+2026-09-18 02:41:31 - amazon_ca_ac1 adGroupId:126191367688643 Amazon已有target 17个
+2026-09-18 02:41:31 - ✅ amazon_ca_ac1 target已投放且一致: B0GYRT8BFS state:enabled bid:0.39
+2026-09-18 02:41:33 - amazon_uk_tuto adGroupId:434054170050700 Amazon已有target 18个
+2026-09-18 02:41:33 - ✅ amazon_uk_tuto target已投放且一致: B0DB398CJ4 state:enabled bid:0.69
+2026-09-18 02:41:35 - amazon_us_sopro adGroupId:147352825411742 Amazon已有target 39个
+2026-09-18 02:41:35 - ✅ amazon_us_sopro target已投放且一致: B0DZJ44GDF state:enabled bid:0.4
+2026-09-18 02:41:36 - amazon_ca_ifn adGroupId:300866708997812 Amazon已有target 17个
+2026-09-18 02:41:36 - ✅ amazon_ca_ifn target已投放且一致: B0FWQ6PXRP state:enabled bid:0.25
+2026-09-18 02:41:37 - amazon_ca_sopro adGroupId:123460624993041 Amazon已有target 18个
+2026-09-18 02:41:37 - ✅ amazon_ca_sopro target已投放且一致: B0CQTCP2H9 state:enabled bid:0.35
+2026-09-18 02:41:38 - amazon_ca_piccocasa adGroupId:516308534652247 Amazon已有target 31个
+2026-09-18 02:41:38 - ✅ amazon_ca_piccocasa target已投放且一致: B0BGY43Q9X state:enabled bid:0.25
+2026-09-18 02:41:39 - amazon_uk_tuto adGroupId:521613550618884 Amazon已有target 20个
+2026-09-18 02:41:39 - ✅ amazon_uk_tuto target已投放且一致: B0DRSLTMBP state:enabled bid:0.2
+2026-09-18 02:41:40 - amazon_ca_tuto adGroupId:43760139945264 Amazon已有target 20个
+2026-09-18 02:41:40 - ✅ amazon_ca_tuto target已投放且一致: B0FYC18NTD state:enabled bid:0.25
+2026-09-18 02:41:41 - amazon_ca_hero adGroupId:195703462508075 Amazon已有target 30个
+2026-09-18 02:41:41 - ✅ amazon_ca_hero target已投放且一致: B0DJVMRN93 state:enabled bid:0.25
+2026-09-18 02:41:42 - amazon_uk2 adGroupId:469954802333911 Amazon已有target 115个
+2026-09-18 02:41:42 - ✅ amazon_uk2 target已投放且一致: B07111YGF9 state:enabled bid:0.15
+2026-09-18 02:41:43 - amazon_ca_sopro adGroupId:228619020563102 Amazon已有target 27个
+2026-09-18 02:41:43 - ✅ amazon_ca_sopro target已投放且一致: B0D9H16DN4 state:enabled bid:0.55
+2026-09-18 02:41:45 - amazon_ca_piccocasa adGroupId:458228348415119 Amazon已有target 183个
+2026-09-18 02:41:45 - ✅ amazon_ca_piccocasa target已投放且一致: B0DHXWZQPB state:enabled bid:0.28
+2026-09-18 02:41:46 - amazon adGroupId:1604479855744 Amazon已有target 5个
+2026-09-18 02:41:46 - ✅ amazon target已投放且一致: B06XDDXJ22 state:enabled bid:0.18
+2026-09-18 02:41:47 - amazon_ca_moto adGroupId:20695510678452 Amazon已有target 1个
+2026-09-18 02:41:47 - ✅ amazon_ca_moto target已投放且一致: B0CCVV86HW state:enabled bid:0.35
+2026-09-18 02:41:48 - amazon_ca_tuto adGroupId:288429713908650 Amazon已有target 1个
+2026-09-18 02:41:48 - ✅ amazon_ca_tuto target已投放且一致: B0DRTJH1W6 state:enabled bid:0.23
+2026-09-18 02:41:49 - amazon_ca_ac1 adGroupId:235587923553886 Amazon已有target 25个
+2026-09-18 02:41:49 - ✅ amazon_ca_ac1 target已投放且一致: B0B56979GR state:enabled bid:0.15
+2026-09-18 02:41:50 - amazon_ca_hood adGroupId:533654924120391 Amazon已有target 6个
+2026-09-18 02:41:50 - ✅ amazon_ca_hood target已投放且一致: B0FP2NMR4S state:enabled bid:0.5
+2026-09-18 02:41:51 - amazon_uk_moto adGroupId:403139691112894 Amazon已有target 118个
+2026-09-18 02:41:51 - ✅ amazon_uk_moto target已投放且一致: B0DJ95ST9Z state:enabled bid:0.15
+2026-09-18 02:41:53 - amazon_uk_sopro adGroupId:105181987052353 Amazon已有target 7个
+2026-09-18 02:41:53 - ✅ amazon_uk_sopro target已投放且一致: B0D6FZQ2SM state:enabled bid:0.4
+2026-09-18 02:41:54 - amazon_ca_swi adGroupId:69357361087344 Amazon已有target 24个
+2026-09-18 02:41:54 - ✅ amazon_ca_swi target已投放且一致: B0GCJCDHJX state:enabled bid:0.35
+2026-09-18 02:41:55 - amazon_us_tuc adGroupId:491263804996273 Amazon已有target 27个
+2026-09-18 02:41:55 - ✅ amazon_us_tuc target已投放且一致: B0CN6RX78G state:enabled bid:0.2
+2026-09-18 02:41:56 - amazon_ca_kilo adGroupId:378117841855823 Amazon已有target 19个
+2026-09-18 02:41:56 - ✅ amazon_ca_kilo target已投放且一致: B0F7LJF59H state:enabled bid:0.5
+2026-09-18 02:41:57 - amazon_uk_tuto adGroupId:300650773497478 Amazon已有target 19个
+2026-09-18 02:41:57 - ✅ amazon_uk_tuto target已投放且一致: B0CTFC7YBN state:enabled bid:0.2
+2026-09-18 02:41:59 - amazon_ca_kilo adGroupId:460193799289325 Amazon已有target 2个
+2026-09-18 02:41:59 - ✅ amazon_ca_kilo target已投放且一致: B0CTTGJR7D state:enabled bid:0.55
+2026-09-18 02:42:00 - amazon_uk_tuto adGroupId:524610898015929 Amazon已有target 4个
+2026-09-18 02:42:00 - ✅ amazon_uk_tuto target已投放且一致: B0FH4LS7BS state:enabled bid:0.25
+2026-09-18 02:42:02 - amazon_us_luux adGroupId:276189340398056 Amazon已有target 6个
+2026-09-18 02:42:02 - ✅ amazon_us_luux target已投放且一致: B0DJQD65GF state:enabled bid:0.4
+2026-09-18 02:42:03 - amazon_us_tuc adGroupId:14883076008128 Amazon已有target 1个
+2026-09-18 02:42:03 - ✅ amazon_us_tuc target已投放且一致: B0BT8PN88G state:enabled bid:0.35
+2026-09-18 02:42:05 - amazon_us_rrc adGroupId:272559773782605 Amazon已有target 4个
+2026-09-18 02:42:05 - ✅ amazon_us_rrc target已投放且一致: B0DBL8PF45 state:enabled bid:0.4
+2026-09-18 02:42:06 - amazon_ca_hero adGroupId:237441789355771 Amazon已有target 9个
+2026-09-18 02:42:06 - ✅ amazon_ca_hero target已投放且一致: B09P6BRR2K state:enabled bid:0.35
+2026-09-18 02:42:07 - amazon_uk_tuto adGroupId:429656735256063 Amazon已有target 47个
+2026-09-18 02:42:07 - ✅ amazon_uk_tuto target已投放且一致: B0DB36QFWF state:enabled bid:0.57
+2026-09-18 02:42:08 - amazon_uk_moto adGroupId:301926182966680 Amazon已有target 116个
+2026-09-18 02:42:08 - ✅ amazon_uk_moto target已投放且一致: B0DKXY3FYX state:enabled bid:0.15
+2026-09-18 02:42:09 - amazon_ca_ac1 adGroupId:364608901439866 Amazon已有target 18个
+2026-09-18 02:42:09 - ✅ amazon_ca_ac1 target已投放且一致: B0F12PQL95 state:enabled bid:0.33
+2026-09-18 02:42:10 - amazon adGroupId:515375142618972 Amazon已有target 1个
+2026-09-18 02:42:10 - ✅ amazon target已投放且一致: 805014HB0A state:enabled bid:0
+2026-09-18 02:42:12 - amazon_us_tuc adGroupId:466961425507651 Amazon已有target 21个
+2026-09-18 02:42:12 - ✅ amazon_us_tuc target已投放且一致: B081TSJPLS state:enabled bid:0.23
+2026-09-18 02:42:13 - amazon_us_luux adGroupId:157461551121264 Amazon已有target 29个
+2026-09-18 02:42:13 - ✅ amazon_us_luux target已投放且一致: B0CHJJ232D state:enabled bid:0.4
+2026-09-18 02:42:13 - amazon_ca_find adGroupId:278492250436066 Amazon已有target 5个
+2026-09-18 02:42:13 - ✅ amazon_ca_find target已投放且一致: B0F3JN6XY8 state:enabled bid:0.35
+2026-09-18 02:42:16 - amazon adGroupId:113743614938258 Amazon已有target 50个
+2026-09-18 02:42:16 - ✅ amazon target已投放且一致: B09L11H57J state:enabled bid:0
+2026-09-18 02:42:17 - amazon_ca_hope adGroupId:159267576211452 Amazon已有target 31个
+2026-09-18 02:42:17 - ✅ amazon_ca_hope target已投放且一致: B0G6YTB4Q4 state:enabled bid:0.35
+2026-09-18 02:42:18 - amazon_ca_piccocasa adGroupId:87280078203790 Amazon已有target 15个
+2026-09-18 02:42:18 - ✅ amazon_ca_piccocasa target已投放且一致: B074STNQBQ state:enabled bid:0
+2026-09-18 02:42:19 - amazon_uk_moto adGroupId:60305731111028 Amazon已有target 11个
+2026-09-18 02:42:19 - ✅ amazon_uk_moto target已投放且一致: B0D5CHWLBF state:enabled bid:0.45
+2026-09-18 02:42:21 - amazon_ca_piccocasa adGroupId:370318066734695 Amazon已有target 13个
+2026-09-18 02:42:21 - ✅ amazon_ca_piccocasa target已投放且一致: B0924KW6YV state:enabled bid:0.25
+2026-09-18 02:42:23 - amazon_ca_tuc adGroupId:421175270006187 Amazon已有target 144个
+2026-09-18 02:42:23 - ✅ amazon_ca_tuc target已投放且一致: B0D8QG37CL state:enabled bid:0.2
+2026-09-18 02:42:25 - amazon adGroupId:192074563698978 Amazon已有target 239个
+2026-09-18 02:42:25 - ✅ amazon target已投放且一致: B0G428PFBX state:enabled bid:0.5
+2026-09-18 02:42:25 - ✅ amazon target已投放且一致: B01KAD24RI state:enabled bid:0.5
+2026-09-18 02:42:26 - amazon_uk_ifn adGroupId:115060876785432 Amazon已有target 101个
+2026-09-18 02:42:26 - ✅ amazon_uk_ifn target已投放且一致: B0CN9NTS6M state:enabled bid:0.3
+2026-09-18 02:42:27 - amazon_us_moto adGroupId:539930007026595 Amazon已有target 34个
+2026-09-18 02:42:27 - ✅ amazon_us_moto target已投放且一致: B0DHH3ML1D state:enabled bid:0.5
+2026-09-18 02:42:29 - amazon_us_luck adGroupId:159544913600261 Amazon已有target 22个
+2026-09-18 02:42:29 - ✅ amazon_us_luck target已投放且一致: B01IQ69S66 state:enabled bid:0.4
+2026-09-18 02:42:31 - amazon_ca_tuto adGroupId:545606496221340 Amazon已有target 12个
+2026-09-18 02:42:31 - ✅ amazon_ca_tuto target已投放且一致: B0CH186KPW state:enabled bid:1.03
+2026-09-18 02:42:34 - amazon_uk_tuto adGroupId:528358023033484 Amazon已有target 1个
+2026-09-18 02:42:34 - ✅ amazon_uk_tuto target已投放且一致: B0DNZGCJ8G state:enabled bid:0.56
+2026-09-18 02:42:35 - amazon_ca_ifn adGroupId:318325546039524 Amazon已有target 78个
+2026-09-18 02:42:35 - ✅ amazon_ca_ifn target已投放且一致: B0FBW4JBMH state:enabled bid:0.5
+2026-09-18 02:42:37 - amazon_us_sopro adGroupId:223934656996609 Amazon已有target 138个
+2026-09-18 02:42:37 - ✅ amazon_us_sopro target已投放且一致: B0DM6671XL state:enabled bid:0
+2026-09-18 02:42:39 - amazon_uk2 adGroupId:111907860066338 Amazon已有target 37个
+2026-09-18 02:42:39 - ✅ amazon_uk2 target已投放且一致: B086PF59F7 state:enabled bid:0.4
+2026-09-18 02:42:42 - amazon_us_ifn adGroupId:213431853227128 Amazon已有target 20个
+2026-09-18 02:42:42 - ✅ amazon_us_ifn target已投放且一致: B000CAVDHC state:enabled bid:0.35
+2026-09-18 02:42:44 - amazon_ca_luux adGroupId:228411252430432 Amazon已有target 16个
+2026-09-18 02:42:44 - ✅ amazon_ca_luux target已投放且一致: B0DZ2MJ93T state:enabled bid:0.25
+2026-09-18 02:42:45 - amazon_uk_tuto adGroupId:144466671950725 Amazon已有target 25个
+2026-09-18 02:42:45 - ✅ amazon_uk_tuto target已投放且一致: B0F7PRTSZP state:enabled bid:0.2
+2026-09-18 02:42:47 - amazon_ca_tuc adGroupId:331544391085788 Amazon已有target 47个
+2026-09-18 02:42:47 - ✅ amazon_ca_tuc target已投放且一致: B0BV2KJKCJ state:enabled bid:0.25
+2026-09-18 02:42:48 - amazon_ca_ifn adGroupId:249174794088743 Amazon已有target 24个
+2026-09-18 02:42:48 - ✅ amazon_ca_ifn target已投放且一致: B0G8XGCJPH state:enabled bid:0.35
+2026-09-18 02:42:50 - amazon_uk2 adGroupId:522329833727701 Amazon已有target 1个
+2026-09-18 02:42:50 - ✅ amazon_uk2 target已投放且一致: B0DLL18NPM state:enabled bid:0.3
+2026-09-18 02:42:51 - amazon_us_hope adGroupId:265739071588823 Amazon已有target 29个
+2026-09-18 02:42:51 - ✅ amazon_us_hope target已投放且一致: B0GYZ75N4B state:enabled bid:0.5
+2026-09-18 02:42:53 - amazon_ca_sopro adGroupId:236938728104552 Amazon已有target 27个
+2026-09-18 02:42:53 - ✅ amazon_ca_sopro target已投放且一致: B0GLQHJFK6 state:enabled bid:0.55
+2026-09-18 02:42:54 - amazon_ca_swi adGroupId:205786404685571 Amazon已有target 62个
+2026-09-18 02:42:54 - ✅ amazon_ca_swi target已投放且一致: B0H6X5PK61 state:enabled bid:0.4
+2026-09-18 02:42:55 - amazon_ca_ifn adGroupId:295506390132875 Amazon已有target 12个
+2026-09-18 02:42:55 - ✅ amazon_ca_ifn target已投放且一致: B0GF7JZKQ4 state:enabled bid:0.5
+2026-09-18 02:42:57 - amazon_us_swi adGroupId:41344442205017 Amazon已有target 37个
+2026-09-18 02:42:57 - ✅ amazon_us_swi target已投放且一致: B0C2DDMKD7 state:enabled bid:0.35
+2026-09-18 02:42:59 - amazon_us_sopro adGroupId:287995958092124 Amazon已有target 8个
+2026-09-18 02:42:59 - ✅ amazon_us_sopro target已投放且一致: B0BX9JKFXS state:enabled bid:0.4
+2026-09-18 02:43:01 - amazon_us_find adGroupId:10734835975224 Amazon已有target 142个
+2026-09-18 02:43:01 - ✅ amazon_us_find target已投放且一致: B0DQQ6N2MW state:enabled bid:0.4
+2026-09-18 02:43:03 - amazon_us_luck adGroupId:15809639003919 Amazon已有target 3个
+2026-09-18 02:43:03 - ✅ amazon_us_luck target已投放且一致: B0DD7FF64D state:enabled bid:0.8
+2026-09-18 02:43:05 - amazon_ca_piccocasa adGroupId:521451522897788 Amazon已有target 88个
+2026-09-18 02:43:05 - ✅ amazon_ca_piccocasa target已投放且一致: B0BGXQRGK7 state:enabled bid:0.25
+2026-09-18 02:43:07 - amazon adGroupId:321395626077922 Amazon已有target 5个
+2026-09-18 02:43:07 - ✅ amazon target已投放且一致: B0B3RJRL56 state:enabled bid:0
+2026-09-18 02:43:09 - amazon adGroupId:394298025317436 Amazon已有target 53个
+2026-09-18 02:43:09 - ✅ amazon target已投放且一致: B0CB18DDFY state:enabled bid:0.5
+2026-09-18 02:43:10 - amazon_us_find adGroupId:81168837993116 Amazon已有target 31个
+2026-09-18 02:43:10 - ✅ amazon_us_find target已投放且一致: B0FH3WR94C state:enabled bid:0.35
+2026-09-18 02:43:11 - amazon_ca_ac1 adGroupId:227833367188511 Amazon已有target 4个
+2026-09-18 02:43:11 - ✅ amazon_ca_ac1 target已投放且一致: B08VKBGZ7F state:enabled bid:0.35
+2026-09-18 02:43:12 - amazon_us_tuc adGroupId:59557961526952 Amazon已有target 22个
+2026-09-18 02:43:12 - ✅ amazon_us_tuc target已投放且一致: B0DB82DTZF state:enabled bid:0.4
+2026-09-18 02:43:14 - amazon_us_swi adGroupId:9195093694203 Amazon已有target 35个
+2026-09-18 02:43:14 - ✅ amazon_us_swi target已投放且一致: B0C2XYHF3Y state:enabled bid:0.4
+2026-09-18 02:43:16 - amazon adGroupId:370711252983828 Amazon已有target 3个
+2026-09-18 02:43:16 - ✅ amazon target已投放且一致: B09GS3FGWB state:enabled bid:0.5
+2026-09-18 02:43:17 - amazon_us_rrc adGroupId:139553227295093 Amazon已有target 8个
+2026-09-18 02:43:17 - ✅ amazon_us_rrc target已投放且一致: B0H7SG4SBZ state:enabled bid:0.35
+2026-09-18 02:43:18 - amazon_ca_piccocasa adGroupId:331636008765436 Amazon已有target 187个
+2026-09-18 02:43:18 - ✅ amazon_ca_piccocasa target已投放且一致: B0886ZQ3CN state:enabled bid:0.5
+2026-09-18 02:43:19 - amazon_uk2 adGroupId:527936071500143 Amazon已有target 53个
+2026-09-18 02:43:19 - ✅ amazon_uk2 target已投放且一致: B0C4PRKG4S state:enabled bid:0.15
+2026-09-18 02:43:22 - amazon_ca_sopro adGroupId:339714149923952 Amazon已有target 116个
+2026-09-18 02:43:22 - ✅ amazon_ca_sopro target已投放且一致: B0DGCGR27B state:enabled bid:0.25
+2026-09-18 02:43:23 - amazon_ca_swi adGroupId:72899362555903 Amazon已有target 24个
+2026-09-18 02:43:23 - ✅ amazon_ca_swi target已投放且一致: B0GF13GNSV state:enabled bid:0.35
+2026-09-18 02:43:24 - amazon_uk_moto adGroupId:506690761321004 Amazon已有target 4个
+2026-09-18 02:43:24 - ✅ amazon_uk_moto target已投放且一致: B0BFF476WN state:enabled bid:0.2
+2026-09-18 02:43:25 - amazon adGroupId:85603551969920 Amazon已有target 200个
+2026-09-18 02:43:25 - ✅ amazon target已投放且一致: B093HK7PN1 state:enabled bid:0.1
+2026-09-18 02:43:26 - amazon_uk_rrc adGroupId:354126821843739 Amazon已有target 14个
+2026-09-18 02:43:26 - ✅ amazon_uk_rrc target已投放且一致: B0FMQT3SK9 state:enabled bid:0.45
+2026-09-18 02:43:29 - amazon_uk2 adGroupId:463045661743373 Amazon已有target 200个
+2026-09-18 02:43:29 - ✅ amazon_uk2 target已投放且一致: B01K9X4710 state:enabled bid:0.35
+2026-09-18 02:43:32 - amazon_ca_piccocasa adGroupId:350511967376593 Amazon已有target 128个
+2026-09-18 02:43:32 - ✅ amazon_ca_piccocasa target已投放且一致: B0B84J3532 state:enabled bid:0.25
+2026-09-18 02:43:34 - amazon adGroupId:99040491456876 Amazon已有target 22个
+2026-09-18 02:43:34 - ✅ amazon target已投放且一致: B0FSRPGLNW state:enabled bid:0
+2026-09-18 02:43:34 - ✅ amazon target已投放且一致: B0DCFYNYNC state:enabled bid:0
+2026-09-18 02:43:35 - amazon_ca_piccocasa adGroupId:461713454689924 Amazon已有target 64个
+2026-09-18 02:43:35 - ✅ amazon_ca_piccocasa target已投放且一致: B075K57YB8 state:enabled bid:0.5
+2026-09-18 02:43:36 - amazon_us_ifn adGroupId:126729962813906 Amazon已有target 34个
+2026-09-18 02:43:36 - ✅ amazon_us_ifn target已投放且一致: B0CTB7XK27 state:enabled bid:0.35
+2026-09-18 02:43:38 - amazon_uk_tuto adGroupId:379159750856805 Amazon已有target 1个
+2026-09-18 02:43:38 - ✅ amazon_uk_tuto target已投放且一致: B0DM6F3VKF state:enabled bid:0.26
+2026-09-18 02:43:39 - amazon_uk_tuc adGroupId:512244045578215 Amazon已有target 2个
+2026-09-18 02:43:39 - ✅ amazon_uk_tuc target已投放且一致: B0DDPSKKSS state:enabled bid:0.16
+2026-09-18 02:43:41 - amazon_uk2 adGroupId:214306162977531 Amazon已有target 6个
+2026-09-18 02:43:41 - ✅ amazon_uk2 target已投放且一致: B06XSJL8HY state:enabled bid:0
+2026-09-18 02:43:43 - amazon adGroupId:341768773213047 Amazon已有target 17个
+2026-09-18 02:43:43 - ✅ amazon target已投放且一致: B0BR4S3SM5 state:enabled bid:0.5
+2026-09-18 02:43:44 - amazon_uk_tuc adGroupId:451098837355839 Amazon已有target 130个
+2026-09-18 02:43:44 - ✅ amazon_uk_tuc target已投放且一致: B0DCZR6RTD state:enabled bid:0.23
+2026-09-18 02:43:49 - amazon adGroupId:318815922501431 Amazon已有target 27个
+2026-09-18 02:43:49 - ✅ amazon target已投放且一致: B08FC9B54M state:enabled bid:0.39
+2026-09-18 02:43:51 - amazon_uk_sopro adGroupId:416581704725726 Amazon已有target 36个
+2026-09-18 02:43:51 - ✅ amazon_uk_sopro target已投放且一致: B0FC6H4R4W state:enabled bid:0.5
+2026-09-18 02:43:51 - amazon_ca_ifn adGroupId:93445999422535 Amazon已有target 11个
+2026-09-18 02:43:51 - ✅ amazon_ca_ifn target已投放且一致: B0F1CPCC44 state:enabled bid:0.35
+2026-09-18 02:43:52 - amazon_us_swi adGroupId:523522764879182 Amazon已有target 6个
+2026-09-18 02:43:52 - ✅ amazon_us_swi target已投放且一致: B0DN6JJS96 state:enabled bid:0.4
+2026-09-18 02:43:53 - amazon_uk_find adGroupId:419480877241119 Amazon已有target 26个
+2026-09-18 02:43:53 - ✅ amazon_uk_find target已投放且一致: B0DHLB2QGS state:enabled bid:0.25
+2026-09-18 02:43:54 - amazon_us_rrc adGroupId:215900352415913 Amazon已有target 12个
+2026-09-18 02:43:54 - ✅ amazon_us_rrc target已投放且一致: B0GVXM8MTZ state:enabled bid:0.46
+2026-09-18 02:43:57 - amazon_uk_hope adGroupId:208474332582773 Amazon已有target 8个
+2026-09-18 02:43:57 - ✅ amazon_uk_hope target已投放且一致: B0CDLT8HJV state:enabled bid:0.3
+2026-09-18 02:43:58 - amazon_ca_tuto adGroupId:216576864369797 Amazon已有target 25个
+2026-09-18 02:43:58 - ✅ amazon_ca_tuto target已投放且一致: B0CN441SW7 state:enabled bid:0.25
+2026-09-18 02:44:00 - amazon_ca_sopro adGroupId:96415891825465 Amazon已有target 23个
+2026-09-18 02:44:00 - ✅ amazon_ca_sopro target已投放且一致: B0GCT1TXSZ state:enabled bid:0.4
+2026-09-18 02:44:01 - amazon_ca_hood adGroupId:442200485263930 Amazon已有target 25个
+2026-09-18 02:44:01 - ✅ amazon_ca_hood target已投放且一致: B0FNRPB2RX state:enabled bid:0.25
+2026-09-18 02:44:02 - amazon_us_ac1 adGroupId:178406676822130 Amazon已有target 35个
+2026-09-18 02:44:02 - ✅ amazon_us_ac1 target已投放且一致: B0FFSL9KZR state:enabled bid:0.35
+2026-09-18 02:44:04 - amazon_us_ifn adGroupId:26880417801168 Amazon已有target 17个
+2026-09-18 02:44:04 - ✅ amazon_us_ifn target已投放且一致: B0B4NP6K1X state:enabled bid:0.52
+2026-09-18 02:44:05 - amazon_ca_piccocasa adGroupId:358985345419359 Amazon已有target 48个
+2026-09-18 02:44:05 - ✅ amazon_ca_piccocasa target已投放且一致: B0CP3B7G54 state:enabled bid:0.25
+2026-09-18 02:44:08 - amazon_uk_tuto adGroupId:310600630741586 Amazon已有target 12个
+2026-09-18 02:44:08 - ✅ amazon_uk_tuto target已投放且一致: B0FTNPNY7K state:enabled bid:0
+2026-09-18 02:44:09 - amazon_ca_tuc adGroupId:283471012066888 Amazon已有target 44个
+2026-09-18 02:44:09 - ✅ amazon_ca_tuc target已投放且一致: B0DG2Z7RLL state:enabled bid:0.2
+2026-09-18 02:44:10 - amazon_us_tuto adGroupId:60357973271664 Amazon已有target 2个
+2026-09-18 02:44:10 - ✅ amazon_us_tuto target已投放且一致: B086N1TKSG state:enabled bid:0.35
+2026-09-18 02:44:11 - amazon_ca_ac1 adGroupId:328881808240880 Amazon已有target 53个
+2026-09-18 02:44:11 - ✅ amazon_ca_ac1 target已投放且一致: B0CSDQYLHL state:enabled bid:0.15
+2026-09-18 02:44:13 - amazon_uk2 adGroupId:355013060760768 Amazon已有target 45个
+2026-09-18 02:44:13 - ✅ amazon_uk2 target已投放且一致: B0B46BJWT1 state:enabled bid:0.15
+2026-09-18 02:44:14 - amazon_ca_moto adGroupId:180672774359981 Amazon已有target 4个
+2026-09-18 02:44:14 - ✅ amazon_ca_moto target已投放且一致: B07GR2L5XX state:enabled bid:0.35
+2026-09-18 02:44:14 - amazon_uk_hope adGroupId:128208525406187 Amazon已有target 34个
+2026-09-18 02:44:14 - ✅ amazon_uk_hope target已投放且一致: B0FC2SS32B state:enabled bid:0.3
+2026-09-18 02:44:15 - amazon_us_swi adGroupId:332426545608622 Amazon已有target 14个
+2026-09-18 02:44:15 - ✅ amazon_us_swi target已投放且一致: B0BXCRPHKV state:enabled bid:0.4
+2026-09-18 02:44:17 - amazon_ca_piccocasa adGroupId:382735092190377 Amazon已有target 29个
+2026-09-18 02:44:17 - ✅ amazon_ca_piccocasa target已投放且一致: B09NDQRF65 state:enabled bid:0.25
+2026-09-18 02:44:19 - amazon_uk_hero adGroupId:100063634760734 Amazon已有target 14个
+2026-09-18 02:44:19 - ✅ amazon_uk_hero target已投放且一致: B0DXVC9FH1 state:enabled bid:0.24
+2026-09-18 02:44:20 - amazon_us_tuto adGroupId:193680265631317 Amazon已有target 56个
+2026-09-18 02:44:20 - ✅ amazon_us_tuto target已投放且一致: B0D9K2Z6QD state:enabled bid:0.4
+2026-09-18 02:44:22 - amazon adGroupId:338466240251906 Amazon已有target 29个
+2026-09-18 02:44:22 - ✅ amazon target已投放且一致: B0D9WBM3RN state:enabled bid:0.4
+2026-09-18 02:44:25 - amazon adGroupId:517427235213987 Amazon已有target 5个
+2026-09-18 02:44:25 - ✅ amazon target已投放且一致: B0B564HJMX state:enabled bid:0.2
+2026-09-18 02:44:27 - amazon_uk_hope adGroupId:327914300205090 Amazon已有target 69个
+2026-09-18 02:44:27 - ✅ amazon_uk_hope target已投放且一致: B0GF7Q79F7 state:enabled bid:0.2
+2026-09-18 02:44:28 - amazon_uk_ifn adGroupId:48368720557635 Amazon已有target 20个
+2026-09-18 02:44:28 - ✅ amazon_uk_ifn target已投放且一致: B0H7R8NG8V state:enabled bid:0.3
+2026-09-18 02:44:29 - amazon_uk_tuto adGroupId:372493217050225 Amazon已有target 4个
+2026-09-18 02:44:29 - ✅ amazon_uk_tuto target已投放且一致: B0CKP8MWTQ state:enabled bid:0.47
+2026-09-18 02:44:30 - amazon_us_rrc adGroupId:165068555589016 Amazon已有target 3个
+2026-09-18 02:44:30 - ✅ amazon_us_rrc target已投放且一致: B0DRK2PZFG state:enabled bid:0.44
+2026-09-18 02:44:32 - amazon adGroupId:50355302835387 Amazon已有target 46个
+2026-09-18 02:44:32 - ✅ amazon target已投放且一致: B0CDBNXLM3 state:enabled bid:0.45
+2026-09-18 02:44:33 - amazon_us_tuto adGroupId:256839939654394 Amazon已有target 34个
+2026-09-18 02:44:33 - ✅ amazon_us_tuto target已投放且一致: B0DG2JV83T state:enabled bid:0.4
+2026-09-18 02:44:35 - amazon_us_ifn adGroupId:136654546283367 Amazon已有target 2个
+2026-09-18 02:44:35 - ✅ amazon_us_ifn target已投放且一致: B0FD9TX79N state:enabled bid:0
+2026-09-18 02:44:36 - amazon_us_ifn adGroupId:230574458195177 Amazon已有target 8个
+2026-09-18 02:44:36 - ✅ amazon_us_ifn target已投放且一致: B0D5MF4FHH state:enabled bid:0.4
+2026-09-18 02:44:36 - amazon_us_sopro adGroupId:27378735950643 Amazon已有target 25个
+2026-09-18 02:44:36 - ✅ amazon_us_sopro target已投放且一致: B0F8ZD1121 state:enabled bid:0.35
+2026-09-18 02:44:38 - amazon_uk_tuto adGroupId:296029056011349 Amazon已有target 103个
+2026-09-18 02:44:38 - ✅ amazon_uk_tuto target已投放且一致: B0BTD5QJDJ state:enabled bid:0.4
+2026-09-18 02:44:39 - amazon_ca_luck adGroupId:262781642583612 Amazon已有target 16个
+2026-09-18 02:44:39 - ✅ amazon_ca_luck target已投放且一致: B07THYX7SZ state:enabled bid:0.35
+2026-09-18 02:44:41 - amazon adGroupId:249764982385294 Amazon已有target 40个
+2026-09-18 02:44:41 - ✅ amazon target已投放且一致: B07JWF5GCS state:enabled bid:0
+2026-09-18 02:44:43 - amazon_us_tuto adGroupId:114356900625914 Amazon已有target 8个
+2026-09-18 02:44:43 - ✅ amazon_us_tuto target已投放且一致: B0FG783QHD state:enabled bid:0.4
+2026-09-18 02:44:44 - amazon_ca_ac1 adGroupId:131500539561952 Amazon已有target 36个
+2026-09-18 02:44:44 - ✅ amazon_ca_ac1 target已投放且一致: B0CVVVMX7W state:enabled bid:0.35
+2026-09-18 02:44:46 - amazon_uk_tuto adGroupId:305871137087734 Amazon已有target 1个
+2026-09-18 02:44:46 - ✅ amazon_uk_tuto target已投放且一致: B0DM6D7NY9 state:enabled bid:0.68
+2026-09-18 02:44:47 - amazon_us_luux adGroupId:173216348754203 Amazon已有target 4个
+2026-09-18 02:44:47 - ✅ amazon_us_luux target已投放且一致: B0DSHHQJQ9 state:enabled bid:0.35
+2026-09-18 02:44:49 - amazon_us_ifn adGroupId:65716298159008 Amazon已有target 15个
+2026-09-18 02:44:49 - ✅ amazon_us_ifn target已投放且一致: B0G3VL1BRD state:enabled bid:0.35
+2026-09-18 02:44:50 - amazon adGroupId:453336144867716 Amazon已有target 7个
+2026-09-18 02:44:50 - ✅ amazon target已投放且一致: B0F1MF31P9 state:enabled bid:0.48
+2026-09-18 02:44:51 - amazon_ca_rrc adGroupId:285536947609617 Amazon已有target 19个
+2026-09-18 02:44:51 - ✅ amazon_ca_rrc target已投放且一致: B000E8BJHQ state:enabled bid:0.4
+2026-09-18 02:44:52 - amazon_ca_tuto adGroupId:152895845877812 Amazon已有target 4个
+2026-09-18 02:44:52 - ✅ amazon_ca_tuto target已投放且一致: B0015KXNUI state:enabled bid:0.52
+2026-09-18 02:44:55 - amazon_uk_tuto adGroupId:553566955408977 Amazon已有target 1个
+2026-09-18 02:44:55 - ✅ amazon_uk_tuto target已投放且一致: B0DN6QGZS9 state:enabled bid:0
+2026-09-18 02:44:56 - amazon_ca_piccocasa adGroupId:213213754211783 Amazon已有target 17个
+2026-09-18 02:44:56 - ✅ amazon_ca_piccocasa target已投放且一致: B074STNQBQ state:enabled bid:0
+2026-09-18 02:44:59 - amazon adGroupId:243281648058901 Amazon已有target 21个
+2026-09-18 02:44:59 - ✅ amazon target已投放且一致: B0DDBTWMGK state:enabled bid:0.35
+2026-09-18 02:45:00 - amazon_us_rrc adGroupId:215021794183186 Amazon已有target 5个
+2026-09-18 02:45:00 - ✅ amazon_us_rrc target已投放且一致: B0CJBYRV3H state:enabled bid:0.4
+2026-09-18 02:45:04 - amazon_ca_piccocasa adGroupId:371825189112530 Amazon已有target 13个
+2026-09-18 02:45:04 - ✅ amazon_ca_piccocasa target已投放且一致: B07XFNSYNL state:enabled bid:0.25
+2026-09-18 02:45:04 - ========== 校验汇总 ==========
+2026-09-18 02:45:04 - 总校验数: 390
+2026-09-18 02:45:04 - ✅ 已投放且一致: 390
+2026-09-18 02:45:04 - ❌ 未投放: 0
+2026-09-18 02:45:04 - ⚠️ 状态异常(非enabled): 0
+2026-09-18 02:45:04 - ⚠️ bid不一致: 0
+2026-09-18 02:45:04 - 所有target投放校验通过，无异常数据
+2026-09-18 02:45:04 - verifyTargets channel:全部 校验完毕

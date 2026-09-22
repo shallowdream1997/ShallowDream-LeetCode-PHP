@@ -1,0 +1,47 @@
+2026-09-04 03:34:53 - start 执行WriteBackCeToQd脚本 env:pro dry:true file:/Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/shell/QD/../../../export/qd/修复Ce回写.xlsx
+2026-09-04 03:34:53 - ❌ 文件不存在: /Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/shell/QD/../../../export/qd/修复Ce回写.xlsx
+2026-09-04 03:35:07 - start 执行WriteBackCeToQd脚本 env:pro dry:true file:/Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/shell/QD/../../export/qd/修复Ce回写.xlsx
+2026-09-04 03:35:07 - 文件为Excel97(OLE2)格式，使用Excel5 Reader读取: /Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/shell/QD/../../export/qd/修复Ce回写.xlsx
+2026-09-04 03:35:27 - start 执行WriteBackCeToQd脚本 env:pro dry:true file:/Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/shell/QD/../../export/qd/修复Ce回写.xlsx
+2026-09-04 03:35:27 - 文件为Excel97(OLE2)格式，使用Excel5 Reader读取: /Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/shell/QD/../../export/qd/修复Ce回写.xlsx
+2026-09-04 03:35:27 - 读取xlsx完成，共 11 行
+2026-09-04 03:35:27 - 共解析出 11 组QD/CE对应关系（跳过重复/缺失 0 行）
+2026-09-04 03:35:27 - [dry-run] 跳过请求: {"prePurchaseBillNo":"QD202609020001","ceBillNo":"CE202609030244","operatorName":"repair_operator"}
+2026-09-04 03:35:27 - [dry-run] 跳过请求: {"prePurchaseBillNo":"QD202609020012","ceBillNo":"CE202609030252","operatorName":"repair_operator"}
+2026-09-04 03:35:27 - [dry-run] 跳过请求: {"prePurchaseBillNo":"QD202609020020","ceBillNo":"CE202609030264","operatorName":"repair_operator"}
+2026-09-04 03:35:27 - [dry-run] 跳过请求: {"prePurchaseBillNo":"QD202609020013","ceBillNo":"CE202609030245","operatorName":"repair_operator"}
+2026-09-04 03:35:27 - [dry-run] 跳过请求: {"prePurchaseBillNo":"QD202608250019","ceBillNo":"CE202609030255","operatorName":"repair_operator"}
+2026-09-04 03:35:27 - [dry-run] 跳过请求: {"prePurchaseBillNo":"QD202609020014","ceBillNo":"CE202609030256","operatorName":"repair_operator"}
+2026-09-04 03:35:27 - [dry-run] 跳过请求: {"prePurchaseBillNo":"QD202609020017","ceBillNo":"CE202609030258","operatorName":"repair_operator"}
+2026-09-04 03:35:27 - [dry-run] 跳过请求: {"prePurchaseBillNo":"QD202609020006","ceBillNo":"CE202609030263","operatorName":"repair_operator"}
+2026-09-04 03:35:27 - [dry-run] 跳过请求: {"prePurchaseBillNo":"QD202609020015","ceBillNo":"CE202609030262","operatorName":"repair_operator"}
+2026-09-04 03:35:27 - [dry-run] 跳过请求: {"prePurchaseBillNo":"QD202609020016","ceBillNo":"CE202609030246","operatorName":"repair_operator"}
+2026-09-04 03:35:27 - [dry-run] 跳过请求: {"prePurchaseBillNo":"QD202609020009","ceBillNo":"CE202609030257","operatorName":"repair_operator"}
+2026-09-04 03:35:27 - end 执行WriteBackCeToQd脚本 成功:0 失败:0（dry-run未真实执行）
+2026-09-04 03:35:35 - start 执行WriteBackCeToQd脚本 env:pro dry:false file:/Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/shell/QD/../../export/qd/修复Ce回写.xlsx
+2026-09-04 03:35:35 - 文件为Excel97(OLE2)格式，使用Excel5 Reader读取: /Users/clouddre/ux168work/03_项目代码/php/ShallowDream-LeetCode-PHP/pa-temp-fix-system.com/php/shell/QD/../../export/qd/修复Ce回写.xlsx
+2026-09-04 03:35:35 - 读取xlsx完成，共 11 行
+2026-09-04 03:35:35 - 共解析出 11 组QD/CE对应关系（跳过重复/缺失 0 行）
+2026-09-04 03:35:35 - ➡️ 回写: {"prePurchaseBillNo":"QD202609020001","ceBillNo":"CE202609030244","operatorName":"repair_operator"}
+2026-09-04 03:35:35 - ✅ 成功: QD:QD202609020001 CE:CE202609030244 响应: {"data":{"value":true},"state":{"code":2000000,"message":"操作成功"}}
+2026-09-04 03:35:35 - ➡️ 回写: {"prePurchaseBillNo":"QD202609020012","ceBillNo":"CE202609030252","operatorName":"repair_operator"}
+2026-09-04 03:35:35 - ✅ 成功: QD:QD202609020012 CE:CE202609030252 响应: {"data":{"value":true},"state":{"code":2000000,"message":"操作成功"}}
+2026-09-04 03:35:35 - ➡️ 回写: {"prePurchaseBillNo":"QD202609020020","ceBillNo":"CE202609030264","operatorName":"repair_operator"}
+2026-09-04 03:35:36 - ✅ 成功: QD:QD202609020020 CE:CE202609030264 响应: {"data":{"value":true},"state":{"code":2000000,"message":"操作成功"}}
+2026-09-04 03:35:36 - ➡️ 回写: {"prePurchaseBillNo":"QD202609020013","ceBillNo":"CE202609030245","operatorName":"repair_operator"}
+2026-09-04 03:35:36 - ✅ 成功: QD:QD202609020013 CE:CE202609030245 响应: {"data":{"value":true},"state":{"code":2000000,"message":"操作成功"}}
+2026-09-04 03:35:36 - ➡️ 回写: {"prePurchaseBillNo":"QD202608250019","ceBillNo":"CE202609030255","operatorName":"repair_operator"}
+2026-09-04 03:35:36 - ✅ 成功: QD:QD202608250019 CE:CE202609030255 响应: {"data":{"value":true},"state":{"code":2000000,"message":"操作成功"}}
+2026-09-04 03:35:37 - ➡️ 回写: {"prePurchaseBillNo":"QD202609020014","ceBillNo":"CE202609030256","operatorName":"repair_operator"}
+2026-09-04 03:35:37 - ✅ 成功: QD:QD202609020014 CE:CE202609030256 响应: {"data":{"value":true},"state":{"code":2000000,"message":"操作成功"}}
+2026-09-04 03:35:37 - ➡️ 回写: {"prePurchaseBillNo":"QD202609020017","ceBillNo":"CE202609030258","operatorName":"repair_operator"}
+2026-09-04 03:35:37 - ✅ 成功: QD:QD202609020017 CE:CE202609030258 响应: {"data":{"value":true},"state":{"code":2000000,"message":"操作成功"}}
+2026-09-04 03:35:37 - ➡️ 回写: {"prePurchaseBillNo":"QD202609020006","ceBillNo":"CE202609030263","operatorName":"repair_operator"}
+2026-09-04 03:35:38 - ✅ 成功: QD:QD202609020006 CE:CE202609030263 响应: {"data":{"value":true},"state":{"code":2000000,"message":"操作成功"}}
+2026-09-04 03:35:38 - ➡️ 回写: {"prePurchaseBillNo":"QD202609020015","ceBillNo":"CE202609030262","operatorName":"repair_operator"}
+2026-09-04 03:35:38 - ✅ 成功: QD:QD202609020015 CE:CE202609030262 响应: {"data":{"value":true},"state":{"code":2000000,"message":"操作成功"}}
+2026-09-04 03:35:38 - ➡️ 回写: {"prePurchaseBillNo":"QD202609020016","ceBillNo":"CE202609030246","operatorName":"repair_operator"}
+2026-09-04 03:35:38 - ✅ 成功: QD:QD202609020016 CE:CE202609030246 响应: {"data":{"value":true},"state":{"code":2000000,"message":"操作成功"}}
+2026-09-04 03:35:38 - ➡️ 回写: {"prePurchaseBillNo":"QD202609020009","ceBillNo":"CE202609030257","operatorName":"repair_operator"}
+2026-09-04 03:35:39 - ✅ 成功: QD:QD202609020009 CE:CE202609030257 响应: {"data":{"value":true},"state":{"code":2000000,"message":"操作成功"}}
+2026-09-04 03:35:39 - end 执行WriteBackCeToQd脚本 成功:11 失败:0

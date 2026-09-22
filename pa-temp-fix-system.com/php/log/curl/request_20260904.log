@@ -1,0 +1,26 @@
+2026-09-04 03:35:35 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase
+2026-09-04 03:35:35 - 参数：{"prePurchaseBillNo":"QD202609020001","ceBillNo":"CE202609030244","operatorName":"repair_operator"}
+2026-09-04 03:35:35 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase
+2026-09-04 03:35:35 - 参数：{"prePurchaseBillNo":"QD202609020012","ceBillNo":"CE202609030252","operatorName":"repair_operator"}
+2026-09-04 03:35:35 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase
+2026-09-04 03:35:35 - 参数：{"prePurchaseBillNo":"QD202609020020","ceBillNo":"CE202609030264","operatorName":"repair_operator"}
+2026-09-04 03:35:36 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase
+2026-09-04 03:35:36 - 参数：{"prePurchaseBillNo":"QD202609020013","ceBillNo":"CE202609030245","operatorName":"repair_operator"}
+2026-09-04 03:35:36 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase
+2026-09-04 03:35:36 - 参数：{"prePurchaseBillNo":"QD202608250019","ceBillNo":"CE202609030255","operatorName":"repair_operator"}
+2026-09-04 03:35:37 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase
+2026-09-04 03:35:37 - 参数：{"prePurchaseBillNo":"QD202609020014","ceBillNo":"CE202609030256","operatorName":"repair_operator"}
+2026-09-04 03:35:37 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase
+2026-09-04 03:35:37 - 参数：{"prePurchaseBillNo":"QD202609020017","ceBillNo":"CE202609030258","operatorName":"repair_operator"}
+2026-09-04 03:35:37 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase
+2026-09-04 03:35:37 - 参数：{"prePurchaseBillNo":"QD202609020006","ceBillNo":"CE202609030263","operatorName":"repair_operator"}
+2026-09-04 03:35:38 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase
+2026-09-04 03:35:38 - 参数：{"prePurchaseBillNo":"QD202609020015","ceBillNo":"CE202609030262","operatorName":"repair_operator"}
+2026-09-04 03:35:38 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase
+2026-09-04 03:35:38 - 参数：{"prePurchaseBillNo":"QD202609020016","ceBillNo":"CE202609030246","operatorName":"repair_operator"}
+2026-09-04 03:35:38 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/scms/pre_purchase/info/v1/writeBackPmoCeSkuToPrePurchase
+2026-09-04 03:35:38 - 参数：{"prePurchaseBillNo":"QD202609020009","ceBillNo":"CE202609030257","operatorName":"repair_operator"}
+2026-09-04 04:21:54 - 请求: POST：https://master-nodejs-poms.ux168.cn/api/market-analysis-reports/updateMainSkuIdInfoByPmoBillNo
+2026-09-04 04:21:54 - 参数：{"pmoBillNo":"PMO2026090300009","modifiedBy":"chenqilian","operatorName":"陈启莲","traceman":"chenqilian","createdBy":"chenqilian"}
+2026-09-04 04:21:54 - 请求: POST：https://master-nodejs-poms.ux168.cn/api/market-analysis-reports/updateMainSkuIdInfoByPmoBillNo
+2026-09-04 04:21:54 - 参数：{"pmoBillNo":"PMO2026090300010","modifiedBy":"chenqilian","operatorName":"陈启莲","traceman":"chenqilian","createdBy":"chenqilian"}

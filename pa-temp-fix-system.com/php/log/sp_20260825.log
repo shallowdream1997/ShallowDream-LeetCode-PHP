@@ -1,0 +1,13 @@
+2026-08-25 02:38:34 - {"status":"success","message":"success","data":[{"keywordId":325482283779538,"code":"SUCCESS"}]}
+2026-08-25 02:38:34 - 处理keyword成功：amazon_us_tuc 325482283779538
+2026-08-25 02:38:37 - {"status":"success","message":"success","data":[{"targetId":314326542541399,"value":"","code":"SUCCESS"},{"targetId":357048143376780,"value":"","code":"SUCCESS"}]}
+2026-08-25 02:38:37 - 处理target成功：amazon_us_hope 314326542541399
+2026-08-25 02:38:37 - 处理target成功：amazon_us_hope 357048143376780
+2026-08-25 03:46:01 - {"status":"success","message":"success","data":[{"targetId":319242226710154,"value":"","code":"SUCCESS"}]}
+2026-08-25 03:46:01 - 处理target成功：amazon_us_tuto 319242226710154
+2026-08-25 03:46:03 - {"status":"success","message":"success","data":[{"keywordId":23763378257931,"code":"SUCCESS"},{"keywordId":96312007607739,"code":"SUCCESS"}]}
+2026-08-25 03:46:03 - 处理keyword成功：amazon_us_hope 23763378257931
+2026-08-25 03:46:03 - 处理keyword成功：amazon_us_hope 96312007607739
+2026-08-25 03:46:03 - batchMongoUpdateKeyword：共1条，成功1条，失败0条
+2026-08-25 03:46:05 - {"status":"success","message":"success","data":[{"targetId":395111276682108,"value":"","code":"SUCCESS"}]}
+2026-08-25 03:46:05 - 处理target成功：amazon_us_hope 395111276682108

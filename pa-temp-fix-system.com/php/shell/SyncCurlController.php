@@ -7303,9 +7303,124 @@ class SyncCurlController
 
     }
 
+
+    public function fixEbaySellerConfig()
+    {
+        $list = [
+            "s26072300ux2523",
+            "s26071600ux3567",
+            "s26071500ux4762",
+            "s26071500ux4761",
+            "s26071500ux4760",
+            "s26071500ux4759",
+            "s26071500ux4751",
+            "s26071500ux4749",
+            "s26071402ux0941",
+            "s26071300ux1423",
+            "s26071000ux8046",
+            "s26071000ux7659",
+            "s26071000ux6517",
+            "s26070900ux5007",
+            "s26070900ux3470",
+            "s26070900ux3413",
+            "s26070900ux3409",
+            "s26070900ux3408",
+            "s26070900ux3407",
+            "s26070900ux3406",
+            "s26070900ux3405",
+            "s26070900ux3400",
+            "s26070900ux3399",
+            "s26070900ux3398",
+            "s26070900ux3397",
+            "s26070900ux3384",
+            "s26070900ux3285",
+            "s26070900ux3284",
+            "s26070800ux4153",
+            "s26070800ux2208",
+            "s26070600ux3613",
+            "s26070202ux8147",
+            "s26070202ux8146",
+            "s26070202ux7974",
+            "s26070102ux2116",
+        ];
+
+        $curlService = (new CurlService())->pro();
+
+        foreach ($list as $item) {
+            $info1 = DataUtils::getPageListInFirstData($curlService->s3015()->get("sku-seller-configs/queryPage", [
+                "skuId" => $item,
+            ]));
+            if ($info1) {
+                if (!$info1['saleStatus']){
+                    $info1['saleStatus'] = "A";
+
+                    $curlService->s3015()->post("sku-seller-configs/saveSkuSellerConfig", $info1);
+
+                }
+            }
+        }
+
+    }
+
+    /**
+     * @return void
+     * 更新pmo单的任何字段
+     */
+    public function fixPmo()
+    {
+        $qdBillNoList = [
+            "PMO2026090300009",
+            "PMO2026090300010",
+        ];
+
+        $curlService = (new CurlService())->pro();
+        foreach ($qdBillNoList as $item) {
+
+            $curlService->s3009()->post("market-analysis-reports/updateMainSkuIdInfoByPmoBillNo", [
+                "pmoBillNo" => $item,
+                "modifiedBy" => "chenqilian",
+                "operatorName" => "陈启莲",
+                "traceman" => "chenqilian",
+                "createdBy" => "chenqilian"
+            ]);
+
+        }
+
+    }
+
+
+    public function fixPicReviewing()
+    {
+        $curlService = (new CurlService())->pro();
+
+        $skuIdList = [
+            "a26082600ux1982",
+            "a26082600ux1983",
+        ];
+
+        $dataLIst1 = DataUtils::getPageList($curlService->s3015()->get("product_base_infos/queryPage", [
+            "limit" => 1000,
+            "page" => 1,
+            "productId_in" => implode(",", $skuIdList)
+        ]));
+        if ($dataLIst1) {
+            foreach ($dataLIst1 as $info) {
+                $info['status'] = "picReviewing";
+                $curlService->s3015()->put("product_base_infos/{$info['_id']}",$info);
+            }
+        }
+
+
+
+
+    }
+
+
 }
 
 $curlController = new SyncCurlController();
+$curlController->fixPicReviewing();
+
 
 //$curlController->initSguInfo();
 //$curlController->deleteTestSku();
@@ -7386,7 +7501,7 @@ $curlController = new SyncCurlController();
 //$curlController->updateFcuProductLine();
 //$curlController->getPaSkuMaterial();
 //$curlController->syncAllVerticalMonthlTargets();
-$curlController->ceWrite();
+//$curlController->ceWrite();
 //$curlController->updateCeMaterialPlatform();
 //$curlController->updatePaProductTempSkuIdNew();
 //$curlController->writeProductBaseFba();

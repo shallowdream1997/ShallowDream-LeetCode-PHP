@@ -1,0 +1,406 @@
+2026-09-22 02:32:19 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:19 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100532507445993472"}
+2026-09-22 02:32:20 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:20 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100533336110612480"}
+2026-09-22 02:32:20 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:20 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100534191941566464"}
+2026-09-22 02:32:22 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:22 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100545531468922880"}
+2026-09-22 02:32:22 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:22 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100546857623789568"}
+2026-09-22 02:32:22 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:22 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100551885688672256"}
+2026-09-22 02:32:24 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:24 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100756270221832192"}
+2026-09-22 02:32:24 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:24 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100773509062930432"}
+2026-09-22 02:32:25 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:25 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:26 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:26 - 参数：{"pageNum":2,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:27 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:27 - 参数：{"pageNum":3,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:28 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:28 - 参数：{"pageNum":4,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:28 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:28 - 参数：{"pageNum":5,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:29 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:29 - 参数：{"pageNum":6,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:29 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:29 - 参数：{"pageNum":7,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:30 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:30 - 参数：{"pageNum":8,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:30 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:30 - 参数：{"pageNum":9,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:31 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:31 - 参数：{"pageNum":10,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:31 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:31 - 参数：{"pageNum":11,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:31 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:31 - 参数：{"pageNum":12,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:32 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:32 - 参数：{"pageNum":13,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:32 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:32 - 参数：{"pageNum":14,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:32 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:32 - 参数：{"pageNum":15,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:33 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:33 - 参数：{"pageNum":16,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:33 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:33 - 参数：{"pageNum":17,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:33 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:33 - 参数：{"pageNum":18,"pageSize":200,"spAmazonAutoPlacementMainId":"2100781853391663104"}
+2026-09-22 02:32:34 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:34 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782111005814784"}
+2026-09-22 02:32:34 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:34 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:34 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:34 - 参数：{"pageNum":2,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:34 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:34 - 参数：{"pageNum":3,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:35 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:35 - 参数：{"pageNum":4,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:35 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:35 - 参数：{"pageNum":5,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:35 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:35 - 参数：{"pageNum":6,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:35 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:35 - 参数：{"pageNum":7,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:36 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:36 - 参数：{"pageNum":8,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:36 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:36 - 参数：{"pageNum":9,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:36 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:36 - 参数：{"pageNum":10,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:37 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:37 - 参数：{"pageNum":11,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:38 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:38 - 参数：{"pageNum":12,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:39 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:39 - 参数：{"pageNum":13,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:39 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:39 - 参数：{"pageNum":14,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:39 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:39 - 参数：{"pageNum":15,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:40 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:40 - 参数：{"pageNum":16,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:40 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:40 - 参数：{"pageNum":17,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:41 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:41 - 参数：{"pageNum":18,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:42 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:42 - 参数：{"pageNum":19,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:43 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:43 - 参数：{"pageNum":20,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:44 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:44 - 参数：{"pageNum":21,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:46 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:46 - 参数：{"pageNum":22,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:47 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:47 - 参数：{"pageNum":23,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:48 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:48 - 参数：{"pageNum":24,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:49 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:49 - 参数：{"pageNum":25,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:50 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:50 - 参数：{"pageNum":26,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:51 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:51 - 参数：{"pageNum":27,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:52 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:52 - 参数：{"pageNum":28,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:52 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:52 - 参数：{"pageNum":29,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:55 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:55 - 参数：{"pageNum":30,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:56 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:56 - 参数：{"pageNum":31,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:58 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:58 - 参数：{"pageNum":32,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:59 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:59 - 参数：{"pageNum":33,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:32:59 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:32:59 - 参数：{"pageNum":34,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:00 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:00 - 参数：{"pageNum":35,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:00 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:00 - 参数：{"pageNum":36,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:01 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:01 - 参数：{"pageNum":37,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:01 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:01 - 参数：{"pageNum":38,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:02 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:02 - 参数：{"pageNum":39,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:04 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:04 - 参数：{"pageNum":40,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:05 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:05 - 参数：{"pageNum":41,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:05 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:05 - 参数：{"pageNum":42,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:06 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:06 - 参数：{"pageNum":43,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:06 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:06 - 参数：{"pageNum":44,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:08 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:08 - 参数：{"pageNum":45,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:11 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:11 - 参数：{"pageNum":46,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:12 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:12 - 参数：{"pageNum":47,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:14 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:14 - 参数：{"pageNum":48,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:15 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:15 - 参数：{"pageNum":49,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:18 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:18 - 参数：{"pageNum":50,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:19 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:19 - 参数：{"pageNum":51,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:20 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:20 - 参数：{"pageNum":52,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:20 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:20 - 参数：{"pageNum":53,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:21 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:21 - 参数：{"pageNum":54,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:22 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:22 - 参数：{"pageNum":55,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:22 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:22 - 参数：{"pageNum":56,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:23 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:23 - 参数：{"pageNum":57,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:25 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:25 - 参数：{"pageNum":58,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:26 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:26 - 参数：{"pageNum":59,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:27 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:27 - 参数：{"pageNum":60,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:29 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:29 - 参数：{"pageNum":61,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:30 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:30 - 参数：{"pageNum":62,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:31 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:31 - 参数：{"pageNum":63,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:32 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:32 - 参数：{"pageNum":64,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:33 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:33 - 参数：{"pageNum":65,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:34 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:34 - 参数：{"pageNum":66,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:35 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:35 - 参数：{"pageNum":67,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:36 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:36 - 参数：{"pageNum":68,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:37 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:37 - 参数：{"pageNum":69,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:38 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:38 - 参数：{"pageNum":70,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:39 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:39 - 参数：{"pageNum":71,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:40 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:40 - 参数：{"pageNum":72,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:41 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:41 - 参数：{"pageNum":73,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:43 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:43 - 参数：{"pageNum":74,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:44 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:44 - 参数：{"pageNum":75,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:45 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:45 - 参数：{"pageNum":76,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:47 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:47 - 参数：{"pageNum":77,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:47 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:47 - 参数：{"pageNum":78,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:48 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:48 - 参数：{"pageNum":79,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:48 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:48 - 参数：{"pageNum":80,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:49 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:49 - 参数：{"pageNum":81,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:50 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:50 - 参数：{"pageNum":82,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:50 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:50 - 参数：{"pageNum":83,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:51 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:51 - 参数：{"pageNum":84,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:52 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:52 - 参数：{"pageNum":85,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:52 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:52 - 参数：{"pageNum":86,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:52 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:52 - 参数：{"pageNum":87,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:53 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:53 - 参数：{"pageNum":88,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:53 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:53 - 参数：{"pageNum":89,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:53 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:53 - 参数：{"pageNum":90,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:54 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:54 - 参数：{"pageNum":91,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:54 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:54 - 参数：{"pageNum":92,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:54 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:54 - 参数：{"pageNum":93,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:55 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:55 - 参数：{"pageNum":94,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782195311325184"}
+2026-09-22 02:33:55 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:55 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782405362126848"}
+2026-09-22 02:33:55 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:55 - 参数：{"pageNum":2,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782405362126848"}
+2026-09-22 02:33:56 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:56 - 参数：{"pageNum":3,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782405362126848"}
+2026-09-22 02:33:56 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:56 - 参数：{"pageNum":4,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782405362126848"}
+2026-09-22 02:33:56 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:56 - 参数：{"pageNum":5,"pageSize":200,"spAmazonAutoPlacementMainId":"2100782405362126848"}
+2026-09-22 02:33:57 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:57 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100804328821362688"}
+2026-09-22 02:33:57 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:57 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839082031525888"}
+2026-09-22 02:33:57 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:57 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839487306207232"}
+2026-09-22 02:33:57 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:57 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839487557865472"}
+2026-09-22 02:33:57 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:57 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839487725637632"}
+2026-09-22 02:33:57 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:57 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839487905992704"}
+2026-09-22 02:33:58 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:58 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839488077959168"}
+2026-09-22 02:33:58 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:58 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839488216371200"}
+2026-09-22 02:33:58 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:58 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839488442863616"}
+2026-09-22 02:33:58 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:58 - 参数：{"pageNum":2,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839488442863616"}
+2026-09-22 02:33:58 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:58 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839488723881984"}
+2026-09-22 02:33:59 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:59 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839488900042752"}
+2026-09-22 02:33:59 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:59 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839489063620608"}
+2026-09-22 02:33:59 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:59 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839489306890240"}
+2026-09-22 02:33:59 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:33:59 - 参数：{"pageNum":2,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839489306890240"}
+2026-09-22 02:34:00 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:00 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839489659211776"}
+2026-09-22 02:34:00 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:00 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839489810206720"}
+2026-09-22 02:34:00 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:00 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839490019921920"}
+2026-09-22 02:34:00 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:00 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839490263191552"}
+2026-09-22 02:34:01 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:01 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839490477101056"}
+2026-09-22 02:34:01 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:01 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839490720370688"}
+2026-09-22 02:34:01 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:01 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839491211104256"}
+2026-09-22 02:34:01 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:01 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839491353710592"}
+2026-09-22 02:34:01 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:01 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839491500511232"}
+2026-09-22 02:34:02 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:02 - 参数：{"pageNum":2,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839491500511232"}
+2026-09-22 02:34:02 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:02 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839491773140992"}
+2026-09-22 02:34:02 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:02 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839491911553024"}
+2026-09-22 02:34:02 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:02 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839492054159360"}
+2026-09-22 02:34:02 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:02 - 参数：{"pageNum":2,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839492054159360"}
+2026-09-22 02:34:03 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:03 - 参数：{"pageNum":3,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839492054159360"}
+2026-09-22 02:34:03 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:03 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839492427452416"}
+2026-09-22 02:34:03 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:03 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839492582641664"}
+2026-09-22 02:34:03 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:03 - 参数：{"pageNum":2,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839492582641664"}
+2026-09-22 02:34:04 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:04 - 参数：{"pageNum":3,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839492582641664"}
+2026-09-22 02:34:04 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:04 - 参数：{"pageNum":4,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839492582641664"}
+2026-09-22 02:34:04 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:04 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839493106929664"}
+2026-09-22 02:34:04 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:04 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839493253730304"}
+2026-09-22 02:34:05 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:05 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839493476028416"}
+2026-09-22 02:34:05 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:05 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839493618634752"}
+2026-09-22 02:34:05 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:05 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839493748658176"}
+2026-09-22 02:34:05 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:05 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839493891264512"}
+2026-09-22 02:34:05 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:05 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839494033870848"}
+2026-09-22 02:34:06 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:06 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839494180671488"}
+2026-09-22 02:34:06 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:06 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839494331666432"}
+2026-09-22 02:34:06 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:06 - 参数：{"pageNum":2,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839494331666432"}
+2026-09-22 02:34:06 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:06 - 参数：{"pageNum":3,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839494331666432"}
+2026-09-22 02:34:07 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:07 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839494734319616"}
+2026-09-22 02:34:07 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:07 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839494902091776"}
+2026-09-22 02:34:08 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:08 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839495044698112"}
+2026-09-22 02:34:08 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:08 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839495195693056"}
+2026-09-22 02:34:08 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:08 - 参数：{"pageNum":2,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839495195693056"}
+2026-09-22 02:34:09 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:09 - 参数：{"pageNum":3,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839495195693056"}
+2026-09-22 02:34:09 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:09 - 参数：{"pageNum":4,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839495195693056"}
+2026-09-22 02:34:09 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:09 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839495745146880"}
+2026-09-22 02:34:09 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:09 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839495887753216"}
+2026-09-22 02:34:10 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:10 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839496114245632"}
+2026-09-22 02:34:10 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:10 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839496265240576"}
+2026-09-22 02:34:10 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:10 - 参数：{"pageNum":2,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839496265240576"}
+2026-09-22 02:34:11 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:11 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839496588201984"}
+2026-09-22 02:34:11 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:11 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100839496726614016"}
+2026-09-22 02:34:11 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:11 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100840124299350016"}
+2026-09-22 02:34:11 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:11 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100845132927414272"}
+2026-09-22 02:34:11 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:11 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100860787802247168"}
+2026-09-22 02:34:12 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:12 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100860903921553408"}
+2026-09-22 02:34:12 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:12 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100861000080166912"}
+2026-09-22 02:34:12 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:12 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2100885024252309504"}
+2026-09-22 02:34:13 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:13 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2101557217156083712"}
+2026-09-22 02:34:13 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:13 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2101567737427001344"}
+2026-09-22 02:34:13 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:13 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2101568076666318848"}
+2026-09-22 02:34:13 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:13 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2101569191105658880"}
+2026-09-22 02:34:13 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:13 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2101570102460809216"}
+2026-09-22 02:34:14 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:14 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2101620699642191872"}
+2026-09-22 02:34:14 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:14 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2101867087936475136"}
+2026-09-22 02:34:14 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:14 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2101868498535309312"}
+2026-09-22 02:34:14 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:14 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2101881045829279744"}
+2026-09-22 02:34:14 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:14 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2101881444476903424"}
+2026-09-22 02:34:15 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sp_amazon_auto_placement_common/v1/getPageSpAmazonAutoPlacementDetail
+2026-09-22 02:34:15 - 参数：{"pageNum":1,"pageSize":200,"spAmazonAutoPlacementMainId":"2101881712878804992"}

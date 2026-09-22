@@ -985,6 +985,52 @@ class SpApi
         }
     }
 
+    public function archivedCampaign($sellerId, $campaignIds)
+    {
+        return $this->archivedSpEntity($sellerId, $campaignIds, 'amazon/ad/campaigns/deleteCampaigns', 'campaignIdFilter', 'campaignId', array('campaigns'));
+    }
+
+    private function archivedSpEntity($sellerId, $ids, $apiPath, $filterName, $idName, array $resultNames)
+    {
+        $returnMessage = DataUtils::getResultData($this->curlService->phphk()->deleteWithBodyData($apiPath . "/{$sellerId}", array(
+            $filterName => array('include' => $ids)
+        )));
+        if (($returnMessage['status'] ?? '') !== 'success' || !isset($returnMessage['data'])) {
+            $this->log("归档失败：{$sellerId} " . json_encode($ids, JSON_UNESCAPED_UNICODE));
+            return array();
+        }
+
+        // V3 删除接口直接返回 success/error；历史接口会额外包一层广告类型。
+        $resultData = isset($returnMessage['data']['success']) || isset($returnMessage['data']['error'])
+            ? $returnMessage['data']
+            : array();
+        if (!$resultData) {
+            foreach ($resultNames as $resultName) {
+                if (isset($returnMessage['data'][$resultName]) && is_array($returnMessage['data'][$resultName])) {
+                    $resultData = $returnMessage['data'][$resultName];
+                    break;
+                }
+            }
+        }
+        if (!$resultData) {
+            return array();
+        }
+
+        $result = array();
+        foreach (($resultData['error'] ?? array()) as $item) {
+            $result[$item['index']] = $item['errors'][0]['errorType'] ?? 'Amazon归档失败';
+        }
+        foreach (($resultData['success'] ?? array()) as $item) {
+            $result[$item['index']] = 'success';
+        }
+
+        $last = array();
+        foreach ($ids as $index => $id) {
+            $last[] = array($idName => $id, 'msg' => $result[$index] ?? 'Amazon未返回归档结果');
+        }
+        return $last;
+    }
+
 
 
     //=============================AdGroup end==============================================///
