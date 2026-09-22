@@ -890,32 +890,57 @@ class SpApi
 
     public function archivedKeyword($sellerId,$keywordIds)
     {
+        // Amazon SP v3 要求 keywordIdFilter.include 为字符串数组。
+        // Excel/Mongo 读出来的长 ID 可能是 PHP 整数，直接 json_encode 会发送成数字。
+        $keywordIds = array_map('strval', $keywordIds);
         $returnMessage = DataUtils::getResultData($this->curlService->phphk()->deleteWithBodyData("amazon/ad/keywords/deleteKeywords/{$sellerId}", [
             "keywordIdFilter" => [
                 "include" => $keywordIds
             ]
         ]));
-        if ($returnMessage['status'] == 'success' && isset($returnMessage['data']) && isset($returnMessage['data']['keywords'])) {
-            $result = [];
-            foreach ($returnMessage['data']['keywords']['error'] as $item){
-                $errorMsg = $item['errors'][0]['errorType'];
-                $result[$item['index']] = $errorMsg;
+
+        // 旧版接口返回 data.keywords，当前 v3 接口返回 data.success/data.error。
+        $keywordResult = [];
+        if (($returnMessage['status'] ?? '') === 'success' && isset($returnMessage['data']) && is_array($returnMessage['data'])) {
+            if (isset($returnMessage['data']['keywords']) && is_array($returnMessage['data']['keywords'])) {
+                $keywordResult = $returnMessage['data']['keywords'];
+            } else {
+                $keywordResult = $returnMessage['data'];
             }
-            foreach ($returnMessage['data']['keywords']['success'] as $item){
-                $result[$item['index']] = "success";
+        }
+
+        if (!empty($keywordResult) && (isset($keywordResult['success']) || isset($keywordResult['error']))) {
+            $result = [];
+            foreach (($keywordResult['error'] ?? []) as $item){
+                $errorMsg = 'failed';
+                if (isset($item['errors'][0]['errorType'])) {
+                    $errorMsg = $item['errors'][0]['errorType'];
+                } elseif (isset($item['errors'][0]['errorCode'])) {
+                    $errorMsg = $item['errors'][0]['errorCode'];
+                } elseif (isset($item['errors'][0]['errorValue'][0]['reason'])) {
+                    $errorMsg = $item['errors'][0]['errorValue'][0]['reason'];
+                }
+                if (isset($item['index'])) {
+                    $result[(int)$item['index']] = $errorMsg;
+                }
+            }
+            foreach (($keywordResult['success'] ?? []) as $item){
+                if (isset($item['index'])) {
+                    $result[(int)$item['index']] = "success";
+                }
             }
 
             $last = [];
             foreach ($keywordIds as $index => $keywordId){
                 $last[] = [
                     "keywordId" => $keywordId,
-                    "msg" => $result[$index]
+                    "msg" => $result[$index] ?? 'failed'
                 ];
             }
             //创建成功
             return $last;
         }else{
-            $this->log("归档keyword失败：{$sellerId} " . json_encode($keywordIds,JSON_UNESCAPED_UNICODE));
+            $this->log("归档keyword失败：{$sellerId} " . json_encode($keywordIds,JSON_UNESCAPED_UNICODE) . ' response=' . json_encode($returnMessage,JSON_UNESCAPED_UNICODE));
             return [];
         }
     }
