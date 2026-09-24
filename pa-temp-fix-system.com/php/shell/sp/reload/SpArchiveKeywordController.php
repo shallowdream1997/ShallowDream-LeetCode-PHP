@@ -11,7 +11,8 @@ require_once(dirname(__FILE__) . "/../SpApi.php");
  */
 class SpArchiveKeywordController
 {
-    private const MONGO_PAGE_SIZE = 1000;
+    // Mongo 查询接口按 200 条分页，避免单次 keywordId_in/返回数据过大。
+    private const MONGO_PAGE_SIZE = 200;
     private const AMAZON_BATCH_SIZE = 100;
     private const REDIS_INDEX_KEY = 'spReloadArchive0921KeywordIndex';
     private const REDIS_KEY_PREFIX = 'spReloadArchive0921Keyword';

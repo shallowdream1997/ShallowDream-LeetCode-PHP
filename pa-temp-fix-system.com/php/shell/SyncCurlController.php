@@ -5941,7 +5941,6 @@ class SyncCurlController
         }
     }
 
-
     public function consignmentQD($params)
     {
         $curlService = new CurlService();
@@ -7416,10 +7415,76 @@ class SyncCurlController
     }
 
 
+
+    public function updatePaSkuMaterialV3()
+    {
+        $curlService = (new CurlService())->pro();
+        $skuIdList = [
+            "a26092100ux2824",
+            "a26092100ux2826",
+            "a26092300ux0180",
+            "a26092300ux0181",
+            "a26092300ux0182",
+            "a26092300ux0183",
+        ];
+        $old = "luxiaolin";
+        $new = "linsixue";
+
+        $list = DataUtils::getPageDocList($curlService->s3044()->get("pa_ce_materials/queryPage", [
+            "limit" => 5000,
+            "page" => 1,
+            "skuIdList_in" => implode(",", $skuIdList),
+        ]));
+
+        foreach ($list as $item) {
+            $changed = false;
+            if (($item['saleName'] ?? null) === $old) {
+                $item['saleName'] = $new;
+                $changed = true;
+            }
+
+            if (($item['ebayTraceMan'] ?? null) === $old) {
+                $item['ebayTraceMan'] = $new;
+                $changed = true;
+            }
+
+            if (isset($item['saleNameList']) && is_array($item['saleNameList'])) {
+                foreach ($item['saleNameList'] as $key => $value) {
+                    if ($value === $old) {
+                        $item['saleNameList'][$key] = $new;
+                        $changed = true;
+                    }
+                }
+                $item['saleNameList'] = array_values(array_unique($item['saleNameList']));
+            }
+
+            if (isset($item['ebayTraceManList']) && is_array($item['ebayTraceManList'])) {
+                foreach ($item['ebayTraceManList'] as $key => $value) {
+                    if ($value === $old) {
+                        $item['ebayTraceManList'][$key] = $new;
+                        $changed = true;
+                    }
+                }
+                $item['ebayTraceManList'] = array_values(array_unique($item['ebayTraceManList']));
+            }
+
+            if (!$changed) {
+                continue;
+            }
+
+            $curlService->s3044()->put("pa_ce_materials/{$item['_id']}", $item);
+            $this->log("修改" . ($item['skuId'] ?? "") . "的负责人为：{$item['saleName']}");
+            $this->log(json_encode($item['saleNameList'] ?? [], JSON_UNESCAPED_UNICODE));
+            $this->log(json_encode($item['ebayTraceManList'] ?? [], JSON_UNESCAPED_UNICODE));
+        }
+    }
+
+
+
 }
 
 $curlController = new SyncCurlController();
-$curlController->fixPicReviewing();
+$curlController->updatePaSkuMaterialV3();
 
 
 //$curlController->initSguInfo();
