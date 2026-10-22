@@ -2031,10 +2031,7 @@ class SpApi
             "scu" => $scu,
             "createdBy" => $this->messages,
         ]));
-        $list = [];
-        if ($resp && isset($resp['data']) && count($resp['data']) > 0){
-            $list = $resp['data'];
-        }
+        return $resp;
     }
 
     public function paPlacementAmazonSp($channel,$sellerId,$type,$targetingType,$campaignType,$scuId)

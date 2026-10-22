@@ -1,0 +1,8 @@
+2026-10-15 10:05:56 - 请求: GET：https://master-script-nodejs-poms-list-manage.ux168.cn/api/product-skus/queryPage?limit=1&productId=a26101000ux0025
+2026-10-15 10:05:56 - 参数：[]
+2026-10-15 10:05:56 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sku/info/init/v1/initSkuInfo
+2026-10-15 10:05:56 - 参数：{"initSkuId":"a26101000ux0025","operatorName":"system(修复sku初始化)","productType":"SKU"}
+2026-10-15 10:05:58 - 请求: GET：https://master-script-nodejs-poms-list-manage.ux168.cn/api/product-skus/queryPage?limit=1&productId=a26101000ux0027
+2026-10-15 10:05:58 - 参数：[]
+2026-10-15 10:05:59 - 请求: POST：https://gateway.ux168.cn/pa-biz-application/sms/sku/info/init/v1/initSkuInfo
+2026-10-15 10:05:59 - 参数：{"initSkuId":"a26101000ux0027","operatorName":"system(修复sku初始化)","productType":"SKU"}

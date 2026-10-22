@@ -1,0 +1,74 @@
+2026-10-21 01:32:49 - 请求: GET：https://master-nodejs-poms-sold.ux168.cn/api/amazon_sp_products/queryPage?channel=amazon_uk2&adId_in=538163922820548%2C326206692836927%2C423559719171138%2C340698741311896%2C529303280087950%2C434536916687159%2C471285904230459%2C433193627245646%2C287409315024989%2C497104849099279%2C304572643031059%2C368096108932870%2C448027642279673%2C175277060990400%2C363586869703032%2C297272189832881%2C460815874068306%2C337813775754862%2C469171275153420%2C409946471070633%2C354890232502507%2C327211796499698%2C549814063194561%2C309952816140289%2C508803807231061%2C328744590513259%2C439780284795600%2C289760415055824%2C457969494049944%2C476994583795562%2C510557249461753%2C300043631645001%2C331807854466592%2C387704261292404%2C409575452630923%2C493586070986330%2C469096857694796%2C525327631364878%2C470614564244732%2C286745965370576%2C283146816701077%2C507943878371456%2C292880160031113%2C468739763514651%2C463327078824118%2C338219849988440%2C493907915335684%2C431576331445139%2C441511613337977%2C397417653224163%2C325255237588341&limit=200
+2026-10-21 01:32:49 - 参数：[]
+2026-10-21 01:32:49 - 请求: PUT：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/putProductAds/amazon_uk2
+2026-10-21 01:32:49 - 参数：[{"adId":"538163922820548","state":"paused"},{"adId":"326206692836927","state":"paused"},{"adId":"423559719171138","state":"paused"},{"adId":"340698741311896","state":"paused"},{"adId":"529303280087950","state":"paused"},{"adId":"434536916687159","state":"paused"},{"adId":"471285904230459","state":"paused"},{"adId":"433193627245646","state":"paused"},{"adId":"287409315024989","state":"paused"},{"adId":"497104849099279","state":"paused"},{"adId":"304572643031059","state":"paused"},{"adId":"368096108932870","state":"paused"},{"adId":"448027642279673","state":"paused"},{"adId":"175277060990400","state":"paused"},{"adId":"363586869703032","state":"paused"},{"adId":"297272189832881","state":"paused"},{"adId":"460815874068306","state":"paused"},{"adId":"337813775754862","state":"paused"},{"adId":"469171275153420","state":"paused"},{"adId":"409946471070633","state":"paused"},{"adId":"354890232502507","state":"paused"},{"adId":"327211796499698","state":"paused"},{"adId":"549814063194561","state":"paused"},{"adId":"309952816140289","state":"paused"},{"adId":"508803807231061","state":"paused"},{"adId":"328744590513259","state":"paused"},{"adId":"439780284795600","state":"paused"},{"adId":"289760415055824","state":"paused"},{"adId":"457969494049944","state":"paused"},{"adId":"476994583795562","state":"paused"},{"adId":"510557249461753","state":"paused"},{"adId":"300043631645001","state":"paused"},{"adId":"331807854466592","state":"paused"},{"adId":"387704261292404","state":"paused"},{"adId":"409575452630923","state":"paused"},{"adId":"493586070986330","state":"paused"},{"adId":"469096857694796","state":"paused"},{"adId":"525327631364878","state":"paused"},{"adId":"470614564244732","state":"paused"},{"adId":"286745965370576","state":"paused"},{"adId":"283146816701077","state":"paused"},{"adId":"507943878371456","state":"paused"},{"adId":"292880160031113","state":"paused"},{"adId":"468739763514651","state":"paused"},{"adId":"463327078824118","state":"paused"},{"adId":"338219849988440","state":"paused"},{"adId":"493907915335684","state":"paused"},{"adId":"431576331445139","state":"paused"},{"adId":"441511613337977","state":"paused"},{"adId":"397417653224163","state":"paused"},{"adId":"325255237588341","state":"paused"}]
+2026-10-21 01:32:51 - ⚡ multiExec：并发执行 30 个请求
+2026-10-21 01:32:51 - ⚡ multiExec：完成 30 个请求，成功30，失败0
+2026-10-21 01:32:51 - ⚡ multiExec：并发执行 10 个请求
+2026-10-21 01:32:51 - ⚡ multiExec：完成 10 个请求，成功10，失败0
+2026-10-21 01:32:51 - 请求: GET：https://master-nodejs-poms-sold.ux168.cn/api/amazon_sp_products/queryPage?channel=amazon_uk_find&adId_in=338889114471084%2C313947567621008%2C314164611412038%2C313363912014319%2C319357590542032&limit=200
+2026-10-21 01:32:51 - 参数：[]
+2026-10-21 01:32:51 - 请求: PUT：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/putProductAds/amazon_uk_find
+2026-10-21 01:32:51 - 参数：[{"adId":"338889114471084","state":"paused"},{"adId":"313947567621008","state":"paused"},{"adId":"314164611412038","state":"paused"},{"adId":"313363912014319","state":"paused"},{"adId":"319357590542032","state":"paused"}]
+2026-10-21 01:32:52 - ⚡ multiExec：并发执行 5 个请求
+2026-10-21 01:32:52 - ⚡ multiExec：完成 5 个请求，成功5，失败0
+2026-10-21 01:32:52 - 请求: GET：https://master-nodejs-poms-sold.ux168.cn/api/amazon_sp_products/queryPage?channel=amazon_uk_moto&adId_in=495902821026425%2C321952561994423%2C311855597702375%2C315497986253175%2C308328009089114%2C326889935264572%2C353095068031341%2C289062553513220%2C414135063499128%2C528967048447717&limit=200
+2026-10-21 01:32:52 - 参数：[]
+2026-10-21 01:32:53 - 请求: PUT：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/putProductAds/amazon_uk_moto
+2026-10-21 01:32:53 - 参数：[{"adId":"495902821026425","state":"paused"},{"adId":"321952561994423","state":"paused"},{"adId":"311855597702375","state":"paused"},{"adId":"315497986253175","state":"paused"},{"adId":"308328009089114","state":"paused"},{"adId":"326889935264572","state":"paused"},{"adId":"353095068031341","state":"paused"},{"adId":"289062553513220","state":"paused"},{"adId":"414135063499128","state":"paused"},{"adId":"528967048447717","state":"paused"}]
+2026-10-21 01:32:54 - ⚡ multiExec：并发执行 9 个请求
+2026-10-21 01:32:54 - ⚡ multiExec：完成 9 个请求，成功9，失败0
+2026-10-21 01:32:54 - 请求: GET：https://master-nodejs-poms-sold.ux168.cn/api/amazon_sp_products/queryPage?channel=amazon_uk_sopro&adId_in=494818557097848%2C296651876944387%2C396745333799536%2C434182719843709%2C434698845447734%2C403633672542313%2C476799373367474%2C526143383371702%2C457753405014957&limit=200
+2026-10-21 01:32:54 - 参数：[]
+2026-10-21 01:32:54 - 请求: PUT：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/putProductAds/amazon_uk_sopro
+2026-10-21 01:32:54 - 参数：[{"adId":"494818557097848","state":"paused"},{"adId":"296651876944387","state":"paused"},{"adId":"396745333799536","state":"paused"},{"adId":"434182719843709","state":"paused"},{"adId":"434698845447734","state":"paused"},{"adId":"403633672542313","state":"paused"},{"adId":"476799373367474","state":"paused"},{"adId":"526143383371702","state":"paused"},{"adId":"457753405014957","state":"paused"}]
+2026-10-21 01:32:55 - ⚡ multiExec：并发执行 9 个请求
+2026-10-21 01:32:55 - ⚡ multiExec：完成 9 个请求，成功9，失败0
+2026-10-21 01:32:55 - 请求: GET：https://master-nodejs-poms-sold.ux168.cn/api/amazon_sp_products/queryPage?channel=amazon_uk_ifn&adId_in=427124276772160%2C377247234367855%2C476212678869506%2C406342971310372%2C304144372213169%2C449513546049022&limit=200
+2026-10-21 01:32:55 - 参数：[]
+2026-10-21 01:32:55 - 请求: PUT：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/putProductAds/amazon_uk_ifn
+2026-10-21 01:32:55 - 参数：[{"adId":"427124276772160","state":"paused"},{"adId":"377247234367855","state":"paused"},{"adId":"476212678869506","state":"paused"},{"adId":"406342971310372","state":"paused"},{"adId":"304144372213169","state":"paused"},{"adId":"449513546049022","state":"paused"}]
+2026-10-21 01:32:56 - ⚡ multiExec：并发执行 5 个请求
+2026-10-21 01:32:57 - ⚡ multiExec：完成 5 个请求，成功5，失败0
+2026-10-21 01:32:57 - 请求: GET：https://master-nodejs-poms-sold.ux168.cn/api/amazon_sp_products/queryPage?channel=amazon_uk_luux&adId_in=413428273332599%2C405376333669002&limit=200
+2026-10-21 01:32:57 - 参数：[]
+2026-10-21 01:32:57 - 请求: PUT：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/putProductAds/amazon_uk_luux
+2026-10-21 01:32:57 - 参数：[{"adId":"413428273332599","state":"paused"},{"adId":"405376333669002","state":"paused"}]
+2026-10-21 01:32:58 - ⚡ multiExec：并发执行 2 个请求
+2026-10-21 01:32:58 - ⚡ multiExec：完成 2 个请求，成功2，失败0
+2026-10-21 01:32:58 - 请求: GET：https://master-nodejs-poms-sold.ux168.cn/api/amazon_sp_products/queryPage?channel=amazon_uk_tuto&adId_in=453554534340963%2C324892527457081%2C312209565255068%2C349274881124700%2C359415779935999%2C326759081843316%2C335578723193903%2C561662702889409&limit=200
+2026-10-21 01:32:58 - 参数：[]
+2026-10-21 01:32:58 - 请求: PUT：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/putProductAds/amazon_uk_tuto
+2026-10-21 01:32:58 - 参数：[{"adId":"453554534340963","state":"paused"},{"adId":"324892527457081","state":"paused"},{"adId":"312209565255068","state":"paused"},{"adId":"349274881124700","state":"paused"},{"adId":"359415779935999","state":"paused"},{"adId":"326759081843316","state":"paused"},{"adId":"335578723193903","state":"paused"},{"adId":"561662702889409","state":"paused"}]
+2026-10-21 01:32:59 - ⚡ multiExec：并发执行 8 个请求
+2026-10-21 01:33:00 - ⚡ multiExec：完成 8 个请求，成功8，失败0
+2026-10-21 01:33:00 - 请求: GET：https://master-nodejs-poms-sold.ux168.cn/api/amazon_sp_products/queryPage?channel=amazon_uk_hero&adId_in=419748357094945&limit=200
+2026-10-21 01:33:00 - 参数：[]
+2026-10-21 01:33:00 - 请求: PUT：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/putProductAds/amazon_uk_hero
+2026-10-21 01:33:00 - 参数：[{"adId":"419748357094945","state":"paused"}]
+2026-10-21 01:33:01 - ⚡ multiExec：并发执行 1 个请求
+2026-10-21 01:33:01 - ⚡ multiExec：完成 1 个请求，成功1，失败0
+2026-10-21 01:33:01 - 请求: GET：https://master-nodejs-poms-sold.ux168.cn/api/amazon_sp_products/queryPage?channel=amazon_uk_tuc&adId_in=476925607301213%2C291162584024986&limit=200
+2026-10-21 01:33:01 - 参数：[]
+2026-10-21 01:33:01 - 请求: PUT：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/putProductAds/amazon_uk_tuc
+2026-10-21 01:33:01 - 参数：[{"adId":"476925607301213","state":"paused"},{"adId":"291162584024986","state":"paused"}]
+2026-10-21 01:33:02 - ⚡ multiExec：并发执行 2 个请求
+2026-10-21 01:33:02 - ⚡ multiExec：完成 2 个请求，成功2，失败0
+2026-10-21 02:05:43 - 请求: GET：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/getProductAds/amazon_uk2?adIdFilter=538163922820548%2C326206692836927%2C423559719171138%2C340698741311896%2C529303280087950%2C434536916687159%2C471285904230459%2C433193627245646%2C287409315024989%2C497104849099279%2C304572643031059%2C368096108932870%2C448027642279673%2C175277060990400%2C363586869703032%2C297272189832881%2C460815874068306%2C337813775754862%2C469171275153420%2C409946471070633%2C354890232502507%2C327211796499698%2C549814063194561%2C309952816140289%2C508803807231061%2C328744590513259%2C439780284795600%2C289760415055824%2C457969494049944%2C476994583795562%2C510557249461753%2C300043631645001%2C331807854466592%2C387704261292404%2C409575452630923%2C493586070986330%2C469096857694796%2C525327631364878%2C470614564244732%2C286745965370576%2C283146816701077%2C507943878371456%2C292880160031113%2C468739763514651%2C463327078824118%2C338219849988440%2C493907915335684%2C431576331445139%2C441511613337977%2C397417653224163%2C325255237588341
+2026-10-21 02:05:43 - 参数：[]
+2026-10-21 02:05:46 - 请求: GET：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/getProductAds/amazon_uk_find?adIdFilter=338889114471084%2C313947567621008%2C314164611412038%2C313363912014319%2C319357590542032
+2026-10-21 02:05:46 - 参数：[]
+2026-10-21 02:05:47 - 请求: GET：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/getProductAds/amazon_uk_moto?adIdFilter=495902821026425%2C321952561994423%2C311855597702375%2C315497986253175%2C308328009089114%2C326889935264572%2C353095068031341%2C289062553513220%2C414135063499128%2C528967048447717
+2026-10-21 02:05:47 - 参数：[]
+2026-10-21 02:05:48 - 请求: GET：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/getProductAds/amazon_uk_sopro?adIdFilter=494818557097848%2C296651876944387%2C396745333799536%2C434182719843709%2C434698845447734%2C403633672542313%2C476799373367474%2C526143383371702%2C457753405014957
+2026-10-21 02:05:48 - 参数：[]
+2026-10-21 02:05:49 - 请求: GET：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/getProductAds/amazon_uk_ifn?adIdFilter=427124276772160%2C377247234367855%2C476212678869506%2C406342971310372%2C304144372213169%2C449513546049022
+2026-10-21 02:05:49 - 参数：[]
+2026-10-21 02:05:50 - 请求: GET：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/getProductAds/amazon_uk_luux?adIdFilter=413428273332599%2C405376333669002
+2026-10-21 02:05:50 - 参数：[]
+2026-10-21 02:05:51 - 请求: GET：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/getProductAds/amazon_uk_tuto?adIdFilter=453554534340963%2C324892527457081%2C312209565255068%2C349274881124700%2C359415779935999%2C326759081843316%2C335578723193903%2C561662702889409
+2026-10-21 02:05:51 - 参数：[]
+2026-10-21 02:05:52 - 请求: GET：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/getProductAds/amazon_uk_hero?adIdFilter=419748357094945
+2026-10-21 02:05:52 - 参数：[]
+2026-10-21 02:05:53 - 请求: GET：https://hk-alivpc-slim-poms.ux168.cn/api/amazon/ad/productAds/getProductAds/amazon_uk_tuc?adIdFilter=476925607301213%2C291162584024986
+2026-10-21 02:05:53 - 参数：[]

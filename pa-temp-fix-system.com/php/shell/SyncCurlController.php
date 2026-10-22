@@ -1007,8 +1007,8 @@ class SyncCurlController
         $env = "pro";
 
         $data = [
-            "prePurchaseBillNo" => "DPMO260720001",
-            "ceBillNo" => "CE202607240023",
+            "prePurchaseBillNo" => "DPMO260908013",
+            "ceBillNo" => "CE202609100125",
             "operatorName" => "system(PA-CE回写)"
         ];
         $curlService1 = new CurlService();
@@ -4601,23 +4601,8 @@ class SyncCurlController
     public function initSguInfo()
     {
         $list = [
-//            "g26042900ux0029",
-            "g26042900ux0028",
-            "g26042900ux0027",
-            "g26042900ux0026",
-            "g26042900ux0025",
-            "g26042900ux0032",
-            "g26042900ux0031",
-            "g26042900ux0030",
-            "g26042900ux0033",
-            "g26042900ux0038",
-            "g26042900ux0041",
-            "g26042900ux0040",
-            "g26042900ux0039",
-            "g26042900ux0037",
-            "g26042900ux0036",
-            "g26042900ux0035",
-            "g26042900ux0034"
+            "a26101000ux0025",
+            "a26101000ux0027"
         ];
         $curlService = (new CurlService())->pro();
         $sguInfoList = DataUtils::getQueryList($curlService->s3015()->get("/sgu-sku-scu-maps/query", [
@@ -4661,6 +4646,38 @@ class SyncCurlController
 
 
     }
+
+    public function initSkuuInfo()
+    {
+        $list = [
+            "a26101000ux0025",
+            "a26101000ux0027"
+        ];
+        $curlService = (new CurlService())->pro();
+
+        foreach ($list as $skus) {
+            $this->log("{$skus} 初始化");
+            $sssinof = DataUtils::getPageListInFirstData($curlService->s3015()->get("product-skus/queryPage", [
+                "limit" => 1,
+                "productId" => $skus
+            ]));
+            if (!$sssinof) {
+                $curlSsl = (new CurlService())->pro()->gateway()->getModule("pa");
+                $resp = DataUtils::getNewResultData($curlSsl->getWayPost($curlSsl->module . "/sms/sku/info/init/v1/initSkuInfo", [
+                    "initSkuId" => $skus,
+                    "operatorName" => "system(修复sku初始化)",
+                    "productType" => "SKU"
+                ]));
+
+                $this->log("{$skus} 结束初始化");
+            } else {
+                $this->log("{$skus} 已经初始化");
+            }
+        }
+
+
+    }
+
 
 
     public function createSguInfo()
@@ -7368,8 +7385,7 @@ class SyncCurlController
     public function fixPmo()
     {
         $qdBillNoList = [
-            "PMO2026090300009",
-            "PMO2026090300010",
+            "PMO2026092000022"
         ];
 
         $curlService = (new CurlService())->pro();
@@ -7484,10 +7500,12 @@ class SyncCurlController
 }
 
 $curlController = new SyncCurlController();
-$curlController->updatePaSkuMaterialV3();
+//$curlController->fixPmo();
+//$curlController->updatePaSkuMaterialV3();
 
 
 //$curlController->initSguInfo();
+$curlController->initSkuuInfo();
 //$curlController->deleteTestSku();
 //$curlController->checkPaProduct();
 //$curlController->updateSkuSellerConfig();
